@@ -37,16 +37,31 @@ function run(command: string, args: string[]) {
   }
 }
 
-function gitStatusIsClean() {
+function getDirtyFiles() {
   const result = spawnSync('git', ['status', '--porcelain'], { cwd: root, encoding: 'utf8' })
-  return result.stdout.trim().length === 0
+  return result.stdout
+    .split('\n')
+    .map((line) => line.trim())
+    .filter(Boolean)
 }
 
 async function release() {
   const { type, stage, tag, dryRun } = parseArgs(process.argv.slice(2))
 
-  if (!gitStatusIsClean()) {
+  const dirtyFiles = getDirtyFiles()
+  if (dirtyFiles.length > 0) {
     console.error('Working tree is not clean. Commit or stash changes before releasing.')
+    console.error('\nDirty entries reported by `git status --porcelain`:')
+    dirtyFiles.forEach((line) => console.error(`  ${line}`))
+    console.error(
+      '\nIf this is `.yarn/install-state.gz` (or another file under `.yarn/`) showing as' +
+        ' modified: it is already listed in .gitignore but was likely committed before that' +
+        ' rule existed, so git still tracks it and `yarn install` rewrites it on every run.' +
+        ' Untrack it once with:\n' +
+        '  git rm --cached .yarn/install-state.gz\n' +
+        '  git commit -m "chore: stop tracking .yarn/install-state.gz"\n' +
+        '  git push',
+    )
     process.exit(1)
   }
 
