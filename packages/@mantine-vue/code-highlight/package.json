@@ -1,6 +1,6 @@
 {
   "name": "@mantine-vue/code-highlight",
-  "version": "0.0.0",
+  "version": "9.3.2",
   "description": "Vue code highlight components equivalent to @mantine/code-highlight",
   "license": "MIT",
   "sideEffects": [
@@ -31,8 +31,8 @@
     "vue": "^3.5.0"
   },
   "peerDependencies": {
-    "@mantine-vue/core": "0.0.0",
-    "@mantine-vue/hooks": "0.0.0",
+    "@mantine-vue/core": "9.3.2",
+    "@mantine-vue/hooks": "9.3.2",
     "vue": "^3.5.0"
   }
 }

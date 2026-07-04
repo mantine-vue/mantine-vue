@@ -1,6 +1,6 @@
 {
   "name": "@mantine-vue/form",
-  "version": "0.0.0",
+  "version": "9.3.2",
   "description": "Vue form management package equivalent to @mantine/form",
   "license": "MIT",
   "sideEffects": false,
@@ -20,7 +20,7 @@
     }
   },
   "dependencies": {
-    "@mantine-vue/utils": "0.0.0"
+    "@mantine-vue/utils": "9.3.2"
   },
   "devDependencies": {
     "@mantine-vue/utils": "workspace:*",
