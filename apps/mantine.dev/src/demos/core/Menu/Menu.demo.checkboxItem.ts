@@ -1,6 +1,6 @@
 import { defineComponent, h, reactive } from 'vue'
 import { Button, Menu } from '@mantine-vue/core'
-import type { MantineDemo } from '@/types'
+import type { MantineDemo } from '@/demo'
 
 const code = `
 <script setup lang="ts">

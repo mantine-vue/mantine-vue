@@ -1,4 +1,4 @@
-import { defineComponent, h, ref } from 'vue'
+import { defineComponent, h, shallowRef } from 'vue'
 import { PhFileText, PhFolderOpen, PhFolderSimple } from '@phosphor-icons/vue'
 import {
   Group,
@@ -6,7 +6,7 @@ import {
   Tree,
   mergeAsyncChildren,
   useTree,
-  type RenderTreeNodePayload,
+  type RenderNode,
   type TreeNodeData,
 } from '@mantine-vue/core'
 import type { MantineDemo } from '@/demo'
@@ -83,7 +83,7 @@ async function fetchChildren(parentValue: string): Promise<TreeNodeData[]> {
 const Demo = defineComponent({
   name: 'TreeAsyncLoadingDemo',
   setup() {
-    const treeData = ref<TreeNodeData[]>(initialData)
+    const treeData = shallowRef<TreeNodeData[]>(initialData)
 
     const tree = useTree({
       onLoadChildren: async (value) => {
@@ -92,13 +92,7 @@ const Demo = defineComponent({
       },
     })
 
-    const renderNode = ({
-      node,
-      expanded,
-      hasChildren,
-      isLoading,
-      elementProps,
-    }: RenderTreeNodePayload) =>
+    const renderNode: RenderNode = ({ node, expanded, hasChildren, isLoading, elementProps }) =>
       h(
         Group,
         { gap: 6, wrap: 'nowrap', ...elementProps },
@@ -117,7 +111,15 @@ const Demo = defineComponent({
         },
       )
 
-    return () => h(Tree, { data: treeData.value, tree, withLines: true, renderNode })
+    return () => {
+      const treeProps: Record<string, any> = {
+        data: treeData.value,
+        tree,
+        withLines: true,
+        renderNode,
+      }
+      return h(Tree as any, treeProps)
+    }
   },
 })
 

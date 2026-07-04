@@ -1,7 +1,7 @@
 import { defineComponent, h } from 'vue'
 import { PhGearSix, PhSignOut, PhUser } from '@phosphor-icons/vue'
 import { Avatar, Group, Menu, Text, UnstyledButton } from '@mantine-vue/core'
-import type { MantineDemo } from '@/types'
+import type { MantineDemo } from '@/demo'
 
 const code = `
 <script setup lang="ts">

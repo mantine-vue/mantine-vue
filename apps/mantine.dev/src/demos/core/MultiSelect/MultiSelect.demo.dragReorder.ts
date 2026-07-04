@@ -34,8 +34,8 @@ const Demo = defineComponent({
         placeholder: 'Pick value',
         data: ['React', 'Angular', 'Vue', 'Svelte', 'Solid', 'Ember'],
         value: value.value,
-        onChange: (v: string[]) => {
-          value.value = v
+        onChange: (v: any[]) => {
+          value.value = v.filter((item): item is string => typeof item === 'string')
         },
         withPillsReorder: true,
       })

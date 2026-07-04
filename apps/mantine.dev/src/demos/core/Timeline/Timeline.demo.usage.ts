@@ -14,7 +14,7 @@ import { PhGitBranch, PhGitCommit, PhGitPullRequest, PhChatCircleDots } from '@p
     <Timeline.Item :bullet="h(PhGitBranch, { size: 12 })" title="New branch">
       <Text c="dimmed" size="sm">
         You've created new branch
-        <Text variant="link" component="span" inherit>fix-notifications</Text>
+        <Text c="blue" component="span" inherit>fix-notifications</Text>
         from master
       </Text>
       <Text size="xs" :mt="4">2 hours ago</Text>
@@ -23,7 +23,7 @@ import { PhGitBranch, PhGitCommit, PhGitPullRequest, PhChatCircleDots } from '@p
     <Timeline.Item :bullet="h(PhGitCommit, { size: 12 })" title="Commits">
       <Text c="dimmed" size="sm">
         You've pushed 23 commits to
-        <Text variant="link" component="span" inherit>fix-notifications</Text>
+        <Text c="blue" component="span" inherit>fix-notifications</Text>
         branch
       </Text>
       <Text size="xs" :mt="4">52 minutes ago</Text>
@@ -32,14 +32,14 @@ import { PhGitBranch, PhGitCommit, PhGitPullRequest, PhChatCircleDots } from '@p
     <Timeline.Item title="Pull request" :bullet="h(PhGitPullRequest, { size: 12 })" lineVariant="dashed">
       <Text c="dimmed" size="sm">
         You've submitted a pull request
-        <Text variant="link" component="span" inherit>Fix incorrect notification message (#187)</Text>
+        <Text c="blue" component="span" inherit>Fix incorrect notification message (#187)</Text>
       </Text>
       <Text size="xs" :mt="4">34 minutes ago</Text>
     </Timeline.Item>
 
     <Timeline.Item title="Code review" :bullet="h(PhChatCircleDots, { size: 12 })">
       <Text c="dimmed" size="sm">
-        <Text variant="link" component="span" inherit>Robert Gluesticker</Text>
+        <Text c="blue" component="span" inherit>Robert Gluesticker</Text>
         left a code review on your pull request
       </Text>
       <Text size="xs" :mt="4">12 minutes ago</Text>
@@ -75,7 +75,7 @@ const Demo = defineComponent({
                               "You've created new branch ",
                               h(
                                 Text,
-                                { variant: 'link', component: 'span', inherit: true },
+                                { c: 'blue', component: 'span', inherit: true },
                                 { default: () => 'fix-notifications' },
                               ),
                               ' from master',
@@ -99,7 +99,7 @@ const Demo = defineComponent({
                               "You've pushed 23 commits to ",
                               h(
                                 Text,
-                                { variant: 'link', component: 'span', inherit: true },
+                                { c: 'blue', component: 'span', inherit: true },
                                 { default: () => 'fix-notifications' },
                               ),
                               ' branch',
@@ -127,7 +127,7 @@ const Demo = defineComponent({
                               "You've submitted a pull request ",
                               h(
                                 Text,
-                                { variant: 'link', component: 'span', inherit: true },
+                                { c: 'blue', component: 'span', inherit: true },
                                 { default: () => 'Fix incorrect notification message (#187)' },
                               ),
                             ],
@@ -149,7 +149,7 @@ const Demo = defineComponent({
                             default: () => [
                               h(
                                 Text,
-                                { variant: 'link', component: 'span', inherit: true },
+                                { c: 'blue', component: 'span', inherit: true },
                                 { default: () => 'Robert Gluesticker' },
                               ),
                               ' left a code review on your pull request',

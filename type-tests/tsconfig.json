@@ -4,7 +4,6 @@
     "noEmit": true,
     "declaration": false,
     "declarationMap": false,
-    "baseUrl": ".",
     "paths": {
       "@mantine-vue/*": ["../packages/@mantine-vue/*"]
     },

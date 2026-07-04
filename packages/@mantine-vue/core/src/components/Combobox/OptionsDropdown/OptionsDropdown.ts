@@ -92,7 +92,7 @@ export const OptionsDropdown = defineComponent({
     withAlignedLabels: Boolean,
     value: { type: [String, Number, Boolean, Array] as PropType<any>, default: null },
     checkIconPosition: { type: String as PropType<'left' | 'right'>, default: 'left' },
-    nothingFoundMessage: { default: undefined },
+    nothingFoundMessage: { type: null as unknown as PropType<any>, default: undefined },
     unstyled: Boolean,
     labelId: String,
     ariaLabel: String,

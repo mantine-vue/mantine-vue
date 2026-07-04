@@ -129,7 +129,9 @@ const Demo = defineComponent({
         transform: 'translateX(-50%)',
       }
 
-      return h('div', { ref: radialRef, style: rootStyle }, [
+      const rootProps: Record<string, any> = { ref: radialRef, style: rootStyle }
+
+      return h('div', rootProps, [
         h('div', { style: valueStyle }, `${value.value}°`),
         h('div', { style: thumbStyle }, [h('div', { style: thumbInnerStyle })]),
       ])

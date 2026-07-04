@@ -1,5 +1,6 @@
 import { defineComponent, h } from 'vue'
 import { Carousel } from '@mantine-vue/carousel'
+import type { EmblaOptionsType } from 'embla-carousel'
 import { Slides } from './_slides'
 import type { MantineDemo } from '@/demo'
 
@@ -8,8 +9,10 @@ const Wrapper = defineComponent({
   inheritAttrs: false,
   setup(_props, { attrs }) {
     return () =>
-      h(Carousel, { height: 200, slideSize: '70%', slideGap: 'md', emblaOptions: attrs }, () =>
-        h(Slides, { count: 5 }),
+      h(
+        Carousel,
+        { height: 200, slideSize: '70%', slideGap: 'md', emblaOptions: attrs as EmblaOptionsType },
+        () => h(Slides, { count: 5 }),
       )
   },
 })

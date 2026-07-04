@@ -27,14 +27,14 @@ const Demo = defineComponent({
 export const stylesApi: MantineDemo = {
   type: 'styles-api',
   data: {
-    selectors: [
-      { selector: 'root', description: 'Root element' },
-      { selector: 'input', description: 'Hidden radio input' },
-      { selector: 'label', description: 'Label of each item' },
-      { selector: 'control', description: 'Control wrapper of each item' },
-      { selector: 'indicator', description: 'Active indicator element' },
-      { selector: 'innerLabel', description: 'Inner label element' },
-    ],
+    selectors: {
+      root: 'Root element',
+      input: 'Hidden radio input',
+      label: 'Label of each item',
+      control: 'Control wrapper of each item',
+      indicator: 'Active indicator element',
+      innerLabel: 'Inner label element',
+    },
   },
   component: Demo,
   code,

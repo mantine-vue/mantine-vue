@@ -34,28 +34,19 @@ const Wrapper = defineComponent({
 export const stylesApi: MantineDemo = {
   type: 'styles-api',
   data: {
-    selectors: [
-      { selector: 'wrapper', description: 'Root element' },
-      {
-        selector: 'preview',
-        description: 'Color preview, displayed only when format supports alpha channel',
-      },
-      { selector: 'body', description: 'Contains alpha/hue sliders and color preview' },
-      { selector: 'slider', description: 'Alpha and hue sliders root' },
-      {
-        selector: 'sliderOverlay',
-        description: 'Element used to display various overlays over hue and alpha sliders',
-      },
-      { selector: 'saturation', description: 'Saturation picker' },
-      {
-        selector: 'saturationOverlay',
-        description: 'Element used to display various overlays over saturation picker',
-      },
-      { selector: 'sliders', description: 'Contains alpha and hue sliders' },
-      { selector: 'thumb', description: 'Thumb of all sliders' },
-      { selector: 'swatch', description: 'Color swatch' },
-      { selector: 'swatches', description: 'Color swatches list' },
-    ],
+    selectors: {
+      wrapper: 'Root element',
+      preview: 'Color preview, displayed only when format supports alpha channel',
+      body: 'Contains alpha/hue sliders and color preview',
+      slider: 'Alpha and hue sliders root',
+      sliderOverlay: 'Element used to display various overlays over hue and alpha sliders',
+      saturation: 'Saturation picker',
+      saturationOverlay: 'Element used to display various overlays over saturation picker',
+      sliders: 'Contains alpha and hue sliders',
+      thumb: 'Thumb of all sliders',
+      swatch: 'Color swatch',
+      swatches: 'Color swatches list',
+    },
   },
   component: Wrapper,
   centered: true,

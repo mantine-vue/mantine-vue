@@ -206,8 +206,9 @@ const Demo = defineComponent({
 
     return () => {
       const labelFloating = value.value < 0.2 || value.value > 0.8
+      const trackProps: Record<string, any> = { class: 'slider-custom-demo-track', ref: trackRef }
       return h('div', { class: 'slider-custom-demo-root' }, [
-        h('div', { class: 'slider-custom-demo-track', ref: trackRef }, [
+        h('div', trackProps, [
           h(
             'div',
             {

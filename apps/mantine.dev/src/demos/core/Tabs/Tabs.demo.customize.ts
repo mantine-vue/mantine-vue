@@ -6,7 +6,7 @@ import type { MantineDemo } from '@/demo'
 
 const code = `
 <template>
-  <Tabs variant="unstyled" default-value="settings" :class-names="$style">
+  <Tabs unstyled default-value="settings" :class-names="$style">
     <Tabs.List grow>
       <Tabs.Tab value="settings" :left-section="() => h(PhGear, { size: 16 })">Settings</Tabs.Tab>
       <Tabs.Tab value="messages" :left-section="() => h(PhChatCircle, { size: 16 })">Messages</Tabs.Tab>
@@ -47,7 +47,7 @@ const Demo = defineComponent({
     return () =>
       h(
         Tabs,
-        { variant: 'unstyled', defaultValue: 'settings', classNames: classes },
+        { unstyled: true, defaultValue: 'settings', classNames: classes },
         {
           default: () =>
             h(

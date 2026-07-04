@@ -17,10 +17,10 @@ function createElement(type: any, props: Record<string, any> = {}, key?: string)
     type === Fragment ||
     !isComponent(type)
   ) {
-    return h(type, rest, children)
+    return (h as any)(type, rest, children)
   }
 
-  return h(type, rest, { default: () => children })
+  return (h as any)(type, rest, { default: () => children })
 }
 
 export const jsx = createElement

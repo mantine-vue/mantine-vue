@@ -23,11 +23,11 @@ const Wrapper = defineComponent({
 export const stylesApi: MantineDemo = {
   type: 'styles-api',
   data: {
-    selectors: [
-      { selector: 'root', description: 'Root element, contains all pin inputs' },
-      { selector: 'pinInput', description: 'Wrapper element around each individual input' },
-      { selector: 'input', description: 'Individual pin input element' },
-    ],
+    selectors: {
+      root: 'Root element, contains all pin inputs',
+      pinInput: 'Wrapper element around each individual input',
+      input: 'Individual pin input element',
+    },
   },
   component: Wrapper,
   code,

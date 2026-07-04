@@ -20,6 +20,7 @@ export type BadgeVariant =
   | 'white'
   | 'default'
   | 'gradient'
+  | (string & {})
 
 const varsResolver = createVarsResolver<any>(
   (theme, { radius, color, gradient, variant, size, autoContrast, circle }) => {

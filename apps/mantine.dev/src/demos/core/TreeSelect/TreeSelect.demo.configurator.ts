@@ -1,6 +1,6 @@
 import { defineComponent, h } from 'vue'
 import { TreeSelect } from '@mantine-vue/core'
-import type { MantineDemo } from '@/demo'
+import type { ConfiguratorControlOptions, MantineDemo } from '@/demo'
 import { data } from './data'
 
 const code = `
@@ -18,7 +18,7 @@ import { data } from './data'
 </template>
 `
 
-const inputControls: MantineDemo['controls'] = [
+const inputControls: ConfiguratorControlOptions[] = [
   {
     type: 'select',
     prop: 'variant',

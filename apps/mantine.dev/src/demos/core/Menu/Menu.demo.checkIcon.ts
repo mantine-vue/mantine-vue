@@ -1,7 +1,7 @@
 import { defineComponent, h, ref } from 'vue'
 import { PhStar } from '@phosphor-icons/vue'
 import { Button, Menu } from '@mantine-vue/core'
-import type { MantineDemo } from '@/types'
+import type { MantineDemo } from '@/demo'
 
 const code = `
 <script setup lang="ts">

@@ -18,6 +18,7 @@ export type ThemeIconVariant =
   | 'white'
   | 'default'
   | 'gradient'
+  | (string & {})
 
 const varsResolver = createVarsResolver<any>(
   (theme, { size, radius, variant, gradient, color, autoContrast }) => {

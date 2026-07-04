@@ -6,7 +6,7 @@ import { useDebouncedValue } from '@mantine-vue/hooks'
 export const ComponentsPreview = defineComponent({
   name: 'ComponentsPreview',
   props: {
-    colors: { type: Array as PropType<MantineColorsTuple>, required: true },
+    colors: { type: Array as unknown as PropType<MantineColorsTuple>, required: true },
   },
   setup(props) {
     const [debouncedColors] = useDebouncedValue(() => props.colors, 100)

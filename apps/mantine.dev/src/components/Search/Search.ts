@@ -24,7 +24,10 @@ const fuzzySearchFilter: SpotlightFilterFunction = (query, actions) => {
 
   const flatActions = actions.reduce<SearchAction[]>((acc, item) => {
     if ('actions' in item) {
-      return [...acc, ...item.actions.map((action) => ({ ...action, group: item.group }))]
+      return [
+        ...acc,
+        ...item.actions.map((action: SpotlightActionData) => ({ ...action, group: item.group })),
+      ]
     }
 
     return [...acc, item]

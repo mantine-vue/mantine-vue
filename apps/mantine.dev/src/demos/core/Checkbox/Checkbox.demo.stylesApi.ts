@@ -36,17 +36,17 @@ const Wrapper = defineComponent({
 export const stylesApi: MantineDemo = {
   type: 'styles-api',
   data: {
-    selectors: [
-      { selector: 'root', description: 'Root element' },
-      { selector: 'body', description: 'Contains label, description, error and input' },
-      { selector: 'inner', description: 'Contains input and icon' },
-      { selector: 'input', description: 'Input element' },
-      { selector: 'icon', description: 'Check/indeterminate icon' },
-      { selector: 'labelWrapper', description: 'Contains label, description and error' },
-      { selector: 'label', description: 'Label element' },
-      { selector: 'description', description: 'Description element' },
-      { selector: 'error', description: 'Error element' },
-    ],
+    selectors: {
+      root: 'Root element',
+      body: 'Contains label, description, error and input',
+      inner: 'Contains input and icon',
+      input: 'Input element',
+      icon: 'Check/indeterminate icon',
+      labelWrapper: 'Contains label, description and error',
+      label: 'Label element',
+      description: 'Description element',
+      error: 'Error element',
+    },
   },
   component: Wrapper,
   code,

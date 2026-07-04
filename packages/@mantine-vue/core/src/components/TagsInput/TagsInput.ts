@@ -83,7 +83,7 @@ export const TagsInput = defineComponent({
     clearable: Boolean,
     hiddenInputValuesDivider: { type: String, default: ',' },
     hiddenInputProps: Object,
-    nothingFoundMessage: { default: undefined },
+    nothingFoundMessage: { type: null as unknown as PropType<any>, default: undefined },
     filter: Function as PropType<any>,
     limit: Number,
     withScrollArea: { type: Boolean, default: true },

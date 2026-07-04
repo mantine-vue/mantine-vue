@@ -27,6 +27,7 @@ export interface ColorInputProps {
   popoverProps?: Record<string, any>
   closeOnColorSwatchClick?: boolean
   eyeDropperButtonProps?: Record<string, any>
+  eyeDropperIcon?: any
   [key: string]: any
 }
 
@@ -47,7 +48,7 @@ export const ColorInput = defineComponent({
     popoverProps: Object,
     closeOnColorSwatchClick: Boolean,
     eyeDropperButtonProps: Object,
-    eyeDropperIcon: { default: undefined },
+    eyeDropperIcon: { type: null as unknown as PropType<any>, default: undefined },
     withPicker: { type: Boolean, default: true },
     swatches: Array as PropType<string[]>,
     swatchesPerRow: { type: Number, default: 7 },

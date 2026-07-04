@@ -36,11 +36,11 @@ const Wrapper = defineComponent({
 export const stylesApi: MantineDemo = {
   type: 'styles-api',
   data: {
-    selectors: [
-      { selector: 'wrapper', description: 'Root element of the Input' },
-      { selector: 'input', description: 'Input element' },
-      { selector: 'section', description: 'Left and right sections' },
-    ],
+    selectors: {
+      wrapper: 'Root element of the Input',
+      input: 'Input element',
+      section: 'Left and right sections',
+    },
   },
   component: Wrapper,
   code,

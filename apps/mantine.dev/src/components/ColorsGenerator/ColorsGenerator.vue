@@ -3,7 +3,7 @@ import { computed, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { Title } from '@mantine-vue/core'
 import { useLocalStorage } from '@mantine-vue/hooks'
-import { generateColorsMap } from '@mantine-vue/colors-generator'
+import { generateColorsMap, type MantineColorsTuple } from '@mantine-vue/colors-generator'
 import { ColorsInput } from './ColorsInput/ColorsInput'
 import { ColorsList } from './ColorsList/ColorsList'
 import { ColorsOutput } from './ColorsOutput/ColorsOutput'
@@ -54,7 +54,7 @@ watch(
       :display-colors-info="displayColorsInfo"
     />
 
-    <ComponentsPreview :colors="colors.map((c) => c.hex())" />
+    <ComponentsPreview :colors="colors.map((c) => c.hex()) as unknown as MantineColorsTuple" />
 
     <ColorsOutput :colors="colors.map((c) => c.hex())" />
   </div>

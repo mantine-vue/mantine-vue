@@ -23,6 +23,7 @@ export { SpotlightSearch } from './SpotlightSearch'
 export type {
   SpotlightActionData,
   SpotlightActionGroupData,
+  SpotlightActions,
   SpotlightActionProps,
   SpotlightActionStylesNames,
   SpotlightActionsGroupProps,

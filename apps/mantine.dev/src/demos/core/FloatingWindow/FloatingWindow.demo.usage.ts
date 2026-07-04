@@ -1,4 +1,4 @@
-import type { MantineDemo } from '@/types'
+import type { MantineDemo } from '@/demo'
 import { Button, CloseButton, FloatingWindow, Group, Text } from '@mantine-vue/core'
 import { useDisclosure } from '@mantine-vue/hooks'
 import { defineComponent, h } from 'vue'

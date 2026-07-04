@@ -103,7 +103,7 @@ const SplitterBase = defineComponent({
     shiftStep: { type: Number, default: undefined },
     lineSize: { type: [String, Number] as PropType<string | number>, default: undefined },
     handleColor: { type: String, default: undefined },
-    handleIcon: { default: undefined },
+    handleIcon: { type: null as unknown as PropType<VNodeChild>, default: undefined },
     withHandle: { type: Boolean, default: undefined },
     resetOnDoubleClick: { type: Boolean, default: undefined },
     splitterRef: {

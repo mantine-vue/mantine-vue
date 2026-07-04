@@ -1,7 +1,7 @@
 import { defineComponent, h } from 'vue'
 import { Box, Button, Group, LoadingOverlay, PasswordInput, TextInput } from '@mantine-vue/core'
 import { useDisclosure } from '@mantine-vue/hooks'
-import type { MantineDemo } from '@/types'
+import type { MantineDemo } from '@/demo'
 
 const code = `
 <script setup lang="ts">

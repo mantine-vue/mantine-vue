@@ -20,7 +20,11 @@ const UsageDemo = defineComponent({
     const value = ref<string | undefined>()
     const data = getTimeRange('08:00', '18:00', 60 * 60)
     return () =>
-      h(TimeGrid, { data, value: value.value, onChange: (v: string) => (value.value = v) })
+      h(TimeGrid, {
+        data,
+        value: value.value,
+        onChange: (v: string | null) => (value.value = v ?? undefined),
+      })
   },
 })
 

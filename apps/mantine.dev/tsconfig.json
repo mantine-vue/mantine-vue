@@ -13,10 +13,24 @@
     "noEmit": true,
     "types": ["node", "vite/client"],
     "lib": ["ESNext", "DOM", "DOM.Iterable"],
-    "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
-      "@mantine-vue/core": ["../../packages/@mantine-vue/core/src/index.ts"]
+      "@mantine-vue/core": ["../../packages/@mantine-vue/core/src/index.ts"],
+      "@mantine-vue/utils": ["../../packages/@mantine-vue/utils/src"],
+      "@mantine-vue/hooks": ["../../packages/@mantine-vue/hooks/src"],
+      "@mantine-vue/code-highlight": ["../../packages/@mantine-vue/code-highlight/src"],
+      "@mantine-vue/colors-generator": ["../../packages/@mantine-vue/colors-generator/src"],
+      "@mantine-vue/dates": ["../../packages/@mantine-vue/dates/src"],
+      "@mantine-vue/form": ["../../packages/@mantine-vue/form/src"],
+      "@mantine-vue/store": ["../../packages/@mantine-vue/store/src"],
+      "@mantine-vue/notifications": ["../../packages/@mantine-vue/notifications/src"],
+      "@mantine-vue/nprogress": ["../../packages/@mantine-vue/nprogress/src"],
+      "@mantine-vue/spotlight": ["../../packages/@mantine-vue/spotlight/src"],
+      "@mantine-vue/tiptap": ["../../packages/@mantine-vue/tiptap/src"],
+      "@mantine-vue/modals": ["../../packages/@mantine-vue/modals/src"],
+      "@mantine-vue/dropzone": ["../../packages/@mantine-vue/dropzone/src"],
+      "@mantine-vue/carousel": ["../../packages/@mantine-vue/carousel/src"],
+      "@mantine-vue/mantine-header": ["../../packages/@mantine-vue/mantine-header/src"]
     }
   },
   "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue", "src/**/*.mdx", "env.d.ts"],

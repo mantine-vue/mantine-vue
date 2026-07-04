@@ -1,4 +1,4 @@
-import type { MantineDemo } from '@/types'
+import type { MantineDemo } from '@/demo'
 import { Button, Menu } from '@mantine-vue/core'
 import { defineComponent, h } from 'vue'
 

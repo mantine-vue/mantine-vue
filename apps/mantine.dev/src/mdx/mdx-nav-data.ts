@@ -220,10 +220,6 @@ export const MDX_NAV_DATA: MdxNavCategory[] = [
     groups: [{ title: 'Dates', pages: DATES_PAGES }],
   },
   {
-    category: 'Schedule',
-    groups: [{ title: 'Schedule', pages: SCHEDULE_PAGES }],
-  },
-  {
     category: 'Extensions',
     groups: [{ title: 'Other extensions', pages: OTHER_EXTENSIONS_PAGES }],
   },

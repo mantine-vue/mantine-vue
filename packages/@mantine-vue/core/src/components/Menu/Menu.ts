@@ -92,7 +92,7 @@ const MenuBase = defineComponent({
       type: String as PropType<'all' | 'with-indicators' | 'none'>,
       default: 'with-indicators',
     },
-    checkIcon: { default: undefined },
+    checkIcon: { type: null as unknown as PropType<any>, default: undefined },
     classNames: [Object, Function],
     styles: [Object, Function],
     vars: [Object, Function],
@@ -522,10 +522,13 @@ function group(key: InjectionKey<SelectContext>, multiple: boolean) {
   return defineComponent({
     inheritAttrs: false,
     props: {
-      modelValue: { default: undefined },
-      value: { default: undefined },
-      defaultValue: { default: multiple ? () => [] : undefined },
-      onChange: Function,
+      modelValue: { type: null as unknown as PropType<any>, default: undefined },
+      value: { type: null as unknown as PropType<any>, default: undefined },
+      defaultValue: {
+        type: null as unknown as PropType<any>,
+        default: multiple ? () => [] : undefined,
+      },
+      onChange: Function as PropType<(value: any) => void>,
     },
     setup(props, { slots }) {
       const local = ref(props.defaultValue)
@@ -554,7 +557,7 @@ export const MenuCheckboxItem = defineComponent({
     checked: { type: Boolean, default: undefined },
     defaultChecked: Boolean,
     onChange: Function,
-    checkIcon: { default: undefined },
+    checkIcon: { type: null as unknown as PropType<any>, default: undefined },
     closeMenuOnClick: { type: Boolean, default: false },
   },
   setup(props, { attrs, slots }) {

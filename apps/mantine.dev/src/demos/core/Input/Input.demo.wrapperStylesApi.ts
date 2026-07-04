@@ -44,13 +44,13 @@ const Wrapper = defineComponent({
 export const wrapperStylesApi: MantineDemo = {
   type: 'styles-api',
   data: {
-    selectors: [
-      { selector: 'root', description: 'Root element' },
-      { selector: 'label', description: 'Label element' },
-      { selector: 'required', description: 'Required asterisk element, rendered inside label' },
-      { selector: 'description', description: 'Description element' },
-      { selector: 'error', description: 'Error element' },
-    ],
+    selectors: {
+      root: 'Root element',
+      label: 'Label element',
+      required: 'Required asterisk element, rendered inside label',
+      description: 'Description element',
+      error: 'Error element',
+    },
   },
   component: Wrapper,
   code,

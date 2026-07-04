@@ -11,7 +11,7 @@ import {
   PhCircle,
 } from '@phosphor-icons/vue'
 import { FloatingIndicator, UnstyledButton } from '@mantine-vue/core'
-import type { MantineDemo } from '@/types'
+import type { MantineDemo } from '@/demo'
 
 const code = `
 <script setup lang="ts">

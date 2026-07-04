@@ -12,10 +12,10 @@ import { TagsInput } from '@mantine-vue/core'
     label="Enter tags"
     placeholder="Some tags are disabled"
     :data="[
-      { value: 'React' },
-      { value: 'Angular' },
-      { value: 'Vue', disabled: true },
-      { value: 'Svelte', disabled: true },
+      { value: 'React', label: 'React' },
+      { value: 'Angular', label: 'Angular' },
+      { value: 'Vue', label: 'Vue', disabled: true },
+      { value: 'Svelte', label: 'Svelte', disabled: true },
     ]"
   />
 </template>
@@ -28,10 +28,10 @@ const Demo = defineComponent({
       label: 'Enter tags',
       placeholder: 'Some tags are disabled',
       data: [
-        { value: 'React' },
-        { value: 'Angular' },
-        { value: 'Vue', disabled: true },
-        { value: 'Svelte', disabled: true },
+        { value: 'React', label: 'React' },
+        { value: 'Angular', label: 'Angular' },
+        { value: 'Vue', label: 'Vue', disabled: true },
+        { value: 'Svelte', label: 'Svelte', disabled: true },
       ],
     }),
 })

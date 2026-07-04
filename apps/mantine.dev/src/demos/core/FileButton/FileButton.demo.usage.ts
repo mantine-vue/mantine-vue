@@ -39,8 +39,8 @@ const Demo = defineComponent({
               h(
                 FileButton,
                 {
-                  onChange: (f: File | null) => {
-                    file.value = f
+                  onChange: (f: File | File[] | null) => {
+                    file.value = Array.isArray(f) ? (f[0] ?? null) : f
                   },
                   accept: 'image/png,image/jpeg',
                 },

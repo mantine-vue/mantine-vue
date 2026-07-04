@@ -1,6 +1,6 @@
 import { defineComponent, h, ref } from 'vue'
 import { FloatingIndicator, Tabs } from '@mantine-vue/core'
-import type { MantineDemo } from '@/types'
+import type { MantineDemo } from '@/demo'
 
 const code = `
 <script setup lang="ts">
@@ -18,7 +18,7 @@ function setControlRef(val: string) {
 </script>
 
 <template>
-  <Tabs variant="none" :value="value" @change="(v) => value = v">
+  <Tabs unstyled :value="value" @change="(v) => value = v">
     <Tabs.List :ref="(el: any) => rootRef = el?.$el ?? el" :class="classes.list">
       <Tabs.Tab value="1" :ref="setControlRef('1')" :class="classes.tab">First tab</Tabs.Tab>
       <Tabs.Tab value="2" :ref="setControlRef('2')" :class="classes.tab">Second tab</Tabs.Tab>
@@ -100,7 +100,7 @@ const Demo = defineComponent({
       h(
         Tabs,
         {
-          variant: 'none',
+          unstyled: true,
           value: value.value,
           onChange: (v: string | null) => {
             value.value = v

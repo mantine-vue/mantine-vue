@@ -317,7 +317,7 @@ export const TreeSelect = defineComponent({
     defaultSearchValue: String,
     onSearchChange: Function as PropType<(value: string) => void>,
     filter: Function as PropType<(query: string, node: TreeNodeData) => boolean>,
-    nothingFoundMessage: { default: undefined },
+    nothingFoundMessage: { type: null as unknown as PropType<any>, default: undefined },
     allowDeselect: { type: Boolean, default: true },
     clearable: Boolean,
     maxValues: { type: Number, default: Infinity },

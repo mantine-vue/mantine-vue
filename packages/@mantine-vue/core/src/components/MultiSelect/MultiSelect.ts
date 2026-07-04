@@ -60,7 +60,7 @@ export const MultiSelect = defineComponent({
     clearable: Boolean,
     clearSearchOnChange: { type: Boolean, default: true },
     hiddenInputValuesDivider: { type: String, default: ',' },
-    nothingFoundMessage: { default: undefined },
+    nothingFoundMessage: { type: null as unknown as PropType<any>, default: undefined },
     withCheckIcon: { type: Boolean, default: true },
     withAlignedLabels: Boolean,
     checkIconPosition: { type: String as PropType<'left' | 'right'>, default: 'left' },

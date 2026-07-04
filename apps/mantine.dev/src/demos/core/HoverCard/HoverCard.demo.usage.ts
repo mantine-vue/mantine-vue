@@ -1,6 +1,6 @@
 import { defineComponent, h } from 'vue'
 import { Button, Group, HoverCard, Text } from '@mantine-vue/core'
-import type { MantineDemo } from '@/types'
+import type { MantineDemo } from '@/demo'
 
 const code = `
 <script setup lang="ts">

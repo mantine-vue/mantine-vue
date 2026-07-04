@@ -1,6 +1,6 @@
 import { defineComponent, h } from 'vue'
 import { TagsInput } from '@mantine-vue/core'
-import type { MantineDemo } from '@/demo'
+import type { ConfiguratorControlOptions, MantineDemo } from '@/demo'
 
 const code = `
 <script setup lang="ts">
@@ -17,7 +17,7 @@ import { TagsInput } from '@mantine-vue/core'
 </template>
 `
 
-const inputControls: MantineDemo['controls'] = [
+const inputControls: ConfiguratorControlOptions[] = [
   {
     type: 'select',
     prop: 'variant',

@@ -54,7 +54,7 @@ export const SegmentedControl = defineComponent({
   inheritAttrs: false,
   props: {
     data: {
-      type: Array as PropType<Array<string | number | SegmentedControlItem>>,
+      type: Array as PropType<Array<string | number | SegmentedControlItem<string | number>>>,
       required: true,
     },
     value: { type: [String, Number, Boolean] as PropType<any>, default: undefined },

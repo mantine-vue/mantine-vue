@@ -40,8 +40,8 @@ const Demo = defineComponent({
               h(
                 FileButton,
                 {
-                  onChange: (f: File[]) => {
-                    files.value = f
+                  onChange: (f: File | File[] | null) => {
+                    files.value = Array.isArray(f) ? f : []
                   },
                   accept: 'image/png,image/jpeg',
                   multiple: true,
