@@ -1,7 +1,7 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "installCommand": "corepack enable && yarn install --immutable",
-  "buildCommand": "yarn docs:build",
+  "installCommand": "corepack enable && corepack prepare yarn@4.16.0 --activate && corepack yarn install --immutable",
+  "buildCommand": "corepack yarn docs:build",
   "outputDirectory": "apps/mantine.dev/dist",
   "rewrites": [
     {
