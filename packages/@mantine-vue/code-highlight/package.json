@@ -3,6 +3,14 @@
   "version": "9.3.2",
   "description": "Vue code highlight components equivalent to @mantine/code-highlight",
   "license": "MIT",
+  "files": [
+    "cjs",
+    "esm",
+    "lib",
+    "styles.css",
+    "styles.layer.css",
+    "styles"
+  ],
   "sideEffects": [
     "*.css"
   ],

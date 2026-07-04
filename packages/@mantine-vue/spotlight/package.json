@@ -3,6 +3,14 @@
   "version": "9.3.2",
   "description": "Vue command center components equivalent to @mantine/spotlight",
   "license": "MIT",
+  "files": [
+    "cjs",
+    "esm",
+    "lib",
+    "styles.css",
+    "styles.layer.css",
+    "styles"
+  ],
   "sideEffects": false,
   "main": "./cjs/index.cjs",
   "module": "./esm/index.mjs",

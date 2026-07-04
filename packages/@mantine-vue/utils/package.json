@@ -3,6 +3,14 @@
   "version": "9.3.2",
   "description": "Framework-independent utilities ported from Mantine foundation",
   "license": "MIT",
+  "files": [
+    "cjs",
+    "esm",
+    "lib",
+    "styles.css",
+    "styles.layer.css",
+    "styles"
+  ],
   "sideEffects": false,
   "main": "./cjs/index.cjs",
   "module": "./esm/index.mjs",

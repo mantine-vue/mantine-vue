@@ -3,6 +3,14 @@
   "version": "9.3.2",
   "description": "Components used in headers of *.mantine.dev websites (Vue port of @mantinex/mantine-header)",
   "license": "MIT",
+  "files": [
+    "cjs",
+    "esm",
+    "lib",
+    "styles.css",
+    "styles.layer.css",
+    "styles"
+  ],
   "sideEffects": [
     "*.css"
   ],

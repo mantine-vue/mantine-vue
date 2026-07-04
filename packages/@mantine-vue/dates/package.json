@@ -3,6 +3,14 @@
   "version": "9.3.2",
   "description": "Vue date and time picker components equivalent to @mantine/dates",
   "license": "MIT",
+  "files": [
+    "cjs",
+    "esm",
+    "lib",
+    "styles.css",
+    "styles.layer.css",
+    "styles"
+  ],
   "sideEffects": [
     "*.css"
   ],

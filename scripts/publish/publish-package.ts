@@ -1,4 +1,5 @@
 import { spawnSync } from 'node:child_process'
+import { commandInvocation } from '../utils/commands'
 
 export interface PublishPackageOptions {
   packagePath: string
@@ -14,10 +15,10 @@ export function publishPackage({ packagePath, name, tag, dryRun }: PublishPackag
     args.push('--dry-run')
   }
 
-  const result = spawnSync('npm', args, {
+  const command = commandInvocation('npm', args)
+  const result = spawnSync(command.command, command.args, {
     cwd: packagePath,
     stdio: 'inherit',
-    shell: process.platform === 'win32',
   })
 
   if (result.status !== 0) {

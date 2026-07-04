@@ -88,7 +88,7 @@ async function release() {
   console.log('All checks passed.')
 
   console.log('Publishing packages to npm...')
-  const publishArgs = ['tsx', 'scripts/publish/index.ts', '--tag', tag]
+  const publishArgs = ['tsx', 'scripts/publish/index.ts', '--tag', tag, '--skip-build']
   run('yarn', publishArgs)
   console.log('All packages have been published successfully.')
 

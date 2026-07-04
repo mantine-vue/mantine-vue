@@ -1,4 +1,5 @@
 import { spawnSync } from 'node:child_process'
+import { commandInvocation } from '../utils/commands'
 import { getWorkspaceManifests, failIfErrors } from './utils'
 
 const errors: string[] = []
@@ -24,13 +25,16 @@ for (const { content, directory, path } of getWorkspaceManifests()) {
     continue
   }
 
-  const result = spawnSync('npm', ['pack', '--dry-run', '--json'], {
+  const command = commandInvocation('npm', ['pack', '--dry-run', '--json'])
+  const result = spawnSync(command.command, command.args, {
     cwd: directory,
     encoding: 'utf8',
   })
 
   if (result.status !== 0) {
-    errors.push(`${path}: \`npm pack --dry-run\` failed:\n${result.stderr}`)
+    errors.push(
+      `${path}: \`npm pack --dry-run\` failed:\n${result.stderr || result.stdout || result.error}`,
+    )
     continue
   }
 

@@ -3,6 +3,14 @@
   "version": "9.3.2",
   "description": "Vue notifications system equivalent to @mantine/notifications",
   "license": "MIT",
+  "files": [
+    "cjs",
+    "esm",
+    "lib",
+    "styles.css",
+    "styles.layer.css",
+    "styles"
+  ],
   "sideEffects": [
     "*.css"
   ],

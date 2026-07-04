@@ -3,6 +3,14 @@
   "version": "9.3.2",
   "description": "A library to generate 10 shades of color based on provided color value",
   "license": "MIT",
+  "files": [
+    "cjs",
+    "esm",
+    "lib",
+    "styles.css",
+    "styles.layer.css",
+    "styles"
+  ],
   "sideEffects": false,
   "main": "./cjs/index.cjs",
   "module": "./esm/index.mjs",
