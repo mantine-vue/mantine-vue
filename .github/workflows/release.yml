@@ -35,6 +35,8 @@ jobs:
       - uses: actions/checkout@v6
         with:
           fetch-depth: 0
+      - name: Enable Corepack (so Yarn resolves to the pinned packageManager version)
+        run: corepack enable
       - uses: actions/setup-node@v6
         with:
           node-version-file: '.nvmrc'

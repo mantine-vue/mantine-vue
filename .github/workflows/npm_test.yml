@@ -16,6 +16,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
+      - name: Enable Corepack (so Yarn resolves to the pinned packageManager version)
+        run: corepack enable
       - uses: actions/setup-node@v6
         with:
           node-version-file: '.nvmrc'
