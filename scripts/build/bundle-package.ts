@@ -1,6 +1,19 @@
-import { existsSync, readdirSync, readFileSync, renameSync, rmSync, writeFileSync } from 'node:fs'
+import { spawnSync } from 'node:child_process'
+import {
+  existsSync,
+  mkdtempSync,
+  readdirSync,
+  readFileSync,
+  renameSync,
+  rmSync,
+  writeFileSync,
+} from 'node:fs'
+import { createRequire } from 'node:module'
+import { tmpdir } from 'node:os'
 import { isAbsolute, join } from 'node:path'
 import type { PackageInfo } from './read-packages'
+
+const require = createRequire(import.meta.url)
 
 /**
  * Produces the actual publishable JS output (esm/index.mjs + cjs/index.cjs) for a package,
@@ -11,7 +24,6 @@ export async function bundlePackage(pkg: PackageInfo) {
     return
   }
 
-  const { build } = await import('vite')
   const entry = join(pkg.path, 'src', 'index.ts')
 
   if (!existsSync(entry)) {
@@ -19,37 +31,72 @@ export async function bundlePackage(pkg: PackageInfo) {
     return
   }
 
-  const external = (id: string) => !id.startsWith('.') && !isAbsolute(id)
+  const viteBin = require.resolve('vite/bin/vite.js')
 
   for (const format of ['es', 'cjs'] as const) {
     const outDir = join(pkg.path, format === 'es' ? 'esm' : 'cjs')
+    const fileName = format === 'es' ? 'index.mjs' : 'index.cjs'
+    const configPath = writeTempConfig({ pkgPath: pkg.path, entry, outDir, format, fileName })
 
-    await build({
-      root: pkg.path,
-      configFile: false,
-      logLevel: 'warn',
-      build: {
-        outDir,
-        emptyOutDir: true,
-        cssCodeSplit: false,
-        sourcemap: true,
-        minify: false,
-        lib: {
-          entry,
-          formats: [format],
-          fileName: () => (format === 'es' ? 'index.mjs' : 'index.cjs'),
-        },
-        rollupOptions: {
-          external,
-          output: {
-            preserveModules: false,
-          },
-        },
-      },
-    })
+    try {
+      const result = spawnSync(process.execPath, [viteBin, 'build', '--config', configPath], {
+        cwd: pkg.path,
+        stdio: 'inherit',
+      })
+
+      if (result.status !== 0) {
+        throw new Error(`Vite build failed for ${pkg.name} (${format})`)
+      }
+    } finally {
+      rmSync(configPath, { force: true })
+    }
 
     normalizeGeneratedCss(pkg, outDir)
   }
+}
+
+function writeTempConfig(options: {
+  pkgPath: string
+  entry: string
+  outDir: string
+  format: 'es' | 'cjs'
+  fileName: string
+}) {
+  const { pkgPath, entry, outDir, format, fileName } = options
+  const configDir = mkdtempSync(join(tmpdir(), 'mantine-vue-vite-config-'))
+  const configPath = join(configDir, 'vite.config.mjs')
+
+  const contents = `
+import { defineConfig } from 'vite'
+import { isAbsolute } from 'node:path'
+
+export default defineConfig({
+  root: ${JSON.stringify(pkgPath)},
+  configFile: false,
+  logLevel: 'warn',
+  build: {
+    outDir: ${JSON.stringify(outDir)},
+    emptyOutDir: true,
+    cssCodeSplit: false,
+    sourcemap: true,
+    minify: false,
+    lib: {
+      entry: ${JSON.stringify(entry)},
+      formats: [${JSON.stringify(format)}],
+      fileName: () => ${JSON.stringify(fileName)},
+    },
+    rollupOptions: {
+      external: (id) => !id.startsWith('.') && !isAbsolute(id),
+      output: {
+        preserveModules: false,
+      },
+    },
+  },
+})
+`
+
+  writeFileSync(configPath, contents)
+  return configPath
 }
 
 /**
