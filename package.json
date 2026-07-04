@@ -42,6 +42,7 @@
     "test:validate-packages-files": "tsx scripts/tests/validate-packages-files.ts",
     "test:scripts": "tsx scripts/tests/validate-scripts.ts",
     "test:exports": "tsx scripts/tests/validate-exports.ts",
+    "test:pack": "tsx scripts/tests/validate-pack-contents.ts",
     "test:all": "run-s format:test test:scripts test:conflicts test:validate-package-json test:validate-packages-files typecheck lint test",
     "publish:package": "tsx scripts/publish/index.ts",
     "publish:package:alpha": "tsx scripts/publish/index.ts --stage alpha --tag next",

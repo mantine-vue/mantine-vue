@@ -1,8 +1,9 @@
-import { failIfErrors, getWorkspaceManifests } from './utils'
+import { join } from 'node:path'
+import { existsSync, failIfErrors, getWorkspaceManifests } from './utils'
 
 const errors: string[] = []
 
-for (const { content, path } of getWorkspaceManifests()) {
+for (const { content, directory, path } of getWorkspaceManifests()) {
   for (const field of ['name', 'version']) {
     if (!content[field]) {
       errors.push(`${path} is missing ${field}`)
@@ -21,6 +22,10 @@ for (const { content, path } of getWorkspaceManifests()) {
 
   if (content.sideEffects == null) {
     errors.push(`${path} is missing sideEffects`)
+  }
+
+  if (!existsSync(join(directory, '.npmignore'))) {
+    errors.push(`${path} is missing a sibling .npmignore file`)
   }
 }
 

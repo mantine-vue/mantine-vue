@@ -38,5 +38,7 @@ jobs:
         run: yarn test:all
       - name: Validate build outputs match package.json exports
         run: yarn test:exports
+      - name: Validate npm pack would include the declared build output
+        run: yarn test:pack
       - name: Build docs site
         run: yarn docs:build
