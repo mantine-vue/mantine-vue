@@ -3,10 +3,13 @@
   "installCommand": "corepack enable && corepack prepare yarn@4.16.0 --activate && corepack yarn install --immutable",
   "buildCommand": "corepack yarn docs:build",
   "outputDirectory": "dist",
-  "rewrites": [
+  "routes": [
     {
-      "source": "/(.*)",
-      "destination": "/index.html"
+      "handle": "filesystem"
+    },
+    {
+      "src": "/.*",
+      "dest": "/index.html"
     }
   ]
 }
