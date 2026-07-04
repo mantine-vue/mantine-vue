@@ -9,7 +9,6 @@ import {
   writeFileSync,
 } from 'node:fs'
 import { createRequire } from 'node:module'
-import { tmpdir } from 'node:os'
 import { dirname, isAbsolute, join } from 'node:path'
 import type { PackageInfo } from './read-packages'
 
@@ -50,7 +49,8 @@ export async function bundlePackage(pkg: PackageInfo) {
   for (const format of ['es', 'cjs'] as const) {
     const outDir = join(pkg.path, format === 'es' ? 'esm' : 'cjs')
     const fileName = format === 'es' ? 'index.mjs' : 'index.cjs'
-    const configPath = writeTempConfig({ pkgPath: pkg.path, entry, outDir, format, fileName })
+    const configDir = writeTempConfig({ pkgPath: pkg.path, entry, outDir, format, fileName })
+    const configPath = join(configDir, 'vite.config.mjs')
 
     try {
       const result = spawnSync(process.execPath, [viteBin, 'build', '--config', configPath], {
@@ -62,7 +62,7 @@ export async function bundlePackage(pkg: PackageInfo) {
         throw new Error(`Vite build failed for ${pkg.name} (${format})`)
       }
     } finally {
-      rmSync(configPath, { force: true })
+      rmSync(configDir, { recursive: true, force: true })
     }
 
     normalizeGeneratedCss(pkg, outDir)
@@ -77,7 +77,7 @@ function writeTempConfig(options: {
   fileName: string
 }) {
   const { pkgPath, entry, outDir, format, fileName } = options
-  const configDir = mkdtempSync(join(tmpdir(), 'mantine-vue-vite-config-'))
+  const configDir = mkdtempSync(join(process.cwd(), '.mantine-vue-vite-config-'))
   const configPath = join(configDir, 'vite.config.mjs')
 
   const contents = `
@@ -110,7 +110,7 @@ export default defineConfig({
 `
 
   writeFileSync(configPath, contents)
-  return configPath
+  return configDir
 }
 
 /**

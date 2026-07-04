@@ -74,3 +74,5 @@ apps/help.mantine.dev/next-env.d.ts
 /.claude/scheduled_tasks.lock
 /.claude/settings.local.json
 /.playwright-mcp
+
+.mantine-vue-vite-config-*
