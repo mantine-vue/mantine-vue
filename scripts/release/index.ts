@@ -92,7 +92,7 @@ async function release() {
   run('yarn', publishArgs)
   console.log('All packages have been published successfully.')
 
-  run('yarn', ['install'])
+  run('yarn', ['install', '--no-immutable'])
   run('git', ['add', 'packages', 'package.json', 'yarn.lock'])
   run('git', ['commit', '-m', `[release] Version: ${nextVersion}`])
   run('git', ['tag', `v${nextVersion}`])

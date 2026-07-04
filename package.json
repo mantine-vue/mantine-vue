@@ -57,6 +57,7 @@
     "release:alpha:major": "tsx scripts/release/index.ts major --stage alpha",
     "release:beta:patch": "tsx scripts/release/index.ts patch --stage beta",
     "release:dry-run": "tsx scripts/release/index.ts patch --dry-run",
+    "release:sync-version": "tsx scripts/release/sync-version.ts",
     "docs:deploy": "yarn docs:build && gh-pages -d apps/mantine.dev/dist",
     "ncu:root": "npx npm-check-updates --packageFile package.json",
     "ncu:packages": "npx npm-check-updates --packageFile \"packages/**/*/package.json\"",
