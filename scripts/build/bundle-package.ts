@@ -9,7 +9,7 @@ import {
   writeFileSync,
 } from 'node:fs'
 import { createRequire } from 'node:module'
-import { dirname, isAbsolute, join } from 'node:path'
+import { dirname, join } from 'node:path'
 import type { PackageInfo } from './read-packages'
 
 const require = createRequire(import.meta.url)
