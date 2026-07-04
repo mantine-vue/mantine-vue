@@ -33,6 +33,7 @@ lerna-debug.log*
 lib/
 cjs/
 esm/
+dist/
 .buildinfo.json
 
 # typescript
