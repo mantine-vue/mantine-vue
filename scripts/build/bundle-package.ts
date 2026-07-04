@@ -10,10 +10,24 @@ import {
 } from 'node:fs'
 import { createRequire } from 'node:module'
 import { tmpdir } from 'node:os'
-import { isAbsolute, join } from 'node:path'
+import { dirname, isAbsolute, join } from 'node:path'
 import type { PackageInfo } from './read-packages'
 
 const require = createRequire(import.meta.url)
+
+function resolveViteBin() {
+  const packageJsonPath = require.resolve('vite/package.json')
+  const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf8'))
+  const binField = packageJson.bin
+
+  const relativeBinPath = typeof binField === 'string' ? binField : binField?.vite
+
+  if (!relativeBinPath) {
+    throw new Error('Could not determine vite CLI entry point from its package.json "bin" field')
+  }
+
+  return join(dirname(packageJsonPath), relativeBinPath)
+}
 
 /**
  * Produces the actual publishable JS output (esm/index.mjs + cjs/index.cjs) for a package,
@@ -31,7 +45,7 @@ export async function bundlePackage(pkg: PackageInfo) {
     return
   }
 
-  const viteBin = require.resolve('vite/bin/vite.js')
+  const viteBin = resolveViteBin()
 
   for (const format of ['es', 'cjs'] as const) {
     const outDir = join(pkg.path, format === 'es' ? 'esm' : 'cjs')
