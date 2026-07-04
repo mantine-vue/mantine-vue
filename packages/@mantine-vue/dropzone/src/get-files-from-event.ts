@@ -80,7 +80,6 @@ async function fromDataTransfer(dataTransfer: DataTransfer): Promise<FileWithPat
   return Array.from(dataTransfer.files || []).map((file) => toFileWithPath(file))
 }
 
-
 export async function getFilesFromEvent(event: DropEvent): Promise<FileWithPath[]> {
   if (Array.isArray(event)) {
     // FileSystemFileHandle[] returned by `window.showOpenFilePicker`.

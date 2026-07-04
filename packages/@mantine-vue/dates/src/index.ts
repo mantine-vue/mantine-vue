@@ -627,7 +627,7 @@ export const Month = defineComponent({
   setup(props) {
     const ctx = useDatesContext()
     const hovered = ref<string | null>(null)
- 
+
     const dayRefs: (HTMLElement | null | undefined)[][] = []
 
     const isSelected = (date: DateStringValue) => {

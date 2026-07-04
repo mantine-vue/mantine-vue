@@ -4,7 +4,7 @@ import type { PackageInfo } from './read-packages'
 
 /**
  * Produces the actual publishable JS output (esm/index.mjs + cjs/index.cjs) for a package,
- * using Vite's library build mode. 
+ * using Vite's library build mode.
  */
 export async function bundlePackage(pkg: PackageInfo) {
   if (pkg.private) {

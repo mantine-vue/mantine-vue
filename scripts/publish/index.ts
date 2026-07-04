@@ -28,7 +28,9 @@ async function run() {
     return
   }
 
-  console.log(`Publishing ${packages.length} package(s) with tag "${tag}"${dryRun ? ' (dry run)' : ''}:`)
+  console.log(
+    `Publishing ${packages.length} package(s) with tag "${tag}"${dryRun ? ' (dry run)' : ''}:`,
+  )
   packages.forEach((pkg) => console.log(`- ${pkg.name}`))
 
   for (const pkg of packages) {
