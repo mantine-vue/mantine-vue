@@ -1,0 +1,33 @@
+import { HoverCardDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.HoverCard)
+
+## Usage
+
+<Demo data={HoverCardDemos.usage} />
+
+## Delays
+
+Set open and close delays in ms with the `openDelay` and `closeDelay` props:
+
+<Demo data={HoverCardDemos.delay} />
+
+## HoverCard delay group
+
+Use the `HoverCard.Group` component to sync open and close delays of multiple `HoverCard` components:
+
+<Demo data={HoverCardDemos.group} />
+
+## With interactive elements
+
+`HoverCard` is displayed only when the mouse is over the target element or dropdown.
+You can use anchors and buttons within dropdowns, using inputs is not recommended:
+
+<Demo data={HoverCardDemos.profile} />
+
+## Accessibility
+
+`HoverCard` is ignored by screen readers and cannot be activated with the keyboard. Use it to display only additional information
+that is not required to understand the context.

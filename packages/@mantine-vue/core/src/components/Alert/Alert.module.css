@@ -1,0 +1,82 @@
+.root {
+  --alert-radius: var(--mantine-radius-default);
+  --alert-bg: var(--mantine-primary-color-light);
+  --alert-bd: 1px solid transparent;
+  --alert-color: var(--mantine-primary-color-light-color);
+
+  padding: var(--mantine-spacing-md) var(--mantine-spacing-md);
+  border-radius: var(--alert-radius);
+  position: relative;
+  overflow: hidden;
+  background-color: var(--alert-bg);
+  border: var(--alert-bd);
+  color: var(--alert-color);
+}
+
+.wrapper {
+  display: flex;
+}
+
+.body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--mantine-spacing-xs);
+}
+
+.title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: var(--mantine-font-size-sm);
+  font-weight: var(--mantine-font-weight-bold);
+
+  &:where([data-with-close-button]) {
+    padding-inline-end: var(--mantine-spacing-md);
+  }
+}
+
+.label {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.icon {
+  line-height: 1;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  margin-inline-end: var(--mantine-spacing-md);
+  margin-top: 1px;
+}
+
+.message {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  font-size: var(--mantine-font-size-sm);
+
+  @mixin where-light {
+    color: var(--mantine-color-black);
+  }
+
+  @mixin where-dark {
+    color: var(--mantine-color-white);
+  }
+
+  &:where([data-variant='filled']) {
+    color: var(--alert-color);
+  }
+
+  &:where([data-variant='white']) {
+    color: var(--mantine-color-black);
+  }
+}
+
+.closeButton {
+  width: 20px;
+  height: 20px;
+  color: var(--alert-color);
+}

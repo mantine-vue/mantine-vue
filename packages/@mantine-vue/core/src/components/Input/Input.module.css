@@ -1,0 +1,365 @@
+.wrapper {
+  position: relative;
+  margin-top: var(--input-margin-top, 0rem);
+  margin-bottom: var(--input-margin-bottom, 0rem);
+
+  --input-height-xs: 30px;
+  --input-height-sm: 36px;
+  --input-height-md: 42px;
+  --input-height-lg: 50px;
+  --input-height-xl: 60px;
+
+  --input-padding-y-xs: 5px;
+  --input-padding-y-sm: 6px;
+  --input-padding-y-md: 8px;
+  --input-padding-y-lg: 10px;
+  --input-padding-y-xl: 13px;
+
+  --input-height: var(--input-height-sm);
+  --input-radius: var(--mantine-radius-default);
+
+  --input-cursor: text;
+  --input-line-height: calc(var(--input-height) - rem(2px));
+  --input-padding: calc(var(--input-height) / 3);
+  --input-padding-inline-start: var(--input-padding);
+  --input-padding-inline-end: var(--input-padding);
+  --input-placeholder-color: var(--mantine-color-placeholder);
+  --input-color: var(--mantine-color-text);
+  --input-disabled-bg: var(--mantine-color-disabled);
+  --input-disabled-color: var(--mantine-color-disabled-color);
+
+  --input-left-section-size: var(--input-left-section-width, calc(var(--input-height) - rem(2px)));
+
+  --input-right-section-size: var(
+    --input-right-section-width,
+    calc(var(--input-height) - rem(2px))
+  );
+
+  --input-size: var(--input-height);
+
+  --section-y: 1px;
+  --left-section-start: 1px;
+  --left-section-border-radius: var(--input-radius) 0 0 var(--input-radius);
+
+  --right-section-end: 1px;
+  --right-section-border-radius: 0 var(--input-radius) var(--input-radius) 0;
+
+  &[data-variant='unstyled'] {
+    --input-padding: 0;
+    --input-padding-y: 0;
+    --input-padding-inline-start: 0;
+    --input-padding-inline-end: 0;
+  }
+
+  &[data-pointer] {
+    --input-cursor: pointer;
+  }
+
+  &[data-with-bottom-section] {
+    --input-bottom-section-height: 28px;
+  }
+
+  &[data-multiline] {
+    --input-padding-y-xs: 4.5px;
+    --input-padding-y-sm: 5.5px;
+    --input-padding-y-md: 7px;
+    --input-padding-y-lg: 9.5px;
+    --input-padding-y-xl: 13px;
+
+    --input-size: auto;
+    --input-line-height: var(--mantine-line-height);
+  }
+
+  &[data-with-left-section] {
+    --input-padding-inline-start: var(--input-left-section-size);
+  }
+
+  &[data-with-right-section] {
+    --input-padding-inline-end: var(--input-right-section-size);
+
+    &:has([data-combined-clear-section]) {
+      .wrapper[data-size='xs'] & {
+        --input-padding-inline-end: 41px;
+      }
+
+      .wrapper[data-size='sm'] & {
+        --input-padding-inline-end: 50px;
+      }
+
+      .wrapper[data-size='md'] & {
+        --input-padding-inline-end: 60px;
+      }
+
+      .wrapper[data-size='lg'] & {
+        --input-padding-inline-end: 72px;
+      }
+
+      .wrapper[data-size='xl'] & {
+        --input-padding-inline-end: 89px;
+      }
+    }
+  }
+
+  @mixin light {
+    &[data-variant='default'] {
+      --input-bd: var(--mantine-color-gray-4);
+      --input-bg: var(--mantine-color-white);
+      --input-bd-focus: var(--mantine-primary-color-filled);
+    }
+
+    &[data-variant='filled'] {
+      --input-bd: transparent;
+      --input-bg: var(--mantine-color-gray-1);
+      --input-bd-focus: var(--mantine-primary-color-filled);
+    }
+
+    &[data-variant='unstyled'] {
+      --input-bd: transparent;
+      --input-bg: transparent;
+      --input-bd-focus: transparent;
+    }
+  }
+
+  @mixin dark {
+    &[data-variant='default'] {
+      --input-bd: var(--mantine-color-dark-4);
+      --input-bg: var(--mantine-color-dark-6);
+      --input-bd-focus: var(--mantine-primary-color-filled);
+    }
+
+    &[data-variant='filled'] {
+      --input-bd: transparent;
+      --input-bg: var(--mantine-color-dark-5);
+      --input-bd-focus: var(--mantine-primary-color-filled);
+    }
+
+    &[data-variant='unstyled'] {
+      --input-bd: transparent;
+      --input-bg: transparent;
+      --input-bd-focus: transparent;
+    }
+  }
+
+  [data-mantine-color-scheme] &[data-error] {
+    &:not([data-variant='unstyled']) {
+      --input-bd: var(--mantine-color-error);
+    }
+
+    --input-color: var(--mantine-color-error);
+    --input-placeholder-color: var(--mantine-color-error);
+    --input-section-color: var(--mantine-color-error);
+  }
+
+  @mixin where-rtl {
+    --left-section-border-radius: 0 var(--input-radius) var(--input-radius) 0;
+    --right-section-border-radius: var(--input-radius) 0 0 var(--input-radius);
+  }
+
+  &[dir='ltr'] {
+    --left-section-border-radius: var(--input-radius) 0 0 var(--input-radius);
+    --right-section-border-radius: 0 var(--input-radius) var(--input-radius) 0;
+  }
+}
+
+.input {
+  -webkit-tap-highlight-color: transparent;
+  appearance: none;
+  resize: var(--input-resize, none);
+  display: block;
+  width: 100%;
+  transition: border-color 100ms ease;
+
+  text-align: var(--input-text-align, start);
+  color: var(--input-color);
+  border: 0.0625rem solid var(--input-bd);
+  background-color: var(--input-bg);
+  font-family: var(--input-font-family, var(--mantine-font-family));
+  height: var(--input-size);
+  min-height: var(--input-height);
+  line-height: var(--input-line-height);
+  font-size: var(--_input-fz, var(--input-fz, var(--mantine-font-size-md)));
+  border-radius: var(--input-radius);
+  padding-inline-start: var(--input-padding-inline-start);
+  padding-inline-end: var(--input-padding-inline-end);
+  padding-top: var(--input-padding-y, 0rem);
+  padding-bottom: var(--input-padding-y, 0rem);
+  cursor: var(--input-cursor);
+  overflow: var(--input-overflow);
+
+  /* Used as data attribute in Textarea component, does not have associated prop on the Input component */
+  &[data-no-overflow] {
+    --input-overflow: hidden;
+  }
+
+  /* Used as data attribute in JsonInput component, does not have associated prop on the Input component */
+  &[data-monospace] {
+    --input-font-family: var(--mantine-font-family-monospace);
+    --_input-fz: calc(var(--input-fz) - 0.125rem);
+  }
+
+  &:focus,
+  &:focus-within {
+    outline: none;
+    --input-bd: var(--input-bd-focus);
+
+    [data-error] & {
+      --input-bd: var(--mantine-color-error);
+    }
+  }
+
+  &::placeholder {
+    color: var(--input-placeholder-color);
+    opacity: 1;
+  }
+
+  &::-webkit-inner-spin-button,
+  &::-webkit-outer-spin-button,
+  &::-webkit-search-decoration,
+  &::-webkit-search-cancel-button,
+  &::-webkit-search-results-button,
+  &::-webkit-search-results-decoration {
+    appearance: none;
+  }
+
+  &[type='number'] {
+    -moz-appearance: textfield;
+  }
+
+  &:disabled,
+  &[data-disabled] {
+    cursor: not-allowed;
+    opacity: 0.6;
+    background-color: var(--input-disabled-bg);
+    color: var(--input-disabled-color);
+  }
+
+  /* Required to be a separate selector to work in Firefox, can be merged with &:disabled once :has is supported */
+  &:has(input:disabled) {
+    cursor: not-allowed;
+    opacity: 0.6;
+    background-color: var(--input-disabled-bg);
+    color: var(--input-disabled-color);
+  }
+
+  &[readonly] {
+    caret-color: transparent;
+  }
+
+  [data-with-bottom-section] & {
+    padding-bottom: calc(var(--input-padding-y, 0rem) + var(--input-bottom-section-height));
+  }
+}
+
+.bottomSection {
+  position: absolute;
+  bottom: 1px;
+  left: 1px;
+  right: 1px;
+  height: var(--input-bottom-section-height);
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding-inline: var(--input-padding);
+  border-radius: 0 0 var(--input-radius) var(--input-radius);
+  pointer-events: all;
+  color: var(--mantine-color-dimmed);
+  font-size: var(--input-fz, var(--mantine-font-size-sm));
+}
+
+.section {
+  pointer-events: var(--section-pointer-events);
+  position: absolute;
+  z-index: 1;
+  inset-inline-start: var(--section-start);
+  inset-inline-end: var(--section-end);
+  bottom: var(--section-y);
+  top: var(--section-y);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--section-size);
+  border-radius: var(--section-border-radius);
+  color: var(--input-section-color, var(--mantine-color-dimmed));
+
+  &[data-position='right'] {
+    --section-pointer-events: var(--input-right-section-pointer-events);
+    --section-end: var(--right-section-end);
+    --section-size: var(--input-right-section-size);
+    --section-border-radius: var(--right-section-border-radius);
+
+    &:has([data-combined-clear-section]) {
+      .wrapper[data-size='xs'] & {
+        --section-size: 41px;
+      }
+
+      .wrapper[data-size='sm'] & {
+        --section-size: 50px;
+      }
+
+      .wrapper[data-size='md'] & {
+        --section-size: 60px;
+      }
+
+      .wrapper[data-size='lg'] & {
+        --section-size: 72px;
+      }
+
+      .wrapper[data-size='xl'] & {
+        --section-size: 89px;
+      }
+    }
+  }
+
+  &[data-position='left'] {
+    --section-pointer-events: var(--input-left-section-pointer-events);
+    --section-start: var(--left-section-start);
+    --section-size: var(--input-left-section-size);
+    --section-border-radius: var(--left-section-border-radius);
+  }
+}
+
+/* ----- Input.Placeholder ----- */
+.placeholder {
+  color: var(--input-placeholder-color, var(--mantine-color-placeholder));
+
+  [data-error] & {
+    --input-placeholder-color: var(--input-color, var(--mantine-color-placeholder));
+  }
+}
+
+/* ----- Input.Wrapper ----- */
+.root {
+  line-height: var(--mantine-line-height);
+}
+
+.label {
+  display: inline-block;
+  font-weight: var(--mantine-font-weight-medium);
+  overflow-wrap: break-word;
+  cursor: default;
+  -webkit-tap-highlight-color: transparent;
+  font-size: var(--input-label-size, var(--mantine-font-size-sm));
+}
+
+.required {
+  color: var(--input-asterisk-color, var(--mantine-color-error));
+}
+
+.error,
+.description {
+  word-wrap: break-word;
+  line-height: 1.2;
+  display: block;
+  margin: 0;
+  padding: 0;
+}
+
+.error {
+  color: var(--mantine-color-error);
+  font-size: var(--input-error-size, calc(var(--mantine-font-size-sm) - 0.125rem));
+}
+
+.description {
+  color: var(--mantine-color-dimmed);
+  font-size: var(--input-description-size, calc(var(--mantine-font-size-sm) - 0.125rem));
+}

@@ -1,0 +1,21 @@
+import { YearPickerDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.YearPicker)
+
+## Usage
+
+<Demo data={YearPickerDemos.usage} />
+
+## Multiple dates
+
+Set `type="multiple"` to allow users to pick multiple years:
+
+<Demo data={YearPickerDemos.multiple} />
+
+## Min and max date
+
+Set the `minDate` and `maxDate` props to define minimum and maximum dates:
+
+<Demo data={YearPickerDemos.minMax} />

@@ -1,0 +1,13 @@
+.root {
+  --ar-ratio: 1;
+  max-width: 100%;
+}
+
+.root > :where(*:not(style)) {
+  aspect-ratio: var(--ar-ratio);
+  width: 100%;
+}
+
+.root > :where(img, video) {
+  object-fit: cover;
+}

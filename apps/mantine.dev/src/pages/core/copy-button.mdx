@@ -1,0 +1,26 @@
+import { CopyButtonDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.CopyButton)
+
+## Usage
+
+`CopyButton` is based on the [use-clipboard](/hooks/use-clipboard/) hook.
+Its default slot is a scoped slot that receives an object with the following properties:
+
+- `copied` – boolean value that indicates that a given value was recently copied to the clipboard, it resets after a given timeout (defaults to 1000ms)
+- `copy` – function that should be called to copy the given value to the clipboard
+
+<Demo data={CopyButtonDemos.usage} />
+
+## Security
+
+Due to security reasons, the `CopyButton` component will not work in iframes and may not work with local files opened with the `file://` protocol
+(the component will work fine with local websites that are using the `http://` protocol). You can learn more about `navigator.clipboard` [here](https://web.dev/async-clipboard/).
+
+## Timeout
+
+You can provide a custom `copied` reset `timeout` (in milliseconds):
+
+<Demo data={CopyButtonDemos.timeout} />

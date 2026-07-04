@@ -1,0 +1,94 @@
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.GuideNuxt)
+
+# Usage with Nuxt
+
+Nuxt is the Vue-native equivalent for SSR, routing, layouts, server routes, and static generation use cases that Mantine React covers with Next.js templates.
+
+## Create project
+
+```bash
+npx nuxi@latest init my-app
+cd my-app
+npm install
+```
+
+## Install packages
+
+<InstallScript packages="@mantine-vue/core @mantine-vue/hooks" />
+
+Install PostCSS plugins:
+
+<InstallScript packages="postcss postcss-preset-mantine postcss-simple-vars" dev />
+
+## Configure Nuxt
+
+```ts
+// nuxt.config.ts
+export default defineNuxtConfig({
+  css: ['@mantine-vue/core/styles.css', '~/assets/styles.css'],
+  postcss: {
+    plugins: {
+      'postcss-preset-mantine': { autoRem: true },
+      'postcss-simple-vars': {
+        variables: {
+          mantineBreakpointXs: '36em',
+          mantineBreakpointSm: '48em',
+          mantineBreakpointMd: '62em',
+          mantineBreakpointLg: '75em',
+          mantineBreakpointXl: '88em',
+        },
+      },
+    },
+  },
+})
+```
+
+## Add theme
+
+```ts
+// app/theme.ts
+import type { MantineThemeOverride } from '@mantine-vue/core'
+
+export const theme = {
+  primaryColor: 'blue',
+  defaultRadius: 'md',
+  fontFamily: 'Inter, system-ui, sans-serif',
+} satisfies MantineThemeOverride
+```
+
+## Add provider
+
+```vue
+<!-- app.vue -->
+<script setup lang="ts">
+import { MantineProvider } from '@mantine-vue/core'
+import { theme } from '~/app/theme'
+
+const colorScheme = useCookie<'light' | 'dark' | 'auto'>('mantine-color-scheme', {
+  default: () => 'auto',
+})
+
+useHead({
+  htmlAttrs: {
+    'data-mantine-color-scheme': colorScheme.value === 'dark' ? 'dark' : 'light',
+  },
+})
+</script>
+
+<template>
+  <MantineProvider :theme="theme" :default-color-scheme="colorScheme">
+    <NuxtPage />
+  </MantineProvider>
+</template>
+```
+
+## SSR color scheme notes
+
+Nuxt renders on the server, so avoid reading `window.matchMedia` during setup. Store an explicit preference in a cookie and set `data-mantine-color-scheme` with `useHead` before hydration. If the user chooses `auto`, render a stable default on the server and let `MantineProvider` update the attribute after mount.
+
+## Template
+
+Use `nuxt-template` for a full SSR starter or `nuxt-min-template` for the smallest Nuxt starter.

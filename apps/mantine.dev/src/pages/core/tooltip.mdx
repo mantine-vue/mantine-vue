@@ -1,0 +1,137 @@
+import { TooltipDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.Tooltip)
+
+## Usage
+
+<Demo data={TooltipDemos.usage} />
+
+## Tooltip children
+
+Tooltip requires an element or a component as a single child –
+strings, fragments, numbers and multiple elements/components are not supported.
+Custom components must expose a root element ref; all Mantine components support ref out of the box.
+
+```vue
+<template>
+  <!-- OK – native element -->
+  <Tooltip label="OK">
+    <button>Native button – ok</button>
+  </Tooltip>
+
+  <!-- OK – Mantine component -->
+  <Tooltip label="OK">
+    <Badge>Mantine component – ok</Badge>
+  </Tooltip>
+</template>
+```
+
+## Tooltip target
+
+The `target` prop is an alternative to children. It accepts a string (CSS selector) or an HTML element.
+Use it when you do not render the tooltip target as a slot element:
+
+<Demo data={TooltipDemos.target} />
+
+## Color
+
+<Demo data={TooltipDemos.configurator} />
+
+## Offset
+
+Set the `offset` prop to change the tooltip position relative to the target element:
+
+<Demo data={TooltipDemos.offset} />
+
+## Arrow
+
+Set the `withArrow` prop to add an arrow to the tooltip. The `arrowPosition` prop determines how
+the arrow is positioned relative to the target element when `position` is set to `*-start` and `*-end` values.
+
+<Demo data={TooltipDemos.arrow} />
+
+## Controlled
+
+<Demo data={TooltipDemos.controlled} />
+
+## Change events
+
+Events that trigger the tooltip can be changed with the `events` prop:
+
+```vue
+<template>
+  <Tooltip label="Tooltip" :events="{ hover: true, focus: true, touch: false }">
+    <button>target</button>
+  </Tooltip>
+</template>
+```
+
+## Multiline
+
+Set `multiline` and the `w` [style prop](/styles/style-props) to enable line breaks and control width:
+
+<Demo data={TooltipDemos.multiline} />
+
+## Inline
+
+Set the `inline` prop to use `Tooltip` with inline elements:
+
+<Demo data={TooltipDemos.inline} />
+
+## Change transition
+
+Tooltip is built with the [Transition](/core/transition/) component; use `transitionProps` to customize it:
+
+```vue
+<template>
+  <Tooltip
+    label="Tooltip with custom transition"
+    :transition-props="{ transition: 'skew-up', duration: 300 }"
+  >
+    <Button>Button with tooltip</Button>
+  </Tooltip>
+</template>
+```
+
+All available premade transitions:
+
+<Demo data={TooltipDemos.transitions} />
+
+## Close and open delay
+
+Use `openDelay` and `closeDelay` props (in ms) to delay tooltip open/close events:
+
+<Demo data={TooltipDemos.delay} />
+
+## Tooltip delay group
+
+`Tooltip.Group` syncs open and close delays for multiple tooltips:
+
+<Demo data={TooltipDemos.group} />
+
+## Floating tooltip
+
+`Tooltip.Floating` has the same API as `Tooltip` but follows the mouse cursor:
+
+<Demo data={TooltipDemos.floating} />
+
+## Accessibility
+
+Tooltip follows [WAI-ARIA recommendations](https://www.w3.org/TR/wai-aria-practices/#tooltip):
+
+- The tooltip body has `role="tooltip"` attribute
+- The target element has `aria-describedby` attribute
+- `Tooltip.Floating` is ignored by screen readers
+
+By default, Tooltip is not triggered by focus events. Set the `events` prop to enable
+focus/blur tooltip events for screen reader support:
+
+```vue
+<template>
+  <Tooltip label="Tooltip" :events="{ hover: true, focus: true, touch: false }">
+    <Button>Button with tooltip</Button>
+  </Tooltip>
+</template>
+```

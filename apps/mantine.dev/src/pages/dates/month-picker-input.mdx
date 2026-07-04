@@ -1,0 +1,23 @@
+import { MonthPickerInputDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.MonthPickerInput)
+
+## MonthPicker props
+
+`MonthPickerInput` supports most of the [MonthPicker](/dates/month-picker) props.
+
+## Usage
+
+<Demo data={MonthPickerInputDemos.usage} />
+
+## Dates range
+
+Set `type="range"` to allow users to pick a months range:
+
+<Demo data={MonthPickerInputDemos.range} />
+
+## Clearable
+
+<Demo data={MonthPickerInputDemos.clearable} />

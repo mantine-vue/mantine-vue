@@ -1,0 +1,183 @@
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  border-spacing: 0;
+  line-height: var(--mantine-line-height);
+  font-size: var(--mantine-font-size-sm);
+  table-layout: var(--table-layout, auto);
+  caption-side: var(--table-caption-side, bottom);
+  border: none;
+}
+
+.table {
+  @mixin where-light {
+    --table-hover-color: var(--mantine-color-gray-1);
+    --table-striped-color: var(--mantine-color-gray-0);
+    --table-border-color: var(--mantine-color-gray-3);
+  }
+
+  @mixin where-dark {
+    --table-hover-color: var(--mantine-color-dark-5);
+    --table-striped-color: var(--mantine-color-dark-6);
+    --table-border-color: var(--mantine-color-dark-4);
+  }
+}
+
+.table:where([data-with-table-border]) {
+  border: rem(1px) solid var(--table-border-color);
+}
+
+.table:where([data-tabular-nums]) {
+  font-variant-numeric: tabular-nums;
+}
+
+.table:where([data-variant='vertical']) :where(.th) {
+  font-weight: var(--mantine-font-weight-medium);
+}
+
+.table:where([data-variant='vertical']) :where(.th) {
+  @mixin where-light {
+    background-color: var(--mantine-color-gray-0);
+  }
+
+  @mixin where-dark {
+    background-color: var(--mantine-color-dark-6);
+  }
+}
+
+.th {
+  text-align: start;
+}
+
+.tr {
+  border-bottom: none;
+  background-color: transparent;
+
+  @mixin hover {
+    &:where([data-hover]) {
+      background-color: var(--tr-hover-bg);
+    }
+  }
+}
+
+.tr:where([data-with-row-border]) {
+  border-bottom: rem(1px) solid var(--table-border-color);
+}
+
+.td,
+.th {
+  padding: var(--table-vertical-spacing) var(--table-horizontal-spacing, var(--mantine-spacing-xs));
+}
+
+.td:where([data-with-column-border]:not(:first-child)),
+.th:where([data-with-column-border]:not(:first-child)) {
+  border-inline-start: rem(1px) solid var(--table-border-color);
+}
+
+.td:where([data-with-column-border]:not(:last-child)),
+.th:where([data-with-column-border]:not(:last-child)) {
+  border-inline-end: rem(1px) solid var(--table-border-color);
+}
+
+.tbody > :where(tr):where([data-with-row-border]:last-of-type) {
+  border-bottom: none;
+}
+
+.tbody > :where(tr):where([data-striped='odd']:nth-of-type(odd)) {
+  background-color: var(--table-striped-color);
+}
+
+.tbody > :where(tr):where([data-striped='even']:nth-of-type(even)) {
+  background-color: var(--table-striped-color);
+}
+
+.tbody > :where(tr)[data-hover] {
+  --tr-hover-bg: var(--table-highlight-on-hover-color, var(--table-hover-color));
+}
+
+.thead {
+  top: var(--table-sticky-header-offset, 0);
+  z-index: 3;
+}
+
+.thead:where([data-sticky]) {
+  position: sticky;
+}
+
+.thead:where([data-sticky]) :where(.th) {
+  position: sticky;
+  top: var(--table-sticky-header-offset, 0);
+  background-color: var(--mantine-color-body);
+}
+
+/* border-collapse: collapse drops borders on position: sticky cells —
+   the tr's border-bottom scrolls away with the row, so redraw it with
+   box-shadow on the (sticky) th. The tr's border-bottom is suppressed
+   here so the two don't stack into a double line. */
+.thead:where([data-sticky]) :where(.tr[data-with-row-border]) {
+  border-bottom: none;
+}
+
+.thead:where([data-sticky]) :where(.tr[data-with-row-border]) :where(.th) {
+  box-shadow: inset 0 -1px 0 var(--table-border-color);
+}
+
+.thead:where([data-sticky]) :where(.th[data-with-column-border]) {
+  border-inline-start: none;
+  border-inline-end: none;
+}
+
+/* Single pseudo-element per internal boundary, centered on the boundary
+   (-0.5px) to align with the body's border-collapse line. */
+.thead:where([data-sticky]) :where(.th[data-with-column-border]:not(:first-child))::before {
+  content: '';
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: -0.5px;
+  width: 1px;
+  background-color: var(--table-border-color);
+}
+
+:where([data-with-table-border]) .thead[data-sticky] {
+  position: sticky;
+  top: var(--table-sticky-header-offset, 0);
+  z-index: 4;
+  border-top: none;
+}
+
+:where([data-with-table-border]) .thead[data-sticky]::before {
+  content: '';
+  display: block;
+  position: absolute;
+  left: 0;
+  top: -0.5px;
+  width: 100%;
+  height: 1px;
+  background-color: var(--table-border-color);
+  z-index: 5;
+}
+
+:where([data-with-table-border]) .thead[data-sticky] .th:first-child {
+  border-top: none;
+}
+
+.caption {
+  color: var(--mantine-color-dimmed);
+}
+
+.caption:where([data-side='top']) {
+  margin-bottom: var(--mantine-spacing-xs);
+}
+
+.caption:where([data-side='bottom']) {
+  margin-top: var(--mantine-spacing-xs);
+}
+
+.scrollContainer {
+  overflow-x: var(--table-overflow);
+}
+
+.scrollContainerInner {
+  min-width: var(--table-min-width);
+  max-height: var(--table-max-height);
+}

@@ -1,0 +1,150 @@
+import { ModalDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.Modal)
+
+## Usage
+
+<Demo data={ModalDemos.usage} />
+
+## Center modal vertically
+
+<Demo data={ModalDemos.centered} />
+
+## Remove header
+
+To remove the header, set `:with-close-button="false"`:
+
+<Demo data={ModalDemos.header} />
+
+## Change size
+
+You can change the modal width by setting the `size` prop to a predefined size or any valid width,
+for example, `size="55%"` or `size="50rem"`. The `Modal` width cannot exceed `100vw`.
+
+<Demo data={ModalDemos.sizes} />
+
+## Size auto
+
+`Modal` with `size="auto"` will have width that fits its content:
+
+<Demo data={ModalDemos.sizeAuto} />
+
+## Fullscreen
+
+A fullscreen modal will take the entire screen. It is usually better to change the transition to `fade`
+when the `fullScreen` prop is set:
+
+<Demo data={ModalDemos.fullScreen} />
+
+To switch Modal to fullscreen on devices with small screens only, use the [use-media-query](/hooks/use-media-query/) hook.
+The `size` prop is ignored if the `fullScreen` prop is set:
+
+<Demo data={ModalDemos.fullScreenMobile} />
+
+## Customize overlay
+
+`Modal` uses the [Overlay](/core/overlay/) component. You can set any props that [Overlay](/core/overlay/)
+supports with `overlayProps`:
+
+<Demo data={ModalDemos.overlay} />
+
+## Modal with scroll
+
+<Demo data={ModalDemos.overflow} />
+
+## Usage with ScrollArea
+
+<Demo data={ModalDemos.scrollarea} />
+
+## Change offsets
+
+Use `xOffset`/`yOffset` to configure the horizontal/vertical content offsets:
+
+<Demo data={ModalDemos.offset} />
+
+## Change transitions
+
+`Modal` is built with the [Transition](/core/transition/) component. Use the `transitionProps`
+prop to customize any [Transition](/core/transition/) properties:
+
+<Demo data={ModalDemos.transitions} />
+
+## onExitTransitionEnd and onEnterTransitionEnd
+
+The `onExitTransitionEnd` and `onEnterTransitionEnd` props can be used to run code after
+the exit/enter transition is finished. For example, this is useful when you want to clear
+data after the modal is closed:
+
+<Demo data={ModalDemos.transitionEnd} />
+
+## Initial focus
+
+Modal uses [FocusTrap](/core/focus-trap/) to trap focus. Add the `data-autofocus`
+attribute to the element that should receive initial focus.
+
+<Demo data={ModalDemos.initialFocus} />
+
+If you do not want to focus any elements when the modal is opened, use the `FocusTrap.InitialFocus`
+component to create a visually hidden element that will receive initial focus:
+
+<Demo data={ModalDemos.initialFocusTrap} />
+
+If you do not add the `data-autofocus` attribute and do not use `FocusTrap.InitialFocus`,
+the modal will focus the first focusable element inside it, which is usually the close button.
+
+## Control behavior
+
+The following props can be used to control `Modal` behavior.
+In most cases, it is not recommended to turn these features off –
+it will make the component less accessible.
+
+- `trapFocus` – determines whether focus should be trapped inside the modal
+- `closeOnEscape` – determines whether the modal should be closed when the `Escape` key is pressed
+- `closeOnClickOutside` – determines whether the modal should be closed when the user clicks on the overlay
+- `returnFocus` – determines whether focus should be returned to the element that was focused before the modal was opened
+
+## Change close icon
+
+Use `closeButtonProps` to customize the close button:
+
+<Demo data={ModalDemos.closeIcon} />
+
+## Compound components
+
+You can use the following compound components to have full control over the `Modal` rendering:
+
+- `Modal.Root` – context provider
+- `Modal.Overlay` – render [Overlay](/core/overlay/)
+- `Modal.Content` – main modal element, should include all modal content
+- `Modal.Header` – sticky header, usually contains `Modal.Title` and `Modal.CloseButton`
+- `Modal.Title` – `h2` element, the `aria-labelledby` of `Modal.Content` is pointing to this element, usually rendered inside `Modal.Header`
+- `Modal.CloseButton` – close button, usually rendered inside `Modal.Header`
+- `Modal.Body` – a place for main content, the `aria-describedby` of `Modal.Content` is pointing to this element
+
+<Demo data={ModalDemos.composition} />
+
+## Accessibility
+
+The `Modal` component follows [WAI-ARIA recommendations](https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/examples/dialog) on accessibility.
+
+Set the `title` prop to make the component accessible, which will add `aria-labelledby` to the content element:
+
+```vue
+<template>
+  <Modal title="Modal label" :opened="true" :on-close="() => {}" />
+</template>
+```
+
+To set the close button's `aria-label`, use `closeButtonProps`:
+
+```vue
+<template>
+  <Modal
+    :close-button-props="{ 'aria-label': 'Close modal' }"
+    :opened="true"
+    :on-close="() => {}"
+  />
+</template>
+```

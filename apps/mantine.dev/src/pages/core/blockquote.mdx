@@ -1,0 +1,15 @@
+import { BlockquoteDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.Blockquote)
+
+## Usage
+
+<Demo data={BlockquoteDemos.usage} />
+
+## Text wrap
+
+Use the `textWrap` prop to control the `text-wrap` CSS property:
+
+<Demo data={BlockquoteDemos.textWrap} />

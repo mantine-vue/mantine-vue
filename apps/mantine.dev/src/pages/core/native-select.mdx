@@ -1,0 +1,176 @@
+import { NativeSelectDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.NativeSelect)
+
+## Usage
+
+<InputFeatures component="NativeSelect" element="select" />
+
+<Demo data={NativeSelectDemos.usage} />
+
+## Loading state
+
+Set `loading` prop to display a loading indicator. By default, the loader is displayed on the right side of the input.
+You can change the position with the `loadingPosition` prop to `'left'` or `'right'`. This is useful for async operations like API calls, searches, or validations:
+
+<Demo data={NativeSelectDemos.loading} />
+
+## Controlled
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue'
+import { NativeSelect } from '@mantine-vue/core'
+
+const value = ref('')
+</script>
+
+<template>
+  <NativeSelect v-model="value" :data="['React', 'Angular', 'Svelte', 'Vue']" />
+</template>
+```
+
+## Uncontrolled
+
+`NativeSelect` can be used with uncontrolled forms the same way as a native `select` element.
+Set the `name` attribute to include native select value in `FormData` object on form submission.
+To control the initial value in uncontrolled forms, use the `defaultValue` prop.
+
+Example usage of uncontrolled `NativeSelect` with `FormData`:
+
+```vue
+<script setup lang="ts">
+import { NativeSelect } from '@mantine-vue/core'
+
+function handleSubmit(event: Event) {
+  event.preventDefault()
+  const formData = new FormData(event.currentTarget as HTMLFormElement)
+  console.log('Select value:', formData.get('framework'))
+}
+</script>
+
+<template>
+  <form @submit="handleSubmit">
+    <NativeSelect
+      label="Select a framework"
+      name="framework"
+      :data="['React', 'Angular', 'Svelte', 'Vue']"
+      defaultValue="React"
+    />
+    <button type="submit">Submit</button>
+  </form>
+</template>
+```
+
+## Adding options
+
+`NativeSelect` allows passing options in two ways:
+
+- `data` prop array
+- default slot with `option` elements
+
+Note that if the default slot is used, the `data` prop will be ignored.
+
+### data prop
+
+The `data` prop accepts values in one of the following formats:
+
+1. Array of strings:
+
+```vue
+<template>
+  <NativeSelect :data="['React', 'Angular', 'Svelte', 'Vue']" />
+</template>
+```
+
+2. Array of objects with `label`, `value` and `disabled` keys:
+
+```vue
+<template>
+  <NativeSelect
+    :data="[
+      { label: 'React', value: 'react' },
+      { label: 'Angular', value: 'angular' },
+      { label: 'Svelte', value: 'svelte', disabled: true },
+      { label: 'Vue', value: 'vue' },
+    ]"
+  />
+</template>
+```
+
+3. Array of grouped options (string format):
+
+```vue
+<template>
+  <NativeSelect
+    :data="[
+      { group: 'Frontend libraries', items: ['React', 'Angular', 'Svelte', 'Vue'] },
+      { group: 'Backend libraries', items: ['Express', 'Koa', 'Django'] },
+    ]"
+  />
+</template>
+```
+
+4. Array of grouped options (object format):
+
+```vue
+<template>
+  <NativeSelect
+    :data="[
+      {
+        group: 'Frontend libraries',
+        items: [
+          { label: 'React', value: 'react' },
+          { label: 'Angular', value: 'angular' },
+          { label: 'Vue', value: 'vue', disabled: true },
+        ],
+      },
+      {
+        group: 'Backend libraries',
+        items: [
+          { label: 'Express', value: 'express' },
+          { label: 'Koa', value: 'koa' },
+          { label: 'Django', value: 'django' },
+        ],
+      },
+    ]"
+  />
+</template>
+```
+
+Example of the `data` prop with an array of grouped options:
+
+<Demo data={NativeSelectDemos.data} />
+
+### children options
+
+To add options with the default slot, use `option` elements to add options and `optgroup`
+elements to group them:
+
+<Demo data={NativeSelectDemos.options} />
+
+## With dividers
+
+Use `hr` tags to add dividers between options:
+
+<Demo data={NativeSelectDemos.dividers} />
+
+<InputSections component="NativeSelect" />
+
+<Demo data={NativeSelectDemos.sections} />
+
+## Disabled state
+
+<Demo data={NativeSelectDemos.disabled} />
+
+## Error state
+
+<Demo data={NativeSelectDemos.error} />
+
+<StylesApiSelectors component="NativeSelect" />
+
+<Demo data={NativeSelectDemos.stylesApi} />
+
+<InputAccessibility component="NativeSelect" />

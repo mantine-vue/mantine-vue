@@ -1,0 +1,43 @@
+{
+  "name": "@mantine-vue/core",
+  "version": "0.0.0",
+  "description": "Vue component foundation architecturally equivalent to @mantine/core",
+  "license": "MIT",
+  "sideEffects": [
+    "*.css"
+  ],
+  "main": "./cjs/index.cjs",
+  "module": "./esm/index.mjs",
+  "types": "./lib/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./lib/index.d.mts",
+        "default": "./esm/index.mjs"
+      },
+      "require": {
+        "types": "./lib/index.d.ts",
+        "default": "./cjs/index.cjs"
+      }
+    },
+    "./styles.css": "./styles.css",
+    "./styles.layer.css": "./styles.layer.css",
+    "./styles/*": "./styles/*"
+  },
+  "dependencies": {
+    "@floating-ui/vue": "1.1.9"
+  },
+  "devDependencies": {
+    "@mantine-vue/hooks": "workspace:*",
+    "@mantine-vue/utils": "workspace:*",
+    "@vue/compiler-dom": "^3.5.0",
+    "@vue/server-renderer": "^3.5.0",
+    "@vue/test-utils": "^2.4.6",
+    "vue": "^3.5.0"
+  },
+  "peerDependencies": {
+    "@mantine-vue/hooks": "0.0.0",
+    "@mantine-vue/utils": "0.0.0",
+    "vue": "^3.5.0"
+  }
+}

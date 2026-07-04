@@ -1,0 +1,9 @@
+.root {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:where([data-inline]) {
+    display: inline-flex;
+  }
+}

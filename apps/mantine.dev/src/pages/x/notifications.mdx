@@ -1,0 +1,289 @@
+import { NotificationDemos, NotificationsDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.Notifications)
+
+## Installation
+
+<InstallScript packages="@mantine-vue/notifications" />
+
+After installation import package styles at the root of your application:
+
+```ts
+import '@mantine-vue/core/styles.css'
+// ‼️ import notifications styles after core package styles
+import '@mantine-vue/notifications/styles.css'
+```
+
+Add the `Notifications` component anywhere in your application. Note that:
+
+- It is required to render the `Notifications` component inside [MantineProvider](/theming/mantine-provider/)
+- You do not need to wrap your application with the `Notifications` component – it is not a provider, it is a regular component
+- You should not render multiple `Notifications` components – if you do that, your notifications will be duplicated
+
+```vue
+<script setup lang="ts">
+import { MantineProvider } from '@mantine-vue/core'
+import { Notifications } from '@mantine-vue/notifications'
+</script>
+
+<template>
+  <MantineProvider>
+    <Notifications />
+    <!-- Your app here -->
+  </MantineProvider>
+</template>
+```
+
+All set! You can now use all notification system features.
+
+<Demo data={NotificationsDemos.base} />
+
+## Do not forget to import styles
+
+Have you followed the installation instructions above but something is not working
+(`position` prop not working, notifications are stuck at the bottom)?
+You've fallen into the trap of not importing notification styles!
+To fix the issue, import notification styles at the root of your application:
+
+```ts
+import '@mantine-vue/notifications/styles.css'
+```
+
+## Functions
+
+The `@mantine-vue/notifications` package exports a `notifications` object with the following functions:
+
+- `notifications.show` – adds a given notification to the notifications list or queue, depending on the current state and `limit`
+- `notifications.hide` – removes a notification with the given `id` from the notifications state and queue
+- `notifications.update` – updates a notification that was previously added to the state or queue
+- `notifications.updateState` – executes a given callback with current notifications state and queue as an argument and updates state with the returned value
+- `notifications.clean` – removes all notifications from the notifications state and queue
+- `notifications.cleanQueue` – removes all notifications from the queue
+
+All functions can be imported from the `@mantine-vue/notifications` package and can be used in any part of your application:
+
+```ts
+import { notifications } from '@mantine-vue/notifications'
+```
+
+You can also import these functions separately:
+
+```ts
+// alias functions
+import {
+  cleanNotifications, // notifications.clean
+  cleanNotificationsQueue, // notifications.cleanQueue
+  hideNotification, // notifications.hide
+  showNotification, // notifications.show
+  updateNotification, // notifications.update
+  updateNotificationsState, // notifications.updateState
+} from '@mantine-vue/notifications'
+```
+
+## Notification props
+
+`notifications.show` and `notifications.update` functions can be called with an object that has the following properties:
+
+- `id` – notification id, it is used to update and remove notifications; by default, `id` is randomly generated
+- `position` – notification position; by default, the value from the `position` prop of the `Notifications` component is used
+- `withBorder` – determines whether the notification should have a border
+- `withCloseButton` – determines whether the close button should be visible
+- `allowClose` – determines whether notification can be closed with close button, drag or horizontal scroll swipe, `true` by default
+- `onClose` – called when the notification is unmounted
+- `onOpen` – called when the notification is mounted
+- `autoClose` – defines timeout in ms after which the notification will be automatically closed; use `false` to disable auto close
+- `message` – required notification body
+- `color, icon, title, radius, className, style, loading` – props passed down to the [Notification](/core/notification/) component
+
+All properties except `message` are optional.
+
+```ts
+import { h } from 'vue'
+import { PhX } from '@phosphor-icons/vue'
+import { notifications } from '@mantine-vue/notifications'
+
+// Bare minimum – message is required for all notifications
+notifications.show({ message: 'Hello' })
+
+// Most used notification props
+notifications.show({
+  id: 'hello-there',
+  position: 'bottom-center',
+  withCloseButton: true,
+  allowClose: true,
+  onClose: () => console.log('unmounted'),
+  onOpen: () => console.log('mounted'),
+  autoClose: 5000,
+  title: "You've been compromised",
+  message: 'Leave the building immediately',
+  color: 'red',
+  icon: h(PhX),
+  className: 'my-notification-class',
+  style: { backgroundColor: 'red' },
+  loading: false,
+})
+```
+
+Notifications preview (`message` prop used as `children`):
+
+<Demo data={NotificationDemos.configurator} />
+
+## Dismiss interactions
+
+Notifications can be dismissed by dragging them left or right, or with a horizontal scroll swipe
+while hovered.
+
+Use `allowDragDismiss` and `allowScrollDismiss` on `Notifications` to disable either interaction:
+
+```vue
+<script setup lang="ts">
+import { Notifications } from '@mantine-vue/notifications'
+</script>
+
+<template>
+  <Notifications :allow-drag-dismiss="false" :allow-scroll-dismiss="false" />
+</template>
+```
+
+To make a specific notification non-dismissible, set `allowClose: false` in
+`notifications.show` or `notifications.update`. This hides the close button and disables
+drag/scroll dismissal for that notification.
+
+## Customize notification styles
+
+You can use `style`, `className` or [Styles API](/styles/styles-api/) `classNames`, `styles` props to customize notification styles.
+Usually, it is better to override [Notification](/core/notification) styles with `classNames` prop in the [theme object](/theming/theme-object/).
+
+<Demo data={NotificationsDemos.customize} />
+
+## Notifications container position
+
+You can define the notification position in the `notifications.show` function. Possible `position` values:
+
+- `top-left`
+- `top-right`
+- `top-center`
+- `bottom-left`
+- `bottom-right`
+- `bottom-center`
+
+<Demo data={NotificationsDemos.position} />
+
+The `position` can be defined on the `Notifications` component.
+In the following example, notifications will be displayed in the top right corner of the screen
+if `position` is not defined in the `notifications.show` function:
+
+```vue
+<script setup lang="ts">
+import { Notifications } from '@mantine-vue/notifications'
+</script>
+
+<template>
+  <Notifications position="top-right" :z-index="1000" />
+</template>
+```
+
+## Limit and queue
+
+You can limit the maximum number of notifications that are displayed at a time by setting
+the `limit` prop on `Notifications`:
+
+```vue
+<script setup lang="ts">
+import { Notifications } from '@mantine-vue/notifications'
+</script>
+
+<template>
+  <Notifications :limit="5" />
+</template>
+```
+
+All notifications added after the `limit` was reached are added to the queue
+and displayed when a notification from the current state is hidden.
+
+<Demo data={NotificationsDemos.limit} />
+
+## Remove notifications from state and queue
+
+To remove a specific notification from state or queue, use the `notifications.hide` function:
+
+```ts
+import { notifications } from '@mantine-vue/notifications'
+
+const id = notifications.show({ message: 'Hello!' })
+notifications.hide(id)
+```
+
+Use the `notifications.cleanQueue` function to remove all notifications from the queue and
+`notifications.clean` to remove all notifications both from the state and queue:
+
+<Demo data={NotificationsDemos.clean} />
+
+## Update notification
+
+<Demo data={NotificationsDemos.update} />
+
+## Auto close
+
+You can configure the auto close timeout with `Notifications`:
+
+```vue
+<script setup lang="ts">
+import { Notifications } from '@mantine-vue/notifications'
+</script>
+
+<template>
+  <!-- All notifications will be closed automatically in 4000ms -->
+  <Notifications :auto-close="4000" />
+</template>
+```
+
+Or per notification in the `notifications.show`/`notifications.update` functions:
+
+```ts
+import { notifications } from '@mantine-vue/notifications'
+
+notifications.show({
+  message: 'I will close in 500ms seconds',
+  autoClose: 500,
+})
+
+notifications.update({
+  id: 'hello',
+  message: 'I will never close',
+  autoClose: false,
+})
+```
+
+`notifications.show` and `notifications.update` functions' `autoClose` prop has higher priority.
+
+<Demo data={NotificationsDemos.autoclose} />
+
+## Pause auto close on hover
+
+By default, hovering over any notification pauses the auto close timer of all
+visible notifications. You can change this behavior with the `pauseResetOnHover` prop:
+
+- `pauseResetOnHover="all"` (default) – pauses auto close for all notifications when any notification is hovered
+- `pauseResetOnHover="notification"` – pauses auto close only for the hovered notification
+
+```vue
+<script setup lang="ts">
+import { Notifications } from '@mantine-vue/notifications'
+</script>
+
+<template>
+  <Notifications pause-reset-on-hover="notification" />
+</template>
+```
+
+## Subscribe to notifications state
+
+You can subscribe to notification state changes with the `useNotifications` hook.
+The hook returns a ref to an object with `notifications` and `queue` arrays. The `notifications`
+array contains all notifications that are currently displayed; `queue` contains
+notifications that are waiting to be displayed.
+
+<Demo data={NotificationsDemos.store} />

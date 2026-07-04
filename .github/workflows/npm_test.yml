@@ -1,0 +1,33 @@
+name: Pull request workflow
+permissions:
+  contents: read
+
+on:
+  pull_request:
+    branches:
+      - '**'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.number || github.sha }}
+  cancel-in-progress: true
+
+jobs:
+  test_pull_request:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'yarn'
+          cache-dependency-path: '**/yarn.lock'
+      - name: Install dependencies
+        run: yarn install --immutable
+      - name: Build all packages (esm/cjs/types)
+        run: yarn build
+      - name: Run full test suite
+        run: yarn test:all
+      - name: Validate build outputs match package.json exports
+        run: yarn test:exports
+      - name: Build docs site
+        run: yarn docs:build

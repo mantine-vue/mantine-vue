@@ -1,0 +1,98 @@
+import { SimpleGridDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.SimpleGrid)
+
+## Usage
+
+`SimpleGrid` is a responsive grid system with equal-width columns.
+It uses CSS grid layout. If you need to set different widths for columns, use
+the [Grid](/core/grid) component instead.
+
+<Demo data={SimpleGridDemos.usage} />
+
+## spacing and verticalSpacing props
+
+The `spacing` prop controls horizontal spacing between columns. By default, it is also used
+for vertical spacing between rows. If you want different vertical spacing, set the
+`verticalSpacing` prop explicitly:
+
+```vue
+<script setup lang="ts">
+import { SimpleGrid } from '@mantine-vue/core'
+</script>
+
+<template>
+  <!-- spacing is used for both horizontal and vertical spacing -->
+  <SimpleGrid spacing="xl" />
+
+  <!-- spacing is used for horizontal spacing, verticalSpacing for vertical -->
+  <SimpleGrid spacing="xl" verticalSpacing="lg" />
+</template>
+```
+
+## Responsive props
+
+`cols`, `spacing` and `verticalSpacing` props support object notation for responsive values,
+it works the same way as [style props](/styles/style-props): the object may have `base`, `xs`,
+`sm`, `md`, `lg` and `xl` keys, and values from those keys will be applied according to current
+viewport width.
+
+In the following example, `:cols="{ base: 1, sm: 2, lg: 5 }"` means:
+
+- 1 column if viewport width is less than `sm` breakpoint
+- 2 columns if viewport width is between `sm` and `lg` breakpoints
+- 5 columns if viewport width is greater than `lg` breakpoint
+
+Same logic applies to `spacing` and `verticalSpacing` props.
+
+<Demo data={SimpleGridDemos.responsive} />
+
+## Container queries
+
+To use [container queries](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_containment/Container_queries)
+instead of media queries, set `type="container"`. With container queries, grid columns and spacing
+will be adjusted based on the container width, not the viewport width.
+
+Note that, when using container queries, `cols`, `spacing` and `verticalSpacing` props cannot
+reference `theme.breakpoints` values in keys. It is required to use exact px or em values.
+
+To see how the grid changes, resize the root element of the demo
+with the resize handle located at the bottom right corner of the demo:
+
+<Demo data={SimpleGridDemos.container} />
+
+## Auto-fill columns
+
+Set the `minColWidth` prop to use CSS Grid `auto-fill` to automatically adjust the number
+of columns based on available space and minimum column width. When `minColWidth` is set,
+the `cols` prop is ignored.
+
+<Demo data={SimpleGridDemos.minColWidth} />
+
+## auto-fill vs auto-fit
+
+By default, `minColWidth` uses `auto-fill` behavior. You can change it to `auto-fit` with the
+`autoFlow` prop. The difference between the two:
+
+- `auto-fill` creates as many tracks as possible without overflowing the container, leaving empty tracks if items don't fill the row
+- `auto-fit` works the same way but collapses empty tracks, allowing items to stretch and fill the remaining space
+
+<Demo data={SimpleGridDemos.autoFlow} />
+
+## Auto rows
+
+Set the `autoRows` prop to control the size of implicitly created grid rows.
+This is useful when you need all rows to have equal height or a minimum height.
+
+<Demo data={SimpleGridDemos.autoRows} />
+
+## Browser support
+
+`SimpleGrid` uses [CSS Grid Layout](https://caniuse.com/css-grid), it is supported in all modern browsers.
+If you need to support older browsers, use [Grid](/core/grid) (flexbox based) component instead.
+
+When `type="container"` is set, `SimpleGrid` uses [container queries](https://caniuse.com/css-container-queries).
+Since February 2023, container queries are supported in all modern browsers. If you need to support older browsers,
+do not use the container queries option.

@@ -1,0 +1,253 @@
+.root {
+  --button-height-xs: 30px;
+  --button-height-sm: 36px;
+  --button-height-md: 42px;
+  --button-height-lg: 50px;
+  --button-height-xl: 60px;
+  --button-height-compact-xs: 22px;
+  --button-height-compact-sm: 26px;
+  --button-height-compact-md: 30px;
+  --button-height-compact-lg: 34px;
+  --button-height-compact-xl: 40px;
+  --button-padding-x-xs: 14px;
+  --button-padding-x-sm: 18px;
+  --button-padding-x-md: 22px;
+  --button-padding-x-lg: 26px;
+  --button-padding-x-xl: 32px;
+  --button-padding-x-compact-xs: 7px;
+  --button-padding-x-compact-sm: 8px;
+  --button-padding-x-compact-md: 10px;
+  --button-padding-x-compact-lg: 12px;
+  --button-padding-x-compact-xl: 14px;
+  --button-height: var(--button-height-sm);
+  --button-padding-x: var(--button-padding-x-sm);
+  --button-color: var(--mantine-color-white);
+
+  user-select: none;
+  font-weight: var(--mantine-font-weight-medium);
+  position: relative;
+  line-height: 1;
+  text-align: center;
+  overflow: hidden;
+  width: auto;
+  cursor: pointer;
+  display: inline-block;
+  border-radius: var(--button-radius, var(--mantine-radius-default));
+  font-size: var(--button-fz, var(--mantine-font-size-sm));
+  background: var(--button-bg, var(--mantine-primary-color-filled));
+  border: var(--button-bd, rem(1px) solid transparent);
+  color: var(--button-color, var(--mantine-color-white));
+  height: var(--button-height, var(--button-height-sm));
+  padding-inline: var(--button-padding-x, var(--button-padding-x-sm));
+  vertical-align: middle;
+}
+
+.root:where([data-block]) {
+  display: block;
+  width: 100%;
+}
+
+.root:where([data-with-left-section]) {
+  padding-inline-start: calc(var(--button-padding-x) / 1.5);
+}
+
+.root:where([data-with-right-section]) {
+  padding-inline-end: calc(var(--button-padding-x) / 1.5);
+}
+
+.root:where(:disabled:not([data-loading]), [data-disabled]:not([data-loading])) {
+  cursor: not-allowed;
+  border: 1px solid transparent;
+  transform: none;
+  color: var(--mantine-color-disabled-color);
+  background: var(--mantine-color-disabled);
+}
+
+.root::before {
+  content: '';
+  pointer-events: none;
+  position: absolute;
+  inset: -1px;
+  border-radius: var(--button-radius, var(--mantine-radius-default));
+  transform: translateY(-100%);
+  opacity: 0;
+  filter: blur(12px);
+  transition:
+    transform 150ms ease,
+    opacity 100ms ease;
+
+  @mixin where-light {
+    background-color: rgba(255, 255, 255, 0.15);
+  }
+
+  @mixin where-dark {
+    background-color: rgba(0, 0, 0, 0.15);
+  }
+}
+
+.root:where([data-loading]) {
+  cursor: not-allowed;
+  transform: none;
+}
+
+.root:where([data-loading])::before {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.root:where([data-loading]) .inner {
+  opacity: 0;
+  transform: translateY(100%);
+}
+
+.root:where(:not([data-loading], :disabled, [data-disabled])):hover {
+  background-color: var(--button-hover, var(--mantine-primary-color-filled-hover));
+  color: var(--button-hover-color, var(--button-color));
+}
+
+.inner {
+  display: flex;
+  align-items: center;
+  justify-content: var(--button-justify, center);
+  height: 100%;
+  overflow: visible;
+  transition:
+    transform 150ms ease,
+    opacity 100ms ease;
+}
+
+.label {
+  white-space: nowrap;
+  height: 100%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  opacity: 1;
+  text-box-trim: trim-both;
+  text-box-edge: cap alphabetic;
+}
+
+.label:where([data-loading]) {
+  opacity: 0.2;
+}
+
+.section {
+  display: flex;
+  align-items: center;
+}
+
+.section:where([data-position='left']) {
+  margin-inline-end: var(--mantine-spacing-xs);
+}
+
+.section:where([data-position='right']) {
+  margin-inline-start: var(--mantine-spacing-xs);
+}
+
+.loader {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+}
+
+.group {
+  --button-border-width: 1px;
+  display: flex;
+}
+
+.group .root:focus {
+  position: relative;
+  z-index: 1;
+}
+
+.group[data-orientation='horizontal'] {
+  flex-direction: row;
+}
+
+.group[data-orientation='vertical'] {
+  flex-direction: column;
+}
+
+.group[data-orientation='horizontal'] .root:not(:only-child):first-child,
+.group[data-orientation='horizontal'] .groupSection:not(:only-child):first-child {
+  border-end-end-radius: 0;
+  border-start-end-radius: 0;
+  border-inline-end-width: calc(var(--button-border-width) / 2);
+}
+
+.group[data-orientation='horizontal'] .root:not(:only-child):last-child,
+.group[data-orientation='horizontal'] .groupSection:not(:only-child):last-child {
+  border-end-start-radius: 0;
+  border-start-start-radius: 0;
+  border-inline-start-width: calc(var(--button-border-width) / 2);
+}
+
+.group[data-orientation='horizontal'] .root:not(:only-child):not(:first-child):not(:last-child),
+.group[data-orientation='horizontal']
+  .groupSection:not(:only-child):not(:first-child):not(:last-child) {
+  border-radius: 0;
+  border-inline-width: calc(var(--button-border-width) / 2);
+}
+
+.group[data-orientation='vertical'] .root:not(:only-child):first-child,
+.group[data-orientation='vertical'] .groupSection:not(:only-child):first-child {
+  border-end-start-radius: 0;
+  border-end-end-radius: 0;
+  border-bottom-width: calc(var(--button-border-width) / 2);
+}
+
+.group[data-orientation='vertical'] .root:not(:only-child):last-child,
+.group[data-orientation='vertical'] .groupSection:not(:only-child):last-child {
+  border-start-start-radius: 0;
+  border-start-end-radius: 0;
+  border-top-width: calc(var(--button-border-width) / 2);
+}
+
+.group[data-orientation='vertical'] .root:not(:only-child):not(:first-child):not(:last-child),
+.group[data-orientation='vertical']
+  .groupSection:not(:only-child):not(:first-child):not(:last-child) {
+  border-radius: 0;
+  border-bottom-width: calc(var(--button-border-width) / 2);
+  border-top-width: calc(var(--button-border-width) / 2);
+}
+
+.groupSection {
+  --section-height-xs: 30px;
+  --section-height-sm: 36px;
+  --section-height-md: 42px;
+  --section-height-lg: 50px;
+  --section-height-xl: 60px;
+  --section-height-compact-xs: 22px;
+  --section-height-compact-sm: 26px;
+  --section-height-compact-md: 30px;
+  --section-height-compact-lg: 34px;
+  --section-height-compact-xl: 40px;
+  --section-padding-x-xs: 14px;
+  --section-padding-x-sm: 18px;
+  --section-padding-x-md: 22px;
+  --section-padding-x-lg: 26px;
+  --section-padding-x-xl: 32px;
+  --section-padding-x-compact-xs: 7px;
+  --section-padding-x-compact-sm: 8px;
+  --section-padding-x-compact-md: 10px;
+  --section-padding-x-compact-lg: 12px;
+  --section-padding-x-compact-xl: 14px;
+  --section-height: var(--section-height-sm);
+  --section-padding-x: var(--section-padding-x-sm);
+  --section-color: var(--mantine-color-white);
+
+  font-weight: var(--mantine-font-weight-medium);
+  width: auto;
+  border-radius: var(--section-radius, var(--mantine-radius-default));
+  font-size: var(--section-fz, var(--mantine-font-size-sm));
+  background: var(--section-bg, var(--mantine-primary-color-filled));
+  border: var(--section-bd, rem(1px) solid transparent);
+  color: var(--section-color, var(--mantine-color-white));
+  height: var(--section-height, var(--section-height-sm));
+  padding-inline: var(--section-padding-x, var(--section-padding-x-sm));
+  vertical-align: middle;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}

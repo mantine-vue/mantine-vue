@@ -1,0 +1,206 @@
+import { CarouselDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.Carousel)
+
+## Installation
+
+<InstallScript packages="embla-carousel@^8.5.2 embla-carousel-vue@^8.5.2 @mantine-vue/carousel" />
+
+After installation import package styles at the root of your application:
+
+```ts
+import '@mantine-vue/core/styles.css'
+// ‼️ import carousel styles after core package styles
+import '@mantine-vue/carousel/styles.css'
+```
+
+## Do not forget to import styles
+
+Have you followed the installation instructions above but something is not working
+(Carousel slides are rendered vertically, no controls or indicators)?
+You've fallen into the trap of not importing carousel styles!
+To fix the issue, import carousel styles at the root of your application:
+
+```ts
+import '@mantine-vue/carousel/styles.css'
+```
+
+## Documentation demos
+
+The demos presented on this page use blue background color for demonstration purposes. To simplify
+demo code, background color and other demo-only styles are not included in the demo code.
+When you copy and paste demo code to your project, it will not have blue background color.
+
+## Usage
+
+`@mantine-vue/carousel` package is based on [embla carousel](https://www.embla-carousel.com/), using
+[embla-carousel-vue](https://www.embla-carousel.com/get-started/vue/) instead of the React bindings:
+
+<Demo data={CarouselDemos.usage} />
+
+## Options
+
+<Demo data={CarouselDemos.configurator} />
+
+## Embla options
+
+You can pass configuration options directly to embla carousel with the `emblaOptions` prop.
+You can find embla options description in the [embla options reference](https://www.embla-carousel.com/docs/api/options).
+
+Example of passing `loop`, `dragFree` and `align` options:
+
+<Demo data={CarouselDemos.emblaOptions} />
+
+## Size and gap
+
+Set `slideSize` and `slideGap` on the `Carousel` component to control the size and gap of every slide:
+
+<Demo data={CarouselDemos.multiple} />
+
+## Responsive styles
+
+`slideSize` and `slideGap` props work the same way as [style props](/styles/style-props/),
+you can pass an object with values for different breakpoints:
+
+<Demo data={CarouselDemos.breakpoints} />
+
+## Container queries
+
+To use [container queries](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_containment/Container_queries)
+instead of media queries, set `type="container"`. With container queries, slide size and gap
+will be adjusted based on the container width, not the viewport width.
+
+Note that when using container queries, `slideSize` and `slideGap` props cannot
+reference `theme.breakpoints` values in keys. You are required to use exact px or em values.
+
+To see how the slide size and gap changes, resize the root element of the demo
+with the resize handle located at the bottom right corner of the demo:
+
+<Demo data={CarouselDemos.container} />
+
+## Drag free
+
+`dragFree` will disable slide snap points – users will be able to stop dragging at any position:
+
+<Demo data={CarouselDemos.dragFree} />
+
+## Vertical orientation
+
+A carousel with `orientation="vertical"` requires the `height` prop to be set:
+
+<Demo data={CarouselDemos.vertical} />
+
+## Controls icons
+
+You can replace default next/previous controls icons with any content by passing a vnode
+to the `nextControlIcon`/`previousControlIcon` props:
+
+<Demo data={CarouselDemos.icons} />
+
+## 100% height
+
+Set `height="100%"` to make the Carousel take 100% height of the container. Note that in this case:
+
+- the container element must have `display: flex` styles
+- the carousel root element must have `flex: 1` styles
+- the container element must have fixed height
+
+```vue
+<script setup lang="ts">
+import { Carousel } from '@mantine-vue/carousel'
+</script>
+
+<template>
+  <div style="height: 400px; display: flex;">
+    <Carousel withIndicators height="100%" flex="1">
+      <Carousel.Slide>1</Carousel.Slide>
+      <Carousel.Slide>2</Carousel.Slide>
+      <Carousel.Slide>3</Carousel.Slide>
+    </Carousel>
+  </div>
+</template>
+```
+
+## Get embla instance
+
+You can get the [embla instance](https://www.embla-carousel.com/docs/api/methods) with the `getEmblaApi` prop.
+You will be able to enhance the carousel with additional logic after that using embla api methods:
+
+<Demo data={CarouselDemos.progress} />
+
+## Embla plugins
+
+Set the `plugins` prop to enhance the carousel with [embla plugins](https://www.embla-carousel.com/docs/plugins).
+Note that plugins are not installed with the `@mantine-vue/carousel` package and you will need to
+install them separately. Embla plugins are framework-agnostic, so the same plugins used with React
+also work here.
+
+Example with [autoplay plugin](https://www.embla-carousel.com/docs/plugins/autoplay):
+
+<InstallScript packages="embla-carousel-autoplay@^8.5.2" />
+
+<Demo data={CarouselDemos.autoplay} />
+
+<StylesApiSelectors component="Carousel" />
+
+<Demo data={CarouselDemos.stylesApi} />
+
+## Indicator styles
+
+<Demo data={CarouselDemos.indicatorStyles} />
+
+## Hide inactive controls
+
+<Demo data={CarouselDemos.controlsStyles} />
+
+## Show controls on hover
+
+<Demo data={CarouselDemos.controlsHover} />
+
+## Example: Images carousel
+
+<Demo data={CarouselDemos.images} />
+
+## Example: Cards carousel
+
+<Demo data={CarouselDemos.cards} />
+
+## Accessibility
+
+Set `aria-label` or `aria-labelledby` on the `Carousel` component to make it accessible for screen readers:
+
+```vue
+<script setup lang="ts">
+import { Carousel } from '@mantine-vue/carousel'
+</script>
+
+<template>
+  <Carousel aria-label="Gallery of nature pictures">
+    <Carousel.Slide>...</Carousel.Slide>
+    <Carousel.Slide>...</Carousel.Slide>
+    <Carousel.Slide>...</Carousel.Slide>
+  </Carousel>
+</template>
+```
+
+Set `aria-label` for next/previous controls with `nextControlProps` and `previousControlProps` props:
+
+```vue
+<script setup lang="ts">
+import { Carousel } from '@mantine-vue/carousel'
+</script>
+
+<template>
+  <Carousel
+    aria-label="Gallery of nature pictures"
+    :nextControlProps="{ 'aria-label': 'Next slide' }"
+    :previousControlProps="{ 'aria-label': 'Previous slide' }"
+  >
+    <Carousel.Slide>...</Carousel.Slide>
+    <Carousel.Slide>...</Carousel.Slide>
+    <Carousel.Slide>...</Carousel.Slide>
+  </Carousel>
+</template>
+```

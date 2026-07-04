@@ -1,0 +1,325 @@
+import { CheckboxDemos, TableDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.Checkbox)
+
+## Usage
+
+<Demo data={CheckboxDemos.configurator} />
+
+## Controlled state
+
+Use `checked` and `@change` to control `Checkbox` state:
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue'
+import { Checkbox } from '@mantine-vue/core'
+
+const checked = ref(false)
+</script>
+
+<template>
+  <Checkbox :checked="checked" @change="(e) => (checked = e.target.checked)" />
+</template>
+```
+
+## Read only
+
+Set the `readOnly` prop to prevent the checkbox value from being changed by user
+interaction. The checkbox still displays its current value and reflects programmatic
+updates to the `checked` prop, but clicking it (or pressing <kbd>Space</kbd>) does not
+toggle its state and does not call the `@change` handler:
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue'
+import { Checkbox } from '@mantine-vue/core'
+
+const checked = ref(true)
+</script>
+
+<template>
+  <Checkbox :checked="checked" readOnly label="Read only checkbox" />
+  <button type="button" @click="checked = !checked">Toggle from outside</button>
+</template>
+```
+
+## Checkbox with @mantine-vue/form
+
+Example of using `Checkbox` with [@mantine-vue/form](/form/use-form):
+
+<Demo data={CheckboxDemos.withUseForm} />
+
+## Checkbox with uncontrolled forms
+
+`Checkbox` can be used with uncontrolled forms the same way as native `input[type="checkbox"]`.
+Set the `name` attribute to include checkbox value in `FormData` object on form submission.
+To control initial checked state in uncontrolled forms, use the `defaultChecked` prop.
+
+Example usage of uncontrolled `Checkbox` with `FormData`:
+
+```vue
+<script setup lang="ts">
+import { Checkbox } from '@mantine-vue/core'
+
+const handleSubmit = (event: Event) => {
+  event.preventDefault()
+  const formData = new FormData(event.currentTarget as HTMLFormElement)
+  console.log('Checkbox value:', !!formData.get('terms'))
+}
+</script>
+
+<template>
+  <form @submit="handleSubmit">
+    <Checkbox label="Accept terms and conditions" name="terms" defaultChecked />
+    <button type="submit">Submit</button>
+  </form>
+</template>
+```
+
+## States
+
+<Demo data={CheckboxDemos.states} />
+
+## Error state
+
+Use the `error` prop to display an error message below the checkbox label.
+If you want to apply error styles without a message, pass a boolean `error` prop.
+If you want to display an error message without applying error styles, set `:withErrorStyles="false"`.
+
+<Demo data={CheckboxDemos.error} />
+
+## Change icons
+
+<Demo data={CheckboxDemos.icon} />
+
+## Change icon color
+
+Use the `iconColor` prop to change the icon color. You can reference colors from `theme.colors` or use any valid CSS color:
+
+<Demo data={CheckboxDemos.iconColor} />
+
+## Indeterminate state
+
+`Checkbox` supports indeterminate state. When the `indeterminate` prop is set,
+the `checked` prop is ignored (checkbox always has checked styles):
+
+<Demo data={CheckboxDemos.indeterminate} demoProps={{ toggle: true }} />
+
+## Label with link
+
+<Demo data={CheckboxDemos.anchor} />
+
+## Checkbox with tooltip
+
+You can change the target element to which the tooltip is attached with `refProp`:
+
+- If `refProp` is not set, the tooltip is attached to the checkbox input
+- If `refProp="rootRef"` is set, the tooltip is attached to the root element (contains label, input and other elements)
+
+<Demo data={CheckboxDemos.tooltip} />
+
+## Pointer cursor
+
+By default, checkbox input and label have `cursor: default` (same as native `input[type="checkbox"]`).
+To change the cursor to pointer, set `cursorType` on [theme](/theming/theme-object/).
+
+<AutoContrast component="Checkbox" />
+
+<Demo data={CheckboxDemos.autoContrast} />
+
+## Add custom sizes
+
+You can add any number of custom sizes with [data-size](/styles/data-attributes/) attribute:
+
+<Demo data={CheckboxDemos.customSize} />
+
+<WrapperProps component="Checkbox" />
+
+## Checkbox.Group
+
+`Checkbox.Group` manages the state of multiple checkboxes. It accepts `value` and `@change`
+props which control the state of checkboxes inside the group. The `value` prop should be an
+array of strings, where each string is the value of a checkbox.
+The `@change` handler receives the new value as an array of strings.
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue'
+import { Checkbox, CheckboxGroup } from '@mantine-vue/core'
+
+const value = ref<string[]>([])
+</script>
+
+<template>
+  <CheckboxGroup :value="value" @change="value = $event">
+    <Checkbox value="react" label="React" />
+    <Checkbox value="svelte" label="Svelte" />
+  </CheckboxGroup>
+</template>
+```
+
+`Checkbox.Group` component supports all [Input.Wrapper](/core/input/#inputwrapper-component)
+props.
+
+<Demo data={CheckboxDemos.groupConfigurator} />
+
+## Checkbox.Group disabled
+
+<Demo data={CheckboxDemos.groupDisabled} />
+
+## maxSelectedValues
+
+Use `maxSelectedValues` prop to limit the number of selected values in `Checkbox.Group`.
+When the limit is reached, the remaining checkboxes are disabled and cannot be selected.
+
+<Demo data={CheckboxDemos.maxSelectedValues} />
+
+## Checkbox.Group with @mantine-vue/form
+
+Example of using `Checkbox.Group` with [@mantine-vue/form](/form/use-form):
+
+<Demo data={CheckboxDemos.groupWithUseForm} />
+
+## Checkbox.Group with uncontrolled forms
+
+`Checkbox.Group` can be used with uncontrolled forms. It renders a hidden input
+which joins all checked values into a single string using `hiddenInputValuesSeparator`.
+
+Props for usage with uncontrolled forms:
+
+- `name` – name attribute passed to the hidden input
+- `hiddenInputValuesSeparator` – string used to join checked values, `','` by default
+- `hiddenInputProps` – additional props passed to the hidden input
+
+```vue
+<script setup lang="ts">
+import { Checkbox, CheckboxGroup } from '@mantine-vue/core'
+
+const handleSubmit = (event: Event) => {
+  event.preventDefault()
+  const formData = new FormData(event.currentTarget as HTMLFormElement)
+  console.log('Checkbox group value:', formData.get('frameworks'))
+}
+</script>
+
+<template>
+  <form @submit="handleSubmit">
+    <CheckboxGroup label="Frameworks" name="frameworks" hiddenInputValuesSeparator="|">
+      <Checkbox label="React" value="react" />
+      <Checkbox label="Angular" value="ng" />
+    </CheckboxGroup>
+    <button type="submit">Submit</button>
+  </form>
+</template>
+```
+
+## Checkbox.Indicator
+
+`Checkbox.Indicator` looks exactly the same as the `Checkbox` component, but it has no
+semantic meaning — it is just a visual representation of checkbox state. You can use it
+anywhere you need to display checkbox state without interaction. For example, it is useful
+in cards based on buttons, trees, etc.
+
+Note that `Checkbox.Indicator` cannot be focused or selected with keyboard. It is not
+accessible and should not be used as a replacement for the `Checkbox` component.
+
+<Demo data={CheckboxDemos.indicator} />
+
+## Checkbox.Card component
+
+`Checkbox.Card` component can be used as a replacement for `Checkbox` to build custom
+cards/buttons/other things that work as checkboxes. The root element of the component
+has `role="checkbox"` attribute, it is accessible by default and supports the same
+keyboard interactions as `input[type="checkbox"]`.
+
+<Demo data={CheckboxDemos.card} />
+
+You can use `Checkbox.Card` with `Checkbox.Group` the same way as the `Checkbox` component:
+
+<Demo data={CheckboxDemos.cardGroup} />
+
+<GetElementRef component="Checkbox" refType="input" />
+
+To get ref of the root element, use the `rootRef` prop:
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue'
+import { Checkbox } from '@mantine-vue/core'
+
+const rootEl = ref<HTMLDivElement | null>(null)
+</script>
+
+<template>
+  <Checkbox :rootRef="rootEl" />
+</template>
+```
+
+<StylesApiSelectors component="Checkbox" />
+
+<Demo data={CheckboxDemos.stylesApi} />
+
+## Example: Table with row selection
+
+<Demo data={TableDemos.rowSelection} />
+
+## Example: Customize with Styles API
+
+<Demo data={CheckboxDemos.customize} />
+
+## wrapperProps
+
+Most of the `Checkbox` props are passed down to the `input` element.
+If you want to pass props to the root element instead, use the `wrapperProps` prop.
+
+```vue
+<script setup lang="ts">
+import { Checkbox } from '@mantine-vue/core'
+</script>
+
+<template>
+  <Checkbox label="My checkbox" :wrapperProps="{ 'data-root-element': true }" />
+</template>
+```
+
+## id attribute
+
+By default, `Checkbox` generates a random `id` attribute for the input element
+to associate it with the label. You can supply your own `id` attribute with the `id` prop.
+It will be used in the `id` attribute of the input element and the `for` attribute of the label element.
+
+```vue
+<script setup lang="ts">
+import { Checkbox } from '@mantine-vue/core'
+</script>
+
+<template>
+  <Checkbox id="my-checkbox" label="My checkbox" />
+</template>
+```
+
+## Accessibility
+
+`Checkbox` is based on the native `input[type="checkbox"]` element, so it is accessible by default.
+
+Set `aria-label` or `label` prop to make the checkbox accessible for screen readers:
+
+```vue
+<script setup lang="ts">
+import { Checkbox } from '@mantine-vue/core'
+</script>
+
+<template>
+  <!-- Not ok, input is not labeled -->
+  <Checkbox />
+
+  <!-- Ok, input is labelled by aria-label -->
+  <Checkbox aria-label="My checkbox" />
+
+  <!-- Ok, input is labelled by label element -->
+  <Checkbox label="My checkbox" />
+</template>
+```

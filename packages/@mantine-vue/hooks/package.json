@@ -1,0 +1,29 @@
+{
+  "name": "@mantine-vue/hooks",
+  "version": "0.0.0",
+  "description": "Vue composables equivalent to @mantine/hooks",
+  "license": "MIT",
+  "sideEffects": false,
+  "main": "./cjs/index.cjs",
+  "module": "./esm/index.mjs",
+  "types": "./lib/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./lib/index.d.mts",
+        "default": "./esm/index.mjs"
+      },
+      "require": {
+        "types": "./lib/index.d.ts",
+        "default": "./cjs/index.cjs"
+      }
+    }
+  },
+  "devDependencies": {
+    "@vue/test-utils": "2.4.6",
+    "vue": "^3.5.0"
+  },
+  "peerDependencies": {
+    "vue": "^3.5.0"
+  }
+}

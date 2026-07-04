@@ -1,0 +1,40 @@
+import { LoaderDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.Loader)
+
+## Usage
+
+The `Loader` component supports 3 types of loaders by default: `oval`, `bars`, and `dots`. All
+loaders are animated with CSS for better performance.
+
+<Demo data={LoaderDemos.configurator} />
+
+## Size prop
+
+You can pass any valid CSS values or numbers to the `size` prop. Numbers are treated as px, but
+converted to [rem](/styles/rem). For example, `size={32}` will produce the
+`--loader-size: 2rem` CSS variable.
+
+<Demo data={LoaderDemos.size} />
+
+## Adding custom loaders
+
+You can add a custom CSS or SVG loader by passing a `loaders` prop with your custom component.
+In order for the `size` and `color` props to work, use the `--loader-size` and `--loader-color`
+CSS variables in your loader styles.
+
+### Custom CSS only loader
+
+<Demo data={LoaderDemos.cssLoader} />
+
+### Custom SVG loader
+
+<Demo data={LoaderDemos.customType} />
+
+## children prop
+
+The `Loader` supports the `children` prop. If you pass anything to `children`, it will be rendered
+instead of the loader. This is useful when you want to control the `Loader` representation
+in components that use `loaderProps`, for example [Button](/core/button/) and [LoadingOverlay](/core/loading-overlay/).

@@ -1,0 +1,62 @@
+import { SpoilerDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.Spoiler)
+
+## Usage
+
+Use `Spoiler` to hide a long section of content.
+Set the `maxHeight` prop to control the point at which content will be hidden under the spoiler and the show/hide control appears.
+If the content height is less than `maxHeight`, the spoiler will just render children.
+
+`hideLabel` and `showLabel` props are required – they are used as the spoiler toggle button label in the corresponding state.
+
+<Demo data={SpoilerDemos.usage} />
+
+## Control expanded state
+
+To control the expanded state, use `expanded` and `onExpandedChange` props:
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue'
+import { Spoiler } from '@mantine-vue/core'
+
+const expanded = ref(false)
+</script>
+
+<template>
+  <Spoiler
+    showLabel="Show more"
+    hideLabel="Hide details"
+    :expanded="expanded"
+    @expandedChange="expanded = $event"
+  >
+    <!-- Spoiler content -->
+  </Spoiler>
+</template>
+```
+
+## Subscribe to expanded state changes
+
+Use `onExpandedChange` to subscribe to expanded state changes:
+
+```vue
+<template>
+  <Spoiler
+    showLabel="Show more"
+    hideLabel="Hide details"
+    :onExpandedChange="(val) => console.log(val)"
+  >
+    <!-- Spoiler content -->
+  </Spoiler>
+</template>
+```
+
+## Transition duration
+
+Control the transition duration by setting the `transitionDuration` prop (transition-duration CSS property in ms).
+To disable animations, set `:transitionDuration="0"`:
+
+<Demo data={SpoilerDemos.transitions} />

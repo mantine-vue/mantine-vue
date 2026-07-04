@@ -1,0 +1,29 @@
+{
+  "name": "@mantine-vue/colors-generator",
+  "version": "0.0.0",
+  "description": "A library to generate 10 shades of color based on provided color value",
+  "license": "MIT",
+  "sideEffects": false,
+  "main": "./cjs/index.cjs",
+  "module": "./esm/index.mjs",
+  "types": "./lib/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./lib/index.d.mts",
+        "default": "./esm/index.mjs"
+      },
+      "require": {
+        "types": "./lib/index.d.ts",
+        "default": "./cjs/index.cjs"
+      }
+    }
+  },
+  "devDependencies": {
+    "@types/chroma-js": "^3.1.2",
+    "chroma-js": "^3.2.0"
+  },
+  "peerDependencies": {
+    "chroma-js": ">=2.4.2"
+  }
+}

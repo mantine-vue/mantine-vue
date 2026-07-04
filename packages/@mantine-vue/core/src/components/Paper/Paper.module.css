@@ -1,0 +1,24 @@
+.root {
+  --paper-radius: var(--mantine-radius-default);
+
+  outline: 0;
+  -webkit-tap-highlight-color: transparent;
+  display: block;
+  touch-action: manipulation;
+  text-decoration: none;
+  border-radius: var(--paper-radius);
+  box-shadow: var(--paper-shadow);
+  background-color: var(--mantine-color-body);
+
+  @mixin light {
+    --paper-border-color: var(--mantine-color-gray-3);
+  }
+
+  @mixin dark {
+    --paper-border-color: var(--mantine-color-dark-4);
+  }
+
+  &:where([data-with-border]) {
+    border: rem(1px) solid var(--paper-border-color);
+  }
+}

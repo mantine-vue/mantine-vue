@@ -1,0 +1,27 @@
+import { CollapseDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.Collapse)
+
+## Usage
+
+<Demo data={CollapseDemos.usage} />
+
+## Horizontal orientation
+
+<Demo data={CollapseDemos.horizontal} />
+
+## Change transition
+
+Set the following props to control the transition:
+
+- `transitionDuration` – duration in ms
+- `transitionTimingFunction` – timing function (ease, linear, etc.), defaults to `ease`
+- `onTransitionEnd` – called when transition ends (both open and close)
+
+<Demo data={CollapseDemos.transition} />
+
+## Example: nested Collapse components
+
+<Demo data={CollapseDemos.nested} />

@@ -1,0 +1,54 @@
+import { ContainerDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.Container)
+
+## Grid strategy
+
+`Container` supports the `strategy="grid"` prop which enables more features.
+
+Differences from the default `strategy="block"`:
+
+- Uses `display: grid` instead of `display: block`
+- Does not include default inline padding
+- Does not set `max-width` on the root element (uses grid template columns instead)
+
+Features supported by `strategy="grid"`:
+
+- Everything that is supported by `strategy="block"`
+- Children with `data-breakout` attribute take the entire width of the container's parent element
+- Children with `data-container` inside `data-breakout` have the same width as the main grid column
+
+Example of using breakout feature:
+
+<Demo data={ContainerDemos.breakout} />
+
+## Usage
+
+`Container` centers content and limits its `max-width` to the value specified in the `size` prop.
+Note that the `size` prop does not make `max-width` responsive — when set to `lg` it will always
+be `lg` regardless of screen size.
+
+<Demo data={ContainerDemos.usage} />
+
+## Fluid
+
+Set the `fluid` prop to make the container fluid. It will take 100% of available width,
+which is the same as setting `size="100%"`.
+
+<Demo data={ContainerDemos.fluid} />
+
+## Customize sizes
+
+You can customize existing `Container` sizes and add new ones with CSS variables on the theme:
+
+<Demo data={ContainerDemos.sizes} />
+
+## Responsive max-width
+
+To make `Container` `max-width` responsive, use Styles API to set `classNames`. For example,
+you can add a `responsive` size that will make the `Container` `max-width` different depending
+on screen size:
+
+<Demo data={ContainerDemos.responsive} />

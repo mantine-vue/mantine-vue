@@ -1,0 +1,56 @@
+[data-respect-reduced-motion] {
+  @media (prefers-reduced-motion: reduce) {
+    [data-reduce-motion] {
+      transition: none;
+      animation: none;
+    }
+  }
+}
+
+.mantine-light-hidden {
+  @mixin light {
+    display: none;
+  }
+}
+
+.mantine-dark-hidden {
+  @mixin dark {
+    display: none;
+  }
+}
+
+.mantine-focus-auto {
+  &:focus-visible {
+    outline: 2px solid var(--mantine-primary-color-filled);
+    outline-offset: 2px;
+  }
+}
+
+.mantine-focus-always {
+  &:focus {
+    outline: 2px solid var(--mantine-primary-color-filled);
+    outline-offset: 2px;
+  }
+}
+
+.mantine-focus-never {
+  &:focus {
+    outline: none;
+  }
+}
+
+.mantine-active {
+  &:active {
+    transform: translateY(rem(1px));
+  }
+
+  fieldset:disabled &:active {
+    transform: none;
+  }
+}
+
+.mantine-rotate-rtl {
+  @mixin where-rtl {
+    transform: rotate(180deg);
+  }
+}

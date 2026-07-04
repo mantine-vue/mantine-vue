@@ -1,0 +1,28 @@
+import { MonthPickerDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.MonthPicker)
+
+## Usage
+
+<Demo data={MonthPickerDemos.usage} />
+
+## Multiple dates
+
+Set `type="multiple"` to allow users to pick multiple months:
+
+<Demo data={MonthPickerDemos.multiple} />
+
+## Dates range
+
+Set `type="range"` to allow users to pick a months range:
+
+<Demo data={MonthPickerDemos.range} />
+
+## Min and max date
+
+Set the `minDate` and `maxDate` props to define minimum and maximum dates. If the previous/next page is not available,
+then the corresponding control will be disabled.
+
+<Demo data={MonthPickerDemos.minMax} />

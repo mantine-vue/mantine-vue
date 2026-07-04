@@ -1,0 +1,11 @@
+.root {
+  color: var(--mantine-color-black);
+
+  @mixin where-light {
+    background-color: var(--mark-bg-light);
+  }
+
+  @mixin where-dark {
+    background-color: var(--mark-bg-dark);
+  }
+}

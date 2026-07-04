@@ -1,0 +1,119 @@
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.GuideVite)
+
+# Usage with Vite
+
+Vite is the recommended starting point for client-rendered Vue 3 applications. Mantine Vue works with the standard Vue + TypeScript Vite template.
+
+## Create project
+
+```bash
+npm create vite@latest my-app -- --template vue-ts
+cd my-app
+npm install
+```
+
+## Install packages
+
+<InstallScript packages="@mantine-vue/core @mantine-vue/hooks" />
+
+Install PostCSS plugins:
+
+<InstallScript packages="postcss postcss-preset-mantine postcss-simple-vars" dev />
+
+## Configure PostCSS
+
+```js
+// postcss.config.cjs
+module.exports = {
+  plugins: {
+    'postcss-preset-mantine': { autoRem: true },
+    'postcss-simple-vars': {
+      variables: {
+        mantineBreakpointXs: '36em',
+        mantineBreakpointSm: '48em',
+        mantineBreakpointMd: '62em',
+        mantineBreakpointLg: '75em',
+        mantineBreakpointXl: '88em',
+      },
+    },
+  },
+}
+```
+
+## Add theme
+
+```ts
+// src/theme.ts
+import type { MantineThemeOverride } from '@mantine-vue/core'
+
+export const theme = {
+  primaryColor: 'blue',
+  defaultRadius: 'md',
+  fontFamily: 'Inter, system-ui, sans-serif',
+} satisfies MantineThemeOverride
+```
+
+## Add provider
+
+```ts
+// src/main.ts
+import { createApp, h } from 'vue'
+import { MantineProvider } from '@mantine-vue/core'
+import App from './App.vue'
+import { theme } from './theme'
+import '@mantine-vue/core/styles.css'
+import './style.css'
+
+createApp({
+  render: () => h(MantineProvider, { theme, defaultColorScheme: 'auto' }, () => h(App)),
+}).mount('#app')
+```
+
+## Use components
+
+```vue
+<script setup lang="ts">
+import { Button, Container, Stack, Text, Title } from '@mantine-vue/core'
+</script>
+
+<template>
+  <Container size="sm" py="xl">
+    <Stack>
+      <Title>Mantine Vue + Vite</Title>
+      <Text c="dimmed">Theme variables and core styles are ready.</Text>
+      <Button>Get started</Button>
+    </Stack>
+  </Container>
+</template>
+```
+
+## Color scheme toggle
+
+Use `useMantineColorScheme` and `useComputedColorScheme` inside a component rendered below `MantineProvider`.
+
+```vue
+<script setup lang="ts">
+import { Button, useComputedColorScheme, useMantineColorScheme } from '@mantine-vue/core'
+
+const { setColorScheme } = useMantineColorScheme()
+const computedColorScheme = useComputedColorScheme('light', {
+  getInitialValueInEffect: true,
+})
+</script>
+
+<template>
+  <Button
+    variant="default"
+    @click="setColorScheme(computedColorScheme === 'dark' ? 'light' : 'dark')"
+  >
+    {{ computedColorScheme === 'dark' ? 'Light mode' : 'Dark mode' }}
+  </Button>
+</template>
+```
+
+## Template
+
+Use `vite-template` for a full setup or `vite-min-template` for the smallest Vite starter.

@@ -1,0 +1,139 @@
+import { TooltipDemos, TransitionDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.Transition)
+
+## Usage
+
+The `Transition` component animates the presence of elements with fixed or absolute positioning,
+such as dropdowns, modals, or tooltips. Other Mantine components (`Modal`, `Tooltip`) use
+`Transition` internally.
+
+In Vue, `Transition` uses a scoped default slot that receives the computed `styles` object.
+Apply these styles to the element you want to animate:
+
+```vue
+<script setup lang="ts">
+import { Transition } from '@mantine-vue/core'
+
+const props = defineProps<{ opened: boolean }>()
+</script>
+
+<template>
+  <Transition :mounted="opened" transition="fade">
+    <template #default="styles">
+      <div :style="styles">Your modal</div>
+    </template>
+  </Transition>
+</template>
+```
+
+## Premade transitions
+
+Mantine includes several premade transitions:
+
+<Demo data={TooltipDemos.transitions} />
+
+To use one, set the `transition` prop to one of those values:
+
+```vue
+<script setup lang="ts">
+import { Transition } from '@mantine-vue/core'
+
+const props = defineProps<{ opened: boolean }>()
+</script>
+
+<template>
+  <Transition :mounted="opened" transition="fade" :duration="400" timing-function="ease">
+    <template #default="styles">
+      <div :style="styles">Your modal</div>
+    </template>
+  </Transition>
+</template>
+```
+
+## Custom transitions
+
+You can define your own transition as an object with up to four properties:
+
+- `in` – styles for the mounted state
+- `out` – styles for the unmounted state
+- `common` (optional) – styles applied in both states
+- `transitionProperty` – CSS properties that participate in the transition
+
+<Demo data={TransitionDemos.custom} />
+
+## Enter and exit delay
+
+Use the `enterDelay` and `exitDelay` props to delay the start of each transition phase (values in milliseconds):
+
+<Demo data={TransitionDemos.delay} />
+
+## Reduced motion
+
+`Transition` respects the `prefers-reduced-motion` media query and the theme's `respectReducedMotion`
+setting. When reduced motion is preferred, all transitions complete instantly:
+
+```vue
+<script setup lang="ts">
+import { createTheme, MantineProvider, Transition } from '@mantine-vue/core'
+
+const theme = createTheme({ respectReducedMotion: true })
+</script>
+
+<template>
+  <MantineProvider :theme="theme">
+    <Transition :mounted="true" transition="fade" :duration="400">
+      <template #default="styles">
+        <div :style="styles">Content</div>
+      </template>
+    </Transition>
+  </MantineProvider>
+</template>
+```
+
+## Lifecycle callbacks
+
+Use emit listeners to react to transition stages:
+
+- `@enter` – enter transition starts
+- `@entered` – enter transition completes
+- `@exit` – exit transition starts
+- `@exited` – exit transition completes
+
+```vue
+<template>
+  <Transition
+    :mounted="true"
+    transition="fade"
+    :duration="200"
+    @enter="() => console.log('Enter started')"
+    @entered="() => console.log('Enter completed')"
+    @exit="() => console.log('Exit started')"
+    @exited="() => console.log('Exit completed')"
+  >
+    <template #default="styles">
+      <div :style="styles">Content</div>
+    </template>
+  </Transition>
+</template>
+```
+
+## Keep mounted
+
+By default the element is removed from the DOM when the transition ends. Set `keep-mounted`
+to keep it in the DOM with `display: none` instead:
+
+```vue
+<template>
+  <Transition :mounted="false" keep-mounted transition="fade">
+    <template #default="styles">
+      <div :style="styles">Content</div>
+    </template>
+  </Transition>
+</template>
+```
+
+This is useful when you want to preserve element state, avoid remounting overhead, or
+maintain focus/scroll position across hide/show cycles.

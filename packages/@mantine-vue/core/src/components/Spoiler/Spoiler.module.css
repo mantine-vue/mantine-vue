@@ -1,0 +1,21 @@
+.root {
+  position: relative;
+
+  &:where([data-has-spoiler]) {
+    margin-bottom: 24px;
+  }
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: max-height var(--spoiler-transition-duration, 200ms) ease;
+}
+
+.control {
+  position: absolute;
+  inset-inline-start: 0;
+  top: 100%;
+  height: 24px;
+}

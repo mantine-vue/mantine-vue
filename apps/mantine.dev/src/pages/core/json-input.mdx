@@ -1,0 +1,123 @@
+import { JsonInputDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.JsonInput)
+
+## Usage
+
+`JsonInput` is based on the [Textarea](/core/textarea/) component.
+It includes JSON validation logic and an option to format the input value on blur:
+
+<Demo data={JsonInputDemos.usage} />
+
+## Loading state
+
+Set `loading` prop to display a loading indicator. By default, the loader is displayed on the right side of the input.
+You can change the position with the `loadingPosition` prop to `'left'` or `'right'`. This is useful for async operations like API calls, searches, or validations:
+
+<Demo data={JsonInputDemos.loading} />
+
+## Controlled
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue'
+import { JsonInput } from '@mantine-vue/core'
+
+const value = ref('')
+</script>
+
+<template>
+  <JsonInput v-model="value" />
+</template>
+```
+
+## Uncontrolled
+
+`JsonInput` can be used with uncontrolled forms the same way as a native `textarea` element.
+Set the `name` attribute to include json input value in `FormData` object on form submission.
+To control the initial value in uncontrolled forms, use the `defaultValue` prop.
+
+```vue
+<script setup lang="ts">
+import { JsonInput } from '@mantine-vue/core'
+
+function handleSubmit(event: Event) {
+  event.preventDefault()
+  const formData = new FormData(event.currentTarget as HTMLFormElement)
+  console.log('JSON input value:', formData.get('data'))
+}
+</script>
+
+<template>
+  <form @submit="handleSubmit">
+    <JsonInput label="Enter JSON" name="data" defaultValue="{}" formatOnBlur />
+    <button type="submit">Submit</button>
+  </form>
+</template>
+```
+
+## Custom serialization
+
+You can provide custom `serialize` and `deserialize` functions to support data formats beyond standard JSON.
+This is useful when you need to handle types like `Date`, `Map`, `Set`, `undefined`, or other non-JSON-serializable values.
+
+The example below shows how to use [superjson](https://github.com/blitz-js/superjson) library to handle extended data types:
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue'
+import { JsonInput } from '@mantine-vue/core'
+import superjson from 'superjson'
+
+const value = ref(
+  superjson.stringify(
+    {
+      name: 'John Doe',
+      createdAt: new Date(),
+      tags: new Set(['admin', 'user']),
+      metadata: new Map([['role', 'developer']]),
+    },
+    null,
+    2,
+  ),
+)
+</script>
+
+<template>
+  <JsonInput
+    label="Extended JSON with superjson"
+    description="Supports Date, Map, Set, BigInt, RegExp, and more"
+    placeholder="Enter extended JSON"
+    v-model="value"
+    :serialize="(val) => superjson.stringify(val, null, 2)"
+    :deserialize="superjson.parse"
+    validationError="Invalid extended JSON format"
+    formatOnBlur
+    autosize
+    :minRows="6"
+  />
+</template>
+```
+
+The `deserialize` function must throw an error when the input is invalid. Both `serialize` and `deserialize`
+functions are used for formatting when `formatOnBlur` is enabled.
+
+## Input props
+
+<InputFeatures component="JsonInput" element="textarea" />
+
+<Demo data={JsonInputDemos.configurator} />
+
+## Disabled state
+
+<Demo data={JsonInputDemos.disabled} />
+
+<StylesApiSelectors component="JsonInput" />
+
+<Demo data={JsonInputDemos.stylesApi} />
+
+<GetElementRef component="JsonInput" refType="textarea" />
+
+<InputAccessibility component="JsonInput" />

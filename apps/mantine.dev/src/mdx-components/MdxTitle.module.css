@@ -1,0 +1,41 @@
+.title {
+  margin-top: calc(var(--mantine-spacing-xl) * 1.2);
+  margin-bottom: var(--mantine-spacing-md);
+  overflow-wrap: break-word;
+  font-family: var(--docs-font-primary);
+  font-weight: 600;
+  position: relative;
+  color: var(--mantine-color-bright);
+
+  &:is(h1) {
+    font-weight: 600;
+    font-size: 40px;
+    margin-top: 0;
+
+    @mixin smaller-than $docsMdxBreakpoint {
+      font-size: 32px;
+    }
+  }
+
+  &:is(h2) {
+    @mixin smaller-than $docsMdxBreakpoint {
+      font-size: 24px;
+    }
+  }
+
+  &:is(h3) {
+    @mixin smaller-than $docsMdxBreakpoint {
+      font-size: 20px;
+    }
+  }
+}
+
+.link {
+  text-decoration: none;
+  color: inherit;
+}
+
+.offset {
+  position: relative;
+  top: calc(var(--docs-header-height) * -1);
+}

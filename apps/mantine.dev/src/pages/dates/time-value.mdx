@@ -1,0 +1,12 @@
+import { TimeValueDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.TimeValue)
+
+## Usage
+
+`TimeValue` formats and displays a time string (`HH:mm` or `HH:mm:ss`) using the `format` prop
+([dayjs format](https://day.js.org/docs/en/display/format)):
+
+<Demo data={TimeValueDemos.usage} />

@@ -1,0 +1,90 @@
+import { ChipDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.Chip)
+
+## Usage
+
+<Demo data={ChipDemos.configurator} />
+
+## Controlled
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue'
+import { Chip } from '@mantine-vue/core'
+
+const checked = ref(false)
+</script>
+
+<template>
+  <Chip :checked="checked" @change="checked = !checked">My chip</Chip>
+</template>
+```
+
+## Change checked icon
+
+<Demo data={ChipDemos.icon} />
+
+## States
+
+<Demo data={ChipDemos.states} />
+
+## Chip with tooltip
+
+To use `Chip` with [Tooltip](/core/tooltip/) and other similar components, set `refProp="rootRef"`
+on the [Tooltip](/core/tooltip/) component:
+
+<Demo data={ChipDemos.tooltip} />
+
+<WrapperProps component="Chip" />
+
+## Chip.Group
+
+The `Chip.Group` component manages the state of child `Chip` components.
+Set the `multiple` prop to allow multiple chips to be selected at a time:
+
+<Demo data={ChipDemos.group} />
+
+## Controlled Chip.Group
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue'
+import { Chip, ChipGroup } from '@mantine-vue/core'
+
+// string value when multiple is false (default)
+const single = ref('react')
+
+// array of strings value when multiple is true
+const multiple = ref(['react'])
+</script>
+
+<template>
+  <!-- Single selection -->
+  <ChipGroup :multiple="false" :value="single" @change="single = $event">
+    <Chip value="react">React</Chip>
+    <Chip value="ng">Angular</Chip>
+    <Chip value="svelte">Svelte</Chip>
+    <Chip value="vue">Vue</Chip>
+  </ChipGroup>
+
+  <!-- Multiple selection -->
+  <ChipGroup multiple :value="multiple" @change="multiple = $event">
+    <Chip value="react">React</Chip>
+    <Chip value="ng">Angular</Chip>
+    <Chip value="svelte">Svelte</Chip>
+    <Chip value="vue">Vue</Chip>
+  </ChipGroup>
+</template>
+```
+
+## Deselect radio chip
+
+<Demo data={ChipDemos.deselect} />
+
+## Accessibility
+
+`Chip` and `Chip.Group` components are accessible by default – they are built with native
+radio/checkbox inputs, so all keyboard events work the same as with native controls.

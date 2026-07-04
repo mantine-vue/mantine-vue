@@ -1,0 +1,120 @@
+import { StepperDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.Stepper)
+
+## Usage
+
+<Demo data={StepperDemos.usage} />
+
+## Allow step select
+
+To disable step selection, set the `allowStepSelect` prop on the `Stepper.Step` component.
+It can be used to prevent the user from reaching the next steps while letting them go back and forth between steps they've already reached before:
+
+<Demo data={StepperDemos.allowStepSelect} />
+
+## Disable next steps selection
+
+Use `allowNextStepsSelect={false}` on the `Stepper` component to prevent selection of all upcoming steps:
+
+<Demo data={StepperDemos.allowNextStepsSelect} />
+
+## Color, radius and size
+
+<Demo data={StepperDemos.configurator} />
+
+Component size is controlled by two props: `size` and `iconSize`.
+The `size` prop controls icon size, label and description font size.
+`iconSize` allows you to overwrite the icon size separately from other size values:
+
+<Demo data={StepperDemos.iconSizeConfigurator} />
+
+## With custom icons
+
+Replace the step icon by setting the `icon` prop on `Stepper.Step`.
+To change the completed check icon, set `completedIcon` on the `Stepper` component.
+Pass a render function `() => h(Icon, props)` as the icon value:
+
+<Demo data={StepperDemos.icons} />
+
+Use `Stepper` with icons only — set `aria-label` or `title` on `Stepper.Step` to keep it accessible:
+
+<Demo data={StepperDemos.iconsOnly} />
+
+Change the completed icon per step to indicate an error state:
+
+<Demo data={StepperDemos.stepColor} />
+
+## Vertical orientation
+
+<Demo data={StepperDemos.orientation} />
+
+## Icon position
+
+Set `iconPosition="right"` to change the step icon and body arrangement:
+
+<Demo data={StepperDemos.iconPosition} />
+
+## Loading state
+
+Set the `loading` prop on the `Stepper.Step` component; a `Loader` will replace the step icon:
+
+<Demo data={StepperDemos.loading} />
+
+<StylesApiSelectors component="Stepper" />
+
+## Get step ref
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue'
+import { Stepper } from '@mantine-vue/core'
+
+const stepperRef = ref<HTMLDivElement | null>(null)
+const firstStepRef = ref<HTMLButtonElement | null>(null)
+</script>
+
+<template>
+  <Stepper ref="stepperRef" :active="0">
+    <Stepper.Step ref="firstStepRef" label="First step" />
+    <Stepper.Step label="Second step" />
+  </Stepper>
+</template>
+```
+
+## Wrap Stepper.Step
+
+`Stepper` relies on `Stepper.Step` order. Wrapping `Stepper.Step` in another component is not supported — create a separate component for the step content instead:
+
+```vue
+<template>
+  <Stepper :active="1">
+    <Stepper.Step label="Regular step">First step</Stepper.Step>
+    <!-- Do not wrap Stepper.Step — children will not render -->
+    <Stepper.Step label="Step with custom content">
+      <MyStepContent />
+    </Stepper.Step>
+  </Stepper>
+</template>
+```
+
+## Accessibility
+
+`Stepper.Step` renders a `<button>` element. Set `aria-label` or `title` when no `label` or `description` is provided:
+
+```vue
+<template>
+  <Stepper :active="0">
+    <!-- Not ok – no label for screen readers -->
+    <Stepper.Step />
+
+    <!-- Ok – label and description -->
+    <Stepper.Step label="Step 1" description="Create an account" />
+
+    <!-- Ok – aria-label -->
+    <Stepper.Step aria-label="Create an account" />
+  </Stepper>
+</template>
+```

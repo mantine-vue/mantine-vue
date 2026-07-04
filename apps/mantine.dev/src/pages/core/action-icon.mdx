@@ -1,0 +1,146 @@
+import { ActionIconDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.ActionIcon)
+
+## Usage
+
+<Demo data={ActionIconDemos.usage} />
+
+<Gradient component="ActionIcon" />
+
+<Demo data={ActionIconDemos.gradient} />
+
+## Size
+
+You can use any valid CSS value in the `size` prop, which is used to set the `width`, `min-width`, `min-height` and `height`
+properties. Note that the `size` prop does not control the child icon size – you need to set it manually on the icon component.
+When `size` is a number, the value is treated as `px` units and converted to rem units.
+
+<Demo data={ActionIconDemos.size} />
+
+If you want `ActionIcon` to have the same size as Mantine inputs, use the `size="input-sm"` prop:
+
+<Demo data={ActionIconDemos.inputSize} />
+
+## Disabled state
+
+To make `ActionIcon` disabled, set the `disabled` prop. This will prevent any interactions with the button
+and add disabled styles. If you want the button to just look disabled but still be interactive,
+set the `data-disabled` prop instead. Note that disabled styles are the same for all variants.
+
+<Demo data={ActionIconDemos.disabled} />
+
+## Disabled state when ActionIcon is link
+
+The `<a />` element does not support the `disabled` attribute. To make `ActionIcon` disabled when it is
+rendered as a link, set the `data-disabled` attribute instead and prevent default behavior in the
+`onClick` event handler.
+
+<Demo data={ActionIconDemos.disabledLink} />
+
+## Customize disabled styles
+
+To customize disabled styles, it is recommended to use both `&:disabled` and `&[data-disabled]`
+selectors:
+
+- `&:disabled` is used to style the button when the `disabled` prop is set and also when the button
+  is disabled by the parent component (for example, when the `disabled` prop is set on a `<fieldset />` element).
+- `&[data-disabled]` is used to style the button when it is not actually disabled but should look like it is.
+
+<Demo data={ActionIconDemos.disabledStyles} />
+
+## Disabled button with Tooltip
+
+When `ActionIcon` is disabled, the `onMouseLeave` event is not triggered. If you need to use
+`Tooltip` with a disabled `ActionIcon`, set the `data-disabled` prop on `ActionIcon` instead of `disabled`,
+and change the click handler to prevent default.
+
+<Demo data={ActionIconDemos.disabledTooltip} />
+
+## Loading state
+
+When the `loading` prop is set, `ActionIcon` will be disabled and a `Loader` with overlay will be rendered
+in the center of the button. The `Loader` color depends on the `ActionIcon` variant.
+
+<Demo data={ActionIconDemos.loading} />
+
+## Loader props
+
+You can customize the `Loader` with the `loaderProps` prop, which accepts all props that the `Loader` component has:
+
+<Demo data={ActionIconDemos.loaderProps} />
+
+## Add custom variants
+
+To add new `ActionIcon` variants, use the `data-variant` attribute. Usually new variants are added to the theme
+so they are available in all `ActionIcon` components in your application.
+
+<Demo data={ActionIconDemos.customVariant} />
+
+## Customize variants colors
+
+You can customize colors for `ActionIcon` and other component variants by adding `variantColorResolver` to your theme.
+
+<Demo data={ActionIconDemos.variantColorsResolver} />
+
+<AutoContrast component="ActionIcon" />
+
+<Demo data={ActionIconDemos.autoContrast} />
+
+## Add custom sizes
+
+`ActionIcon` sizes are defined by `--ai-size-{x}` CSS variables. The easiest way to add new sizes is to
+define additional `--ai-size-{x}` variables on the `root` element:
+
+<Demo data={ActionIconDemos.customSize} />
+
+## ActionIcon.Group
+
+<Demo data={ActionIconDemos.group} />
+
+Note that you must not wrap child `ActionIcon` components with any additional elements:
+
+```vue
+<template>
+  <!-- Will not work correctly -->
+  <ActionIcon.Group>
+    <div>
+      <ActionIcon>This will not work</ActionIcon>
+    </div>
+    <ActionIcon>ActionIcons will have incorrect borders</ActionIcon>
+  </ActionIcon.Group>
+</template>
+```
+
+## ActionIcon.GroupSection
+
+Use the `ActionIcon.GroupSection` component to render sections that are not `ActionIcon` inside `ActionIcon.Group`:
+
+<Demo data={ActionIconDemos.groupSection} />
+
+<Polymorphic defaultElement="button" changeToElement="a" component="ActionIcon" withNext />
+
+<GetElementRef component="ActionIcon" refType="button" />
+
+## Accessibility
+
+To make `ActionIcon` accessible for screen readers, set `aria-label` or use the `VisuallyHidden` component:
+
+```vue
+<script setup lang="ts">
+import { ActionIcon, VisuallyHidden } from '@mantine-vue/core'
+</script>
+
+<template>
+  <ActionIcon aria-label="Like post">
+    <!-- heart icon -->
+  </ActionIcon>
+
+  <ActionIcon>
+    <VisuallyHidden>Like post</VisuallyHidden>
+    <!-- heart icon -->
+  </ActionIcon>
+</template>
+```

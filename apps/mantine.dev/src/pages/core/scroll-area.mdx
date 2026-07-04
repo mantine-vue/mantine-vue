@@ -1,0 +1,67 @@
+import { ScrollAreaDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.ScrollArea)
+
+## Usage
+
+<Demo data={ScrollAreaDemos.usage} />
+
+## Horizontal scrollbars
+
+Set `scrollbars="x"` to enable only horizontal scrollbars, or use the default `scrollbars="xy"` for
+both axes. In this example `w={300}` limits the visible width and the inner `Box` is wider at
+`w={600}`, forcing horizontal scrolling.
+
+<Demo data={ScrollAreaDemos.horizontal} />
+
+## Disable horizontal scrollbars
+
+Set `scrollbars="y"` to show only the vertical scrollbar and hide the horizontal one, even when the
+content overflows horizontally.
+
+<Demo data={ScrollAreaDemos.scrollbars} />
+
+## Scroll position
+
+Use the `onScrollPositionChange` callback to track the current scroll position. The callback
+receives an object with `x` and `y` properties on every scroll event.
+
+<Demo data={ScrollAreaDemos.scrollPosition} />
+
+## Scroll boundaries
+
+`ScrollArea` exposes callbacks for when the user reaches each edge of the scroll container:
+`onTopReached`, `onBottomReached`, `onLeftReached`, `onRightReached`. Each fires once when the
+boundary is reached, then again only after the user scrolls away and returns to that edge.
+
+<Demo data={ScrollAreaDemos.boundaries} />
+
+## Scroll to position
+
+To programmatically scroll to a position, pass a `ref` inside `viewportProps`. The ref is set to
+the `ScrollAreaViewport` component instance; access the underlying DOM element via `.$el` and call
+the native `scrollTo` method on it.
+
+<Demo data={ScrollAreaDemos.scrollTo} />
+
+## Initial scroll position
+
+Use `startScrollPosition` to set the initial scroll position when the component first mounts.
+
+<Demo data={ScrollAreaDemos.startScrollPosition} />
+
+## Scroll into view
+
+Use the `viewportProps` ref technique together with `Element.scrollIntoView` to implement
+keyboard-navigable lists where the focused item is scrolled into view automatically.
+
+<Demo data={ScrollAreaDemos.scrollIntoView} />
+
+## ScrollArea.Autosize
+
+`ScrollArea.Autosize` lets you create a scrollable container with a maximum height — it grows with
+its content and only shows scrollbars when the content exceeds `mah`.
+
+<Demo data={ScrollAreaDemos.maxHeight} />

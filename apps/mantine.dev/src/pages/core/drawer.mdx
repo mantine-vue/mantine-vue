@@ -1,0 +1,150 @@
+import { DrawerDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.Drawer)
+
+## Usage
+
+<Demo data={DrawerDemos.usage} />
+
+## Position
+
+Drawer can be placed on `left` (default), `top`, `right` and `bottom`. Control the drawer position with the `position` prop,
+for example `<Drawer position="top" />`.
+
+<Demo data={DrawerDemos.positions} />
+
+## Offset
+
+Set the `offset` prop to change the drawer offset from the edge of the viewport:
+
+<Demo data={DrawerDemos.offset} />
+
+## Customize overlay
+
+`Drawer` uses the [Overlay](/core/overlay/) component. You can set any props that [Overlay](/core/overlay/)
+supports with `overlayProps`:
+
+<Demo data={DrawerDemos.overlay} />
+
+## Sizes
+
+You can change the drawer width/height (depends on `position`) by setting the `size` prop to a predefined size or any valid width,
+for example, `size="55%"` or `:size="200"`:
+
+```vue
+<template>
+  <Drawer position="right" size="xl" :opened="true" :on-close="() => {}">
+    <!-- Drawer content -->
+  </Drawer>
+</template>
+```
+
+<Demo data={DrawerDemos.sizes} />
+
+## Remove header
+
+To remove the header, set `:with-close-button="false"`:
+
+<Demo data={DrawerDemos.header} />
+
+## Drawer with scroll
+
+<Demo data={DrawerDemos.overflow} />
+
+## Usage with ScrollArea
+
+<Demo data={DrawerDemos.scrollarea} />
+
+## Change transition
+
+`Drawer` is built with the [Transition](/core/transition/) component. Use the `transitionProps`
+prop to customize any [Transition](/core/transition/) properties:
+
+<Demo data={DrawerDemos.transitions} />
+
+## onExitTransitionEnd and onEnterTransitionEnd
+
+The `onExitTransitionEnd` and `onEnterTransitionEnd` props can be used to run code after
+the exit/enter transition is finished. For example, this is useful when you want to clear
+data after the drawer is closed:
+
+<Demo data={DrawerDemos.transitionEnd} />
+
+## Initial focus
+
+`Drawer` uses [FocusTrap](/core/focus-trap/) to trap focus. Add the `data-autofocus`
+attribute to the element that should receive initial focus.
+
+<Demo data={DrawerDemos.initialFocus} />
+
+If you do not want to focus any elements when the drawer is opened, use the `FocusTrap.InitialFocus`
+component to create a visually hidden element that will receive initial focus:
+
+<Demo data={DrawerDemos.initialFocusTrap} />
+
+If you do not add the `data-autofocus` attribute and do not use `FocusTrap.InitialFocus`,
+the drawer will focus the first focusable element inside it which is usually the close button.
+
+## Control behavior
+
+The following props can be used to control `Drawer` behavior.
+In most cases it is not recommended to turn these features off –
+it will make the component less accessible.
+
+- `trapFocus` – determines whether focus should be trapped inside drawer
+- `closeOnEscape` – determines whether the drawer should be closed when `Escape` key is pressed
+- `closeOnClickOutside` – determines whether the drawer should be closed when user clicks on the overlay
+- `returnFocus` – determines whether focus should be returned to the element that was focused before the drawer was opened
+
+## Change close icon
+
+Use `closeButtonProps` to customize close button:
+
+<Demo data={DrawerDemos.closeIcon} />
+
+## Drawer.Stack
+
+`Drawer.Stack` allows you to render multiple drawers at the same time. `Drawer.Stack` manages `z-index` values, focus trapping,
+and `Escape` key press. Use `useDrawersStack` hook to control the stack:
+
+<Demo data={DrawerDemos.stack} />
+
+## Compound components
+
+You can use the following compound components to have full control over the `Drawer` rendering:
+
+- `Drawer.Root` – context provider
+- `Drawer.Overlay` – render [Overlay](/core/overlay/)
+- `Drawer.Content` – main drawer element, should include all drawer content
+- `Drawer.Header` – sticky header, usually contains `Drawer.Title` and `Drawer.CloseButton`
+- `Drawer.Title` – `h2` element, `aria-labelledby` of `Drawer.Content` is pointing to this element, usually is rendered inside `Drawer.Header`
+- `Drawer.CloseButton` – close button, usually rendered inside `Drawer.Header`
+- `Drawer.Body` – a place for main content, `aria-describedby` of `Drawer.Content` is pointing to this element
+
+<Demo data={DrawerDemos.composition} />
+
+## Accessibility
+
+`Drawer` component follows [WAI-ARIA recommendations](https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/examples/dialog) on accessibility.
+
+Set `title` props to make component accessible, will add `aria-labelledby` to the content element:
+
+```vue
+<template>
+  <Drawer title="Drawer label" :opened="true" :on-close="() => {}" />
+</template>
+```
+
+To set close button `aria-label` use `closeButtonProps`:
+
+```vue
+<template>
+  <Drawer
+    :close-button-props="{ 'aria-label': 'Close drawer' }"
+    :opened="true"
+    :on-close="() => {}"
+  />
+</template>
+```

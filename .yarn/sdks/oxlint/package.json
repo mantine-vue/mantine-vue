@@ -1,0 +1,20 @@
+{
+  "name": "oxlint",
+  "version": "1.69.0-sdk",
+  "main": "dist/index.js",
+  "type": "commonjs",
+  "bin": {
+    "oxlint": "bin/oxlint"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./plugins-dev": {
+      "types": "./dist/plugins-dev.d.ts",
+      "default": "./dist/plugins-dev.js"
+    },
+    "./package.json": "./package.json"
+  }
+}

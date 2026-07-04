@@ -1,0 +1,122 @@
+body {
+  --docs-font-primary: 'Outfit', sans-serif;
+  --docs-font-size: 15px;
+  --docs-inline-spacing: 50px;
+  --docs-header-height: 100px;
+  --docs-navbar-width: 220px;
+  --docs-table-of-contents-width: 250px;
+  --docs-main-header-section-height: 56px;
+
+  @mixin smaller-than $docsMdxBreakpoint {
+    --docs-header-height: 56px;
+    --docs-navbar-width: 0px;
+    --docs-font-size: 16px;
+    --docs-inline-spacing: 0px;
+  }
+
+  @mixin smaller-than $docsTocBreakpoint {
+    --docs-table-of-contents-width: 0px;
+  }
+}
+
+.mdx-examples-button {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 0 16px;
+  border: 1px solid var(--mantine-color-default-border);
+  border-radius: var(--mantine-radius-md);
+  background: var(--mantine-color-default);
+  color: var(--mantine-color-text);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.mdx-examples-button:hover {
+  background: var(--mantine-color-default-hover);
+  text-decoration: none;
+}
+
+.mdx-table-wrap {
+  overflow-x: auto;
+  margin: 16px 0 24px;
+}
+
+.mdx-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--mantine-font-size-sm);
+}
+
+.mdx-table th,
+.mdx-table td {
+  padding: 10px 12px;
+  border: 1px solid var(--mantine-color-default-border);
+  text-align: start;
+  vertical-align: top;
+}
+
+.mdx-table th {
+  background: var(--mantine-color-default-hover);
+  font-weight: 600;
+}
+
+/* ── MdxPre: styled fenced code block with copy button ─────────────────── */
+.mdx-pre-root {
+  position: relative;
+  border-radius: var(--mantine-radius-md);
+  border: 1px solid var(--mantine-color-default-border);
+  background-color: var(--mantine-color-body);
+  overflow: hidden;
+  margin: 16px 0;
+  font-size: var(--mantine-font-size-sm);
+}
+
+[data-mantine-color-scheme='dark'] .mdx-pre-root {
+  background-color: var(--mantine-color-dark-8);
+}
+
+.mdx-pre-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 8px 6px 14px;
+  border-bottom: 1px solid var(--mantine-color-default-border);
+  background-color: var(--mantine-color-default-hover);
+  min-height: 36px;
+}
+
+.mdx-pre-lang {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--mantine-color-dimmed);
+  font-family: var(--mantine-font-family-monospace);
+}
+
+.mdx-pre-scroll {
+  overflow-x: auto;
+}
+
+.mdx-pre {
+  margin: 0;
+  padding: 14px 16px;
+  background: transparent;
+  font-family: var(--mantine-font-family-monospace);
+  font-size: var(--mantine-font-size-sm);
+  line-height: 1.6;
+  color: var(--mantine-color-text);
+  white-space: pre;
+}
+
+/* inline <code> outside of a pre block */
+.mdx-code-inline,
+:not(pre) > code {
+  font-family: var(--mantine-font-family-monospace);
+  font-size: 0.875em;
+  padding: 2px 5px;
+  border-radius: var(--mantine-radius-xs);
+  background-color: var(--mantine-color-default-hover);
+  border: 1px solid var(--mantine-color-default-border);
+}

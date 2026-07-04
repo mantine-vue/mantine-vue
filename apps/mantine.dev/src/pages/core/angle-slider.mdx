@@ -1,0 +1,109 @@
+import { AngleSliderDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.AngleSlider)
+
+## Usage
+
+Use the `AngleSlider` component to pick an angle value between 0 and 360:
+
+<Demo data={AngleSliderDemos.usage} />
+
+## Controlled
+
+The `AngleSlider` value is a number between 0 and 360:
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue'
+import { AngleSlider } from '@mantine-vue/core'
+
+const value = ref(180)
+</script>
+
+<template>
+  <AngleSlider :value="value" @change="(v) => (value = v)" />
+</template>
+```
+
+## AngleSlider with uncontrolled forms
+
+`AngleSlider` can be used with uncontrolled forms. Set the `name` attribute to include the slider
+value in `FormData` on form submission. Use `defaultValue` to set the initial value:
+
+```vue
+<script setup lang="ts">
+import { AngleSlider } from '@mantine-vue/core'
+
+function onSubmit(event: Event) {
+  event.preventDefault()
+  const formData = new FormData(event.currentTarget as HTMLFormElement)
+  console.log('Angle value:', formData.get('angle'))
+}
+</script>
+
+<template>
+  <form @submit="onSubmit">
+    <AngleSlider name="angle" :default-value="120" />
+    <button type="submit">Submit</button>
+  </form>
+</template>
+```
+
+## formatLabel
+
+Use the `formatLabel` prop to change the angle label format. It accepts a function that receives
+the angle value and returns a string:
+
+<Demo data={AngleSliderDemos.formatLabel} />
+
+## Marks
+
+Set the `marks` prop to display marks on the slider. Each mark is an object with a required
+`value` (0–360) and an optional `label`. To restrict selection to marks only, set `restrictToMarks`:
+
+<Demo data={AngleSliderDemos.marks} />
+
+## onChangeEnd
+
+The `onChangeEnd` callback fires when the user stops dragging or changes the value with the keyboard.
+Use it as a debounced alternative to `onChange`:
+
+<Demo data={AngleSliderDemos.onChangeEnd} />
+
+## disabled
+
+The `disabled` prop prevents user interaction:
+
+<Demo data={AngleSliderDemos.disabled} />
+
+## Based on useRadialMove
+
+`AngleSlider` is built on the `useRadialMove` composable from `@mantine-vue/hooks`.
+You can use it directly to build a custom radial control with full control over behavior and styling:
+
+<Demo data={AngleSliderDemos.radialMove} />
+
+## Accessibility
+
+Set `aria-label` to make the slider accessible to screen readers:
+
+```vue
+<template>
+  <AngleSlider aria-label="Gradient angle" />
+</template>
+```
+
+Keyboard interactions when the component is focused:
+
+<KeyboardEventsTable
+  data={[
+    { key: 'ArrowDown', description: 'Decreases value by step' },
+    { key: 'ArrowLeft', description: 'Decreases value by step' },
+    { key: 'ArrowUp', description: 'Increases value by step' },
+    { key: 'ArrowRight', description: 'Increases value by step' },
+    { key: 'Home', description: 'Sets value to 0' },
+    { key: 'End', description: 'Sets value to 359' },
+  ]}
+/>

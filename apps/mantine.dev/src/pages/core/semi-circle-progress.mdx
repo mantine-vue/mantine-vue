@@ -1,0 +1,27 @@
+import { SemiCircleProgressDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.SemiCircleProgress)
+
+## Usage
+
+<Demo data={SemiCircleProgressDemos.usage} />
+
+## Change empty segment color
+
+Use `emptySegmentColor` to change the color of the empty segment — accepts a `theme.colors` key or any valid CSS color value:
+
+<Demo data={SemiCircleProgressDemos.emptySegmentColor} />
+
+## Change label position
+
+By default the label is displayed at the bottom. Set `labelPosition="center"` to move it inside the arc:
+
+<Demo data={SemiCircleProgressDemos.labelPosition} />
+
+## Filled segment transition
+
+Set `transitionDuration` (in milliseconds) to animate the filled segment on value change:
+
+<Demo data={SemiCircleProgressDemos.transitions} />

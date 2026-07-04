@@ -1,0 +1,35 @@
+import { ProgressDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.Progress)
+
+## Usage
+
+<Demo data={ProgressDemos.usage} />
+
+## Compound components
+
+<Demo data={ProgressDemos.compound} />
+
+## Vertical orientation
+
+<Demo data={ProgressDemos.vertical} />
+
+## Section width transition
+
+Set `transitionDuration` to a number of milliseconds to enable width transition:
+
+<Demo data={ProgressDemos.transition} />
+
+## Accessibility
+
+- Progress section has the `role="progressbar"` attribute
+- Progress section has the `aria-valuenow` attribute with the current value
+- `aria-valuemin` and `aria-valuemax` attributes are always set to `0` and `100`
+
+Set the `aria-label` attribute to label the progress:
+
+```vue
+<Progress aria-label="Uploading progress" :value="10" />
+```

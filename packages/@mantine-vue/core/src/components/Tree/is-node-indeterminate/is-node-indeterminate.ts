@@ -1,0 +1,13 @@
+import { getAllCheckedNodes } from '../get-all-checked-nodes/get-all-checked-nodes'
+import type { TreeNodeData } from '../Tree'
+
+export function isNodeIndeterminate(
+  value: string,
+  data: TreeNodeData[],
+  checkedState: string[],
+): boolean {
+  if (checkedState.length === 0) return false
+  return getAllCheckedNodes(data, checkedState).result.some(
+    (node) => node.value === value && node.indeterminate,
+  )
+}

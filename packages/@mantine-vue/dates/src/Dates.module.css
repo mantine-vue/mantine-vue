@@ -1,0 +1,517 @@
+.calendar {
+  display: flex;
+  gap: var(--mantine-spacing-md);
+  width: max-content;
+}
+
+.calendar[data-full-width] {
+  width: 100%;
+}
+
+.calendar[data-full-width] > * {
+  flex: 1;
+}
+
+.calendarLevel {
+  min-width: 16.25rem;
+}
+
+.calendarHeader {
+  --dch-control-size: 2.25rem;
+
+  display: flex;
+  max-width: calc(var(--dch-control-size) * 8 + 0.4375rem);
+  margin-bottom: var(--mantine-spacing-xs);
+}
+
+.calendarHeader[data-full-width] {
+  max-width: none;
+  width: 100%;
+}
+
+.calendarHeaderLevel,
+.calendarHeaderControl {
+  height: var(--dch-control-size);
+  border-radius: var(--mantine-radius-default);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  user-select: none;
+  opacity: 1;
+  cursor: pointer;
+  color: var(--mantine-color-text);
+}
+
+.calendarHeaderLevel[data-static],
+.calendarHeaderControl[data-static] {
+  cursor: default;
+}
+
+.calendarHeaderLevel:not(:disabled):not([data-disabled]):not([data-static]):hover,
+.calendarHeaderControl:not(:disabled):not([data-disabled]):not([data-static]):hover {
+  background-color: var(--mantine-color-gray-light-hover);
+}
+
+.calendarHeaderLevel:disabled,
+.calendarHeaderLevel[data-disabled],
+.calendarHeaderControl:disabled,
+.calendarHeaderControl[data-disabled] {
+  opacity: 0.2;
+  cursor: not-allowed;
+}
+
+.calendarHeaderControl {
+  width: var(--dch-control-size);
+}
+
+.calendarHeaderLevel {
+  flex: 1;
+  font-size: var(--mantine-font-size-sm);
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+.calendarHeaderControlIcon {
+  width: 45%;
+  height: 45%;
+}
+
+.calendarHeaderControlIcon[data-direction='next'] {
+  transform: rotate(270deg);
+}
+
+.calendarHeaderControlIcon[data-direction='previous'] {
+  transform: rotate(90deg);
+}
+
+.month {
+  table-layout: fixed;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.month[data-full-width] {
+  width: 100%;
+}
+
+.monthRow {
+  border: 0;
+}
+
+.monthCell {
+  padding: 0;
+  text-align: center;
+}
+
+.monthCell[data-with-spacing] {
+  padding: 0.125rem;
+}
+
+.weekday {
+  height: 1.75rem;
+  color: var(--mantine-color-dimmed);
+  font-size: var(--mantine-font-size-xs);
+  font-weight: 500;
+  text-align: center;
+}
+
+.weekday[data-weekend] {
+  color: var(--mantine-color-red-filled);
+}
+
+.weekNumber {
+  color: var(--mantine-color-dimmed);
+  font-size: var(--mantine-font-size-xs);
+  text-align: center;
+}
+
+.day {
+  --day-size: 2.25rem;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--day-size);
+  height: var(--day-size);
+  border-radius: var(--mantine-radius-sm);
+  color: var(--mantine-color-text);
+  font-size: var(--mantine-font-size-sm);
+  line-height: 1;
+  user-select: none;
+}
+
+.day[data-full-width] {
+  width: 100%;
+  height: auto;
+  min-height: var(--day-size);
+  aspect-ratio: 1;
+}
+
+.day:not(:disabled):not([data-static]):not([data-selected]):not([data-in-range]):hover {
+  background-color: var(--mantine-color-gray-light-hover);
+}
+
+.day[data-outside] {
+  color: var(--mantine-color-dimmed);
+  opacity: 0.65;
+}
+
+.day[data-weekend] {
+  color: var(--mantine-color-red-filled);
+}
+
+.day[data-today][data-highlight-today] {
+  border: 1px solid var(--mantine-primary-color-filled);
+}
+
+.day[data-in-range] {
+  background-color: var(--mantine-primary-color-light);
+  color: var(--mantine-primary-color-light-color);
+  border-radius: 0;
+}
+
+.day[data-in-range]:not(:disabled):not([data-static]):hover {
+  background-color: var(--mantine-primary-color-light);
+}
+
+.day[data-selected],
+.day[data-first-in-range],
+.day[data-last-in-range] {
+  background-color: var(--mantine-primary-color-filled);
+  color: var(--mantine-color-white);
+}
+
+.day[data-selected]:not(:disabled):not([data-static]):hover {
+  background-color: var(--mantine-primary-color-filled-hover);
+}
+
+.day:disabled,
+.pickerControl:disabled {
+  cursor: not-allowed;
+  color: var(--mantine-color-dimmed);
+  opacity: 0.55;
+}
+
+.controlsGrid[data-full-width] {
+  width: 100%;
+}
+
+.pickerControl {
+  height: 2.25rem;
+  width: calc(2.25rem * 7 / 3 + 0.09375rem);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-inline: var(--mantine-spacing-xs);
+  border-radius: var(--mantine-radius-sm);
+  color: var(--mantine-color-text);
+  font-size: var(--mantine-font-size-sm);
+  user-select: none;
+  background-color: transparent;
+}
+
+.pickerControl[data-full-width] {
+  width: 100%;
+}
+
+.pickerControl:not(:disabled):not([data-selected]):not([data-in-range]):hover {
+  background-color: var(--mantine-color-gray-light-hover);
+}
+
+.pickerControl[data-selected] {
+  background-color: var(--mantine-primary-color-filled);
+  color: var(--mantine-color-white);
+}
+
+.pickerControl[data-selected]:hover {
+  background-color: var(--mantine-primary-color-filled-hover);
+}
+
+.pickerControl[data-in-range] {
+  background-color: var(--mantine-primary-color-light-hover);
+  color: var(--mantine-primary-color-light-color);
+}
+
+.pickerControl[data-in-range]:hover {
+  background-color: var(--mantine-primary-color-light);
+}
+
+.pickerControl[data-first-in-range] {
+  border-radius: 0;
+  border-start-start-radius: var(--mantine-radius-default);
+  border-end-start-radius: var(--mantine-radius-default);
+}
+
+.pickerControl[data-last-in-range] {
+  border-radius: 0;
+  border-end-end-radius: var(--mantine-radius-default);
+  border-start-end-radius: var(--mantine-radius-default);
+}
+
+.pickerControl[data-first-in-range][data-last-in-range] {
+  border-radius: var(--mantine-radius-default);
+}
+
+.timePicker,
+.dateTimePicker {
+  width: max-content;
+}
+
+.datePickerRoot {
+  display: flex;
+  font-size: var(--mantine-font-size-sm);
+}
+
+.dateTimePicker {
+  display: grid;
+  gap: var(--mantine-spacing-sm);
+}
+
+.timeWrapper {
+  display: flex;
+  align-items: stretch;
+  margin-top: var(--mantine-spacing-md);
+}
+
+.timeInput {
+  flex: 1;
+  margin-inline-end: var(--mantine-spacing-md);
+}
+
+.presetsList {
+  display: flex;
+  flex-direction: column;
+  border-inline-end: 1px solid var(--mantine-color-default-border);
+  padding-inline-end: 0.5em;
+  margin-inline-end: 0.5em;
+}
+
+.presetButton {
+  padding: 0.52em 0.8em;
+  border-radius: var(--mantine-radius-default);
+  font-size: inherit;
+  white-space: nowrap;
+}
+
+.presetButton:hover {
+  background-color: var(--mantine-color-gray-light-hover);
+}
+
+.timePickerPresetsGroup {
+  margin-bottom: var(--mantine-spacing-xs);
+}
+
+.dropdown {
+  padding: var(--mantine-spacing-xs);
+}
+
+.placeholder {
+  color: var(--mantine-color-placeholder);
+}
+
+.timeGridControl {
+  text-align: center;
+  padding-inline: 1em;
+  padding-block: 0.25em;
+  border: 1px solid var(--mantine-color-default-border);
+  background-color: var(--mantine-color-default);
+  color: var(--mantine-color-default-color);
+  border-radius: var(--mantine-radius-default);
+  font-size: var(--mantine-font-size-sm);
+}
+
+.timeGridControl:not(:disabled):not([data-disabled]):not([data-active]):hover {
+  background-color: var(--mantine-color-default-hover);
+}
+
+.timeGridControl[data-active] {
+  background-color: var(--mantine-primary-color-filled);
+  color: var(--mantine-color-white);
+  border-color: transparent;
+}
+
+.timeGridControl[data-active]:not(:disabled):not([data-disabled]):hover {
+  background-color: var(--mantine-primary-color-filled-hover);
+}
+
+.timeGridControl:disabled,
+.timeGridControl[data-disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.timePickerFieldsRoot {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  overflow: hidden;
+}
+
+.timePickerFieldsGroup {
+  display: flex;
+  align-items: center;
+  height: calc(var(--input-height) - 15px);
+}
+
+.timePickerField {
+  width: calc(2ch + 0.3em);
+  caret-color: transparent;
+  font-variant-numeric: tabular-nums;
+  position: relative;
+  height: 100%;
+  line-height: 1;
+  padding-inline: 0.15em;
+  border: 0;
+  text-align: center;
+  text-align-last: center;
+  background-color: transparent;
+  color: var(--input-color);
+  border-radius: 2px;
+  appearance: none;
+}
+
+.timePickerField[data-am-pm] {
+  width: auto;
+}
+
+.timePickerField:disabled {
+  cursor: not-allowed;
+}
+
+.timePickerField::selection {
+  background-color: transparent;
+}
+
+.timePickerField::placeholder {
+  opacity: 1;
+  color: inherit;
+}
+
+.timePickerField:focus {
+  background-color: var(--mantine-primary-color-filled);
+  color: var(--mantine-color-white);
+  outline: 0;
+}
+
+.timePickerField:focus::placeholder {
+  color: var(--mantine-color-white);
+}
+
+.timePickerDropdown {
+  padding: 4px;
+}
+
+.timePickerControlsListGroup {
+  display: flex;
+  gap: 4px;
+}
+
+.timePickerControlsList {
+  display: flex;
+  flex-direction: column;
+}
+
+.timePickerControl {
+  text-align: center;
+  min-width: 2.5em;
+  width: max-content;
+  height: 2em;
+  border-radius: var(--mantine-radius-default);
+  font-size: var(--mantine-font-size-sm);
+}
+
+.timePickerControl[data-active] {
+  background-color: var(--mantine-primary-color-filled);
+  color: var(--mantine-color-white);
+}
+
+.timePickerControl:not([data-active]):hover {
+  color: var(--mantine-color-bright);
+  background-color: var(--mantine-color-gray-light-hover);
+}
+
+.miniCalendarRoot {
+  width: fit-content;
+  display: flex;
+  align-items: center;
+  font-size: var(--mantine-font-size-sm);
+}
+
+.miniCalendarDays {
+  display: flex;
+  font-size: inherit;
+}
+
+.miniCalendarDay {
+  display: flex;
+  min-width: 3em;
+  gap: 0.5em;
+  font-size: inherit;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1;
+  padding: 0.75em;
+  border-radius: var(--mantine-radius-default);
+}
+
+.miniCalendarDay[data-selected] {
+  color: var(--mantine-primary-color-contrast);
+  background-color: var(--mantine-primary-color-filled);
+}
+
+.miniCalendarDay[data-selected]:not([data-disabled]):hover {
+  background-color: var(--mantine-primary-color-filled-hover);
+}
+
+.miniCalendarDay[data-disabled] {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.miniCalendarDay:not([data-disabled]):not([data-selected]):hover {
+  background-color: var(--mantine-color-gray-light-hover);
+}
+
+.miniCalendarDayMonth {
+  font-size: 0.75em;
+  font-weight: var(--mantine-font-weight-medium);
+  opacity: 0.65;
+}
+
+.miniCalendarDayNumber {
+  font-size: 0.9em;
+  font-weight: var(--mantine-font-weight-medium);
+}
+
+.miniCalendarControl {
+  align-self: stretch;
+  font-size: inherit;
+  width: 2em;
+  border-radius: var(--mantine-radius-default);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--mantine-color-bright);
+}
+
+.miniCalendarControl[data-disabled] {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.miniCalendarControl:not([data-disabled]):hover {
+  background-color: var(--mantine-color-gray-light-hover);
+}
+
+.miniCalendarControl [data-chevron] {
+  font-size: inherit;
+  width: 60%;
+}
+
+.miniCalendarControl[data-direction='previous'] [data-chevron] {
+  transform: rotate(90deg);
+}
+
+.miniCalendarControl[data-direction='next'] [data-chevron] {
+  transform: rotate(-90deg);
+}

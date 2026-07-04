@@ -1,0 +1,222 @@
+import { MenuDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.Menu)
+
+## Usage
+
+<Demo data={MenuDemos.usage} />
+
+## Submenus
+
+<Demo data={MenuDemos.sub} demoProps={{ defaultExpanded: false }} />
+
+## Search
+
+`Menu.Search` renders a search input inside the dropdown. Focus stays on the input while
+`ArrowUp`/`ArrowDown` move a highlight through items, and `Enter` triggers the highlighted item.
+Filtering is controlled by you — pass `value` and `onChange` and filter `Menu.Item` children
+based on the query. By default, the search value is cleared automatically after the menu close
+transition completes.
+
+<Demo data={MenuDemos.search} />
+
+The same approach works with submenus. To keep a parent visible when a nested item matches,
+include the parent in the filtered tree if any of its descendants match the query:
+
+<Demo data={MenuDemos.searchNested} demoProps={{ defaultExpanded: false }} />
+
+## Checkbox items
+
+`Menu.CheckboxItem` renders a menu item with a check indicator. Manage state with `checked`/`onChange`
+or use `defaultChecked` for an uncontrolled value. By default, clicking a checkbox item does not
+close the menu:
+
+<Demo data={MenuDemos.checkboxItem} />
+
+## Checkbox group
+
+Wrap `Menu.CheckboxItem` components in `Menu.CheckboxGroup` to manage multi-select state with a
+single `value: string[]` / `onChange` pair (or `defaultValue` for uncontrolled). Each item needs
+a `value`:
+
+<Demo data={MenuDemos.checkboxGroup} />
+
+## Radio items
+
+`Menu.RadioItem` represents a single option inside a `Menu.RadioGroup`. The group manages
+the selected value via `value`/`onChange` (or `defaultValue` for uncontrolled):
+
+<Demo data={MenuDemos.radioItem} />
+
+## Aligning labels of items with and without indicators
+
+Use the `alignItemsLabels` prop on `Menu` to control how indicator slot space is reserved.
+This is useful when mixing `Menu.Item` with `Menu.CheckboxItem` or `Menu.RadioItem`:
+
+- `alignItemsLabels="with-indicators"` (default) — reserves indicator space on checkbox/radio items only
+- `alignItemsLabels="all"` — reserves indicator space on every `Menu.Item`
+- `alignItemsLabels="none"` — reserves indicator space only on items that currently show an indicator
+
+<Demo data={MenuDemos.alignItemsLabels} />
+
+## Custom check icon
+
+Use the `checkIcon` prop to replace the default indicator rendered by `Menu.CheckboxItem` and
+`Menu.RadioItem`. Setting `checkIcon` on `Menu` applies to all checkbox/radio items in the
+dropdown:
+
+<Demo data={MenuDemos.checkIcon} />
+
+## Type-ahead navigation
+
+When focus is inside the dropdown and `Menu.Search` is not used, pressing a printable character
+key moves focus to the next menu item whose label starts with the typed character. Pressing the
+same character again cycles through matches. Multiple characters typed in quick succession (within
+500ms) match items whose labels start with the full typed string. Disabled items are skipped.
+
+## Context menu
+
+Use `Menu.ContextMenu` to open the menu dropdown at the cursor position on right-click.
+It replaces `Menu.Target` and wraps the element that should respond to the `contextmenu` event.
+The browser's default context menu is suppressed, and the Mantine `Menu.Dropdown` is positioned
+at the cursor instead. Right-clicking again repositions the dropdown to the new coordinates:
+
+<Demo data={MenuDemos.contextMenu} />
+
+### Touch devices
+
+On touch devices (most notably iOS Safari, which does not fire the `contextmenu` event),
+the dropdown is opened with a long-press instead. Use the `longPressDelay` prop to control
+how long the element must be pressed before the dropdown opens (default `500`ms).
+
+## Controlled
+
+The dropdown's opened state can be controlled with the `opened` and `onChange` props:
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue'
+import { Menu, Button } from '@mantine-vue/core'
+
+const opened = ref(false)
+</script>
+
+<template>
+  <Menu :opened="opened" @change="opened = $event">
+    <Menu.Target>
+      <Button>Toggle</Button>
+    </Menu.Target>
+    <Menu.Dropdown>
+      <!-- Menu content -->
+    </Menu.Dropdown>
+  </Menu>
+</template>
+```
+
+## Show menu on hover
+
+Set `trigger="hover"` to reveal the dropdown when hovering over the menu target and dropdown.
+The `closeDelay` and `openDelay` props can be used to control open and close delay in ms.
+
+Menu with `trigger="hover"` is not accessible — use `trigger="click-hover"` if you need
+keyboard support.
+
+<Demo data={MenuDemos.hover} />
+
+Use `trigger="click-hover"` to open on hover on desktop and on click on mobile devices:
+
+<Demo data={MenuDemos.clickHover} />
+
+## Disabled items
+
+<Demo data={MenuDemos.disabled} />
+
+## Dropdown position
+
+<Demo data={MenuDemos.positionConfigurator} />
+
+## Transitions
+
+<Demo data={MenuDemos.transitions} />
+
+## Custom component as Menu.Item
+
+Set the `component` prop to render `Menu.Item` as any element or component:
+
+<Demo data={MenuDemos.component} />
+
+## Custom component as target
+
+<Demo data={MenuDemos.customControl} />
+
+## Accessibility
+
+Menu follows [WAI-ARIA recommendations](https://www.w3.org/WAI/ARIA/apg/patterns/menu-button/examples/menu-button-links/):
+
+- Dropdown element has `role="menu"` and `aria-labelledby="target-id"` attributes
+- Target element has `aria-haspopup="menu"`, `aria-expanded`, `aria-controls="dropdown-id"` attributes
+- Menu item has `role="menuitem"` attribute
+
+### Navigation
+
+If you are using the Menu to build navigation, use the options from the demo below to follow the
+[WAI-ARIA recommendations for navigation](https://www.w3.org/WAI/ARIA/apg/patterns/disclosure/examples/disclosure-navigation/).
+
+<Demo data={MenuDemos.navigation} />
+
+### Keyboard interactions
+
+<KeyboardEventsTable
+  data={[
+    {
+      key: 'Escape',
+      description: 'Closes dropdown',
+      condition: 'Focus within dropdown',
+    },
+    {
+      key: 'Space/Enter',
+      description: 'Opens/closes dropdown',
+      condition: 'Focus on target element',
+    },
+    {
+      key: 'ArrowUp',
+      description: 'Moves focus to previous menu item',
+      condition: 'Focus within dropdown',
+    },
+    {
+      key: 'ArrowDown',
+      description: 'Moves focus to next menu item',
+      condition: 'Focus within dropdown',
+    },
+    {
+      key: 'Home',
+      description: 'Moves focus to first menu item',
+      condition: 'Focus within dropdown',
+    },
+    {
+      key: 'End',
+      description: 'Moves focus to last menu item',
+      condition: 'Focus within dropdown',
+    },
+    {
+      key: 'ArrowUp/ArrowDown',
+      description: 'Moves highlight to previous/next menu item without leaving the input',
+      condition: 'Focus on Menu.Search',
+    },
+    {
+      key: 'Enter',
+      description: 'Triggers the highlighted item',
+      condition: 'Focus on Menu.Search',
+    },
+    {
+      key: 'Printable character',
+      description:
+        'Moves focus to the next item whose label starts with the typed character. Pressing the same character cycles through matches. Multiple characters typed within 500ms match items whose labels start with the typed string.',
+      condition: 'Focus within dropdown, no Menu.Search',
+    },
+  ]}
+/>
+
+Set `menuItemTabIndex={0}` to also support `Tab` and `Shift + Tab` navigation.

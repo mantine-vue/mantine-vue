@@ -1,0 +1,83 @@
+import { PinInputDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.PinInput)
+
+## Usage
+
+<Demo data={PinInputDemos.configurator} />
+
+## Controlled
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue'
+import { PinInput } from '@mantine-vue/core'
+
+const value = ref('')
+</script>
+
+<template>
+  <PinInput :value="value" @change="(v) => (value = v)" />
+</template>
+```
+
+## Uncontrolled
+
+`PinInput` can be used with uncontrolled forms the same way as a native input element.
+Set the `name` attribute to include pin input value in `FormData` object on form submission.
+To control the initial value in uncontrolled forms, use the `defaultValue` prop.
+
+```vue
+<script setup lang="ts">
+import { PinInput } from '@mantine-vue/core'
+
+function handleSubmit(event: Event) {
+  event.preventDefault()
+  const formData = new FormData(event.currentTarget as HTMLFormElement)
+  console.log('PIN value:', formData.get('pin'))
+}
+</script>
+
+<template>
+  <form @submit="handleSubmit">
+    <PinInput name="pin" :length="4" oneTimeCode />
+    <button type="submit">Submit</button>
+  </form>
+</template>
+```
+
+## Regex type
+
+You can use a regular expression to validate user input. Characters that do not match the given expression
+will be disregarded. For example, to create a `PinInput` that will accept only numbers from `0` to `3`,
+set `:type="/^[0-3]+/"`:
+
+<Demo data={PinInputDemos.regexp} />
+
+## One time code
+
+Some operating systems expose the last received SMS code to be used by applications like your keyboard.
+If the current form input asks for this code, your keyboard adapts and proposes the code as a keyboard suggestion.
+The `oneTimeCode` prop makes your input set `autocomplete="one-time-code"` which allows using that feature.
+
+```vue
+<template>
+  <PinInput oneTimeCode />
+</template>
+```
+
+<StylesApiSelectors component="PinInput" />
+
+<Demo data={PinInputDemos.stylesApi} />
+
+## Accessibility
+
+Inputs do not have associated labels. Set `aria-label` to make the component visible to screen readers:
+
+```vue
+<template>
+  <PinInput aria-label="One time code" />
+</template>
+```

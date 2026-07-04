@@ -1,0 +1,201 @@
+import { SpotlightDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.Spotlight)
+
+## Installation
+
+<InstallScript packages="@mantine-vue/spotlight" />
+
+After installation import package styles at the root of your application:
+
+```ts
+import '@mantine-vue/core/styles.css'
+// ‼️ import spotlight styles after core package styles
+import '@mantine-vue/spotlight/styles.css'
+```
+
+## Usage
+
+The `Spotlight` component can be used as a search or as a command center for your application.
+It is used as a search on the mantine.dev website; you can trigger it with the `Ctrl + K` shortcut.
+`Spotlight` is based on the [Modal](/core/modal) component and supports most of its props.
+
+<Demo data={SpotlightDemos.usage} />
+
+## Actions
+
+The `@mantine-vue/spotlight` package exports an object with actions that can be used to control the spotlight:
+
+```ts
+import { spotlight } from '@mantine-vue/spotlight'
+
+spotlight.open() // -> opens spotlight
+spotlight.close() // -> closes spotlight
+spotlight.toggle() // -> toggles spotlight opened state
+```
+
+These actions can be passed to event listeners or used anywhere in your application
+(not limited to Vue components):
+
+```vue
+<script setup lang="ts">
+import { Button } from '@mantine-vue/core'
+import { spotlight } from '@mantine-vue/spotlight'
+</script>
+
+<template>
+  <Button @click="spotlight.open()">Open spotlight</Button>
+</template>
+```
+
+You can also import actions directly from the `@mantine-vue/spotlight` package if you prefer this syntax:
+
+```ts
+import { closeSpotlight, openSpotlight, toggleSpotlight } from '@mantine-vue/spotlight'
+
+openSpotlight() // same as spotlight.open()
+closeSpotlight() // same as spotlight.close()
+toggleSpotlight() // same as spotlight.toggle()
+```
+
+## Spotlight store
+
+The `spotlight` object documented above uses the default store; it works fine if you have only one spotlight
+in your application. In case you need multiple spotlights, you need to create your own store for each of them:
+
+```vue
+<script setup lang="ts">
+import { Button } from '@mantine-vue/core'
+import { createSpotlight, Spotlight } from '@mantine-vue/spotlight'
+
+// You can import `firstStore`/`firstSpotlight` and `secondStore`/`secondSpotlight`
+// anywhere in your application and use `open`, `close` and `toggle` actions
+// to control spotlight the same way as with the default `spotlight` object
+const [firstStore, firstSpotlight] = createSpotlight()
+const [secondStore, secondSpotlight] = createSpotlight()
+</script>
+
+<template>
+  <Button @click="firstSpotlight.open()">Open first spotlight</Button>
+  <Button @click="secondSpotlight.open()">Open second spotlight</Button>
+
+  <Spotlight :store="firstStore" :actions="[]" />
+  <Spotlight :store="secondStore" :actions="[]" />
+</template>
+```
+
+## Keyboard shortcuts
+
+`Spotlight` uses a `window` keydown listener to handle keyboard shortcuts.
+By default, `Ctrl + K` and `Cmd + K` shortcuts are used to open spotlight; you can change them
+with the `shortcut` prop:
+
+```vue
+<script setup lang="ts">
+import { Spotlight } from '@mantine-vue/spotlight'
+</script>
+
+<template>
+  <!-- Single shortcut -->
+  <Spotlight shortcut="mod + J" :actions="[]" />
+
+  <!-- Same as on mantine.dev -->
+  <Spotlight :shortcut="['mod + K', 'mod + P', '/']" :actions="[]" />
+
+  <!-- Disable shortcut -->
+  <Spotlight :shortcut="null" :actions="[]" />
+</template>
+```
+
+## Limit prop
+
+Use the `limit` prop to limit the maximum number of actions that can be displayed at a time.
+Usually, 5–7 actions is a good number. The `limit` prop is crucial for performance in case
+you have a lot of actions; it will prevent the spotlight from rendering all of them at once.
+
+The example below renders 3000 actions, but only 7 of them are displayed at a time:
+
+<Demo data={SpotlightDemos.limit} />
+
+## Custom filter function
+
+By default, `Spotlight` uses a simple filter that matches actions by `label`, `description`, and `keywords`.
+You can customize the filtering logic by providing a custom `filter` function. The `filter` function
+receives the search query and actions array, and should return filtered actions.
+
+The custom `filter` function signature:
+
+```ts
+type SpotlightFilterFunction = (query: string, actions: SpotlightActions[]) => SpotlightActions[]
+```
+
+## Fuzzy search with fuse.js
+
+You can implement fuzzy search using [fuse.js](https://fusejs.io/) library. This is useful if you want
+to match actions even with typos or partial matches:
+
+<Demo data={SpotlightDemos.fuzzySearch} />
+
+## Scrollable actions list
+
+By default, the `Spotlight` actions list is not scrollable. If you have a lot of actions that
+you need to display at a time, set the `scrollable` and `maxHeight` props. Note that there are
+caveats with both approaches:
+
+- When the `scrollable` prop is not set, the actions list height is not limited and the spotlight
+  body will grow to fit all actions. This can result in a very long spotlight body that will
+  overflow the viewport. To prevent this, use the `limit` prop to define the maximum number of actions
+  that can be displayed at a time. Usually, 5–7 actions is a good number.
+- When the `scrollable` prop is set, the actions list height will always equal the value of the `maxHeight` prop
+  (it will not shrink if there are not enough actions to fill the space). When there are more
+  actions than can fit into the list, it will become scrollable. Scrolling logic is handled
+  by the [ScrollArea](/core/scroll-area) component.
+
+In other words, if you want the actions list to shrink, do not set the `scrollable` prop and use the `limit`
+prop. If you want the actions list to always have a fixed height, set the `scrollable` and `maxHeight` props.
+
+<Demo data={SpotlightDemos.scrollable} />
+
+## Actions groups
+
+`Spotlight` supports action groups; you can use them to group actions by category:
+
+<Demo data={SpotlightDemos.groups} />
+
+## Compound components
+
+If you need more control over spotlight rendering and logic, use compound components.
+Available components:
+
+- `Spotlight.Root` – root component, should be used as a wrapper for all other components, accepts all props to customize logic
+- `Spotlight.Search` – search input
+- `Spotlight.ActionsList` – list of actions, required to wrap all actions and actions groups
+- `Spotlight.Action` – action button
+- `Spotlight.ActionsGroup` - group of actions
+- `Spotlight.Empty` – empty state (nothing found)
+
+<Demo data={SpotlightDemos.compound} />
+
+For example, with the compound components pattern, you can customize action contents:
+
+<Demo data={SpotlightDemos.customAction} />
+
+## Fixed elements offset
+
+While `Spotlight` is open, page scroll is locked: `data-scroll-locked` is set on `<body>` together with
+a `--removed-body-scroll-bar-size` CSS variable holding the width of the scrollbar that was hidden.
+If you have fixed positioned elements in your application, use this variable to offset them so they
+do not shift when the scrollbar disappears:
+
+```css
+.fixed-element {
+  position: fixed;
+  right: 0;
+}
+
+body[data-scroll-locked] .fixed-element {
+  right: var(--removed-body-scroll-bar-size, 0px);
+}
+```

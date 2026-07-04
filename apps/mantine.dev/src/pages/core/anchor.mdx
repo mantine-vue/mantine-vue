@@ -1,0 +1,55 @@
+import { AnchorDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.Anchor)
+
+## Usage
+
+<Demo data={AnchorDemos.usage} />
+
+## Underline
+
+Use the `underline` prop to configure the `text-decoration` property. It accepts the following values:
+
+- `always` - link is always underlined
+- `hover` - link is underlined on hover
+- `never` - link is never underlined
+- `not-hover` - link is underlined when not hovered
+
+<Demo data={AnchorDemos.decoration} />
+
+You can also configure the `underline` prop for all `Anchor` components with default props:
+
+```vue
+<script setup lang="ts">
+import { Anchor, createTheme, MantineProvider } from '@mantine-vue/core'
+
+const theme = createTheme({
+  components: {
+    Anchor: Anchor.extend({
+      defaultProps: {
+        underline: 'always',
+      },
+    }),
+  },
+})
+</script>
+
+<template>
+  <MantineProvider :theme="theme">
+    <!-- Your app here -->
+  </MantineProvider>
+</template>
+```
+
+## Text props
+
+The `Anchor` component supports all [Text](/core/text) component props.
+For example, you can use the gradient variant:
+
+<Demo data={AnchorDemos.textProps} />
+
+<Polymorphic defaultElement="a" changeToElement="button" component="Anchor" withNext />
+
+<GetElementRef component="Anchor" refType="a" />

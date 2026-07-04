@@ -1,0 +1,22 @@
+import { MiniCalendarDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.MiniCalendar)
+
+## Usage
+
+<Demo data={MiniCalendarDemos.usage} />
+
+## Min and max dates
+
+Use `minDate` and `maxDate` props to limit date selection:
+
+<Demo data={MiniCalendarDemos.minMax} />
+
+## Localization
+
+You can change localization both on component level with `locale` prop and
+globally with [DatesProvider](/dates/getting-started).
+
+<Demo data={MiniCalendarDemos.locale} />

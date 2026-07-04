@@ -1,0 +1,183 @@
+import { RangeSliderDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.RangeSlider)
+
+## Usage
+
+<Demo data={RangeSliderDemos.configurator} />
+
+## Controlled
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue'
+import { RangeSlider } from '@mantine-vue/core'
+
+const value = ref<[number, number]>([20, 80])
+</script>
+
+<template>
+  <RangeSlider :value="value" @change="(v) => (value = v)" />
+</template>
+```
+
+## Uncontrolled
+
+`RangeSlider` can be used with uncontrolled forms the same way as a native input element.
+Set the `name` attribute to include range slider value in `FormData` object on form submission.
+To control the initial value in uncontrolled forms, use the `defaultValue` prop.
+
+```vue
+<script setup lang="ts">
+import { RangeSlider } from '@mantine-vue/core'
+
+function handleSubmit(event: Event) {
+  event.preventDefault()
+  const formData = new FormData(event.currentTarget as HTMLFormElement)
+  console.log('Range slider value:', formData.get('range'))
+}
+</script>
+
+<template>
+  <form @submit="handleSubmit">
+    <RangeSlider name="range" :default-value="[20, 80]" :min="0" :max="100" />
+    <button type="submit">Submit</button>
+  </form>
+</template>
+```
+
+## Disabled
+
+<Demo data={RangeSliderDemos.disabled} />
+
+## Control label
+
+To change the label behavior and appearance, set the following props:
+
+- `label` – formatter function, accepts value as an argument, set to null to disable the label, defaults to `f => f`
+- `labelAlwaysOn` – if true, the label will always be displayed; by default the label is visible only when the user is dragging
+- `labelTransitionProps` – props passed down to the [Transition](/core/transition) component, can be used to customize the label animation
+
+<Demo data={RangeSliderDemos.label} />
+
+## Min, max and step
+
+<Demo data={RangeSliderDemos.step} />
+
+## Domain
+
+By default, `min` and `max` values define the possible range of values.
+The `domain` prop allows setting the possible range of values independently of the
+`min` and `max` values:
+
+<Demo data={RangeSliderDemos.domain} />
+
+## Decimal values
+
+To use `RangeSlider` with decimal values, set the `min`, `max`, and `step` props:
+
+<Demo data={RangeSliderDemos.decimal} />
+
+## minRange
+
+Use the `minRange` prop to control the minimum range between `from` and `to` values
+in `RangeSlider`. The default value is `10`. This ensures the thumbs must be at least
+the specified distance apart:
+
+<Demo data={RangeSliderDemos.minRange} />
+
+## maxRange
+
+Use the `maxRange` prop to control the maximum range between `from` and `to` values.
+This limits how wide the selection can be. By default, `maxRange` is set to `Infinity`:
+
+<Demo data={RangeSliderDemos.maxRange} />
+
+## pushOnOverlap
+
+The `pushOnOverlap` prop controls whether the thumbs should push each other when they overlap.
+By default, `pushOnOverlap` is `true`. If you want to disable this behavior, set it to `false`.
+
+Example of `pushOnOverlap={false}`:
+
+<Demo data={RangeSliderDemos.pushOnOverlap} />
+
+## Marks
+
+Add any number of marks to the slider by setting the `marks` prop to an array of objects:
+
+```ts
+const marks = [
+  { value: 20 }, // -> displays mark on slider track
+  { value: 40, label: '40%' }, // -> adds mark label below slider track
+]
+```
+
+Note that mark value is relative to slider value, not width:
+
+<Demo data={RangeSliderDemos.marks} />
+
+## Restrict selection to marks
+
+Set `restrictToMarks` prop to restrict slider value to marks only. Note that in
+this case `step` prop is ignored:
+
+<Demo data={RangeSliderDemos.restrictToMarks} />
+
+## Inverted
+
+You can invert the track with the `inverted` prop:
+
+<Demo data={RangeSliderDemos.inverted} />
+
+## Hidden marks
+
+Hidden marks allow you to snap to specific values without displaying them visually on the track.
+This is useful when you want to create a "sticky" snapping behavior to certain values that
+you don't want to show to the user. Use this feature together with `restrictToMarks` prop:
+
+<Demo data={RangeSliderDemos.hiddenMarks} />
+
+## Accessibility
+
+`RangeSlider` component is accessible by default:
+
+- Thumbs are focusable
+- When the user uses mouse to interact with the slider, focus is moved to the slider track, when the user presses arrows focus is moved to the thumb
+- Value can be changed with arrows with step increment/decrement
+
+To label component for screen readers, add labels to thumbs:
+
+```vue
+<template>
+  <RangeSlider thumb-from-label="First thumb aria-label" thumb-to-label="Second thumb aria-label" />
+</template>
+```
+
+When `scale` is used or the displayed value is formatted (for example as a currency or
+percentage), set `thumbValueText` to provide a human-readable value for screen readers.
+It is rendered as `aria-valuetext` on both thumbs. When a function is provided, it receives
+the scaled value of the corresponding thumb:
+
+```vue
+<template>
+  <RangeSlider :scale="(v) => v * 10" :thumb-value-text="(value) => `${value}%`" />
+</template>
+```
+
+## Keyboard interactions
+
+<KeyboardEventsTable
+  data={[
+    {
+      key: 'ArrowRight/ArrowUp',
+      description: 'Increases slider value by one step',
+    },
+    {
+      key: 'ArrowLeft/ArrowDown',
+      description: 'Decreases slider value by one step',
+    },
+  ]}
+/>

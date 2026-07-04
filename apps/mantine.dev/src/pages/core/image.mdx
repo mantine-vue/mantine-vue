@@ -1,0 +1,49 @@
+import { ImageDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.Image)
+
+## Usage
+
+`Image` is a wrapper for `img` with minimal styles. By default, the image
+will take 100% of the parent width. The image size can be controlled with `w`
+and `h` [style props](/styles/style-props).
+
+<Demo data={ImageDemos.usage} />
+
+## Image height
+
+In most cases, you will need to set the image height to prevent layout jumps when
+the image is loading. You can do so with the `h` [style props](/styles/style-props).
+
+<Demo data={ImageDemos.height} />
+
+## Image fit
+
+By default the image has `object-fit: cover` style - it will
+resize to cover the parent element. To change this behavior, set `w="auto"` and `fit="contain"` props.
+
+<Demo data={ImageDemos.contain} />
+
+## Fallback image
+
+Set the `fallbackSrc` prop to display a fallback image when the image fails to load:
+
+<Demo data={ImageDemos.fallback} />
+
+## Usage with custom image component
+
+The `Image` component is a polymorphic component — its root element can be changed with the `component` prop.
+You can use it with custom image components from your framework of choice:
+
+```vue
+<script setup lang="ts">
+import { Image } from '@mantine-vue/core'
+import MyCustomImage from './MyCustomImage.vue'
+</script>
+
+<template>
+  <Image :component="MyCustomImage" src="/my-image.jpg" alt="My image" />
+</template>
+```

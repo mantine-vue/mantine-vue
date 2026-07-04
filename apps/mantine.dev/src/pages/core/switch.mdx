@@ -1,0 +1,202 @@
+import { SwitchDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.Switch)
+
+## Usage
+
+<Demo data={SwitchDemos.configurator} />
+
+## Controlled
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue'
+import { Switch } from '@mantine-vue/core'
+
+const checked = ref(false)
+</script>
+
+<template>
+  <Switch v-model:checked="checked" />
+</template>
+```
+
+## Uncontrolled
+
+`Switch` can be used with uncontrolled forms the same way as a native `input[type="checkbox"]`.
+Set the `name` attribute to include switch value in `FormData` object on form submission.
+To control the initial checked state in uncontrolled forms, use `defaultChecked` prop.
+
+Example usage of uncontrolled `Switch` with `FormData`:
+
+```vue
+<script setup lang="ts">
+import { Switch } from '@mantine-vue/core'
+
+function onSubmit(event: Event) {
+  event.preventDefault()
+  const formData = new FormData(event.currentTarget as HTMLFormElement)
+  console.log('Switch value:', !!formData.get('notifications'))
+}
+</script>
+
+<template>
+  <form @submit="onSubmit">
+    <Switch label="Enable notifications" name="notifications" default-checked />
+    <button type="submit">Submit</button>
+  </form>
+</template>
+```
+
+## States
+
+<Demo data={SwitchDemos.states} />
+
+## Inner Labels
+
+<Demo data={SwitchDemos.labels} />
+
+## Icon labels
+
+<Demo data={SwitchDemos.iconLabels} />
+
+## Thumb icon
+
+<Demo data={SwitchDemos.thumbIcon} />
+
+## With tooltip
+
+Set `refProp="rootRef"` on [Tooltip](/core/tooltip/) and other similar components to make them work with `Switch`:
+
+<Demo data={SwitchDemos.tooltip} />
+
+## Pointer cursor
+
+By default, the switch input and label have `cursor: default` (same as native `input[type="checkbox"]`).
+To change the cursor to pointer, set `cursorType` on the [theme](/theming/theme-object/):
+
+```vue
+<script setup lang="ts">
+import { createTheme, MantineProvider, Switch } from '@mantine-vue/core'
+
+const theme = createTheme({
+  cursorType: 'pointer',
+})
+</script>
+
+<template>
+  <MantineProvider :theme="theme">
+    <Switch label="Pointer cursor" />
+  </MantineProvider>
+</template>
+```
+
+<WrapperProps component="Switch" />
+
+## Switch.Group
+
+<Demo data={SwitchDemos.groupConfigurator} />
+
+## Switch.Group with uncontrolled forms
+
+`SwitchGroup` can be used with uncontrolled forms, it renders a hidden input
+which joins all checked values into a single string using `hiddenInputValuesSeparator` prop.
+
+Props for usage with uncontrolled forms:
+
+- `name` – name attribute passed to the hidden input
+- `hiddenInputValuesSeparator` – string used to join checked values into a single string, `','` by default
+- `hiddenInputProps` – additional props passed to the hidden input
+
+```vue
+<script setup lang="ts">
+import { Switch, SwitchGroup, Group } from '@mantine-vue/core'
+
+function onSubmit(event: Event) {
+  event.preventDefault()
+  const formData = new FormData(event.currentTarget as HTMLFormElement)
+  console.log('Switch group value:', formData.get('frameworks'))
+}
+</script>
+
+<template>
+  <form @submit="onSubmit">
+    <SwitchGroup label="Frameworks" name="frameworks" hidden-input-values-separator="|">
+      <Switch label="React" value="react" />
+      <Switch label="Angular" value="ng" />
+    </SwitchGroup>
+    <button type="submit">Submit</button>
+  </form>
+</template>
+```
+
+## maxSelectedValues
+
+Use `maxSelectedValues` prop to limit the number of selected values in `SwitchGroup`.
+When the limit is reached, the remaining switches are disabled and cannot be selected.
+
+<Demo data={SwitchDemos.maxSelectedValues} />
+
+## Switch.Group disabled
+
+<Demo data={SwitchDemos.groupDisabled} />
+
+## Controlled Switch.Group
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue'
+import { Switch, SwitchGroup } from '@mantine-vue/core'
+
+const value = ref<string[]>([])
+</script>
+
+<template>
+  <SwitchGroup v-model="value">
+    <Switch value="react" label="React" />
+    <Switch value="svelte" label="Svelte" />
+  </SwitchGroup>
+</template>
+```
+
+## Change styles based on checked state
+
+<Demo data={SwitchDemos.styles} />
+
+<StylesApiSelectors component="Switch" />
+
+<Demo data={SwitchDemos.stylesApi} />
+
+## Get input ref
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue'
+import { Switch } from '@mantine-vue/core'
+
+const inputRef = ref<HTMLInputElement | null>(null)
+</script>
+
+<template>
+  <Switch ref="inputRef" />
+</template>
+```
+
+## Accessibility
+
+`Switch` is a regular `input[type="checkbox"]`. Set `aria-label` if the `Switch` is used without the `label` prop:
+
+```vue
+<template>
+  <!-- not ok, input is not labeled -->
+  <Switch />
+
+  <!-- ok, input has aria-label -->
+  <Switch aria-label="I agree to everything" />
+
+  <!-- ok, input has associated label -->
+  <Switch label="I agree to everything" />
+</template>
+```

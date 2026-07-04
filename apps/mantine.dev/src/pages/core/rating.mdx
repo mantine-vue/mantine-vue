@@ -1,0 +1,72 @@
+import { RatingDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.Rating)
+
+## Usage
+
+<Demo data={RatingDemos.configurator} />
+
+## Controlled
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue'
+import { Rating } from '@mantine-vue/core'
+
+const value = ref(0)
+</script>
+
+<template>
+  <Rating :value="value" @change="(v) => (value = v)" />
+</template>
+```
+
+## Uncontrolled
+
+`Rating` can be used with uncontrolled forms the same way as a native input element.
+Set the `name` attribute to include rating value in `FormData` object on form submission.
+To control the initial value in uncontrolled forms, use the `defaultValue` prop.
+
+```vue
+<script setup lang="ts">
+import { Rating } from '@mantine-vue/core'
+
+function handleSubmit(event: Event) {
+  event.preventDefault()
+  const formData = new FormData(event.currentTarget as HTMLFormElement)
+  console.log('Rating value:', formData.get('rating'))
+}
+</script>
+
+<template>
+  <form @submit="handleSubmit">
+    <Rating name="rating" :default-value="0" />
+    <button type="submit">Submit</button>
+  </form>
+</template>
+```
+
+## Read only
+
+<Demo data={RatingDemos.readOnly} />
+
+## Allow clear
+
+Set `allowClear` prop to allow users to reset the rating to 0 by clicking the same rating value again.
+This is useful when you want to give users the ability to undo their rating selection:
+
+<Demo data={RatingDemos.allowClear} />
+
+## Fractions
+
+<Demo data={RatingDemos.fractions} />
+
+## Custom symbol
+
+<Demo data={RatingDemos.symbol} />
+
+## Symbols for each item
+
+<Demo data={RatingDemos.customSymbol} />

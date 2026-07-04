@@ -1,0 +1,32 @@
+import { AlertDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.Alert)
+
+## Usage
+
+<Demo data={AlertDemos.configurator} />
+
+## Accessibility
+
+- Root element role is set to `alert`
+- `aria-describedby` is set to the body element id; `aria-labelledby` is set to the title element id when `title` is provided
+- Set `closeButtonLabel` to make the close button accessible when using `withCloseButton`
+
+```vue
+<script setup lang="ts">
+import { Alert } from '@mantine-vue/core'
+</script>
+
+<template>
+  <!-- not ok: close button has no accessible label -->
+  <Alert withCloseButton />
+
+  <!-- ok: close button is labelled -->
+  <Alert withCloseButton closeButtonLabel="Dismiss" />
+
+  <!-- ok: no close button, closeButtonLabel not needed -->
+  <Alert />
+</template>
+```

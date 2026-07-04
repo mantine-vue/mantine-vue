@@ -1,0 +1,74 @@
+.root {
+  position: relative;
+  border: 1px dashed;
+  color: var(--mantine-color-text);
+  padding: var(--mantine-spacing-md);
+  border-radius: var(--dropzone-radius);
+  cursor: pointer;
+  user-select: none;
+  transition:
+    background-color 100ms ease,
+    border-color 100ms ease;
+
+  &:where([data-loading]),
+  &:where(:not([data-activate-on-click])) {
+    cursor: default;
+  }
+
+  @mixin where-light {
+    background-color: var(--mantine-color-white);
+    border-color: var(--mantine-color-gray-4);
+  }
+
+  @mixin where-dark {
+    background-color: var(--mantine-color-dark-6);
+    border-color: var(--mantine-color-dark-4);
+  }
+
+  @mixin hover {
+    &:where([data-activate-on-click]:not([data-loading])) {
+      @mixin where-light {
+        background-color: var(--mantine-color-gray-0);
+      }
+
+      @mixin where-dark {
+        background-color: var(--mantine-color-dark-5);
+      }
+    }
+  }
+
+  &:where([data-accept]) {
+    background-color: var(--dropzone-accept-bg);
+    border-color: var(--dropzone-accept-bg);
+    color: var(--dropzone-accept-color);
+  }
+
+  &:where([data-reject]) {
+    background-color: var(--dropzone-reject-bg);
+    border-color: var(--dropzone-reject-bg);
+    color: var(--dropzone-reject-color);
+  }
+}
+
+.inner {
+  pointer-events: none;
+  user-select: none;
+
+  &:where([data-enable-pointer-events]) {
+    pointer-events: all;
+  }
+}
+
+.fullScreen {
+  position: fixed;
+  inset: 0;
+  background-color: var(--mantine-color-body);
+  display: flex;
+  flex-direction: column;
+  padding: var(--mantine-spacing-xs);
+  transition: opacity 100ms ease;
+
+  & .dropzone {
+    flex: 1;
+  }
+}

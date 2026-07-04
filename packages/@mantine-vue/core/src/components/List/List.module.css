@@ -1,0 +1,55 @@
+.root {
+  --list-fz: var(--mantine-font-size-md);
+  --list-lh: var(--mantine-line-height-md);
+  --list-marker-gap: var(--mantine-spacing-lg);
+
+  list-style-position: outside;
+  font-size: var(--list-fz);
+  line-height: var(--list-lh);
+  margin: 0;
+  padding: 0;
+  padding-inline-start: var(--list-marker-gap);
+
+  &[data-type='none'] {
+    --list-marker-gap: 0;
+  }
+
+  &:where([data-with-padding]) {
+    padding-inline-start: calc(var(--list-marker-gap) + var(--mantine-spacing-md));
+  }
+}
+
+.item {
+  white-space: normal;
+  line-height: var(--list-lh);
+
+  &:where([data-with-icon]) {
+    list-style: none;
+
+    & .itemWrapper {
+      --li-direction: row;
+      --li-align: center;
+    }
+  }
+
+  &:where(:not(:first-of-type)) {
+    margin-top: var(--list-spacing, 0);
+  }
+
+  &:where([data-centered]) {
+    line-height: 1;
+  }
+}
+
+.itemWrapper {
+  display: inline-flex;
+  flex-direction: var(--li-direction, column);
+  align-items: var(--li-align, flex-start);
+  white-space: normal;
+}
+
+.itemIcon {
+  display: inline-block;
+  vertical-align: middle;
+  margin-inline-end: var(--mantine-spacing-sm);
+}

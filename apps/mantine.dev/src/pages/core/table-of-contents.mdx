@@ -1,0 +1,132 @@
+import { TableOfContentsDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.TableOfContents)
+
+## Usage
+
+Use the `TableOfContents` component to display a table of contents like
+in the sidebar of mantine.dev documentation. The component tracks
+the scroll position and highlights the current heading in the list.
+
+<Demo data={TableOfContentsDemos.usage} />
+
+## use-scroll-spy options
+
+`TableOfContents` is based on the `use-scroll-spy` hook.
+You can pass options down to the hook using the `scrollSpyOptions` prop.
+
+Example of customizing selector, depth and value retrieval:
+
+```vue
+<template>
+  <TableOfContents
+    :scroll-spy-options="{
+      selector: '#mdx [data-heading]',
+      getDepth: (element) => Number(element.getAttribute('data-order')),
+      getValue: (element) => element.getAttribute('data-heading') || '',
+    }"
+  />
+</template>
+
+<script setup lang="ts">
+import { TableOfContents } from '@mantine-vue/core'
+</script>
+```
+
+## Pass props to controls
+
+You can pass props down to controls rendered by the `TableOfContents` component
+with the `getControlProps` function. It accepts an object with `active` and `data`
+properties and should return a props object.
+
+Example of changing controls to links:
+
+```vue
+<template>
+  <TableOfContents
+    :get-control-props="
+      ({ active, data }) => ({
+        component: 'a',
+        href: '#' + data.id,
+        style: { color: active ? 'blue' : 'gray' },
+        children: data.value,
+      })
+    "
+  />
+</template>
+
+<script setup lang="ts">
+import { TableOfContents } from '@mantine-vue/core'
+</script>
+```
+
+## Initial data
+
+`TableOfContents` retrieves data on mount. If you want to render headings
+before the component is mounted (for example during server-side rendering),
+you can pass the `initialData` prop with an array of headings data. `initialData` is replaced
+with actual data on mount.
+
+```vue
+<template>
+  <TableOfContents
+    :initial-data="[
+      { id: '1', value: 'Heading 1', depth: 1 },
+      { id: '2', value: 'Heading 2', depth: 2 },
+      { id: '3', value: 'Heading 3', depth: 3 },
+    ]"
+  />
+</template>
+
+<script setup lang="ts">
+import { TableOfContents } from '@mantine-vue/core'
+</script>
+```
+
+## Depth offset
+
+Use the `minDepthToOffset` prop to set the minimum depth at which offset should be applied.
+By default, `minDepthToOffset` is `1`, which means that first and second level headings
+will not be offset. Set it to `0` to apply offset to all headings.
+
+To control the offset value in px, set the `depthOffset` prop:
+
+<Demo data={TableOfContentsDemos.depthOffset} />
+
+<AutoContrast component="TableOfContents" />
+
+<Demo data={TableOfContentsDemos.autoContrast} />
+
+## Styles API
+
+Example of customizing `TableOfContents` with Styles API and `data-*` attributes:
+
+<Demo data={TableOfContentsDemos.styles} />
+
+## Reinitialize
+
+By default, `TableOfContents` does not track changes in the DOM. If you want
+to update headings data after the parent component has mounted, you can use
+`reinitializeRef` to get the reinitialize function from the `use-scroll-spy` hook:
+
+```vue
+<script setup lang="ts">
+import { ref, onMounted } from 'vue'
+import { TableOfContents } from '@mantine-vue/core'
+
+const reinitializeRef = ref<(() => void) | null>(null)
+
+onMounted(() => {
+  // Call reinitialize whenever DOM headings change
+  reinitializeRef.value?.()
+})
+</script>
+
+<template>
+  <TableOfContents :reinitialize-ref="reinitializeRef" />
+</template>
+```
+
+<StylesApiSelectors component="TableOfContents" />

@@ -1,0 +1,112 @@
+.root {
+  --checkbox-size-xs: 16px;
+  --checkbox-size-sm: 20px;
+  --checkbox-size-md: 24px;
+  --checkbox-size-lg: 30px;
+  --checkbox-size-xl: 36px;
+
+  --checkbox-size: var(--checkbox-size-sm);
+  --checkbox-color: var(--mantine-primary-color-filled);
+
+  &:where([data-variant='filled']) {
+    --checkbox-icon-color: var(--mantine-color-white);
+  }
+
+  &:where([data-variant='outline']) {
+    --checkbox-icon-color: var(--checkbox-color);
+  }
+}
+
+.inner {
+  position: relative;
+  width: var(--checkbox-size);
+  height: var(--checkbox-size);
+  order: 1;
+
+  &:where([data-label-position='left']) {
+    order: 2;
+  }
+}
+
+.input {
+  appearance: none;
+  border: 1px solid transparent;
+  width: var(--checkbox-size);
+  height: var(--checkbox-size);
+  border-radius: var(--checkbox-radius, var(--mantine-radius-default));
+  padding: 0;
+  display: block;
+  margin: 0;
+  transition:
+    border-color 100ms ease,
+    background-color 100ms ease;
+  cursor: var(--mantine-cursor-type);
+  -webkit-tap-highlight-color: transparent;
+
+  @mixin where-light {
+    background-color: var(--mantine-color-white);
+    border-color: var(--mantine-color-gray-4);
+  }
+
+  @mixin where-dark {
+    background-color: var(--mantine-color-dark-6);
+    border-color: var(--mantine-color-dark-4);
+  }
+
+  &:where([data-with-error-styles][data-error]) {
+    border-color: var(--mantine-color-error);
+  }
+
+  &[data-indeterminate],
+  &:checked {
+    background-color: var(--checkbox-color);
+    border-color: var(--checkbox-color);
+
+    & + .icon {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    border-color: var(--mantine-color-disabled-border);
+    background-color: var(--mantine-color-disabled);
+
+    & + .icon {
+      color: var(--mantine-color-disabled-color);
+    }
+  }
+}
+
+.input:where([data-variant='outline']) {
+  & + .icon {
+    color: var(--checkbox-color);
+  }
+
+  &[data-indeterminate]:not(:disabled),
+  &:checked:not(:disabled) {
+    background-color: transparent;
+    border-color: var(--checkbox-color);
+
+    & + .icon {
+      color: var(--checkbox-icon-color);
+      opacity: 1;
+      transform: none;
+    }
+  }
+}
+
+.icon {
+  position: absolute;
+  inset: 0;
+  width: 60%;
+  margin: auto;
+  color: var(--checkbox-icon-color);
+  pointer-events: none;
+  transform: translateY(rem(5px)) scale(0.5);
+  opacity: 0;
+  transition:
+    transform 100ms ease,
+    opacity 100ms ease;
+}

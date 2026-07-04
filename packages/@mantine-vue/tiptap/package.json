@@ -1,0 +1,48 @@
+{
+  "name": "@mantine-vue/tiptap",
+  "version": "0.0.0",
+  "description": "Vue rich text editor based on tiptap, equivalent to @mantine/tiptap",
+  "license": "MIT",
+  "sideEffects": [
+    "*.css"
+  ],
+  "main": "./cjs/index.cjs",
+  "module": "./esm/index.mjs",
+  "types": "./lib/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./lib/index.d.mts",
+        "default": "./esm/index.mjs"
+      },
+      "require": {
+        "types": "./lib/index.d.ts",
+        "default": "./cjs/index.cjs"
+      }
+    },
+    "./styles.css": "./styles.css",
+    "./styles.layer.css": "./styles.layer.css"
+  },
+  "devDependencies": {
+    "@floating-ui/dom": "^1.7.4",
+    "@mantine-vue/core": "workspace:*",
+    "@mantine-vue/hooks": "workspace:*",
+    "@tiptap/core": ">=3.3.0",
+    "@tiptap/extension-link": ">=3.3.0",
+    "@tiptap/pm": ">=3.3.0",
+    "@tiptap/vue-3": ">=3.3.0",
+    "@vue/compiler-dom": "^3.5.0",
+    "@vue/test-utils": "^2.4.6",
+    "vue": "^3.5.0"
+  },
+  "peerDependencies": {
+    "@floating-ui/dom": "^1.0.0",
+    "@mantine-vue/core": "0.0.0",
+    "@mantine-vue/hooks": "0.0.0",
+    "@tiptap/core": ">=3.3.0",
+    "@tiptap/extension-link": ">=3.3.0",
+    "@tiptap/pm": ">=3.3.0",
+    "@tiptap/vue-3": ">=3.3.0",
+    "vue": "^3.5.0"
+  }
+}

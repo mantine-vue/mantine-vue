@@ -1,0 +1,53 @@
+import { RingProgressDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.RingProgress)
+
+## Usage
+
+The `sections` prop accepts an array of objects with `value` (0–100), `color`, and any valid SVG `<circle>` element props.
+
+**Note:** Section values should sum to 100% or less. Values exceeding 100% total will cause sections to overlap.
+
+<Demo data={RingProgressDemos.usage} />
+
+## Size, thickness & rounded caps
+
+<Demo data={RingProgressDemos.configurator} />
+
+## Section gaps
+
+Use the `sectionGap` prop to add visual separation between sections (in degrees):
+
+<Demo data={RingProgressDemos.sectionGap} />
+
+## Start angle
+
+Use `startAngle` to control where the progress starts (in degrees: `0` = right, `90` = bottom, `180` = left, `270` = top):
+
+<Demo data={RingProgressDemos.startAngle} />
+
+## Background color
+
+Use `rootColor` to customize the unfilled portion of the ring:
+
+<Demo data={RingProgressDemos.rootColor} />
+
+## Section events
+
+Each section can receive any valid SVG `<circle>` element props, including event handlers:
+
+<Demo data={RingProgressDemos.sectionsProps} />
+
+## Customize label
+
+Pass any VNode as the `label` prop:
+
+<Demo data={RingProgressDemos.label} />
+
+## Filled segment transition
+
+Set `transitionDuration` (in milliseconds) to animate section width changes:
+
+<Demo data={RingProgressDemos.transitions} />

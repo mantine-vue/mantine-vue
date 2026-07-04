@@ -1,0 +1,34 @@
+.root {
+  position: fixed;
+  top: 0;
+  inset-inline: 0;
+  z-index: var(--nprogress-z-index);
+  background-color: transparent;
+  transition: opacity 150ms ease;
+  transition-delay: 50ms;
+  opacity: 0;
+  overflow: visible;
+
+  &:where([data-mounted]) {
+    opacity: 1;
+  }
+}
+
+.section {
+  position: relative;
+  transition: width 150ms ease;
+  overflow: visible;
+
+  &::before {
+    content: '';
+    position: absolute;
+    width: 100px;
+    height: var(--progress-size);
+    top: 0;
+    inset-inline-end: 1px;
+    transform: rotate(4deg) translateY(-4px);
+    box-shadow:
+      0 0 10px var(--progress-section-color),
+      0 0 5px var(--progress-section-color);
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "name": "@mantine-vue/form",
+  "version": "0.0.0",
+  "description": "Vue form management package equivalent to @mantine/form",
+  "license": "MIT",
+  "sideEffects": false,
+  "main": "./cjs/index.cjs",
+  "module": "./esm/index.mjs",
+  "types": "./lib/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./lib/index.d.mts",
+        "default": "./esm/index.mjs"
+      },
+      "require": {
+        "types": "./lib/index.d.ts",
+        "default": "./cjs/index.cjs"
+      }
+    }
+  },
+  "dependencies": {
+    "@mantine-vue/utils": "0.0.0"
+  },
+  "devDependencies": {
+    "@mantine-vue/utils": "workspace:*",
+    "vue": "^3.5.0"
+  },
+  "peerDependencies": {
+    "vue": "^3.5.0"
+  }
+}

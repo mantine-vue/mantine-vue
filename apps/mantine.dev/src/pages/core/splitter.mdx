@@ -1,0 +1,64 @@
+import { SplitterDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.Splitter)
+
+## Usage
+
+`Splitter` component provides resizable split pane layout. It is built on top of the
+`use-splitter` hook and provides a declarative API with Styles API integration.
+
+<Demo data={SplitterDemos.usage} />
+
+## Vertical orientation
+
+Set `orientation="vertical"` to split panes vertically:
+
+<Demo data={SplitterDemos.vertical} />
+
+## Collapsible panes
+
+Set `collapsible` prop on `Splitter.Pane` to allow the pane to be collapsed
+by dragging past its minimum size. Use `splitterRef` to access the imperative API
+for programmatic collapse/expand:
+
+<Demo data={SplitterDemos.collapsible} />
+
+## Controlled
+
+To control panel sizes, use `sizes` and `onSizeChange` props:
+
+<Demo data={SplitterDemos.controlled} />
+
+## Multiple panes
+
+`Splitter` supports any number of panes. Handles are automatically rendered between panes:
+
+<Demo data={SplitterDemos.multiple} />
+
+## Nested splitters
+
+You can nest `Splitter` components to create complex layouts:
+
+<Demo data={SplitterDemos.nested} />
+
+## Redistribute
+
+When using multiple panes, set `redistribute` prop to control how space is borrowed from
+non-adjacent panels when the immediate neighbor is at its min/max:
+
+<Demo data={SplitterDemos.redistribute} />
+
+## Line size
+
+Use `lineSize` prop to control the thickness of the separator line between panes:
+
+<Demo data={SplitterDemos.lineSize} />
+
+## Without handle
+
+Set `:withHandle="false"` to hide the thumb with grip icon. The separator line
+between panes is still visible and draggable:
+
+<Demo data={SplitterDemos.withHandle} />

@@ -1,0 +1,50 @@
+.root {
+  --cb-size-xs: 18px;
+  --cb-size-sm: 22px;
+  --cb-size-md: 28px;
+  --cb-size-lg: 34px;
+  --cb-size-xl: 44px;
+
+  --cb-size: var(--cb-size-md);
+  --cb-icon-size: 70%;
+  --cb-radius: var(--mantine-radius-default);
+
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  user-select: none;
+
+  width: var(--cb-size);
+  height: var(--cb-size);
+  min-width: var(--cb-size);
+  min-height: var(--cb-size);
+  border-radius: var(--cb-radius);
+
+  @mixin where-light {
+    color: var(--mantine-color-gray-7);
+  }
+
+  @mixin where-dark {
+    color: var(--mantine-color-dark-1);
+  }
+
+  &[data-disabled],
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+}
+
+.root:where([data-variant='subtle']):where(:not([data-disabled], :disabled)) {
+  @mixin hover {
+    @mixin where-light {
+      background-color: var(--mantine-color-gray-0);
+    }
+
+    @mixin where-dark {
+      background-color: var(--mantine-color-dark-6);
+    }
+  }
+}

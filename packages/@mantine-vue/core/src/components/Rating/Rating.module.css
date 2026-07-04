@@ -1,0 +1,82 @@
+.root {
+  --rating-size-xs: 14px;
+  --rating-size-sm: 18px;
+  --rating-size-md: 20px;
+  --rating-size-lg: 28px;
+  --rating-size-xl: 32px;
+
+  display: flex;
+  width: max-content;
+
+  &:where(:has(input:disabled)) {
+    pointer-events: none;
+  }
+}
+
+.symbolGroup {
+  position: relative;
+  transition: transform 100ms ease;
+
+  &:where([data-active]) {
+    z-index: 1;
+    transform: scale(1.1);
+  }
+}
+
+.starSymbol {
+  width: var(--rating-size);
+  height: var(--rating-size);
+  display: block;
+
+  @mixin where-light {
+    fill: var(--mantine-color-gray-3);
+    stroke: var(--mantine-color-gray-3);
+  }
+
+  @mixin where-dark {
+    fill: var(--mantine-color-dark-3);
+    stroke: var(--mantine-color-dark-3);
+  }
+
+  &:where([data-filled]) {
+    fill: var(--rating-color);
+    stroke: var(--rating-color);
+  }
+}
+
+.input {
+  height: 0;
+  width: 0;
+  position: absolute;
+  overflow: hidden;
+  white-space: nowrap;
+  opacity: 0;
+  -webkit-tap-highlight-color: transparent;
+
+  &:focus-visible + label {
+    outline: 2px solid var(--mantine-primary-color-filled);
+    outline-offset: 2px;
+  }
+}
+
+.label {
+  display: block;
+  cursor: pointer;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: var(--rating-item-z-index, 0);
+  -webkit-tap-highlight-color: transparent;
+
+  &:where([data-read-only]) {
+    cursor: default;
+  }
+
+  &:where(:last-of-type) {
+    position: relative;
+  }
+}
+
+.symbolBody {
+  clip-path: var(--rating-symbol-clip-path);
+}

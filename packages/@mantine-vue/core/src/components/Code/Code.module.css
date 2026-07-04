@@ -1,0 +1,21 @@
+.root {
+  font-family: var(--mantine-font-family-monospace);
+  line-height: var(--mantine-line-height);
+  padding: 2px calc(var(--mantine-spacing-xs) / 2);
+  border-radius: var(--mantine-radius-sm);
+  font-size: var(--mantine-font-size-xs);
+  margin: 0;
+  overflow: auto;
+
+  @mixin where-light {
+    background-color: var(--code-bg, var(--mantine-color-gray-0));
+  }
+
+  @mixin where-dark {
+    background-color: var(--code-bg, var(--mantine-color-dark-6));
+  }
+
+  &[data-block] {
+    padding: var(--mantine-spacing-xs);
+  }
+}

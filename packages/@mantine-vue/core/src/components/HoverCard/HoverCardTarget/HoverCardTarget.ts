@@ -1,0 +1,42 @@
+import { cloneVNode, defineComponent, h, type VNode } from 'vue'
+import { PopoverTarget } from '../../Popover'
+import { useHoverCardContext } from '../HoverCard.context'
+
+function one(slots: any): VNode {
+  const children = slots.default?.().filter((child: VNode) => typeof child.type !== 'symbol') ?? []
+  if (children.length !== 1)
+    throw new Error(
+      'HoverCard.Target component children should be a single element or component that accepts ref',
+    )
+  return children[0]
+}
+export const HoverCardTarget = defineComponent({
+  name: 'HoverCardTarget',
+  inheritAttrs: false,
+  props: { refProp: { type: String, default: 'ref' }, eventPropsWrapperName: String },
+  setup(props, { attrs, slots }) {
+    const ctx = useHoverCardContext()
+    return () => {
+      const child = one(slots)
+      const events = { onMouseenter: ctx.openDropdown, onMouseleave: ctx.closeDropdown }
+      const cloned = cloneVNode(
+        child,
+        props.eventPropsWrapperName
+          ? {
+              [props.eventPropsWrapperName]: {
+                ...(child.props as any)?.[props.eventPropsWrapperName],
+                ...events,
+              },
+            }
+          : events,
+        true,
+      )
+      return h(PopoverTarget, { ...attrs, refProp: props.refProp }, () => cloned)
+    }
+  },
+})
+export interface HoverCardTargetProps {
+  refProp?: string
+  eventPropsWrapperName?: string
+  [key: string]: any
+}

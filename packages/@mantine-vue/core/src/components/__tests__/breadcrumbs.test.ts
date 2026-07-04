@@ -1,0 +1,41 @@
+import { describe, expect, it } from 'vitest'
+import { h } from 'vue'
+import { mount } from '@vue/test-utils'
+import { Breadcrumbs, MantineProvider } from '../../index'
+
+function withProvider(props: Record<string, any> = {}, children?: any) {
+  return mount({
+    render: () => h(MantineProvider, { env: 'test' }, () => h(Breadcrumbs, props, children)),
+  })
+}
+
+describe('@mantine-vue/core Breadcrumbs', () => {
+  it('renders breadcrumbs and separators', () => {
+    const wrapper = withProvider({ separator: '>' }, () => [
+      h('a', { href: '#1' }, 'One'),
+      h('a', { href: '#2' }, 'Two'),
+      h('span', 'Three'),
+    ])
+
+    expect(wrapper.findAll('.mantine-Breadcrumbs-breadcrumb')).toHaveLength(3)
+    expect(wrapper.findAll('.mantine-Breadcrumbs-separator')).toHaveLength(2)
+    expect(wrapper.findAll('.mantine-Breadcrumbs-separator').map((item) => item.text())).toEqual([
+      '>',
+      '>',
+    ])
+  })
+
+  it('preserves child class and sets spacing variable', () => {
+    const wrapper = withProvider({ separatorMargin: 'lg' }, () => [
+      h('button', { type: 'button', class: 'test-class' }, 'Click'),
+      h('span', 'Next'),
+    ])
+    const button = wrapper.find('button')
+
+    expect(button.classes()).toContain('test-class')
+    expect(button.classes()).toContain('mantine-Breadcrumbs-breadcrumb')
+    expect(wrapper.find('.mantine-Breadcrumbs-root').attributes('style')).toContain(
+      '--bc-separator-margin: var(--mantine-spacing-lg)',
+    )
+  })
+})

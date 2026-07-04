@@ -1,0 +1,44 @@
+import { GroupDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.Group)
+
+## Usage
+
+`Group` is a horizontal flex container. If you need a vertical flex container, use the [Stack](/core/stack)
+component instead. If you need to have full control over flex container properties, use the [Flex](/core/flex) component.
+
+<Demo data={GroupDemos.usage} />
+
+## preventGrowOverflow
+
+The `preventGrowOverflow` prop allows you to control how `Group` children should behave when there is not enough
+space to fit them all on one line. By default, children are not allowed to take more space than
+`(1 / children.length) * 100%` of parent width (`preventGrowOverflow` is set to `true`). To change
+this behavior, set `preventGrowOverflow` to `false` and children will be allowed to grow and take
+as much space as they need.
+
+<Demo data={GroupDemos.preventGrowOverflow} />
+
+## Group children
+
+**Important:** `Group` works correctly only with Vue component or element nodes.
+Bare text, numbers, or fragments may have incorrect styles if the `grow` prop is set:
+
+```vue
+<!-- Invalid Group usage, do not do this -->
+<script setup lang="ts">
+import { Group } from '@mantine-vue/core'
+</script>
+
+<template>
+  <Group grow>
+    First string
+    <template>
+      <div>element inside fragment</div>
+      <div>another inside fragment</div>
+    </template>
+  </Group>
+</template>
+```

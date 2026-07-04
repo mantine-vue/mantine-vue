@@ -1,0 +1,89 @@
+.root {
+  --card-padding: var(--mantine-spacing-md);
+
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  padding: var(--card-padding);
+  color: var(--mantine-color-text);
+
+  @mixin where-light {
+    background-color: var(--mantine-color-white);
+  }
+
+  @mixin where-dark {
+    background-color: var(--mantine-color-dark-6);
+  }
+}
+
+.root:where([data-orientation='horizontal']) {
+  flex-direction: row;
+}
+
+.root:where([data-orientation='vertical']) {
+  flex-direction: column;
+}
+
+.section {
+  display: block;
+  margin-inline: calc(var(--card-padding) * -1);
+
+  @mixin where-light {
+    --border-color: var(--mantine-color-gray-3);
+  }
+
+  @mixin where-dark {
+    --border-color: var(--mantine-color-dark-4);
+  }
+}
+
+.section:where([data-orientation='vertical']):first-child {
+  margin-top: calc(var(--card-padding) * -1);
+  border-top: none !important;
+}
+
+.section:where([data-orientation='vertical']):last-child {
+  margin-bottom: calc(var(--card-padding) * -1);
+  border-bottom: none !important;
+}
+
+.section:where([data-orientation='vertical'][data-inherit-padding]) {
+  padding-inline: var(--card-padding);
+}
+
+.section:where([data-orientation='vertical'][data-with-border]) {
+  border-top: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.section:where([data-orientation='vertical']) + .section {
+  border-top: none !important;
+}
+
+.section:where([data-orientation='horizontal']) {
+  margin-block: calc(var(--card-padding) * -1);
+  margin-inline: 0;
+}
+
+.section:where([data-orientation='horizontal']):first-child {
+  margin-inline-start: calc(var(--card-padding) * -1);
+  border-inline-start: none !important;
+}
+
+.section:where([data-orientation='horizontal']):last-child {
+  margin-inline-end: calc(var(--card-padding) * -1);
+  border-inline-end: none !important;
+}
+
+.section:where([data-orientation='horizontal'][data-inherit-padding]) {
+  padding-block: var(--card-padding);
+}
+
+.section:where([data-orientation='horizontal'][data-with-border]) {
+  border-inline-start: 1px solid var(--border-color);
+  border-inline-end: 1px solid var(--border-color);
+}
+
+.section:where([data-orientation='horizontal']) + .section {
+  border-inline-start: none !important;
+}

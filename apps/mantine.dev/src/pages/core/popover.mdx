@@ -1,0 +1,154 @@
+import { PopoverDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.Popover)
+
+## Usage
+
+<Demo data={PopoverDemos.usage} />
+
+## Controlled
+
+You can control the Popover state with the `opened` and `@change` props:
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue'
+import { Button, Popover } from '@mantine-vue/core'
+
+const opened = ref(false)
+</script>
+
+<template>
+  <Popover :opened="opened" @change="opened = $event">
+    <Popover.Target>
+      <Button @click="opened = !opened">Toggle popover</Button>
+    </Popover.Target>
+    <Popover.Dropdown>Dropdown</Popover.Dropdown>
+  </Popover>
+</template>
+```
+
+Controlled example with mouse events:
+
+<Demo data={PopoverDemos.hover} />
+
+## Focus trap
+
+If you need to use interactive elements (inputs, buttons, etc.) inside `Popover.Dropdown`, set the `trapFocus` prop:
+
+<Demo data={PopoverDemos.form} />
+
+## Inline elements
+
+Enable the `inline` middleware to use `Popover` with inline elements:
+
+<Demo data={PopoverDemos.inline} />
+
+## Same width
+
+Set `width="target"` to make the Popover dropdown take the same width as the target element:
+
+<Demo data={PopoverDemos.sameWidth} />
+
+## Offset
+
+Set the `offset` prop to change the dropdown position relative to the target element:
+
+<Demo data={PopoverDemos.offset} />
+
+## Dropdown arrow
+
+Set the `withArrow` prop to add an arrow to the dropdown. The `arrowPosition` prop determines how
+the arrow is positioned relative to the target element when `position` is set to `*-start` and `*-end` values.
+
+<Demo data={PopoverDemos.arrow} />
+
+## With overlay
+
+Set the `withOverlay` prop to add an overlay behind the dropdown. You can pass additional
+configuration to the [Overlay](/core/overlay/) component with `overlayProps`:
+
+<Demo data={PopoverDemos.overlay} />
+
+## Disabled
+
+Set the `disabled` prop to prevent `Popover.Dropdown` from rendering:
+
+<Demo data={PopoverDemos.disabled} />
+
+## Click outside
+
+By default, `Popover` closes when you click outside of the dropdown. To disable this behavior, set `:close-on-click-outside="false"`.
+
+You can configure events used for click-outside detection with `clickOutsideEvents`:
+
+<Demo data={PopoverDemos.clickOutsideEvents} />
+
+## onDismiss
+
+If you need to control the opened state, but still want to close the popover on outside clicks
+and Escape key presses, use the `@dismiss` event:
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue'
+import { Button, Popover } from '@mantine-vue/core'
+
+const opened = ref(false)
+</script>
+
+<template>
+  <Popover :opened="opened" @dismiss="opened = false">
+    <Popover.Target>
+      <Button @click="opened = !opened">Toggle popover</Button>
+    </Popover.Target>
+    <Popover.Dropdown>Dropdown</Popover.Dropdown>
+  </Popover>
+</template>
+```
+
+## Initial focus
+
+Popover uses the [FocusTrap](/core/focus-trap/) component to manage focus.
+Add the `data-autofocus` attribute to the element that should receive initial focus:
+
+```vue
+<template>
+  <Popover>
+    <Popover.Target>
+      <button type="button">Target</button>
+    </Popover.Target>
+    <Popover.Dropdown>
+      <input />
+      <input data-autofocus />
+      <input />
+    </Popover.Dropdown>
+  </Popover>
+</template>
+```
+
+## Accessibility
+
+Popover follows [WAI-ARIA recommendations](https://www.w3.org/TR/wai-aria-practices-1.2/#dialog_modal):
+
+- Dropdown element has `role="dialog"` and `aria-labelledby` attributes
+- Target element has `aria-haspopup="dialog"`, `aria-expanded`, and `aria-controls` attributes
+
+## Keyboard interactions
+
+<KeyboardEventsTable
+  data={[
+    {
+      key: 'Escape',
+      description: 'Closes dropdown',
+      condition: 'Focus within dropdown',
+    },
+    {
+      key: 'Space/Enter',
+      description: 'Opens/closes dropdown',
+      condition: 'Focus on target element',
+    },
+  ]}
+/>

@@ -1,0 +1,50 @@
+import { TimelineDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.Timeline)
+
+## Usage
+
+<Demo data={TimelineDemos.usage} />
+
+## Line and bullet props
+
+Control the timeline appearance with the following props:
+
+- `active` – index of the current active element; all elements before this index will be highlighted with `color`
+- `color` – color from theme that should be used to highlight active items, defaults to `theme.primaryColor`
+- `lineWidth` – controls line width and bullet border
+- `bulletSize` – bullet width, height and border-radius
+- `align` – defines the line and bullets position relative to content, also sets text-align
+
+<Demo data={TimelineDemos.configurator} />
+
+## Bullet as Vue node
+
+<Demo data={TimelineDemos.bullet} />
+
+## Wrap Timeline.Item
+
+`Timeline` component relies on `Timeline.Item` order. Wrapping `Timeline.Item` is not supported.
+Instead, you will need to use different approaches:
+
+```vue
+<script setup lang="ts">
+import { Timeline } from '@mantine-vue/core'
+
+// Create a separate component for children
+const WillWork = { template: '<div>This will work as expected!</div>' }
+</script>
+
+<template>
+  <Timeline :active="1">
+    <Timeline.Item title="Regular item">First item</Timeline.Item>
+    <!-- Wrapping Timeline.Item directly is not supported -->
+    <Timeline.Item title="Works as expected">
+      <WillWork />
+    </Timeline.Item>
+    <Timeline.Item title="Regular item">Third item</Timeline.Item>
+  </Timeline>
+</template>
+```

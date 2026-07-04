@@ -1,0 +1,76 @@
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.GuideVueRouter)
+
+# Usage with Vue Router
+
+Vue Router is the recommended router for client-rendered Vue SPAs. Mantine Vue provider setup should stay above `RouterView` so every route shares the same theme and color scheme context.
+
+## Install packages
+
+<InstallScript packages="@mantine-vue/core @mantine-vue/hooks vue-router" />
+
+## Router setup
+
+```ts
+// src/router.ts
+import { createRouter, createWebHistory } from 'vue-router'
+import HomePage from './pages/HomePage.vue'
+import AboutPage from './pages/AboutPage.vue'
+
+export const router = createRouter({
+  history: createWebHistory(),
+  routes: [
+    { path: '/', component: HomePage },
+    { path: '/about', component: AboutPage },
+  ],
+})
+```
+
+## Provider setup
+
+```ts
+// src/main.ts
+import { createApp, h } from 'vue'
+import { MantineProvider } from '@mantine-vue/core'
+import App from './App.vue'
+import { router } from './router'
+import { theme } from './theme'
+import '@mantine-vue/core/styles.css'
+import './styles.css'
+
+createApp({
+  render: () => h(MantineProvider, { theme, defaultColorScheme: 'auto' }, () => h(App)),
+})
+  .use(router)
+  .mount('#app')
+```
+
+## Layout setup
+
+```vue
+<!-- src/App.vue -->
+<script setup lang="ts">
+import { RouterView } from 'vue-router'
+import { AppShell, Anchor, Group } from '@mantine-vue/core'
+</script>
+
+<template>
+  <AppShell header="{ height: 60 }" padding="md">
+    <AppShellHeader>
+      <Group h="100%" px="md">
+        <Anchor href="/">Home</Anchor>
+        <Anchor href="/about">About</Anchor>
+      </Group>
+    </AppShellHeader>
+    <AppShellMain>
+      <RouterView />
+    </AppShellMain>
+  </AppShell>
+</template>
+```
+
+## Template
+
+Use `vue-router-template` when you need a routed SPA starter with shared layout, two routes, provider setup, and global styles.

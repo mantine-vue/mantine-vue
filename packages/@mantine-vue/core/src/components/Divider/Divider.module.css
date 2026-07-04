@@ -1,0 +1,62 @@
+.root {
+  --divider-size-xs: 1px;
+  --divider-size-sm: 2px;
+  --divider-size-md: 3px;
+  --divider-size-lg: 4px;
+  --divider-size-xl: 5px;
+  --divider-size: var(--divider-size-xs);
+
+  @mixin where-light {
+    --divider-color: var(--mantine-color-gray-3);
+  }
+
+  @mixin where-dark {
+    --divider-color: var(--mantine-color-dark-4);
+  }
+
+  &:where([data-orientation='horizontal']) {
+    border-top: var(--divider-size) var(--divider-border-style, solid) var(--divider-color);
+  }
+
+  &:where([data-orientation='vertical']) {
+    border-inline-start: var(--divider-size) var(--divider-border-style, solid) var(--divider-color);
+    height: auto;
+    align-self: stretch;
+  }
+
+  &:where([data-with-label]) {
+    border: 0;
+  }
+}
+
+.label {
+  display: flex;
+  align-items: center;
+  font-size: var(--mantine-font-size-xs);
+  color: var(--mantine-color-dimmed);
+  white-space: nowrap;
+
+  &:where([data-position='left'])::before {
+    display: none;
+  }
+
+  &:where([data-position='right'])::after {
+    display: none;
+  }
+
+  &::before {
+    content: '';
+    flex: 1;
+    height: 1px;
+    border-top: var(--divider-size) var(--divider-border-style, solid) var(--divider-color);
+    margin-inline-end: var(--mantine-spacing-xs);
+  }
+
+  &::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    border-top: var(--divider-size) var(--divider-border-style, solid) var(--divider-color);
+    margin-inline-start: var(--mantine-spacing-xs);
+  }
+}

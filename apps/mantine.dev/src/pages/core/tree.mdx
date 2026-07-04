@@ -1,0 +1,127 @@
+import { TreeDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.Tree)
+
+## Usage
+
+The `Tree` component is used to display hierarchical data. It has minimal styling by default;
+you can customize styles with [Styles API](/styles/styles-api).
+
+<Demo data={TreeDemos.usage} />
+
+## Data prop
+
+Data passed to the `data` prop should follow these rules:
+
+- Data must be a stable reference (or a reactive ref)
+- Data must be an array
+- Each item in the array represents a node in the tree
+- Each node must be an object with `value` and `label` keys
+- Each node can have a `children` key with an array of child nodes
+- The `value` of each node must be unique
+
+```vue
+<script setup lang="ts">
+import { Tree, type TreeNodeData } from '@mantine-vue/core'
+
+// ✅ Valid data, all values are unique
+const data: TreeNodeData[] = [
+  {
+    value: 'src',
+    label: 'src',
+    children: [
+      { value: 'src/components', label: 'components' },
+      { value: 'src/hooks', label: 'hooks' },
+    ],
+  },
+  { value: 'package.json', label: 'package.json' },
+]
+</script>
+
+<template>
+  <Tree :data="data" />
+</template>
+```
+
+## renderNode
+
+Use the `renderNode` prop to customize node rendering.
+The function receives a `RenderTreeNodePayload` object with the following key properties:
+
+- `node` — the node data
+- `expanded` — whether the node is expanded
+- `hasChildren` — whether the node has children
+- `selected` — whether the node is selected
+- `isLoading` — whether children are being loaded
+- `isRoot` — whether the node is at the root level
+- `elementProps` — props to spread onto the root element (click handler, aria attrs, styles)
+- `tree` — the tree controller (returned by `useTree`)
+- `dragHandleProps` — drag handle props when `withDragHandle` is set
+
+## useTree hook
+
+`useTree` can be used to control the selected and expanded state of the tree.
+
+```vue
+<script setup lang="ts">
+import { Tree, useTree } from '@mantine-vue/core'
+import { data } from './data'
+
+const tree = useTree()
+</script>
+
+<template>
+  <Tree :data="data" :tree="tree" />
+</template>
+```
+
+The hook returns a `TreeController` object with methods like `expandAllNodes`, `collapseAllNodes`,
+`checkNode`, `uncheckNode`, `toggleExpanded`, `isNodeChecked`, `isNodeIndeterminate`, and more.
+
+<Demo data={TreeDemos.controller} />
+
+## Checked state
+
+`Tree` can display checked state using `Checkbox.Indicator` in the `renderNode` function:
+
+<Demo data={TreeDemos.checked} />
+
+To check/uncheck all nodes, use `checkAllNodes` and `uncheckAllNodes`:
+
+<Demo data={TreeDemos.checkAllNodes} />
+
+## Initial expanded state
+
+Use `getTreeExpandedState` to generate an initial expanded state from data.
+Pass an array of node values to expand, or `'*'` to expand all:
+
+```ts
+import { getTreeExpandedState } from '@mantine-vue/core'
+
+// Expand two specific nodes
+getTreeExpandedState(data, ['src', 'src/components'])
+
+// Expand all nodes
+getTreeExpandedState(data, '*')
+```
+
+<Demo data={TreeDemos.expandedState} />
+
+## Async loading
+
+Set `hasChildren: true` on a node without providing `children` to enable lazy loading.
+When the node is first expanded, the `onLoadChildren` callback passed to `useTree` is called.
+Use `mergeAsyncChildren` to splice the loaded children into your data:
+
+<Demo data={TreeDemos.asyncLoading} />
+
+## Search and filter
+
+Use `filterTreeData` to filter tree data based on a search query. Matching nodes and
+their ancestors are preserved in the result:
+
+<Demo data={TreeDemos.searchFilter} />
+
+<StylesApiSelectors component="Tree" />

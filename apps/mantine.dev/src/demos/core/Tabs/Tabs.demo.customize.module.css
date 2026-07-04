@@ -1,0 +1,32 @@
+.tab {
+  position: relative;
+  border: 1px solid var(--mantine-color-default-border);
+  background-color: var(--mantine-color-body);
+}
+
+.tab:first-of-type {
+  border-radius: 4px 0 0 4px;
+}
+
+.tab:last-of-type {
+  border-radius: 0 4px 4px 0;
+}
+
+.tab + .tab {
+  border-left-width: 0;
+}
+
+.tab:hover {
+  background-color: var(--mantine-color-default-hover);
+}
+
+.tab[data-active] {
+  z-index: 1;
+  background-color: var(--mantine-color-blue-filled);
+  border-color: var(--mantine-color-blue-filled);
+  color: var(--mantine-color-white);
+}
+
+.tab[data-active]:hover {
+  background-color: var(--mantine-color-blue-filled-hover);
+}

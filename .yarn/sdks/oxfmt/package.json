@@ -1,0 +1,16 @@
+{
+  "name": "oxfmt",
+  "version": "0.54.0-sdk",
+  "main": "dist/index.js",
+  "type": "commonjs",
+  "bin": {
+    "oxfmt": "bin/oxfmt"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
+  }
+}

@@ -1,0 +1,30 @@
+import { OverlayDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.Overlay)
+
+## Usage
+
+`Overlay` takes 100% of the width and height of the parent container or viewport if the `fixed` prop is set.
+Set the `color` and `backgroundOpacity` props to change the `Overlay` background-color. Note that the `backgroundOpacity` prop
+does not change the CSS opacity property; it changes the background-color. For example, if you set
+`color="#000"` and `:background-opacity="0.85"`, the background-color will be `rgba(0, 0, 0, 0.85)`:
+
+<Demo data={OverlayDemos.usage} />
+
+## Gradient
+
+Set the `gradient` prop to use background-image instead of background-color. When the `gradient` prop is set,
+the `color` and `backgroundOpacity` props are ignored.
+
+<Demo data={OverlayDemos.gradient} />
+
+## Blur
+
+Set the `blur` prop to add `backdrop-filter: blur({value})` styles.
+Note that `backdrop-filter` [is not supported in all browsers](https://caniuse.com/css-backdrop-filter).
+
+<Demo data={OverlayDemos.blur} />
+
+<Polymorphic defaultElement="div" changeToElement="a" component="Overlay" withNext />

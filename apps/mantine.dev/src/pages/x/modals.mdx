@@ -1,0 +1,155 @@
+import { ModalsDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.Modals)
+
+## Installation
+
+<InstallScript packages="@mantine-vue/modals" />
+
+## Setup ModalsProvider
+
+Wrap your app with the `ModalsProvider` component:
+
+```vue
+<script setup lang="ts">
+import { ModalsProvider } from '@mantine-vue/modals'
+</script>
+
+<template>
+  <ModalsProvider>
+    <!-- Your app here -->
+  </ModalsProvider>
+</template>
+```
+
+## Confirm modal
+
+The `@mantine-vue/modals` package includes a special modal that can be used for confirmations.
+The component includes confirm and cancel buttons and supports children to display additional
+information about the action. Use the `modals.openConfirmModal` function to open a confirm modal:
+
+<Demo data={ModalsDemos.confirm} />
+
+`modals.openConfirmModal` accepts one argument with the following properties:
+
+- `modalId` – modal id, defaults to a random id, can be used to close the modal programmatically
+- `children` – additional modal content displayed before actions (a VNode, array of VNodes, or a function that returns one)
+- `onCancel` – called when the cancel button is clicked
+- `onConfirm` – called when the confirm button is clicked
+- `closeOnConfirm` – should the modal be closed when the confirm button is clicked, defaults to `true`
+- `closeOnCancel` – should the modal be closed when the cancel button is clicked, defaults to `true`
+- `cancelProps` – cancel button props
+- `confirmProps` – confirm button props
+- `groupProps` – buttons [Group](/core/group) props
+- `labels` – cancel and confirm button labels, can be defined on `ModalsProvider`
+
+Using these properties, you can customize the confirm modal to match current context requirements:
+
+<Demo data={ModalsDemos.confirmCustomize} />
+
+To set up shared labels for confirm modals, set `labels` on `ModalsProvider`:
+
+```vue
+<script setup lang="ts">
+import { ModalsProvider } from '@mantine-vue/modals'
+</script>
+
+<template>
+  <ModalsProvider :labels="{ confirm: 'Submit', cancel: 'Cancel' }">
+    <!-- Your app here -->
+  </ModalsProvider>
+</template>
+```
+
+## Context modals
+
+You can define any number of modals in the `ModalsProvider` context by passing a `modals` prop –
+a record of component names to components. Every context modal component receives `context`,
+`id` and `innerProps` props:
+
+```vue
+<script setup lang="ts">
+import { Button, Text } from '@mantine-vue/core'
+import { ModalsProvider } from '@mantine-vue/modals'
+import type { ContextModalProps } from '@mantine-vue/modals'
+import { defineComponent, h } from 'vue'
+
+const TestModal = defineComponent({
+  props: ['context', 'id', 'innerProps'],
+  setup(props: ContextModalProps<{ modalBody: string }>) {
+    return () => [
+      h(Text, { size: 'sm' }, () => props.innerProps.modalBody),
+      h(
+        Button,
+        { fullWidth: true, mt: 'md', onClick: () => props.context.closeModal(props.id) },
+        () => 'Close modal',
+      ),
+    ]
+  },
+})
+</script>
+
+<template>
+  <ModalsProvider :modals="{ demonstration: TestModal }">
+    <!-- Your app here -->
+  </ModalsProvider>
+</template>
+```
+
+And then open one of these modals with the `modals.openContextModal` function. It accepts a single
+payload object with a `modal` key that matches one of the keys defined on `ModalsProvider`:
+
+<Demo data={ModalsDemos.context} />
+
+## Content modals
+
+With the `modals.open` function, you can open a modal with any content:
+
+<Demo data={ModalsDemos.content} />
+
+## Multiple opened modals
+
+You can open multiple layers of modals. Every opened modal is added as the first element in the
+modals queue. To close all opened modals, call the `modals.closeAll()` function:
+
+<Demo data={ModalsDemos.multipleSteps} />
+
+## Modal props
+
+You can pass props down to the [Modal](/core/modal) component by adding them to the argument of
+every `modals.x` function. Example of setting the `size` and `withCloseButton` props:
+
+<Demo data={ModalsDemos.modalProps} />
+
+## Dynamic content and the modals manager
+
+The modals manager allows you to dynamically update the content and properties of both standard
+and context modals after they are opened.
+
+To update regular modals, use the `modals.updateModal` function:
+
+<Demo data={ModalsDemos.updateModal} />
+
+Context modals can also be updated dynamically using `modals.updateContextModal`:
+
+<Demo data={ModalsDemos.updateContextModal} />
+
+## useModals composable
+
+`useModals` returns the same context object that context modal components receive as their
+`context` prop – it gives access to `modals`, `modalProps`, and all the `open`/`close`/`update`
+methods from anywhere inside the `ModalsProvider` tree:
+
+```vue
+<script setup lang="ts">
+import { useModals } from '@mantine-vue/modals'
+
+const ctx = useModals()
+</script>
+```
+
+`useModals` throws an error when called outside of `ModalsProvider`, matching the behavior of the
+standalone `modals` object, which relies on the default store created by `ModalsProvider` always
+being mounted somewhere in the app.

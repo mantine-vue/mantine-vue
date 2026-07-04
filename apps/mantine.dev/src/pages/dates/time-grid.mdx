@@ -1,0 +1,12 @@
+import { TimeGridDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.TimeGrid)
+
+## Usage
+
+`TimeGrid` displays a list of time values in a grid for quick selection. Use the `getTimeRange`
+utility function exported from `@mantine-vue/dates` to generate the `data` array:
+
+<Demo data={TimeGridDemos.usage} />

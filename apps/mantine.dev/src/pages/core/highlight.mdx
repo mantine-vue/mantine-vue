@@ -1,0 +1,69 @@
+import { HighlightDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.Highlight)
+
+## Usage
+
+Use the Highlight component to highlight substrings within text using the HTML `<mark>` element.
+
+Pass the text as the default slot and specify which substring(s) to highlight with the `highlight` prop.
+Matching is **case-insensitive** and **accent-insensitive** by default, and highlights all occurrences
+of the matched substring. Use the `caseInsensitive` and `accentInsensitive` props to opt out.
+
+<Demo data={HighlightDemos.usage} />
+
+## Matching behavior
+
+- **Case-insensitive**: 'hello' matches 'Hello', 'HELLO', 'hElLo', etc. (controlled by `caseInsensitive`, defaults to `true`)
+- **Accent-insensitive**: 'cafe' matches 'café', 'cafè', 'CAFÉ', etc. (controlled by `accentInsensitive`, defaults to `true`)
+- **All occurrences**: Every instance of the matched substring is highlighted
+- **Special characters**: Regex special characters like `[`, `]`, `(`, `)` are automatically escaped and treated as literal text
+- **Whitespace**: Leading and trailing whitespace in highlight strings is trimmed and ignored
+- **Empty strings**: Empty or whitespace-only highlight strings are ignored
+
+## Case-sensitive matching
+
+Set `:caseInsensitive="false"` to only match substrings with the same casing as the highlight term:
+
+<Demo data={HighlightDemos.caseInsensitive} />
+
+## Accent-sensitive matching
+
+Set `:accentInsensitive="false"` to require accented characters in the text to match the highlight term exactly:
+
+<Demo data={HighlightDemos.accentInsensitive} />
+
+## Highlight multiple substrings
+
+To highlight multiple substrings, provide an array of values.
+When multiple substrings are provided, longer matches take precedence to avoid partial overlaps.
+
+<Demo data={HighlightDemos.multiple} />
+
+## Custom colors per term
+
+You can assign different colors to different highlighted terms by providing an array of objects with `text` and `color` properties:
+
+<Demo data={HighlightDemos.colors} />
+
+## Whole word matching
+
+Use the `wholeWord` prop to match only complete words. When enabled, 'the' will not match 'there' or 'theme':
+
+<Demo data={HighlightDemos.wholeword} />
+
+## Change highlight styles
+
+Default [Mark](/core/mark/) styles can be overwritten with the `highlightStyles` prop,
+which accepts an object with styles:
+
+<Demo data={HighlightDemos.styles} />
+
+## Text props
+
+Highlight is based on the [Text](/core/text/) component — all Text props are available.
+Use the `color` prop to change the highlight background color, not the text color.
+
+<Demo data={HighlightDemos.props} />

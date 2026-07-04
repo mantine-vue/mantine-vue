@@ -1,0 +1,522 @@
+import { TipTapDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.TipTap)
+
+## Installation
+
+Install with your package manager of choice:
+
+<InstallScript packages="@mantine-vue/tiptap @mantine-vue/core @mantine-vue/hooks @tiptap/vue-3 @tiptap/pm @tiptap/extension-link @tiptap/starter-kit" />
+
+After installation import package styles at the root of your application:
+
+```ts
+import '@mantine-vue/core/styles.css'
+// ‼️ import tiptap styles after core package styles
+import '@mantine-vue/tiptap/styles.css'
+```
+
+## TipTap editor
+
+The `@mantine-vue/tiptap` package provides a UI for [Tiptap](https://tiptap.dev/). The `RichTextEditor` component
+works with the [Editor](https://tiptap.dev/api/editor) instance of tiptap.
+This means that you have full control over the editor [state and configuration](https://tiptap.dev/guide/configuration)
+with the [useEditor composable](https://tiptap.dev/docs/editor/getting-started/install/vue3).
+
+In other words, the `RichTextEditor` component does not manage state for you;
+controls just execute operations on the `Editor` instance. If you want to
+implement something that is related to state or component value (for example, controlled mode, value transforms to HTML/Markdown),
+you should look for documentation on the [tiptap.dev](https://tiptap.dev/) website.
+
+## Usage
+
+<Demo data={TipTapDemos.usage} />
+
+## Subtle variant
+
+`variant="subtle"` removes borders from the control groups, makes controls
+larger, and reduces spacing of the toolbar:
+
+<Demo data={TipTapDemos.subtleVariant} />
+
+## Controlled
+
+To control the editor state, create a wrapper component and pass an `onUpdate` handler
+to the `useEditor` composable:
+
+```vue
+<script setup lang="ts">
+import { useEditor } from '@tiptap/vue-3'
+import StarterKit from '@tiptap/starter-kit'
+import { RichTextEditor as MantineRichTextEditor } from '@mantine-vue/tiptap'
+
+const props = defineProps<{ modelValue: string }>()
+const emit = defineEmits<{ 'update:modelValue': [value: string] }>()
+
+const editor = useEditor({
+  extensions: [StarterKit],
+  content: props.modelValue,
+  onUpdate: ({ editor }) => {
+    emit('update:modelValue', editor.getHTML())
+  },
+})
+</script>
+
+<template>
+  <MantineRichTextEditor :editor="editor">
+    <MantineRichTextEditor.Toolbar>
+      <MantineRichTextEditor.ControlsGroup>
+        <MantineRichTextEditor.Bold />
+        <MantineRichTextEditor.Italic />
+      </MantineRichTextEditor.ControlsGroup>
+    </MantineRichTextEditor.Toolbar>
+
+    <MantineRichTextEditor.Content />
+  </MantineRichTextEditor>
+</template>
+```
+
+## Controls and extensions
+
+Some controls require installation of additional [Tiptap extensions](https://tiptap.dev/extensions).
+For example, if you want to use `RichTextEditor.Superscript` control, you will need to install `@tiptap/extension-superscript` package:
+
+<InstallScript packages="@tiptap/extension-superscript" />
+
+Included with `@tiptap/starter-kit` (should be installed by default):
+
+- `RichTextEditor.H1`
+- `RichTextEditor.H2`
+- `RichTextEditor.H3`
+- `RichTextEditor.H4`
+- `RichTextEditor.H5`
+- `RichTextEditor.H6`
+- `RichTextEditor.BulletList`
+- `RichTextEditor.OrderedList`
+- `RichTextEditor.Bold`
+- `RichTextEditor.Italic`
+- `RichTextEditor.Strikethrough`
+- `RichTextEditor.ClearFormatting`
+- `RichTextEditor.Blockquote`
+- `RichTextEditor.Code`
+- `RichTextEditor.CodeBlock`
+- `RichTextEditor.Hr`
+- `RichTextEditor.Undo`
+- `RichTextEditor.Redo`
+- `RichTextEditor.Underline`
+- `RichTextEditor.Unlink`
+
+Controls that require [@tiptap/extension-text-align](https://www.npmjs.com/package/@tiptap/extension-text-align) extension:
+
+- `RichTextEditor.AlignLeft`
+- `RichTextEditor.AlignRight`
+- `RichTextEditor.AlignCenter`
+- `RichTextEditor.AlignJustify`
+
+Controls that require [@tiptap/extension-color](https://www.npmjs.com/package/@tiptap/extension-color) and [@tiptap/extension-text-style](https://www.npmjs.com/package/@tiptap/extension-text-style) extensions:
+
+- `RichTextEditor.ColorPicker`
+- `RichTextEditor.Color`
+- `RichTextEditor.UnsetColor`
+
+Other controls with required extensions:
+
+- `RichTextEditor.Superscript` requires [@tiptap/extension-superscript](https://www.npmjs.com/package/@tiptap/extension-superscript)
+- `RichTextEditor.Subscript` requires [@tiptap/extension-subscript](https://www.npmjs.com/package/@tiptap/extension-subscript)
+- `RichTextEditor.Highlight` requires [@tiptap/extension-highlight](https://www.npmjs.com/package/@tiptap/extension-highlight)
+
+## Placeholder
+
+To use a placeholder, you will need to install the [@tiptap/extension-placeholder](https://www.npmjs.com/package/@tiptap/extension-placeholder) package:
+
+<InstallScript packages="@tiptap/extension-placeholder" />
+
+<Demo data={TipTapDemos.placeholder} />
+
+## Link extension
+
+The `@mantine-vue/tiptap` package provides a custom `Link` extension that is required to be used instead of
+`@tiptap/extension-link` in order for the `Ctrl + K` keyboard shortcut to work:
+
+```vue
+<script setup lang="ts">
+// Use Link extension exported from the @mantine-vue/tiptap package
+import { useEditor } from '@tiptap/vue-3'
+import { Link, RichTextEditor } from '@mantine-vue/tiptap'
+
+const editor = useEditor({
+  extensions: [
+    Link,
+    // ... other extensions
+  ],
+})
+</script>
+
+<template>
+  <RichTextEditor :editor="editor">
+    <RichTextEditor.Content />
+  </RichTextEditor>
+</template>
+```
+
+## Text color
+
+To use text color, you will need to install additional packages:
+
+<InstallScript packages="@tiptap/extension-color @tiptap/extension-text-style" />
+
+You can use the following controls to change text color:
+
+- `RichTextEditor.ColorPicker` – allows you to pick colors from given predefined color swatches and with the [ColorPicker](/core/color-picker) component
+- `RichTextEditor.Color` – allows you to apply a given color with one click
+- `RichTextEditor.UnsetColor` – clears color styles
+
+<Demo data={TipTapDemos.colors} />
+
+## Code highlight
+
+To use code highlighting, you will need to install additional packages:
+
+<InstallScript packages="lowlight @tiptap/extension-code-block-lowlight" />
+
+<Demo data={TipTapDemos.codeHighlight} />
+
+## Source code mode
+
+You can use the following control to see and edit the source code of editor content:
+
+- `RichTextEditor.SourceCode` – allows switching on/off source code mode
+
+<Demo data={TipTapDemos.sourceCodeSwitcher} />
+
+## Tasks
+
+To use tasks, you will need to install additional packages:
+
+<InstallScript packages="@tiptap/extension-task-item @tiptap/extension-task-list" />
+
+<Demo data={TipTapDemos.tasks} />
+
+## Typography styles
+
+By default, `RichTextEditor` renders content with [Typography](/core/typography) and some additional styles.
+You can disable these styles by setting `withTypographyStyles={false}`:
+
+```vue
+<script setup lang="ts">
+import { useEditor } from '@tiptap/vue-3'
+import { RichTextEditor } from '@mantine-vue/tiptap'
+
+const editor = useEditor({
+  extensions: [
+    // ... your extensions
+  ],
+})
+</script>
+
+<template>
+  <RichTextEditor :editor="editor" :with-typography-styles="false">
+    <RichTextEditor.Content />
+  </RichTextEditor>
+</template>
+```
+
+Then you will be able to add your own styles either with [global styles](/styles/global-styles)
+or with [Styles API](/styles/styles-api):
+
+<Demo data={TipTapDemos.typographyStyles} />
+
+## Bubble menu
+
+You can use the [BubbleMenu](https://tiptap.dev/api/extensions/bubble-menu) component
+exported from `@tiptap/vue-3/menus` with any `RichTextEditor` controls. The bubble menu will appear near a selection of text:
+
+<Demo data={TipTapDemos.bubbleMenu} />
+
+## Floating menu
+
+You can use the [FloatingMenu](https://tiptap.dev/api/extensions/floating-menu) component
+exported from `@tiptap/vue-3/menus` with any `RichTextEditor` controls. The floating menu will appear in an empty line:
+
+<Demo data={TipTapDemos.floatingMenu} />
+
+## Sticky toolbar
+
+Set the `sticky` prop on the `RichTextEditor.Toolbar` component to make the toolbar sticky;
+control the `top` property with `stickyOffset`. For example, on this documentation
+website there is a header with `var(--docs-header-height)` height, so the usage demo above
+sets `stickyOffset="var(--docs-header-height)"` to make the sticky position work correctly with the fixed positioned element.
+
+## Editor context
+
+Use the `useRichTextEditorContext` composable to get the [Editor](https://tiptap.dev/api/editor) from
+the context. This composable can be used to create a custom control or run any operations supported
+by the Tiptap [editor API](https://tiptap.dev/api/editor).
+
+```ts
+import { h } from 'vue'
+import { defineComponent } from 'vue'
+import { Button } from '@mantine-vue/core'
+import { useRichTextEditorContext } from '@mantine-vue/tiptap'
+
+const Demo = defineComponent(() => {
+  const { editor } = useRichTextEditorContext()
+  return () =>
+    h(Button, { onClick: () => editor?.chain().focus().toggleBold().run() }, () => 'Make bold')
+})
+```
+
+## Custom controls
+
+Use the `RichTextEditor.Control` component to create custom controls. It supports all
+props supported by the native `button` element and has an `active` prop to indicate active state.
+Note that you will need to set the `aria-label` attribute to make the control visible for screen readers.
+
+<Demo data={TipTapDemos.customControl} />
+
+## Change icons
+
+You can change the icon of a control by setting the `icon` prop. It accepts a component
+that must handle the `size` prop:
+
+<Demo data={TipTapDemos.icons} />
+
+## Labels and localization
+
+`RichTextEditor` supports changing labels for all controls with the `labels` prop:
+
+```vue
+<script setup lang="ts">
+import { useEditor } from '@tiptap/vue-3'
+import { RichTextEditor } from '@mantine-vue/tiptap'
+
+const editor = useEditor({
+  extensions: [
+    // ... your extensions
+  ],
+})
+
+const labels = {
+  boldControlLabel: 'Make text bold',
+  italicControlLabel: 'Make text bold',
+  // ...other labels
+}
+</script>
+
+<template>
+  <RichTextEditor :editor="editor" :labels="labels">
+    <RichTextEditor.Content />
+  </RichTextEditor>
+</template>
+```
+
+Most labels are used to add `aria-label` and `title` attributes to controls; some of the labels
+can be a function that returns a string. If you do not provide all labels, they will be merged with
+the default labels.
+
+All available labels:
+
+```ts
+// RichTextEditorLabels type can be imported from @mantine-vue/tiptap package
+export interface RichTextEditorLabels {
+  /** RichTextEditor.Bold control aria-label */
+  boldControlLabel: string
+
+  /** RichTextEditor.Hr control aria-label */
+  hrControlLabel: string
+
+  /** RichTextEditor.Italic control aria-label */
+  italicControlLabel: string
+
+  /** RichTextEditor.Underline control aria-label */
+  underlineControlLabel: string
+
+  /** RichTextEditor.Strike control aria-label */
+  strikeControlLabel: string
+
+  /** RichTextEditor.ClearFormatting control aria-label */
+  clearFormattingControlLabel: string
+
+  /** RichTextEditor.Link control aria-label */
+  linkControlLabel: string
+
+  /** RichTextEditor.Unlink control aria-label */
+  unlinkControlLabel: string
+
+  /** RichTextEditor.BulletList control aria-label */
+  bulletListControlLabel: string
+
+  /** RichTextEditor.OrderedList control aria-label */
+  orderedListControlLabel: string
+
+  /** RichTextEditor.H1 control aria-label */
+  h1ControlLabel: string
+
+  /** RichTextEditor.H2 control aria-label */
+  h2ControlLabel: string
+
+  /** RichTextEditor.H3 control aria-label */
+  h3ControlLabel: string
+
+  /** RichTextEditor.H4 control aria-label */
+  h4ControlLabel: string
+
+  /** RichTextEditor.H5 control aria-label */
+  h5ControlLabel: string
+
+  /** RichTextEditor.H6 control aria-label */
+  h6ControlLabel: string
+
+  /** RichTextEditor.Blockquote control aria-label */
+  blockquoteControlLabel: string
+
+  /** RichTextEditor.AlignLeft control aria-label */
+  alignLeftControlLabel: string
+
+  /** RichTextEditor.AlignCenter control aria-label */
+  alignCenterControlLabel: string
+
+  /** RichTextEditor.AlignRight control aria-label */
+  alignRightControlLabel: string
+
+  /** RichTextEditor.AlignJustify control aria-label */
+  alignJustifyControlLabel: string
+
+  /** RichTextEditor.Code control aria-label */
+  codeControlLabel: string
+
+  /** RichTextEditor.CodeBlock control aria-label */
+  codeBlockControlLabel: string
+
+  /** RichTextEditor.Subscript control aria-label */
+  subscriptControlLabel: string
+
+  /** RichTextEditor.Superscript control aria-label */
+  superscriptControlLabel: string
+
+  /** RichTextEditor.ColorPicker control aria-label */
+  colorPickerControlLabel: string
+
+  /** RichTextEditor.UnsetColor control aria-label */
+  unsetColorControlLabel: string
+
+  /** RichTextEditor.Highlight control aria-label */
+  highlightControlLabel: string
+
+  /** RichTextEditor.Undo control aria-label */
+  undoControlLabel: string
+
+  /** RichTextEditor.Redo control aria-label */
+  redoControlLabel: string
+
+  /** RichTextEditor.SourceCode control aria-label */
+  sourceCodeControlLabel: string
+
+  /** A function go get RichTextEditor.Color control aria-label based on color that control applies */
+  colorControlLabel: (color: string) => string
+
+  /** RichTextEditor.TaskList control aria-label */
+  tasksControlLabel: string
+
+  /** RichTextEditor.TaskListSink control aria-label */
+  tasksSinkLabel: string
+
+  /** RichTextEditor.TaskListLift control aria-label */
+  tasksLiftLabel: string
+
+  /** aria-label for link editor url input */
+  linkEditorInputLabel: string
+
+  /** placeholder for link editor url input */
+  linkEditorInputPlaceholder: string
+
+  /** Content of external button tooltip in link editor when the link was chosen to open in a new tab */
+  linkEditorExternalLink: string
+
+  /** Content of external button tooltip in link editor when the link was chosen to open in the same tab */
+  linkEditorInternalLink: string
+
+  /** Save button content in link editor */
+  linkEditorSave: string
+
+  /** Cancel button title text in color picker control */
+  colorPickerCancel: string
+
+  /** Clear button title text in color picker control */
+  colorPickerClear: string
+
+  /** Color picker button title text in color picker control */
+  colorPickerColorPicker: string
+
+  /** Palette button title text in color picker control */
+  colorPickerPalette: string
+
+  /** Save button title text in color picker control */
+  colorPickerSave: string
+
+  /** aria-label for color palette colors */
+  colorPickerColorLabel: (color: string) => string
+}
+```
+
+Default labels (can be imported from `@mantine-vue/tiptap` package):
+
+```ts
+import { RichTextEditorLabels } from '@mantine-vue/tiptap'
+
+export const DEFAULT_LABELS: RichTextEditorLabels = {
+  // Controls labels
+  linkControlLabel: 'Link',
+  colorPickerControlLabel: 'Text color',
+  highlightControlLabel: 'Highlight text',
+  colorControlLabel: (color) => `Set text color ${color}`,
+  boldControlLabel: 'Bold',
+  italicControlLabel: 'Italic',
+  underlineControlLabel: 'Underline',
+  strikeControlLabel: 'Strikethrough',
+  clearFormattingControlLabel: 'Clear formatting',
+  unlinkControlLabel: 'Remove link',
+  bulletListControlLabel: 'Bullet list',
+  orderedListControlLabel: 'Ordered list',
+  sourceCodeControlLabel: 'Switch between text/source code',
+  h1ControlLabel: 'Heading 1',
+  h2ControlLabel: 'Heading 2',
+  h3ControlLabel: 'Heading 3',
+  h4ControlLabel: 'Heading 4',
+  h5ControlLabel: 'Heading 5',
+  h6ControlLabel: 'Heading 6',
+  blockquoteControlLabel: 'Blockquote',
+  alignLeftControlLabel: 'Align text: left',
+  alignCenterControlLabel: 'Align text: center',
+  alignRightControlLabel: 'Align text: right',
+  alignJustifyControlLabel: 'Align text: justify',
+  codeControlLabel: 'Code',
+  codeBlockControlLabel: 'Code block',
+  subscriptControlLabel: 'Subscript',
+  superscriptControlLabel: 'Superscript',
+  unsetColorControlLabel: 'Unset color',
+  hrControlLabel: 'Horizontal line',
+  undoControlLabel: 'Undo',
+  redoControlLabel: 'Redo',
+  tasksControlLabel: 'Task list',
+  tasksSinkLabel: 'Decrease task level',
+  tasksLiftLabel: 'Increase task level',
+
+  // Link editor
+  linkEditorInputLabel: 'Enter URL',
+  linkEditorInputPlaceholder: 'https://example.com/',
+  linkEditorExternalLink: 'Open link in a new tab',
+  linkEditorInternalLink: 'Open link in the same tab',
+  linkEditorSave: 'Save',
+
+  // Color picker control
+  colorPickerCancel: 'Cancel',
+  colorPickerClear: 'Clear color',
+  colorPickerColorPicker: 'Color picker',
+  colorPickerPalette: 'Color palette',
+  colorPickerSave: 'Save',
+  colorPickerColorLabel: (color) => `Set text color ${color}`,
+}
+```

@@ -1,0 +1,56 @@
+.title {
+  line-height: 1;
+  padding: 0;
+  margin: 0;
+  font-weight: var(--mantine-font-weight-regular);
+  font-size: var(--mantine-font-size-md);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--mb-padding, var(--mantine-spacing-md));
+  padding-inline-end: calc(var(--mb-padding, var(--mantine-spacing-md)) - rem(5px));
+  position: sticky;
+  top: 0;
+  background-color: var(--mantine-color-body);
+  z-index: 1000;
+  min-height: 60px;
+  transition: padding-inline-end 100ms;
+}
+
+.inner {
+  position: fixed;
+  width: 100%;
+  top: 0;
+  bottom: 0;
+  z-index: var(--mb-z-index);
+  pointer-events: none;
+}
+
+.content {
+  pointer-events: all;
+  box-shadow: var(--mb-shadow, var(--mantine-shadow-xl));
+
+  & [data-mantine-scrollbar] {
+    z-index: 1001;
+  }
+
+  [data-offset-scrollbars] &:has([data-mantine-scrollbar]) .header {
+    padding-inline-end: calc(var(--mb-padding, var(--mantine-spacing-md)) + rem(5px));
+  }
+}
+
+.close {
+  margin-inline-start: auto;
+}
+
+.body {
+  padding: var(--mb-padding, var(--mantine-spacing-md));
+  padding-top: var(--mb-padding, var(--mantine-spacing-md));
+
+  &:where(:not(:only-child)) {
+    padding-top: 0;
+  }
+}

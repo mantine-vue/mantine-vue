@@ -1,0 +1,38 @@
+import { BurgerDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.Burger)
+
+## Usage
+
+The `Burger` component renders an open/close menu button.
+Set the `opened` and `onClick` props to control the component state.
+If the `opened` prop is set, a cross will be rendered, otherwise a burger icon.
+
+<Demo data={BurgerDemos.usage} />
+
+## Change line size
+
+<Demo data={BurgerDemos.lineWidth} />
+
+## Accessibility
+
+To make the `Burger` accessible for screen readers, set the `aria-label` prop or
+use the [VisuallyHidden](/core/visually-hidden) component:
+
+```vue
+<script setup lang="ts">
+import { Burger, VisuallyHidden } from '@mantine-vue/core'
+</script>
+
+<template>
+  <!-- Option 1: aria-label -->
+  <Burger aria-label="Toggle navigation" />
+
+  <!-- Option 2: VisuallyHidden child -->
+  <Burger>
+    <VisuallyHidden>Toggle navigation</VisuallyHidden>
+  </Burger>
+</template>
+```

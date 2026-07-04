@@ -1,0 +1,19 @@
+import { InlineDateTimePickerDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.InlineDateTimePicker)
+
+## Usage
+
+`InlineDateTimePicker` supports the same props as [DateTimePicker](/dates/date-time-picker).
+
+> Note: `InlineDateTimePicker` currently renders the same dropdown-based UI as
+> `DateTimePicker` rather than an always-open inline layout (calendar + time picker rendered
+> directly, without a popover). This is a documented simplification.
+
+<Demo data={InlineDateTimePickerDemos.usage} />
+
+## Clearable
+
+<Demo data={InlineDateTimePickerDemos.clearable} />

@@ -1,0 +1,65 @@
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.GuideWithoutFramework)
+
+# Usage without a framework
+
+Mantine Vue can be used with any Vue 3 setup that supports TypeScript, CSS imports, and PostCSS. The exact bundler configuration depends on your stack.
+
+## Install packages
+
+<InstallScript packages="@mantine-vue/core @mantine-vue/hooks" />
+
+Install PostCSS plugins:
+
+<InstallScript packages="postcss postcss-preset-mantine postcss-simple-vars" dev />
+
+## Required setup
+
+1. Configure PostCSS with `postcss-preset-mantine` and `postcss-simple-vars`.
+2. Import `@mantine-vue/core/styles.css` once at the application root.
+3. Wrap the Vue application with `MantineProvider`.
+4. Set an initial `data-mantine-color-scheme` attribute yourself if your app renders on the server.
+
+## PostCSS
+
+```js
+// postcss.config.cjs
+module.exports = {
+  plugins: {
+    'postcss-preset-mantine': { autoRem: true },
+    'postcss-simple-vars': {
+      variables: {
+        mantineBreakpointXs: '36em',
+        mantineBreakpointSm: '48em',
+        mantineBreakpointMd: '62em',
+        mantineBreakpointLg: '75em',
+        mantineBreakpointXl: '88em',
+      },
+    },
+  },
+}
+```
+
+## Provider
+
+```ts
+import { createApp, h } from 'vue'
+import { MantineProvider, type MantineThemeOverride } from '@mantine-vue/core'
+import App from './App.vue'
+import '@mantine-vue/core/styles.css'
+
+const theme = {
+  primaryColor: 'blue',
+  defaultRadius: 'md',
+} satisfies MantineThemeOverride
+
+createApp({
+  render: () => h(MantineProvider, { theme, defaultColorScheme: 'auto' }, () => h(App)),
+}).mount('#app')
+```
+
+## Unsupported bundlers
+
+If your framework does not load CSS from packages automatically, configure its CSS loader first. For Webpack, install and configure `postcss-loader`. For custom SSR renderers, set a deterministic initial color scheme on the rendered document and let `MantineProvider` update it after mount.

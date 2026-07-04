@@ -1,0 +1,121 @@
+import { PaginationDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.Pagination)
+
+## Usage
+
+<Demo data={PaginationDemos.configurator} />
+
+## Example with chunked content
+
+<Demo data={PaginationDemos.withContent} />
+
+## Controlled
+
+To control the component state, provide `value` and `onChange` props:
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue'
+import { Pagination } from '@mantine-vue/core'
+
+const activePage = ref(1)
+</script>
+
+<template>
+  <Pagination :value="activePage" @change="activePage = $event" :total="10" />
+</template>
+```
+
+## Siblings
+
+Control the number of active item siblings with the `siblings` prop:
+
+<Demo data={PaginationDemos.siblings} />
+
+## Boundaries
+
+Control the number of items displayed after previous and before next buttons with the `boundaries` prop:
+
+<Demo data={PaginationDemos.boundaries} />
+
+## Responsive layout
+
+Set `layout="responsive"` to use CSS container queries to show a compact "Page X of Y" label
+when the container is narrow.
+
+<Demo data={PaginationDemos.responsive} />
+
+## Hide pages controls
+
+Set `:with-pages="false"` to hide the pages controls:
+
+<Demo data={PaginationDemos.withPages} />
+
+<StylesApiSelectors component="Pagination" />
+
+## Compound components
+
+Use the following compound components to have full control over the `Pagination` rendering:
+
+- `Pagination.Root` – context provider
+- `Pagination.Items` – items list
+- `Pagination.Next` – next control
+- `Pagination.Previous` – previous control
+- `Pagination.First` – first control
+- `Pagination.Last` – last control
+- `Pagination.Label` – compact label for responsive layout
+
+<Demo data={PaginationDemos.composition} />
+
+## Controls as links
+
+<Demo data={PaginationDemos.links} />
+
+## Change icons
+
+<Demo data={PaginationDemos.icons} />
+
+<AutoContrast component="Pagination" withVariant={false} />
+
+<Demo data={PaginationDemos.autoContrast} />
+
+## Controls size
+
+By default, pagination controls have reduced size compared to inputs and buttons.
+Use the `input-` prefix for the `size` prop to match input and button sizes:
+
+<Demo data={PaginationDemos.size} />
+
+## Start value
+
+Set `startValue` to define the starting page number:
+
+<Demo data={PaginationDemos.startValue} />
+
+## URL synchronization
+
+You can synchronize pagination state with URL query parameters using Vue Router:
+
+```vue
+<script setup lang="ts">
+import { computed } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { Pagination } from '@mantine-vue/core'
+
+const route = useRoute()
+const router = useRouter()
+
+const page = computed(() => Number(route.query.page) || 1)
+
+const handlePageChange = (p: number) => {
+  router.push({ query: { ...route.query, page: p } })
+}
+</script>
+
+<template>
+  <Pagination :total="10" :value="page" @change="handlePageChange" />
+</template>
+```

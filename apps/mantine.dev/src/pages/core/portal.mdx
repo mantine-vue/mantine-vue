@@ -1,0 +1,113 @@
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.Portal)
+
+## Usage
+
+`Portal` renders its children into a different part of the DOM — by default appended to `document.body`.
+In Vue 3, `Portal` is implemented using `<Teleport>`. The `Modal` and `Drawer` components use `Portal` internally.
+
+Use `Portal` to render content outside its parent context, which is useful for preventing parent
+`position` or `z-index` styles from affecting fixed-position components like modals.
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue'
+import { Portal } from '@mantine-vue/core'
+
+const opened = ref(false)
+</script>
+
+<template>
+  <main style="position: relative; z-index: 1">
+    <Portal v-if="opened">
+      <div>Your modal content</div>
+    </Portal>
+
+    <button type="button" @click="opened = true">Open modal</button>
+  </main>
+</template>
+```
+
+In the example above, the `div` is rendered outside the parent `main` (before the closing `body` tag),
+but still reacts to the `opened` ref. It will not be affected by the parent `z-index`.
+
+## Reuse target node
+
+By default, `Portal` reuses the same target node for all instances (`reuseTargetNode={true}`).
+To create a new target node for each instance, set `:reuse-target-node="false"`. In the following
+example, all three paragraphs are rendered in separate target nodes:
+
+```vue
+<script setup lang="ts">
+import { Portal } from '@mantine-vue/core'
+</script>
+
+<template>
+  <Portal :reuse-target-node="false">
+    <p>First</p>
+  </Portal>
+
+  <Portal :reuse-target-node="false">
+    <p>Second</p>
+  </Portal>
+
+  <Portal :reuse-target-node="false">
+    <p>Third</p>
+  </Portal>
+</template>
+```
+
+## Specify target DOM node
+
+You can specify the DOM node where the portal will be rendered by passing the `target` prop:
+
+```vue
+<script setup lang="ts">
+import { Portal } from '@mantine-vue/core'
+
+const container = document.createElement('div')
+document.body.appendChild(container)
+</script>
+
+<template>
+  <Portal :target="container">My portal</Portal>
+</template>
+```
+
+Alternatively, pass a CSS selector to render into an existing element:
+
+```vue
+<script setup lang="ts">
+import { Portal } from '@mantine-vue/core'
+</script>
+
+<template>
+  <Portal target="#portal-container">My portal</Portal>
+</template>
+```
+
+If you don't specify the `target` element, a new one will be created and appended to `document.body`.
+
+## Server side rendering
+
+`Portal` renders children only after the component is mounted. On the server, nothing is rendered
+inside `Portal`, which makes it safe for SSR environments.
+
+## OptionalPortal component
+
+`OptionalPortal` lets you conditionally render children inside a `Portal`.
+It accepts the same props as `Portal` plus a `withinPortal` boolean:
+
+```vue
+<script setup lang="ts">
+import { OptionalPortal } from '@mantine-vue/core'
+</script>
+
+<template>
+  <OptionalPortal :within-portal="true"> This text is rendered in Portal </OptionalPortal>
+
+  <OptionalPortal :within-portal="false"> This text is rendered as a regular child </OptionalPortal>
+</template>
+```

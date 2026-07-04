@@ -1,0 +1,104 @@
+import { AccordionDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.Accordion)
+
+## Usage
+
+<Demo data={AccordionDemos.configurator} />
+
+## order prop
+
+The `order` prop sets the heading level for the `Accordion.Control` root element.
+According to WAI-ARIA recommendations, it is required to use `h2`-`h6` heading levels
+to fit correctly within the outline of the page.
+
+## Change chevron
+
+Use the `chevron` prop to change the chevron icon. To remove it, set `:chevron="null"`.
+
+To customize chevron styles, use the Styles API with the `data-rotate` attribute
+(set when the item is open, unless `disableChevronRotation` is set):
+
+<Demo data={AccordionDemos.chevron} />
+
+## Custom control label
+
+You can use any Vue node as a label for `Accordion.Control`. When using nested elements,
+set `aria-label` to keep the control accessible for screen readers.
+
+<Demo data={AccordionDemos.label} />
+
+## With icons
+
+Use the `icon` prop to display any element in the left section of `Accordion.Control`:
+
+<Demo data={AccordionDemos.icons} />
+
+## Change transition
+
+To change transition duration, set `transitionDuration` prop:
+
+<Demo data={AccordionDemos.customTransitions} />
+
+To disable transitions, set `transitionDuration` to 0:
+
+<Demo data={AccordionDemos.disableTransitions} />
+
+## Default opened items
+
+For `multiple={false}`, set `defaultValue` as a string. For `multiple={true}`, set it as an array:
+
+```vue
+<template>
+  <!-- Single: second item opens by default -->
+  <Accordion defaultValue="item-2">
+    <Accordion.Item value="item-1"><!-- ... --></Accordion.Item>
+    <Accordion.Item value="item-2"><!-- ... --></Accordion.Item>
+  </Accordion>
+
+  <!-- Multiple: both items open by default -->
+  <Accordion multiple :defaultValue="['item-1', 'item-2']">
+    <Accordion.Item value="item-1"><!-- ... --></Accordion.Item>
+    <Accordion.Item value="item-2"><!-- ... --></Accordion.Item>
+  </Accordion>
+</template>
+```
+
+## Control opened state
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue'
+import { Accordion } from '@mantine-vue/core'
+
+const value = ref<string | null>(null)
+</script>
+
+<template>
+  <Accordion :value="value" @change="value = $event">
+    <Accordion.Item value="item-1"><!-- ... --></Accordion.Item>
+    <Accordion.Item value="item-2"><!-- ... --></Accordion.Item>
+  </Accordion>
+</template>
+```
+
+## Compose controls
+
+Do not place interactive elements inside `Accordion.Control` — it is itself a `button`.
+Instead, render them alongside the control:
+
+<Demo data={AccordionDemos.sideControls} />
+
+## Disabled items
+
+Set the `disabled` prop on `Accordion.Control` to disable it:
+
+<Demo data={AccordionDemos.disabled} />
+
+## Unstyled Accordion
+
+Set the `unstyled` prop to remove all library styles:
+
+<Demo data={AccordionDemos.unstyled} />

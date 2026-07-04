@@ -1,0 +1,38 @@
+import { DialogDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.Dialog)
+
+## Usage
+
+`Dialog` is a simplified version of the [Modal](/core/modal/) component.
+It does not include most of the accessibility and usability [Modal](/core/modal/) features:
+
+- Focus trap is not available
+- Does not close on click outside
+- Does not have an overlay
+
+Use `Dialog` to attract attention with non-important information or actions.
+For example, you can create an email subscription form:
+
+<Demo data={DialogDemos.usage} />
+
+## Change position
+
+`Dialog` is rendered in [Portal](/core/portal/) and has a fixed position. Set the `position` prop to control the dialog's position:
+
+```vue
+<template>
+  <Dialog :position="{ top: 20, left: 20 }" :opened="true"> Dialog in top left corner </Dialog>
+  <Dialog :position="{ bottom: 20, left: 20 }" :opened="true">
+    Dialog in bottom left corner
+  </Dialog>
+</template>
+```
+
+## Accessibility
+
+`Dialog` is not accessible and most likely will not be announced by screen readers.
+Make sure you do not put any important information in it. In most cases it would be better
+to select [Modal](/core/modal/), [Drawer](/core/drawer/) or [Notifications](/x/notifications/).

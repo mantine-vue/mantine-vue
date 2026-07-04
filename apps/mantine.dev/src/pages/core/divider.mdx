@@ -1,0 +1,31 @@
+import { DividerDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.Divider)
+
+## Usage
+
+<Demo data={DividerDemos.usage} />
+
+## Variants
+
+<Demo data={DividerDemos.variants} />
+
+## With label
+
+Use the `label` prop or default slot to add a label to the divider.
+Use `labelPosition` to control the label position — `left`, `center` (default), or `right`.
+
+<Demo data={DividerDemos.label} />
+
+## Sizes
+
+<Demo data={DividerDemos.sizes} />
+
+## Vertical orientation
+
+Set `orientation="vertical"` to render a vertical divider. It requires the parent
+element to have an explicit height or to be a flex/grid container:
+
+<Demo data={DividerDemos.vertical} />

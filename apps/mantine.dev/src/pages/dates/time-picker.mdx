@@ -1,0 +1,22 @@
+import { TimePickerDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.TimePicker)
+
+## Usage
+
+Unlike [TimeInput](/dates/time-input), `TimePicker` is not based on the native `input[type="time"]`
+element – it is built from scratch and supports custom time format, presets and a scrollable time grid.
+
+<Demo data={TimePickerDemos.usage} />
+
+## With seconds
+
+<Demo data={TimePickerDemos.withSeconds} />
+
+## Presets
+
+Use the `presets` prop to display a list of predefined time values next to the time input:
+
+<Demo data={TimePickerDemos.presets} />

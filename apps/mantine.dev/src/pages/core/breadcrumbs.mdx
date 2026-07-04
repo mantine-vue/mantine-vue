@@ -1,0 +1,12 @@
+import { BreadcrumbsDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.Breadcrumbs)
+
+## Usage
+
+`Breadcrumbs` accepts any number of child nodes and adds a given separator
+(defaults to `/`) between them:
+
+<Demo data={BreadcrumbsDemos.usage} />

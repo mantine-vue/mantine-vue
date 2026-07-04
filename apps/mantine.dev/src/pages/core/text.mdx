@@ -1,0 +1,60 @@
+import { TextDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.Text)
+
+## Usage
+
+<Demo data={TextDemos.usage} />
+
+<Demo data={TextDemos.gradient} />
+
+## Truncate
+
+Set the `truncate` prop to add `text-overflow: ellipsis` styles:
+
+<Demo data={TextDemos.truncate} />
+
+## Line clamp
+
+Specify the maximum number of lines with the `lineClamp` prop. This option uses [-webkit-line-clamp](https://developer.mozilla.org/en-US/docs/Web/CSS/-webkit-line-clamp)
+CSS property ([caniuse](https://caniuse.com/css-line-clamp)). Note that `padding-bottom` cannot be set on the text element:
+
+<Demo data={TextDemos.linesConfigurator} />
+
+Line clamp can also be used with any children (not only strings), for example with [Typography](/core/typography/):
+
+<Demo data={TextDemos.lineClamp} />
+
+## Inherit styles
+
+Text always applies font-size, font-family and line-height styles,
+but in some cases this is not the desired behavior. To force Text to inherit parent
+styles, set the `inherit` prop. For example, highlight part of [Title](/core/title/):
+
+<Demo data={TextDemos.inherit} />
+
+## Text wrap
+
+Use the `textWrap` prop to control the `text-wrap` CSS property. For example, `balance` evens out
+line lengths and `pretty` prevents orphaned words on the last line:
+
+<Demo data={TextDemos.textWrap} />
+
+<Polymorphic defaultElement="p" changeToElement="a" component="Text" />
+
+## span prop
+
+Use the `span` prop as a shorthand for `component="span"`:
+
+```vue
+<script setup lang="ts">
+import { Text } from '@mantine-vue/core'
+</script>
+
+<template>
+  <Text span>Same as below</Text>
+  <Text component="span">Same as above</Text>
+</template>
+```

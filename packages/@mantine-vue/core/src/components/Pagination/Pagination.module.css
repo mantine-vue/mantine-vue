@@ -1,0 +1,108 @@
+.root {
+  --pagination-control-size-xs: 22px;
+  --pagination-control-size-sm: 26px;
+  --pagination-control-size-md: 32px;
+  --pagination-control-size-lg: 38px;
+  --pagination-control-size-xl: 44px;
+
+  --pagination-control-size-input-xs: 30px;
+  --pagination-control-size-input-sm: 36px;
+  --pagination-control-size-input-md: 42px;
+  --pagination-control-size-input-lg: 50px;
+  --pagination-control-size-input-xl: 60px;
+
+  --pagination-control-size: var(--pagination-control-size-md);
+  --pagination-control-fz: var(--mantine-font-size-md);
+  --pagination-active-bg: var(--mantine-primary-color-filled);
+
+  &:where([data-layout='responsive']) {
+    container-type: inline-size;
+  }
+}
+
+.control {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid;
+  cursor: pointer;
+  color: var(--mantine-color-text);
+  height: var(--pagination-control-size);
+  min-width: var(--pagination-control-size);
+  font-size: var(--pagination-control-fz);
+  line-height: 1;
+  border-radius: var(--pagination-control-radius, var(--mantine-radius-default));
+
+  &:where([data-with-padding]) {
+    padding: calc(var(--pagination-control-size) / 4);
+  }
+
+  &:where(:disabled, [data-disabled]) {
+    cursor: not-allowed;
+    opacity: 0.4;
+  }
+
+  @mixin where-light {
+    border-color: var(--mantine-color-gray-4);
+    background-color: var(--mantine-color-white);
+
+    @mixin hover {
+      &:where(:not(:disabled, [data-disabled])) {
+        background-color: var(--mantine-color-gray-0);
+      }
+    }
+  }
+
+  @mixin where-dark {
+    border-color: var(--mantine-color-dark-4);
+    background-color: var(--mantine-color-dark-6);
+
+    @mixin hover {
+      &:where(:not(:disabled, [data-disabled])) {
+        background-color: var(--mantine-color-dark-5);
+      }
+    }
+  }
+
+  &:where([data-active]) {
+    background-color: var(--pagination-active-bg);
+    border-color: var(--pagination-active-bg);
+    color: var(--pagination-active-color, var(--mantine-color-white));
+
+    @mixin hover {
+      background-color: var(--pagination-active-bg);
+    }
+  }
+}
+
+.dots {
+  height: var(--pagination-control-size);
+  min-width: var(--pagination-control-size);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.items {
+  display: flex;
+  gap: inherit;
+  align-items: center;
+
+  @container (width <= 400px) {
+    display: none;
+  }
+}
+
+.label {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  height: var(--pagination-control-size);
+  font-size: var(--pagination-control-fz);
+  white-space: nowrap;
+
+  @container (width <= 400px) {
+    display: flex;
+  }
+}

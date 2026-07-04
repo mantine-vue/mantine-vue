@@ -1,0 +1,323 @@
+import { TagsInputDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.TagsInput)
+
+<ComboboxDisclaimer component="TagsInput" />
+
+## Usage
+
+`TagsInput` provides a way to enter multiple values. It can be used with suggestions or without them.
+`TagsInput` is similar to [MultiSelect](/core/multi-select), but it allows entering custom values.
+
+<Demo data={TagsInputDemos.usage} />
+
+## Loading state
+
+Set `loading` prop to display a loading indicator. By default, the loader is displayed on the right side of the input.
+You can change the position with the `loadingPosition` prop to `'left'` or `'right'`. This is useful for async operations like API calls, searches, or validations:
+
+<Demo data={TagsInputDemos.loading} />
+
+## Controlled
+
+The `TagsInput` value must be an array of strings; other types are not supported.
+The `onChange` function is called with an array of strings as a single argument.
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue'
+import { TagsInput } from '@mantine-vue/core'
+
+const value = ref<string[]>([])
+</script>
+
+<template>
+  <TagsInput :data="[]" v-model="value" />
+</template>
+```
+
+## Controlled search value
+
+You can control the search value with `searchValue` and `onSearchChange` props:
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue'
+import { TagsInput } from '@mantine-vue/core'
+
+const searchValue = ref('')
+</script>
+
+<template>
+  <TagsInput v-model:search-value="searchValue" :data="[]" />
+</template>
+```
+
+## Clearable
+
+Set the `clearable` prop to display the clear button in the right section. The button is not displayed
+when:
+
+- The component does not have a value
+- The component is disabled
+- The component is read only
+
+<Demo data={TagsInputDemos.clearable} />
+
+<ClearSectionMode />
+
+<Demo data={TagsInputDemos.clearSectionMode} />
+
+## Max selected values
+
+You can limit the number of selected values with the `maxTags` prop. This will not allow adding more values
+once the limit is reached.
+
+<Demo data={TagsInputDemos.maxTags} />
+
+## Accept value on blur
+
+By default, if the user types a value and blurs the input, the value is added to the list.
+You can change this behavior by setting `acceptValueOnBlur` to `false`. In this case, the value is added
+only when the user presses `Enter` or clicks on a suggestion.
+
+<Demo data={TagsInputDemos.acceptValueOnBlur} />
+
+## Allow duplicates
+
+By default, `TagsInput` does not allow adding duplicate values, but you can change this behavior by
+setting the `allowDuplicates` prop. A value is considered duplicate if it is already present in the `value` array,
+regardless of the case and trailing whitespace.
+
+<Demo data={TagsInputDemos.allowDuplicates} />
+
+## isDuplicate
+
+You can use the `isDuplicate` prop to control how duplicates are detected. It is a function that
+receives two arguments: tag value and current tags. The function must return `true` if the value is a duplicate.
+
+Example of using `isDuplicate` to allow using the same value with different casing:
+
+<Demo data={TagsInputDemos.isDuplicate} />
+
+## Split chars
+
+By default, `TagsInput` splits values by comma (`,`), you can change this behavior by setting
+`splitChars` prop to an array of strings. All values from `splitChars` cannot be included in the final value.
+Values are also split on paste.
+
+Example of splitting by `,`, `|` and space:
+
+<Demo data={TagsInputDemos.splitChars} />
+
+## With suggestions
+
+`TagsInput` can be used with suggestions, it will render suggestions list under input and allow to select
+suggestions with keyboard or mouse. Note that user is not limited to suggestions, it is still possible to
+enter custom values. If you want to allow values only from suggestions, use [MultiSelect](/core/multi-select) component instead.
+
+<Demo data={TagsInputDemos.data} />
+
+<ComboboxData component="TagsInput" />
+
+<ComboboxFiltering component="TagsInput" />
+
+<Demo data={TagsInputDemos.search} />
+
+## Sort options
+
+By default, options are sorted by their position in the data array. You can change this behavior
+with `filter` function:
+
+<Demo data={TagsInputDemos.sort} />
+
+## Fuzzy search with fuse.js
+
+You can implement fuzzy search using the [fuse.js](https://fusejs.io/) library to match options
+even with typos or partial matches:
+
+<Demo data={TagsInputDemos.fuzzySearch} />
+
+<ComboboxLargeData component="TagsInput" />
+
+<Demo data={TagsInputDemos.limit} />
+
+## renderOption
+
+`renderOption` callback allows you to customize option rendering. It is called with option object.
+The function must return a Vue node.
+
+<Demo data={TagsInputDemos.renderOption} />
+
+## Pill customization
+
+`renderPill` callback allows customizing how pills are rendered. It is called with an object containing
+`option` (combobox item), `value` (string), `onRemove` (function) and `disabled`.
+Note that since `TagsInput` allows adding custom values, `option` property might be generated on the fly.
+
+<Demo data={TagsInputDemos.renderPill} />
+
+## Reorder pills
+
+Set the `withPillsReorder` prop to allow reordering pills. Dropping a pill before or after
+another pill updates the component value accordingly. Reordering is automatically disabled
+when `disabled` or `readOnly` is set.
+
+You can reorder pills with a mouse (drag-and-drop) or keyboard:
+
+- Pills are not part of the `Tab` order. With focus on the input, press `ArrowLeft` (when the
+  caret is at the start of the input) to move focus to the last pill.
+- `ArrowLeft` and `ArrowRight` move focus between pills (RTL-aware). Pressing `ArrowRight` on
+  the last pill returns focus to the input.
+- `Alt + ArrowLeft` and `Alt + ArrowRight` reorder the focused pill (RTL-aware).
+
+Focus follows the moved pill so multiple moves can be chained without re-focusing.
+
+<Demo data={TagsInputDemos.dragReorder} />
+
+If you use a custom pill renderer with the `renderPill` prop, spread the `reorderProps` from
+the render callback payload onto the focusable pill root element to keep reordering working.
+`reorderProps` carries the `tabIndex`, `data-mantine-pill-index` attribute and the keyboard
+handler that drive keyboard reorder, so it must land on the element the user can focus:
+
+```vue
+<script setup lang="ts">
+import { TagsInput } from '@mantine-vue/core'
+
+const renderPillFn = ({ value, onRemove, reorderProps }) =>
+  h('div', reorderProps, [value, h('button', { onClick: onRemove }, '×')])
+</script>
+
+<template>
+  <TagsInput with-pills-reorder :render-pill="renderPillFn" />
+</template>
+```
+
+## Scrollable dropdown
+
+By default, the options list is wrapped with [ScrollArea.Autosize](/core/scroll-area).
+You can control dropdown max-height with `maxDropdownHeight` prop if you do not change the default settings.
+
+If you want to use native scrollbars, set `withScrollArea={false}`. Note that in this case,
+you will need to change dropdown styles with [Styles API](/styles/styles-api).
+
+<Demo data={TagsInputDemos.scrollArea} />
+
+## Fit dropdown to viewport height
+
+Set `floatingHeight="viewport"` to make the dropdown grow to fill the available vertical
+space in the viewport. The `flip` middleware is disabled in this mode – the dropdown
+always opens in the configured direction and is constrained to the viewport edges instead
+of flipping to the other side. Useful when working with large option lists:
+
+<Demo data={TagsInputDemos.floatingHeight} />
+
+## Group options
+
+<Demo data={TagsInputDemos.groups} />
+
+## Disabled options
+
+When option is disabled, it cannot be selected and is ignored in keyboard navigation.
+Note that user can still enter disabled option as a value. If you want to prohibit certain values,
+use controlled component and filter them out in `onChange` function.
+
+<Demo data={TagsInputDemos.disabledOptions} />
+
+<ComboboxProps component="TagsInput" />
+
+## Inside Popover
+
+To use `TagsInput` inside popover, you need to set `withinPortal: false`:
+
+<Demo data={TagsInputDemos.withinPopover} />
+
+## Control dropdown opened state
+
+You can control dropdown opened state with `dropdownOpened` prop. Additionally,
+you can use `onDropdownClose` and `onDropdownOpen` to listen to dropdown opened state changes.
+
+<Demo data={TagsInputDemos.dropdownOpened} />
+
+## Dropdown position
+
+By default, the dropdown is displayed below the input if there is enough space; otherwise it is displayed above the input.
+You can change this behavior by setting `position` and `middlewares` props, which are passed down to the
+underlying [Popover](/core/popover) component.
+
+Example of dropdown that is always displayed above the input:
+
+<Demo data={TagsInputDemos.dropdownPosition} />
+
+## Dropdown animation
+
+By default, dropdown animations are disabled. To enable them, you can set `transitionProps`,
+which will be passed down to the underlying [Transition](/core/transition) component.
+
+<Demo data={TagsInputDemos.dropdownAnimation} />
+
+## Dropdown width
+
+To change dropdown width, set `width` prop in `comboboxProps`. By default,
+dropdown width is equal to the input width.
+
+<Demo data={TagsInputDemos.dropdownWidth} />
+
+## Dropdown padding
+
+<Demo data={TagsInputDemos.dropdownPadding} />
+
+## Dropdown shadow
+
+<Demo data={TagsInputDemos.dropdownShadow} />
+
+<InputSections component="TagsInput" />
+
+<Demo data={TagsInputDemos.sections} />
+
+## Input props
+
+<InputFeatures component="TagsInput" element="input" />
+
+<Demo data={TagsInputDemos.configurator} />
+
+## Read only
+
+Set `readOnly` to make the input read only. When `readOnly` is set,
+`TagsInput` will not show suggestions and will not call `onChange` function.
+
+<Demo data={TagsInputDemos.readOnly} />
+
+## Disabled
+
+Set `disabled` to disable the input. When `disabled` is set,
+user cannot interact with the input and `TagsInput` will not show suggestions.
+
+<Demo data={TagsInputDemos.disabled} />
+
+## Error state
+
+<Demo data={TagsInputDemos.error} />
+
+<StylesApiSelectors component="TagsInput" />
+
+<Demo data={TagsInputDemos.stylesApi} />
+
+<GetElementRef component="TagsInput" refType="input" />
+
+<InputAccessibility component="TagsInput" />
+
+To set `aria-label` on the clear button, use `clearButtonProps`. Note that it is required
+only when `clearable` is set.
+
+```vue
+<script setup lang="ts">
+import { TagsInput } from '@mantine-vue/core'
+</script>
+
+<template>
+  <TagsInput :data="[]" clearable :clear-button-props="{ 'aria-label': 'Clear input' }" />
+</template>
+```

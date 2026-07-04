@@ -1,0 +1,59 @@
+name: Release packages
+permissions:
+  contents: write
+
+on:
+  workflow_dispatch:
+    inputs:
+      bump:
+        description: 'Version bump type'
+        required: true
+        default: 'patch'
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+      stage:
+        description: 'Prerelease stage (leave as "none" for a stable release)'
+        required: true
+        default: 'none'
+        type: choice
+        options:
+          - none
+          - alpha
+          - beta
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'yarn'
+          cache-dependency-path: '**/yarn.lock'
+          registry-url: 'https://registry.npmjs.org'
+      - name: Install dependencies
+        run: yarn install --immutable
+      - name: Configure git identity
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+      - name: Release (stable)
+        if: ${{ inputs.stage == 'none' }}
+        run: yarn tsx scripts/release/index.ts ${{ inputs.bump }}
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: Release (prerelease)
+        if: ${{ inputs.stage != 'none' }}
+        run: yarn tsx scripts/release/index.ts ${{ inputs.bump }} --stage ${{ inputs.stage }}
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
