@@ -1,43 +1,75 @@
+# os
+.DS_Store
+
+## yarn
+.yarn-integrity
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yml
+.yarn/install-state.gz
+.pnp.*
+
+# editor
+.idea/
+.nova/
+.gitpod.yml
+
+# node
+node_modules/
+
 # Logs
 logs
 *.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-.DS_Store
-dist
-dist-ssr
-coverage
-*.local
+# env
+.env.test
+.env*.local
 
-# Editor directories and files
-.vscode/*
-!.vscode/extensions.json
-!.vscode/settings.json
-.idea
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
+# build
+lib/
+cjs/
+esm/
+.buildinfo.json
 
+# typescript
 *.tsbuildinfo
 
-# Generated package declarations
-/packages/**/lib
-
+# project
+next-env.d.ts
 .eslintcache
+storybook-static
+.next
+packages/*/*/styles.css
+packages/*/*/styles.layer.css
+packages/@mantine/core/styles
+packages/*/*/LICENSE
+.stylelintcache
+____test.*
+apps/help.mantine.dev/out
+apps/mantine.dev/components/___test.internal.tsx
+apps/mantine.dev/.cache
+apps/mantine.dev/out
+apps/mantine.dev/.next
+apps/mantine.dev/src/.docgen/
+apps/mantine.dev/public/llms.txt
+.samples
+*storybook.log
+apps/help.mantine.dev/next-env.d.ts
+apps/mantine.dev/public/llms-full.txt
+apps/mantine.dev/public/llms
+apps/mantine.dev/public/mcp
+.samples
+.changelog
+apps/help.mantine.dev/next-env.d.ts
 
-# Cypress
-/cypress/videos/
-/cypress/screenshots/
-
-# Vitest
-__screenshots__/
-
-# Vite
-*.timestamp-*-*.mjs
+/claude/
+.agents/
+/codex
+/.claude/worktrees
+/.claude/scheduled_tasks.lock
+/.claude/settings.local.json
+/.playwright-mcp
