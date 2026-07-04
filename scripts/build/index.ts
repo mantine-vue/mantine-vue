@@ -31,7 +31,6 @@ console.log(
 async function run() {
   for (const pkg of packages) {
     console.log(`\nBundling ${pkg.name} (esm + cjs)...`)
-    // eslint-disable-next-line no-await-in-loop
     await bundlePackage(pkg)
   }
 

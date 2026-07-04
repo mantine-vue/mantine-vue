@@ -24,7 +24,6 @@ export async function bundlePackage(pkg: PackageInfo) {
   for (const format of ['es', 'cjs'] as const) {
     const outDir = join(pkg.path, format === 'es' ? 'esm' : 'cjs')
 
-    // eslint-disable-next-line no-await-in-loop
     await build({
       root: pkg.path,
       configFile: false,

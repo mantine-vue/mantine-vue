@@ -1,4 +1,3 @@
-import { computed, defineComponent, h, type PropType, type VNodeChild } from 'vue'
 import {
   Box,
   ScrollArea,
@@ -12,6 +11,8 @@ import {
   useStyles,
 } from '@mantine-vue/core'
 import { useUncontrolled } from '@mantine-vue/hooks'
+import { defineComponent, h, type PropType, type VNodeChild } from 'vue'
+import classes from '../CodeHighlight.module.css'
 import {
   useHighlight,
   type CodeHighlightAdapter,
@@ -26,7 +27,6 @@ import {
 } from './CodeHighlightControl/CodeHighlightControl'
 import { CopyCodeButton } from './CopyCodeButton/CopyCodeButton'
 import { ExpandCodeButton } from './ExpandCodeButton/ExpandCodeButton'
-import classes from '../CodeHighlight.module.css'
 
 export type CodeHighlightStylesNames =
   | 'codeHighlight'
@@ -322,4 +322,4 @@ export const CodeHighlight = Object.assign(CodeHighlightBase, {
   Control: CodeHighlightControl,
 })
 
-export type { CodeHighlightContextValue, CodeHighlightControlProps, CodeHighlightAdapter }
+export type { CodeHighlightAdapter, CodeHighlightContextValue, CodeHighlightControlProps }

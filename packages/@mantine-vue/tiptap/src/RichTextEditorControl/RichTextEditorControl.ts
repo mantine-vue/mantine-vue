@@ -146,7 +146,7 @@ function useEditorSelector<T>(editor: () => Editor | null, selector: (editor: Ed
   })
 
   return computed(() => {
-    tick.value
+    void tick.value
     return selector(editor())
   })
 }

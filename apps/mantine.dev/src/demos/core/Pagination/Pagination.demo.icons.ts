@@ -1,13 +1,7 @@
-import { defineComponent, h } from 'vue'
-import {
-  PhArrowLeft,
-  PhArrowRight,
-  PhArrowLineLeft,
-  PhArrowLineRight,
-  PhDotsSix,
-} from '@phosphor-icons/vue'
-import { Group, Pagination } from '@mantine-vue/core'
 import type { MantineDemo } from '@/demo'
+import { Group, Pagination } from '@mantine-vue/core'
+import { PhArrowLeft, PhArrowLineLeft, PhArrowLineRight, PhArrowRight } from '@phosphor-icons/vue'
+import { defineComponent, h } from 'vue'
 
 const code = `
 <template>

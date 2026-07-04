@@ -38,13 +38,17 @@ export const ConfirmModal = defineComponent({
     const handleCancel = (event: MouseEvent) => {
       props.cancelProps?.onClick?.(event)
       props.onCancel?.()
-      props.closeOnCancel && ctx.closeModal(props.id!)
+      if (props.closeOnCancel) {
+        ctx.closeModal(props.id!)
+      }
     }
 
     const handleConfirm = (event: MouseEvent) => {
       props.confirmProps?.onClick?.(event)
       props.onConfirm?.()
-      props.closeOnConfirm && ctx.closeModal(props.id!)
+      if (props.closeOnConfirm) {
+        ctx.closeModal(props.id!)
+      }
     }
 
     return () => {

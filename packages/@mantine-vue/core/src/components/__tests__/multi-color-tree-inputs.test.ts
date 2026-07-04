@@ -1,7 +1,7 @@
-import { afterEach, describe, expect, it, vi } from 'vitest'
-import { createSSRApp, h, nextTick } from 'vue'
 import { renderToString } from '@vue/server-renderer'
 import { mount } from '@vue/test-utils'
+import { afterEach, describe, expect, it, vi } from 'vitest'
+import { createSSRApp, h } from 'vue'
 import { ColorInput, MantineProvider, MultiSelect, TagsInput, TreeSelect } from '../../index'
 
 const mounted: Array<ReturnType<typeof mount>> = []

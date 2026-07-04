@@ -37,7 +37,6 @@ const Demo = defineComponent({
     const phone = ref('')
     const handleSubmit = (event: Event) => {
       event.preventDefault()
-      // eslint-disable-next-line no-console
       console.log({ phone: phone.value })
     }
     return () =>

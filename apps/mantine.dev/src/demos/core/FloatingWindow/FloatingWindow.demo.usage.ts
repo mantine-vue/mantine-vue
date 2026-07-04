@@ -1,7 +1,7 @@
-import { defineComponent, h, ref } from 'vue'
+import type { MantineDemo } from '@/types'
 import { Button, CloseButton, FloatingWindow, Group, Text } from '@mantine-vue/core'
 import { useDisclosure } from '@mantine-vue/hooks'
-import type { MantineDemo } from '@/types'
+import { defineComponent, h } from 'vue'
 
 const code = `
 <script setup lang="ts">

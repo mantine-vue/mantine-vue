@@ -1,6 +1,6 @@
-import { defineComponent, h } from 'vue'
-import { Button, Menu, Text } from '@mantine-vue/core'
 import type { MantineDemo } from '@/types'
+import { Button, Menu } from '@mantine-vue/core'
+import { defineComponent, h } from 'vue'
 
 const code = `
 <script setup lang="ts">

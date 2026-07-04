@@ -431,14 +431,14 @@ export const MenuSearch = defineComponent({
         'data-mantine-stop-propagation': '',
         __staticSelector: 'Menu',
         classNames: {
-          ...(inputClassNames ?? {}),
+          ...inputClassNames,
           input: [searchStyles.class, inputClassNames?.input].filter(Boolean),
         },
         styles: {
-          ...(inputStyles ?? {}),
+          ...inputStyles,
           input: {
             ...searchStyles.style,
-            ...(inputStyles?.input ?? {}),
+            ...inputStyles?.input,
           },
         },
         onInput: (event: Event) => {

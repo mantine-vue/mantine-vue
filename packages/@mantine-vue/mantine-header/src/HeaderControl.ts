@@ -1,5 +1,5 @@
-import { defineComponent, h, type PropType } from 'vue'
 import { Tooltip, UnstyledButton } from '@mantine-vue/core'
+import { defineComponent, h } from 'vue'
 import classes from './HeaderControl.module.css'
 
 // Renders as a <button> by default, or as any element via the `component`

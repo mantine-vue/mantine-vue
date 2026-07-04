@@ -183,13 +183,13 @@ export const UnsetColorControl = createControl({
 export const UndoControl = createControl({
   label: 'undoControlLabel',
   icon: IconArrowBackUp,
-  isDisabled: (editor) => !(editor?.can() as any).undo(),
+  isDisabled: (editor) => !(editor?.can() as any)?.undo(),
   operation: { name: 'undo' },
 })
 export const RedoControl = createControl({
   label: 'redoControlLabel',
   icon: IconArrowForwardUp,
-  isDisabled: (editor) => !(editor?.can() as any).redo(),
+  isDisabled: (editor) => !(editor?.can() as any)?.redo(),
   operation: { name: 'redo' },
 })
 export const TaskListControl = createControl({

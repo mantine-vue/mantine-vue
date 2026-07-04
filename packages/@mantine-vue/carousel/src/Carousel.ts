@@ -229,7 +229,7 @@ const CarouselBaseComponent = defineComponent({
     const slotSlideCount = ref(0)
 
     const handleScroll = (index: number) => {
-      embla.value && embla.value.scrollTo(index)
+      embla.value?.scrollTo(index)
     }
 
     const handleSelect = () => {
@@ -277,7 +277,7 @@ const CarouselBaseComponent = defineComponent({
 
       if (event.key === 'End') {
         event.preventDefault()
-        embla.value && embla.value.scrollTo(embla.value.scrollSnapList().length - 1)
+        embla.value?.scrollTo(embla.value.scrollSnapList().length - 1)
       }
     }
 

@@ -28,12 +28,10 @@ const props = defineProps<{
 const component = computed(() => ControlComponents[props.control.type])
 
 const rest = computed(() => {
-  const {
-    initialValue: _initialValue,
-    libraryValue: _libraryValue,
-    type: _type,
-    ...others
-  } = props.control as any
+  const others = { ...(props.control as any) }
+  delete others.initialValue
+  delete others.libraryValue
+  delete others.type
   return others
 })
 </script>

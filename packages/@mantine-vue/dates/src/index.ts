@@ -393,10 +393,6 @@ function getDecadeLabel(date: DateStringValue) {
   return `${dayjs(years[0]).year()} – ${dayjs(years[years.length - 1]).year()}`
 }
 
-function renderMaybe(content: VNodeChild | (() => VNodeChild)) {
-  return typeof content === 'function' ? (content as () => VNodeChild)() : content
-}
-
 export const Day = defineComponent({
   name: 'Day',
   inheritAttrs: false,
@@ -2388,6 +2384,10 @@ export const TimePicker = defineComponent({
     watch(
       hoursRef,
       (val) => {
+        // hoursRef is a ref-forwarding prop: the parent passes a ref object
+        // whose `.value` we populate with the resolved element, mirroring
+        // how minutesRef/secondsRef/amPmRef forward focus targets elsewhere.
+        // eslint-disable-next-line vue/no-mutating-props
         if (props.hoursRef) props.hoursRef.value = val?.$el ?? val
       },
       { immediate: true },

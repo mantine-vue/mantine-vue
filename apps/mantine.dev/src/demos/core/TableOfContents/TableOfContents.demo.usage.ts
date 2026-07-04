@@ -1,6 +1,6 @@
-import { defineComponent, h } from 'vue'
-import { Box, TableOfContents } from '@mantine-vue/core'
 import type { MantineDemo } from '@/demo'
+import { TableOfContents } from '@mantine-vue/core'
+import { defineComponent, h } from 'vue'
 
 const code = `
 <template>

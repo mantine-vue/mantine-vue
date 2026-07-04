@@ -1,5 +1,5 @@
-import { defineComponent, h, type PropType } from 'vue'
 import { ColorSwatch, useProps } from '@mantine-vue/core'
+import { defineComponent, h } from 'vue'
 import { useRichTextEditorContext } from '../RichTextEditor.context'
 import { RichTextEditorControl } from './RichTextEditorControl'
 

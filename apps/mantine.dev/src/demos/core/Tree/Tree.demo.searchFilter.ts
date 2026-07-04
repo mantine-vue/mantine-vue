@@ -1,8 +1,6 @@
-import { defineComponent, h, ref, computed } from 'vue'
-import { PhFileText, PhFolderOpen, PhFolderSimple } from '@phosphor-icons/vue'
+import type { MantineDemo } from '@/demo'
 import {
   filterTreeData,
-  getTreeExpandedState,
   Group,
   TextInput,
   Tree,
@@ -10,7 +8,8 @@ import {
   type RenderTreeNodePayload,
   type TreeNodeData,
 } from '@mantine-vue/core'
-import type { MantineDemo } from '@/demo'
+import { PhFileText, PhFolderOpen, PhFolderSimple } from '@phosphor-icons/vue'
+import { computed, defineComponent, h, ref } from 'vue'
 
 const code = `
 <script setup lang="ts">

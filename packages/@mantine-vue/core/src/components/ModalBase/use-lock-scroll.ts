@@ -13,7 +13,7 @@ try {
   })
   window.addEventListener('test', opts as any, opts as any)
   window.removeEventListener('test', opts as any, opts as any)
-} catch (_) {}
+} catch {}
 const nonPassive: AddEventListenerOptions | boolean = passiveSupported ? { passive: false } : false
 
 function getLockCount(): number {

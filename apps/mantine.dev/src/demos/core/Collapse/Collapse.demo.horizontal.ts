@@ -1,5 +1,5 @@
 import { defineComponent, h, ref } from 'vue'
-import { Box, Button, Collapse, Stack, Text } from '@mantine-vue/core'
+import { Box, Button, Collapse, Stack } from '@mantine-vue/core'
 import type { MantineDemo } from '@/demo'
 
 const code = `

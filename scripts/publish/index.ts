@@ -34,7 +34,6 @@ async function run() {
   packages.forEach((pkg) => console.log(`- ${pkg.name}`))
 
   for (const pkg of packages) {
-    // eslint-disable-next-line no-await-in-loop
     publishPackage({ packagePath: pkg.path, name: pkg.name, tag, dryRun })
   }
 

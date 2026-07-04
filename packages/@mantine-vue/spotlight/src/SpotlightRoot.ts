@@ -144,7 +144,11 @@ export const SpotlightRoot = defineComponent({
           return
         }
 
-        opened ? props.onSpotlightOpen?.() : props.onSpotlightClose?.()
+        if (opened) {
+          props.onSpotlightOpen?.()
+        } else {
+          props.onSpotlightClose?.()
+        }
         previousOpened.value = opened
       },
     )
@@ -156,23 +160,23 @@ export const SpotlightRoot = defineComponent({
 
       const rootStyles = getStyles('root', { className: attrs.class, style: attrs.style as any })
       const {
-        classNames,
-        styles,
-        vars,
-        store,
-        query,
-        onQueryChange,
-        clearQueryOnClose,
-        shortcut,
-        tagsToIgnore,
-        triggerOnContentEditable,
-        disabled,
-        onSpotlightOpen,
-        onSpotlightClose,
-        forceOpened,
-        closeOnActionTrigger,
-        maxHeight,
-        scrollable,
+        _classNames,
+        _styles,
+        _vars,
+        _store,
+        _query,
+        _onQueryChange,
+        _clearQueryOnClose,
+        _shortcut,
+        _tagsToIgnore,
+        _triggerOnContentEditable,
+        _disabled,
+        _onSpotlightOpen,
+        _onSpotlightClose,
+        _forceOpened,
+        _closeOnActionTrigger,
+        _maxHeight,
+        _scrollable,
         ...modalAttrs
       } = { ...attrs, ...props }
 

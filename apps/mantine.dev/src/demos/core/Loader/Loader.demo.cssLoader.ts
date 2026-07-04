@@ -1,6 +1,6 @@
-import { defineComponent, h } from 'vue'
-import { Loader, MantineThemeProvider, defaultLoaders } from '@mantine-vue/core'
 import type { MantineDemo } from '@/demo'
+import { Loader, defaultLoaders } from '@mantine-vue/core'
+import { defineComponent, h } from 'vue'
 
 // CSS-only custom loader using --loader-size and --loader-color CSS variables
 const CssLoader = defineComponent({

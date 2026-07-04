@@ -12,7 +12,7 @@ import type { BoxProps } from '../Box'
  * slots, emits and static members (e.g. `Group`) are all preserved.
  */
 export type WithBoxProps<C> = C & {
-  new (): (C extends new (...args: any[]) => infer I ? I : {}) & { $props: BoxProps }
+  new (): (C extends new (...args: any[]) => infer I ? I : object) & { $props: BoxProps }
 }
 
 export function withBoxProps<C>(component: C): WithBoxProps<C> {

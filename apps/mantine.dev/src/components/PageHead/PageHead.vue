@@ -33,4 +33,7 @@ watchEffect(() => {
 })
 </script>
 
-<template><!-- Head-only component, nothing to render --></template>
+<template>
+  <!-- Head-only component, nothing to render -->
+  <span style="display: none" />
+</template>

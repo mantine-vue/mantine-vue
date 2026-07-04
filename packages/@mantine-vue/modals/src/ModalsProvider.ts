@@ -30,7 +30,7 @@ export interface ModalsProviderProps {
 function separateConfirmModalProps(props: OpenConfirmModal) {
   const {
     id,
-    children,
+    children: _children,
     onCancel,
     onConfirm,
     closeOnConfirm,
