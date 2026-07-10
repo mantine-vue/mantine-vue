@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
 import { defineComponent, h } from 'vue'
 import { mount } from '@vue/test-utils'
-import { useLongPress } from '../index'
+import { useLongPress } from './use-long-press'
 
 describe('@mantine-vue/hooks useLongPress', () => {
   it('triggers after threshold and reports finish', async () => {
