@@ -1,20 +1,19 @@
 <script setup lang="ts">
-import { computed, h } from 'vue'
-import { useRoute } from 'vue-router'
+import { searchHandlers } from '@/components/Search'
+import { MDX_NAV_DATA } from '@/mdx'
 import { Burger, Container, Group, Menu, Text, UnstyledButton } from '@mantine-vue/core'
 import {
   ColorSchemeControl,
   HeaderControls,
   SearchMobileControl,
-  SupportControl,
 } from '@mantine-vue/mantine-header'
 import { PhArrowSquareOut, PhCaretDown } from '@phosphor-icons/vue'
-import { searchHandlers } from '@/components/Search'
-import { MDX_NAV_DATA } from '@/mdx'
+import { computed, h } from 'vue'
+import { useRoute } from 'vue-router'
 import Logo from '../Logo/Logo.vue'
 import { getActiveCategory } from './get-active-category'
-import { useShellContext } from './Shell.context'
 import { currentVersionLabel, majorVersions, meta } from './mantine-meta'
+import { useShellContext } from './Shell.context'
 
 withDefaults(defineProps<{ withNav?: boolean }>(), { withNav: true })
 
@@ -122,7 +121,6 @@ function isExternal(link: string) {
         <Group :gap="5" class="mobileHeaderControls">
           <SearchMobileControl :on-search="searchHandlers.open" />
           <ColorSchemeControl />
-          <!-- <SupportControl /> -->
         </Group>
       </div>
 

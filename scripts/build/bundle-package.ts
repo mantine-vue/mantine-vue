@@ -1,3 +1,4 @@
+/* oxlint-disable no-console */
 import { spawnSync } from 'node:child_process'
 import {
   existsSync,

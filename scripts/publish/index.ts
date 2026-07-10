@@ -1,3 +1,4 @@
+/* oxlint-disable no-console */
 import { spawnSync } from 'node:child_process'
 import { getPackageBuildOrder, readPackages } from '../build/read-packages'
 import { commandInvocation } from '../utils/commands'

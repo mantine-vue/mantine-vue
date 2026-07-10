@@ -1,3 +1,4 @@
+/* oxlint-disable no-console */
 import { defineComponent, h, ref } from 'vue'
 import { Badge, Button, Center, Group, Text } from '@mantine-vue/core'
 import { createSpotlight, Spotlight } from '@mantine-vue/spotlight'

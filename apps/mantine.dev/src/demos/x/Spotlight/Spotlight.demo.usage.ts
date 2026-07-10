@@ -1,3 +1,5 @@
+/* oxlint-disable no-console */
+
 import { defineComponent, h } from 'vue'
 import type { SpotlightActionData } from '@mantine-vue/spotlight'
 import { PhFileText, PhGauge, PhHouse, PhMagnifyingGlass } from '@phosphor-icons/vue'

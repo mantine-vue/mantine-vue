@@ -1,3 +1,4 @@
+/* oxlint-disable no-console */
 import { defineComponent, h } from 'vue'
 import { Group, Text } from '@mantine-vue/core'
 import { Dropzone, IMAGE_MIME_TYPE, type DropzoneProps } from '@mantine-vue/dropzone'

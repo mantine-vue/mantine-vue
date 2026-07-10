@@ -1,3 +1,4 @@
+/* oxlint-disable no-console */
 import { defineComponent, h, ref } from 'vue'
 import { Button, MaskInput } from '@mantine-vue/core'
 import type { MantineDemo } from '@/demo'

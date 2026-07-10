@@ -1,3 +1,4 @@
+/* oxlint-disable no-console */
 import { computed, onMounted, onUnmounted, reactive, ref } from 'vue'
 import { getFilesFromEvent as defaultGetFilesFromEvent } from './get-files-from-event'
 import type { Accept, DropEvent, FileError, FileRejection, FileWithPath } from './types'
