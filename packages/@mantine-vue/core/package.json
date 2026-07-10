@@ -1,6 +1,6 @@
 {
   "name": "@mantine-vue/core",
-  "version": "9.3.3",
+  "version": "1.0.0",
   "description": "Vue component foundation architecturally equivalent to @mantine/core",
   "license": "MIT",
   "files": [
@@ -44,8 +44,8 @@
     "vue": "^3.5.0"
   },
   "peerDependencies": {
-    "@mantine-vue/hooks": "9.3.3",
-    "@mantine-vue/utils": "9.3.3",
+    "@mantine-vue/hooks": "1.0.0",
+    "@mantine-vue/utils": "1.0.0",
     "vue": "^3.5.0"
   }
 }
