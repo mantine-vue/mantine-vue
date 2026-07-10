@@ -12,7 +12,7 @@ export const SupportControl = defineComponent({
         HeaderControl,
         {
           component: 'a',
-          href: 'https://opencollective.com/mantinedev',
+          href: '',
           tooltip: 'Sponsor',
           'aria-label': 'Sponsor',
           class: classes.support,

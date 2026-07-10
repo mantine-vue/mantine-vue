@@ -30,6 +30,7 @@ const VALUE_ERROR = 'Accordion.Item component was rendered with invalid value or
 
 const defaultProps = {
   multiple: false,
+  loop: true,
   disableChevronRotation: false,
   chevronPosition: 'right',
   variant: 'default',

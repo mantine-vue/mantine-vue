@@ -9,16 +9,16 @@ import { Anchor, Group } from '@mantine-vue/core'
 
 <template>
   <Group justify="center">
-    <Anchor href="https://mantine.dev/" target="_blank" underline="always">
+    <Anchor href="https://mantine-vue/" target="_blank" underline="always">
       Underline always
     </Anchor>
-    <Anchor href="https://mantine.dev/" target="_blank" underline="hover">
+    <Anchor href="https://mantine-vue/" target="_blank" underline="hover">
       Underline hover
     </Anchor>
-    <Anchor href="https://mantine.dev/" target="_blank" underline="never">
+    <Anchor href="https://mantine-vue/" target="_blank" underline="never">
       Underline never
     </Anchor>
-    <Anchor href="https://mantine.dev/" target="_blank" underline="not-hover">
+    <Anchor href="https://mantine-vue/" target="_blank" underline="not-hover">
       Underline not-hover
     </Anchor>
   </Group>
@@ -36,22 +36,22 @@ const Demo = defineComponent({
           default: () => [
             h(
               Anchor,
-              { href: 'https://mantine.dev/', target: '_blank', underline: 'always' },
+              { href: 'https://mantine-vue/', target: '_blank', underline: 'always' },
               { default: () => 'Underline always' },
             ),
             h(
               Anchor,
-              { href: 'https://mantine.dev/', target: '_blank', underline: 'hover' },
+              { href: 'https://mantine-vue/', target: '_blank', underline: 'hover' },
               { default: () => 'Underline hover' },
             ),
             h(
               Anchor,
-              { href: 'https://mantine.dev/', target: '_blank', underline: 'never' },
+              { href: 'https://mantine-vue/', target: '_blank', underline: 'never' },
               { default: () => 'Underline never' },
             ),
             h(
               Anchor,
-              { href: 'https://mantine.dev/', target: '_blank', underline: 'not-hover' },
+              { href: 'https://mantine-vue/', target: '_blank', underline: 'not-hover' },
               { default: () => 'Underline not-hover' },
             ),
           ],

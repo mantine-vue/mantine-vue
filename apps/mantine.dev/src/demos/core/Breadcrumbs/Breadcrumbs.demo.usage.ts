@@ -29,7 +29,7 @@ const items = [
 `
 
 const items = [
-  { title: 'Mantine', href: 'https://mantine.dev' },
+  { title: 'Mantine', href: 'https://mantine-vue' },
   { title: 'Mantine hooks', href: '#' },
   { title: 'use-id', href: '#' },
 ]

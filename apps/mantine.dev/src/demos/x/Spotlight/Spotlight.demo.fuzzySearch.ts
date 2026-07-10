@@ -1,3 +1,4 @@
+/* oxlint-disable no-console */
 import { defineComponent, h } from 'vue'
 import Fuse from 'fuse.js'
 import type { SpotlightActionData, SpotlightFilterFunction } from '@mantine-vue/spotlight'

@@ -1,3 +1,4 @@
+/* oxlint-disable no-console */
 import { defineComponent, h } from 'vue'
 import { Button, Checkbox, CheckboxGroup, Group } from '@mantine-vue/core'
 import { hasLength, useForm } from '@mantine-vue/form'

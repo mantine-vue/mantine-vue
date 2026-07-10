@@ -84,7 +84,10 @@ export const AccordionControl = withBoxProps(
             ...ctx.getStyles('control', {
               className: attrs.class,
               style: attrs.style as any,
+              classNames: props.classNames,
+              styles: props.styles,
               props,
+              variant: ctx.variant,
             }),
             unstyled: ctx.unstyled,
             variant: ctx.variant,
@@ -115,18 +118,34 @@ export const AccordionControl = withBoxProps(
                   rotate: !ctx.disableChevronRotation && isActive,
                   position: ctx.chevronPosition,
                 },
-                ...ctx.getStyles('chevron', { props }),
+                ...ctx.getStyles('chevron', {
+                  classNames: props.classNames,
+                  styles: props.styles,
+                  props,
+                }),
               },
               () => renderContent(props.chevron === undefined ? ctx.chevron : props.chevron),
             ),
-            h('span', ctx.getStyles('label', { props }), slots.default?.()),
+            h(
+              'span',
+              ctx.getStyles('label', {
+                classNames: props.classNames,
+                styles: props.styles,
+                props,
+              }),
+              slots.default?.(),
+            ),
             props.icon
               ? h(
                   Box,
                   {
                     component: 'span',
                     mod: { chevronPosition: ctx.chevronPosition },
-                    ...ctx.getStyles('icon', { props }),
+                    ...ctx.getStyles('icon', {
+                      classNames: props.classNames,
+                      styles: props.styles,
+                      props,
+                    }),
                   },
                   () => renderContent(props.icon),
                 )
@@ -137,7 +156,15 @@ export const AccordionControl = withBoxProps(
 
       return () =>
         typeof ctx.order === 'number'
-          ? h(`h${ctx.order}`, ctx.getStyles('itemTitle', { props }), renderControl())
+          ? h(
+              `h${ctx.order}`,
+              ctx.getStyles('itemTitle', {
+                classNames: props.classNames,
+                styles: props.styles,
+                props,
+              }),
+              renderControl(),
+            )
           : renderControl()
     },
   }),

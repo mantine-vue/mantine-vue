@@ -92,7 +92,9 @@ export const ModalRoot = defineComponent({
         ModalBase,
         {
           ...attrs,
-          ...props,
+          opened: props.opened,
+          onClose: props.onClose,
+          unstyled: props.unstyled,
           ...getStyles('root'),
           mod: { centered: props.centered, 'full-screen': props.fullScreen },
         },

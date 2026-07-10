@@ -90,4 +90,13 @@ describe('@mantine-vue/core Popover', () => {
     expect(wrapper.find('[role="dialog"]').exists()).toBe(true)
     expect(wrapper.find('.target').attributes('data-expanded')).toBe('true')
   })
+
+  it('stacks the dropdown above the overlay when withOverlay is set', () => {
+    const wrapper = render({ defaultOpened: true, withOverlay: true })
+    const dropdownZIndex = Number(wrapper.find('[role="dialog"]').element.style.zIndex)
+    const overlay = wrapper.find('.mantine-Overlay-root')
+    expect(overlay.exists()).toBe(true)
+    expect(overlay.attributes('style') ?? '').toContain('--overlay-z-index: 200')
+    expect(dropdownZIndex).toBe(300)
+  })
 })

@@ -159,24 +159,26 @@ export const SpotlightRoot = defineComponent({
       }
 
       const rootStyles = getStyles('root', { className: attrs.class, style: attrs.style as any })
+
       const {
-        _classNames,
-        _styles,
-        _vars,
-        _store,
-        _query,
-        _onQueryChange,
-        _clearQueryOnClose,
-        _shortcut,
-        _tagsToIgnore,
-        _triggerOnContentEditable,
-        _disabled,
-        _onSpotlightOpen,
-        _onSpotlightClose,
-        _forceOpened,
-        _closeOnActionTrigger,
-        _maxHeight,
-        _scrollable,
+        classNames: _classNames,
+        styles: _styles,
+        vars: _vars,
+        unstyled: _unstyled,
+        store: _store,
+        query: _query,
+        onQueryChange: _onQueryChange,
+        clearQueryOnClose: _clearQueryOnClose,
+        shortcut: _shortcut,
+        tagsToIgnore: _tagsToIgnore,
+        triggerOnContentEditable: _triggerOnContentEditable,
+        disabled: _disabled,
+        onSpotlightOpen: _onSpotlightOpen,
+        onSpotlightClose: _onSpotlightClose,
+        forceOpened: _forceOpened,
+        closeOnActionTrigger: _closeOnActionTrigger,
+        maxHeight: _maxHeight,
+        scrollable: _scrollable,
         ...modalAttrs
       } = { ...attrs, ...props }
 

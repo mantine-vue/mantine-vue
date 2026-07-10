@@ -1,3 +1,4 @@
+/* oxlint-disable no-console */
 import { existsSync, readdirSync, rmSync } from 'node:fs'
 import { join, resolve } from 'node:path'
 

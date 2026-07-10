@@ -10,7 +10,7 @@ import { PhCheck, PhCopy } from '@phosphor-icons/vue'
 </script>
 
 <template>
-  <CopyButton value="https://mantine.dev" :timeout="2000">
+  <CopyButton value="https://mantine-vue" :timeout="2000">
     <template #default="{ copied, copy }">
       <Tooltip :label="copied ? 'Copied' : 'Copy'" withArrow position="right">
         <ActionIcon :color="copied ? 'teal' : 'gray'" variant="subtle" @click="copy">
@@ -29,7 +29,7 @@ const Demo = defineComponent({
     return () =>
       h(
         CopyButton,
-        { value: 'https://mantine.dev', timeout: 2000 },
+        { value: 'https://mantine-vue', timeout: 2000 },
         {
           default: ({ copied, copy }: { copied: boolean; copy: () => void }) =>
             h(
