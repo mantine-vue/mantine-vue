@@ -37,8 +37,6 @@ export const Paper = withBoxProps(
         name: 'Paper',
         classes,
         props,
-        className: attrs.class,
-        style: attrs.style as any,
         classNames: props.classNames as any,
         styles: props.styles as any,
         vars: props.vars as any,
@@ -51,7 +49,7 @@ export const Paper = withBoxProps(
           Box,
           {
             ...attrs,
-            ...getStyles('root'),
+            ...getStyles('root', { className: attrs.class, style: attrs.style as any }),
             component: props.component,
             mod: { 'with-border': props.withBorder },
           },

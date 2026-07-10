@@ -56,8 +56,6 @@ export const Overlay = withBoxProps(
         name: 'Overlay',
         classes,
         props,
-        className: attrs.class,
-        style: attrs.style as any,
         classNames: props.classNames as any,
         styles: props.styles as any,
         vars: props.vars as any,
@@ -70,7 +68,7 @@ export const Overlay = withBoxProps(
           Box,
           {
             ...attrs,
-            ...getStyles('root'),
+            ...getStyles('root', { className: attrs.class, style: attrs.style as any }),
             component: props.component,
             mod: { center: props.center, fixed: props.fixed },
           },

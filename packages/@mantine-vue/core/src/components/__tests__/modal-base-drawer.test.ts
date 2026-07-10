@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { h, nextTick, ref } from 'vue'
 import { mount } from '@vue/test-utils'
 import {
@@ -193,5 +193,86 @@ describe('@mantine-vue/core Drawer', () => {
     expect(Drawer.Header).toBe(DrawerHeader)
     expect(Drawer.Title).toBe(DrawerTitle)
     expect(Drawer.CloseButton).toBe(DrawerCloseButton)
+  })
+})
+
+describe('@mantine-vue/core ModalBase exit transition', () => {
+  beforeEach(() => {
+    vi.useFakeTimers()
+  })
+
+  afterEach(() => {
+    vi.useRealTimers()
+  })
+
+  // The transition state machine advances across several chained microtasks
+  // (nextTick -> forced reflow -> nextTick). Draining a handful of ticks is a
+  // robust way to let it settle without hard-coding the exact microtask count.
+  async function flush(times = 5) {
+    for (let i = 0; i < times; i++) {
+      await nextTick()
+    }
+  }
+
+  it('keeps the dialog mounted for the full exit transition duration before closing', async () => {
+    const opened = ref(true)
+    const onExitTransitionEnd = vi.fn()
+    const wrapper = mount(
+      {
+        render: () =>
+          h(MantineProvider, { env: 'default' }, () =>
+            h(
+              ModalBase,
+              {
+                opened: opened.value,
+                onClose: () => {},
+                withinPortal: false,
+                onExitTransitionEnd,
+                transitionProps: { duration: 200 },
+              },
+              {
+                default: () => [
+                  h(ModalBaseOverlay),
+                  h(ModalBaseContent, null, () => h(ModalBaseBody, null, () => 'Body')),
+                ],
+              },
+            ),
+          ),
+      },
+      { attachTo: document.body },
+    )
+    mounted.push(wrapper)
+
+    // let the enter transition finish so the dialog is fully mounted
+    await flush()
+    await vi.advanceTimersByTimeAsync(200)
+    await nextTick()
+    expect(wrapper.find('[role="dialog"]').exists()).toBe(true)
+    // regression check: Paper/Overlay must actually receive the *current*
+    // transition style each render, not a snapshot frozen from their very
+    // first paint (this is what "opacity stays at 0 forever" looked like).
+    expect(wrapper.find('[role="dialog"]').attributes('style')).toContain('opacity: 1')
+    expect(wrapper.find('.mantine-Overlay-root').attributes('style')).toContain('opacity: 1')
+
+    opened.value = false
+    await nextTick()
+    // regression: closing must not remove the dialog immediately, it should exit-animate first
+    expect(wrapper.find('[role="dialog"]').exists()).toBe(true)
+    expect(onExitTransitionEnd).not.toHaveBeenCalled()
+
+    await flush()
+    expect(wrapper.find('[role="dialog"]').exists()).toBe(true)
+    expect(wrapper.find('[role="dialog"]').attributes('style')).toContain('opacity: 0')
+    expect(wrapper.find('.mantine-Overlay-root').attributes('style')).toContain('opacity: 0')
+
+    await vi.advanceTimersByTimeAsync(199)
+    await nextTick()
+    expect(wrapper.find('[role="dialog"]').exists()).toBe(true)
+    expect(onExitTransitionEnd).not.toHaveBeenCalled()
+
+    await vi.advanceTimersByTimeAsync(1)
+    await nextTick()
+    expect(wrapper.find('[role="dialog"]').exists()).toBe(false)
+    expect(onExitTransitionEnd).toHaveBeenCalledTimes(1)
   })
 })
