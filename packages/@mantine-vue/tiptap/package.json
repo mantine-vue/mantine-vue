@@ -1,6 +1,6 @@
 {
   "name": "@mantine-vue/tiptap",
-  "version": "9.3.3",
+  "version": "1.0.0",
   "description": "Vue rich text editor based on tiptap, equivalent to @mantine/tiptap",
   "license": "MIT",
   "files": [
@@ -45,8 +45,8 @@
   },
   "peerDependencies": {
     "@floating-ui/dom": "^1.0.0",
-    "@mantine-vue/core": "9.3.3",
-    "@mantine-vue/hooks": "9.3.3",
+    "@mantine-vue/core": "1.0.0",
+    "@mantine-vue/hooks": "1.0.0",
     "@tiptap/core": ">=3.3.0",
     "@tiptap/extension-link": ">=3.3.0",
     "@tiptap/pm": ">=3.3.0",

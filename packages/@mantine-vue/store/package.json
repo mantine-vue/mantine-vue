@@ -1,6 +1,6 @@
 {
   "name": "@mantine-vue/store",
-  "version": "9.3.3",
+  "version": "1.0.0",
   "description": "External store primitive for later extension packages",
   "license": "MIT",
   "files": [
