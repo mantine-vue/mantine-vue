@@ -1,4 +1,4 @@
-import { toValue, watch, type MaybeRefOrGetter } from 'vue'
+import { onUpdated, toValue, watch, type MaybeRefOrGetter } from 'vue'
 
 function shallowEqual(a: unknown, b: unknown): boolean {
   if (a === b) {
@@ -64,9 +64,15 @@ export function useShallowEffect(
   effect: () => void,
   dependencies?: MaybeRefOrGetter<unknown>[],
 ): void {
+  if (!dependencies) {
+    effect()
+    onUpdated(effect)
+    return
+  }
+
   let previous: unknown[] | undefined
 
-  const getDeps = (): unknown[] | undefined => dependencies?.map((dep) => toValue(dep))
+  const getDeps = (): unknown[] => dependencies.map((dep) => toValue(dep))
 
   watch(
     getDeps,

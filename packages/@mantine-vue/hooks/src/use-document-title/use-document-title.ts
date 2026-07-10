@@ -6,7 +6,11 @@ export function useDocumentTitle(title: MaybeRefOrGetter<string>) {
     watch(
       () => toValue(title),
       (value) => {
-        document.title = value
+        const nextTitle = value.trim()
+
+        if (nextTitle) {
+          document.title = nextTitle
+        }
       },
       { immediate: true },
     )

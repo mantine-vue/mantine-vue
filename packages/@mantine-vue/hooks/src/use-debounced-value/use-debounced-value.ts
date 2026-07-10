@@ -1,6 +1,12 @@
-import { readonly, ref, toValue, type MaybeRefOrGetter, type Ref } from 'vue'
-import { useDebouncedCallback } from '../use-debounced-callback/use-debounced-callback'
-import { useDidUpdate } from '../use-did-update/use-did-update'
+import {
+  onBeforeUnmount,
+  readonly,
+  ref,
+  toValue,
+  watch,
+  type MaybeRefOrGetter,
+  type Ref,
+} from 'vue'
 
 export interface UseDebouncedValueOptions {
   leading?: boolean
@@ -8,20 +14,64 @@ export interface UseDebouncedValueOptions {
 
 export type UseDebouncedValueHandlers = {
   cancel: () => void
+  flush: () => void
 }
 
-export type UseDebouncedValueReturnValue<T> = [Readonly<Ref<T>>, () => void]
+export type UseDebouncedValueReturnValue<T> = [
+  Readonly<Ref<T>>,
+  () => void,
+  UseDebouncedValueHandlers,
+]
 
 export function useDebouncedValue<T>(
   value: MaybeRefOrGetter<T>,
   wait: number,
+  options: UseDebouncedValueOptions = {},
 ): UseDebouncedValueReturnValue<T> {
   const debounced = ref(toValue(value)) as Ref<T>
-  const update = useDebouncedCallback((nextValue: T) => {
-    debounced.value = nextValue
-  }, wait)
+  let timeout: ReturnType<typeof setTimeout> | undefined
+  let cooldown = false
+  let latestValue = toValue(value)
 
-  useDidUpdate(() => update(toValue(value)), [() => toValue(value)])
+  const cancel = () => {
+    if (timeout) {
+      clearTimeout(timeout)
+      timeout = undefined
+    }
+    cooldown = false
+  }
 
-  return [readonly(debounced) as Readonly<Ref<T>>, update.cancel]
+  const flush = () => {
+    if (timeout) {
+      cancel()
+      debounced.value = latestValue
+    }
+  }
+
+  watch(
+    () => toValue(value),
+    (nextValue) => {
+      latestValue = nextValue
+
+      if (!cooldown && options.leading) {
+        cooldown = true
+        debounced.value = nextValue
+        timeout = setTimeout(() => {
+          cooldown = false
+          timeout = undefined
+        }, wait)
+      } else {
+        cancel()
+        timeout = setTimeout(() => {
+          cooldown = false
+          timeout = undefined
+          debounced.value = nextValue
+        }, wait)
+      }
+    },
+  )
+
+  onBeforeUnmount(cancel)
+
+  return [readonly(debounced) as Readonly<Ref<T>>, cancel, { cancel, flush }]
 }
