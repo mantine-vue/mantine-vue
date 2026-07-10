@@ -1,9 +1,6 @@
 import { defineConfig } from 'vitest/config'
 import vue from '@vitejs/plugin-vue'
 import { fileURLToPath } from 'node:url'
-import path from 'node:path'
-import os from 'node:os'
-import process from 'node:process'
 
 const r = (path: string) => fileURLToPath(new URL(path, import.meta.url))
 
@@ -13,10 +10,7 @@ export default defineConfig({
     environment: 'jsdom',
     globals: true,
     include: ['packages/**/*.test.ts', 'packages/**/*.test.tsx'],
-    execArgv: [
-      '--localstorage-file',
-      path.resolve(os.tmpdir(), `vitest-${process.pid}.localstorage`),
-    ],
+    execArgv: ['--no-experimental-webstorage'],
   },
   resolve: {
     alias: {
