@@ -18,7 +18,7 @@ function renderHook<T>(options: Parameters<typeof useLocalStorage<T>>[0]) {
 }
 
 beforeEach(() => {
-  window.localStorage.clear()
+  localStorage.clear()
 })
 
 describe('@mantine-vue/hooks/use-local-storage', () => {
@@ -28,7 +28,7 @@ describe('@mantine-vue/hooks/use-local-storage', () => {
   })
 
   it('reads an existing value from localStorage on mount', () => {
-    window.localStorage.setItem('test', JSON.stringify('stored'))
+    localStorage.setItem('test', JSON.stringify('stored'))
     const [value] = renderHook({
       key: 'test',
       defaultValue: 'default',
@@ -42,7 +42,7 @@ describe('@mantine-vue/hooks/use-local-storage', () => {
     const [value, setValue] = renderHook({ key: 'test', defaultValue: '' })
 
     setValue('hello')
-    expect(window.localStorage.getItem('test')).toBe(JSON.stringify('hello'))
+    expect(localStorage.getItem('test')).toBe(JSON.stringify('hello'))
     expect(value.value).toBe('hello')
   })
 
@@ -58,7 +58,7 @@ describe('@mantine-vue/hooks/use-local-storage', () => {
 
     setValue('set')
     removeValue()
-    expect(window.localStorage.getItem('test')).toBeNull()
+    expect(localStorage.getItem('test')).toBeNull()
     expect(value.value).toBe('default')
   })
 
@@ -70,7 +70,7 @@ describe('@mantine-vue/hooks/use-local-storage', () => {
 
     setValue({ name: 'updated' })
     expect(value.value).toEqual({ name: 'updated' })
-    expect(JSON.parse(window.localStorage.getItem('obj')!)).toEqual({ name: 'updated' })
+    expect(JSON.parse(localStorage.getItem('obj')!)).toEqual({ name: 'updated' })
   })
 
   it('reacts to a storage event', () => {
