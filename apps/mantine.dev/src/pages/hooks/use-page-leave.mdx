@@ -1,0 +1,29 @@
+import { UsePageLeaveDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.usePageLeave)
+
+## Usage
+
+The `use-page-leave` hook calls the given function when the mouse leaves the
+page:
+
+<Demo data={UsePageLeaveDemos.usage} />
+
+## API
+
+The `onPageLeave` argument accepts a plain function, a `Ref<() => void>`, or a
+getter that returns a function (`MaybeRefOrGetter<() => void>`):
+
+```ts
+import { usePageLeave } from '@mantine-vue/hooks'
+
+usePageLeave(() => console.log('Mouse left the page'))
+```
+
+## Definition
+
+```ts
+function usePageLeave(onPageLeave: MaybeRefOrGetter<() => void>): void
+```

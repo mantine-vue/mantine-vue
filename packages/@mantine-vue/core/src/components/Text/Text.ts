@@ -1,4 +1,4 @@
-import { defineComponent, h, type PropType } from 'vue'
+import { defineComponent, h, ref, type PropType } from 'vue'
 import {
   withBoxProps,
   Box,
@@ -6,6 +6,7 @@ import {
   getFontSize,
   getGradient,
   getLineHeight,
+  useForwardedRef,
   useProps,
   useStyles,
 } from '../../core'
@@ -83,6 +84,8 @@ export const Text = withBoxProps(
         varsResolver,
         unstyled: props.unstyled,
       })
+      const elementRef = ref<HTMLElement | null>(null)
+      useForwardedRef(elementRef)
 
       return () =>
         h(
@@ -101,6 +104,7 @@ export const Text = withBoxProps(
               },
               props.mod,
             ],
+            ref: elementRef,
           },
           () => slots.default?.(),
         )

@@ -19,12 +19,16 @@ export function useInViewport<T extends HTMLElement = HTMLElement>(): UseInViewp
 
       observer?.disconnect()
 
-      if (node) {
+      // Guard against the ref accidentally being bound to a Vue component
+      // instance (which has no `Element` methods) instead of a native DOM node.
+      const target = node instanceof Element ? node : null
+
+      if (target) {
         observer = new IntersectionObserver((entries) => {
           const lastEntry = entries[entries.length - 1]
           inViewport.value = lastEntry.isIntersecting
         })
-        observer.observe(node)
+        observer.observe(target)
       } else {
         observer = undefined
         inViewport.value = false

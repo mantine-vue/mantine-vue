@@ -1,0 +1,105 @@
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.useMergedRef)
+
+## Usage
+
+The `use-merged-ref` hook accepts any number of ref targets and returns a single callback function
+that should be bound to the `ref` attribute. Use this hook when you need to use more than one ref
+on a single node, for example, when you want to use [use-click-outside](/hooks/use-click-outside/)
+and [use-focus-trap](/hooks/use-focus-trap/) hooks and also get a ref for yourself:
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue'
+import { useClickOutside, useFocusTrap, useMergedRef } from '@mantine-vue/hooks'
+
+const myRef = ref<HTMLElement | null>(null)
+const clickOutsideRef = useClickOutside(() => {})
+const focusTrapRef = useFocusTrap()
+const mergedRef = useMergedRef(myRef, clickOutsideRef, focusTrapRef)
+</script>
+
+<template>
+  <div :ref="mergedRef" />
+</template>
+```
+
+Each ref target passed to `useMergedRef` can be either a Vue `Ref` object (`{ value: T | null }`)
+or a callback function `(value: T | null) => void` – both forms are supported and updated whenever
+the underlying node changes.
+
+## mergeRefs function
+
+`useMergedRef` is a thin wrapper around the `mergeRefs` function – it exists mostly for parity
+with the React API. Since the Vue hook does not rely on any lifecycle-scoped memoization (unlike
+React's `useCallback`), `mergeRefs` and `useMergedRef` behave identically and either can be used,
+including outside of `setup()`:
+
+```ts
+import { ref } from 'vue'
+import { mergeRefs, useClickOutside } from '@mantine-vue/hooks'
+
+const myRef = ref<HTMLElement | null>(null)
+const clickOutsideRef = useClickOutside(() => {})
+const mergedRef = mergeRefs(myRef, clickOutsideRef)
+```
+
+## assignRef function
+
+`assignRef` is the underlying utility used by `mergeRefs`/`useMergedRef` to write a value into a
+single ref target, regardless of whether it is a `Ref` object or a callback function. It is useful
+when you need to expose an imperative handle from a component without going through a DOM ref:
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue'
+import { assignRef, type VueRefTarget } from '@mantine-vue/hooks'
+
+interface NumberInputHandlers {
+  increment: () => void
+  decrement: () => void
+}
+
+const props = defineProps<{ handlersRef?: VueRefTarget<NumberInputHandlers> }>()
+const value = ref(0)
+
+const increment = () => value.value++
+const decrement = () => value.value--
+
+assignRef(props.handlersRef, { increment, decrement })
+</script>
+
+<template>
+  <button @click="increment">+</button>
+  <button @click="decrement">-</button>
+</template>
+```
+
+## Set node type
+
+```ts
+import { useMergedRef } from '@mantine-vue/hooks'
+
+const mergedRef = useMergedRef<HTMLDivElement>()
+```
+
+## Definition
+
+```ts
+type VueRefTarget<T> = { value: T | null } | ((value: T | null) => void) | undefined
+
+function useMergedRef<T>(...refs: VueRefTarget<T>[]): (value: T | null) => void
+function mergeRefs<T>(...refs: VueRefTarget<T>[]): (value: T | null) => void
+function assignRef<T>(refTarget: VueRefTarget<T>, value: T | null): void
+```
+
+## Exported types
+
+The `VueRefTarget` type is exported from the `@mantine-vue/hooks` package;
+you can import it in your application:
+
+```ts
+import type { VueRefTarget } from '@mantine-vue/hooks'
+```

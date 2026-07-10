@@ -1,4 +1,11 @@
-import { computed, onBeforeUnmount, ref, type MaybeRefOrGetter, type Ref } from 'vue'
+import {
+  computed,
+  onBeforeUnmount,
+  ref,
+  type ComponentPublicInstance,
+  type MaybeRefOrGetter,
+  type Ref,
+} from 'vue'
 import { useUncontrolled } from '../use-uncontrolled/use-uncontrolled'
 
 export interface UseSplitterPanel {
@@ -60,9 +67,9 @@ export interface UseSplitterOptions {
   enabled?: boolean
 }
 
-export interface UseSplitterReturnValue<T extends HTMLElement = any> {
+export interface UseSplitterReturnValue {
   /** Ref callback for the container element */
-  ref: (node: T | null) => void
+  ref: (node: Element | ComponentPublicInstance | null) => void
   /** Current panel sizes as percentages */
   sizes: Ref<number[]>
   /** Which panels are currently collapsed */
@@ -71,7 +78,7 @@ export interface UseSplitterReturnValue<T extends HTMLElement = any> {
   activeHandle: Ref<number>
   /** Get props to spread on each resize handle */
   getHandleProps: (input: { index: number }) => {
-    ref: (node: HTMLElement | null) => void
+    ref: (node: Element | ComponentPublicInstance | null) => void
     role: 'separator'
     'aria-orientation': 'horizontal' | 'vertical'
     'aria-valuenow': number
@@ -371,7 +378,7 @@ function applyConstraints(
 
 export function useSplitter<T extends HTMLElement = any>(
   options: UseSplitterOptions,
-): UseSplitterReturnValue<T> {
+): UseSplitterReturnValue {
   const {
     panels,
     orientation = 'horizontal',
@@ -505,25 +512,32 @@ export function useSplitter<T extends HTMLElement = any>(
     updateSizes(next)
   }
 
-  const containerRefCallback = (node: T | null) => {
-    containerNode = node
+  const containerRefCallback = (node: Element | ComponentPublicInstance | null) => {
+    containerNode = node instanceof HTMLElement ? (node as T) : null
   }
 
-  const handleRefCallbacks = new Map<number, (node: HTMLElement | null) => void>()
+  const handleRefCallbacks = new Map<
+    number,
+    (node: Element | ComponentPublicInstance | null) => void
+  >()
   const handleElementControllers = new Map<number, AbortController>()
 
-  const getHandleRefCallback = (handleIndex: number): ((node: HTMLElement | null) => void) => {
+  const getHandleRefCallback = (
+    handleIndex: number,
+  ): ((node: Element | ComponentPublicInstance | null) => void) => {
     const cached = handleRefCallbacks.get(handleIndex)
     if (cached) {
       return cached
     }
 
-    const callback = (node: HTMLElement | null) => {
+    const callback = (rawNode: Element | ComponentPublicInstance | null) => {
       const existingController = handleElementControllers.get(handleIndex)
       if (existingController) {
         existingController.abort()
         handleElementControllers.delete(handleIndex)
       }
+
+      const node = rawNode instanceof HTMLElement ? rawNode : null
 
       if (!node) {
         return

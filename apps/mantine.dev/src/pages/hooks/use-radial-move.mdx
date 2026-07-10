@@ -1,0 +1,63 @@
+import { UseRadialMoveDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.useRadialMove)
+
+## Usage
+
+The `useRadialMove` hook can be used to create custom radial sliders. For example, the [AngleSlider](/core/angle-slider)
+component is based on this hook. It works similarly to the [use-move](/hooks/use-move) hook.
+
+Example of creating a custom radial slider:
+
+<Demo data={UseRadialMoveDemos.usage} />
+
+## Definition
+
+```ts
+interface UseRadialMoveOptions {
+  /** Number by which value is incremented/decremented with mouse and touch events, `0.01` by default */
+  step?: number
+
+  /** Called in `mouseup` and `touchend` events with the current value */
+  onChangeEnd?: (value: number) => void
+
+  /** Called in `mousedown` and `touchstart` events */
+  onScrubStart?: () => void
+
+  /** Called in `mouseup` and `touchend` events */
+  onScrubEnd?: () => void
+}
+
+interface UseRadialMoveReturnValue<T extends HTMLElement = HTMLElement> {
+  /** Ref callback to be bound to the element that should be used for radial move, e.g. `:ref="ref"` */
+  ref: (node: T | null) => void
+
+  /** Ref that indicates whether the radial move is active */
+  active: Ref<boolean>
+}
+
+function useRadialMove<T extends HTMLElement = HTMLElement>(
+  onChange: (value: number) => void,
+  options?: UseRadialMoveOptions,
+): UseRadialMoveReturnValue<T>
+```
+
+## normalizeRadialValue
+
+In addition to the hook, `@mantine-vue/hooks` also exports a `normalizeRadialValue` helper function
+that is used internally by `useRadialMove` to snap a degree value to the closest `step`:
+
+```ts
+function normalizeRadialValue(degree: number, step: number): number
+```
+
+## Exported types
+
+`UseRadialMoveOptions` and `UseRadialMoveReturnValue` types are exported from the `@mantine-vue/hooks` package;
+you can import them in your application:
+
+```ts
+import type { UseRadialMoveOptions, UseRadialMoveReturnValue } from '@mantine-vue/hooks'
+```

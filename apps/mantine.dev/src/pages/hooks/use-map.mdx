@@ -1,0 +1,19 @@
+import { UseMapDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.useMap)
+
+## Usage
+
+The `useMap` hook returns a reactive [Map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map)
+object built with Vue's `reactive` – calling `set`, `clear`, or `delete` on it (or on entries read out of it)
+updates any component that reads from the map and triggers a rerender.
+
+<Demo data={UseMapDemos.usage} />
+
+## Definition
+
+```tsx
+function useMap<T, V>(initialState?: [T, V][]): Map<T, V>
+```

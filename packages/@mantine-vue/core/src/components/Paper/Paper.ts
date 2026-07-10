@@ -1,10 +1,11 @@
-import { defineComponent, h, type PropType } from 'vue'
+import { defineComponent, h, ref, type PropType } from 'vue'
 import {
   withBoxProps,
   Box,
   createVarsResolver,
   getRadius,
   getShadow,
+  useForwardedRef,
   useProps,
   useStyles,
 } from '../../core'
@@ -43,6 +44,8 @@ export const Paper = withBoxProps(
         varsResolver,
         unstyled: props.unstyled,
       })
+      const elementRef = ref<HTMLElement | null>(null)
+      useForwardedRef(elementRef)
 
       return () =>
         h(
@@ -52,6 +55,7 @@ export const Paper = withBoxProps(
             ...getStyles('root', { className: attrs.class, style: attrs.style as any }),
             component: props.component,
             mod: { 'with-border': props.withBorder },
+            ref: elementRef,
           },
           () => slots.default?.(),
         )

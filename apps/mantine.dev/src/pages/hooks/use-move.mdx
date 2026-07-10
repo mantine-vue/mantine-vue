@@ -1,0 +1,106 @@
+import { UseMoveDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.useMove)
+
+## Usage
+
+The `use-move` hook handles move behavior over any element:
+
+<Demo data={UseMoveDemos.usage} />
+
+## API
+
+The hook accepts a callback that is called when the user moves the pressed mouse
+over the given element and returns an object with a `ref` function ref and an
+`active` state:
+
+```ts
+import { useMove } from '@mantine-vue/hooks'
+
+const {
+  ref, // -> bind to target element with `:ref="ref"`
+  active, // -> Ref<boolean>, is the user changing something right now?
+} = useMove(({ x, y }) => console.log({ x, y }))
+```
+
+The `x` and `y` values are always between `0` and `1`; you can use them to calculate
+the value in your boundaries.
+
+## Horizontal slider
+
+You can ignore changes for one of the axis:
+
+<Demo data={UseMoveDemos.horizontal} demoProps={{ toggle: true }} />
+
+## Vertical slider
+
+Moving the slider down increases the value, to reverse that set the value to
+`1 - y` in your update callback:
+
+<Demo data={UseMoveDemos.vertical} demoProps={{ toggle: true }} />
+
+## Color picker
+
+<Demo data={UseMoveDemos.color} demoProps={{ toggle: true }} />
+
+## clampUseMovePosition
+
+`clampUseMovePosition` function can be used to clamp `x` and `y` values to the
+`0-1` range. It is useful when you want to use external events to change the
+value, for example changing value with keyboard arrows:
+
+```ts
+import { clampUseMovePosition } from '@mantine-vue/hooks'
+
+clampUseMovePosition({ x: 0.5, y: 0.5 }) // -> { x: 0.5, y: 0.5 }
+clampUseMovePosition({ x: 1.5, y: 0.5 }) // -> { x: 1, y: 0.5 }
+clampUseMovePosition({ x: -0.5, y: 0.5 }) // -> { x: 0, y: 0.5 }
+```
+
+## UseMovePosition
+
+`@mantine-vue/hooks` exports the `UseMovePosition` type, it can be used as a type
+parameter for `ref`:
+
+```ts
+import { ref } from 'vue'
+import { UseMovePosition } from '@mantine-vue/hooks'
+
+const value = ref<UseMovePosition>({ x: 0.5, y: 0.5 })
+```
+
+## Definition
+
+```ts
+interface UseMovePosition {
+  x: number
+  y: number
+}
+
+interface UseMoveHandlers {
+  onScrubStart?: () => void
+  onScrubEnd?: () => void
+}
+
+interface UseMoveReturnValue<T extends HTMLElement = HTMLElement> {
+  ref: (node: T | null) => void
+  active: Readonly<Ref<boolean>>
+}
+
+function useMove<T extends HTMLElement = HTMLElement>(
+  onChange: (value: UseMovePosition) => void,
+  handlers?: UseMoveHandlers,
+  dir?: 'ltr' | 'rtl',
+): UseMoveReturnValue<T>
+```
+
+## Exported types
+
+`UseMovePosition`, `UseMoveReturnValue` and `UseMoveHandlers` types are exported
+from the `@mantine-vue/hooks` package; you can import them in your application:
+
+```ts
+import type { UseMovePosition, UseMoveHandlers, UseMoveReturnValue } from '@mantine-vue/hooks'
+```

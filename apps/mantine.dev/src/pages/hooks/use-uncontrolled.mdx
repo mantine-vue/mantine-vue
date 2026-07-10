@@ -1,0 +1,92 @@
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.useUncontrolled)
+
+## Usage
+
+The `use-uncontrolled` hook manages state for both controlled and uncontrolled components. It returns
+a writable `Ref` with the current value, a `setValue` handler, and a `Ref<boolean>` that indicates
+whether the component is controlled:
+
+```vue
+<script setup lang="ts">
+import { useUncontrolled } from '@mantine-vue/hooks'
+
+interface CustomInputProps {
+  value?: string
+  defaultValue?: string
+}
+
+const props = defineProps<CustomInputProps>()
+const emit = defineEmits<{ change: [value: string] }>()
+
+const [value, setValue] = useUncontrolled({
+  value: () => props.value,
+  defaultValue: props.defaultValue,
+  finalValue: 'Final',
+  onChange: (val) => emit('change', val),
+})
+</script>
+
+<template>
+  <input type="text" :value="value" @input="setValue(($event.target as HTMLInputElement).value)" />
+</template>
+```
+
+Note that `value` accepts a `MaybeRefOrGetter<T | undefined>` – pass a getter function (as shown above)
+so the hook can reactively track changes to the `value` prop.
+
+## Set value type
+
+By default, the hook infers the type automatically, but you can provide your own type:
+
+```ts
+import { useUncontrolled } from '@mantine-vue/hooks'
+
+const [value, setValue] = useUncontrolled<number>({
+  value: 10,
+  defaultValue: 5,
+  finalValue: 20,
+  onChange: (val) => console.log(val > 10),
+})
+```
+
+## Definition
+
+```ts
+interface UseUncontrolledOptions<T> {
+  /** Value for controlled state */
+  value?: MaybeRefOrGetter<T | undefined>
+
+  /** Initial value for uncontrolled state */
+  defaultValue?: T
+
+  /** Final value for uncontrolled state when value and defaultValue are not provided */
+  finalValue?: T
+
+  /** Controlled state onChange handler */
+  onChange?: (value: T, ...payload: any[]) => void
+}
+
+type UseUncontrolledReturnValue<T> = [
+  /** Current value */
+  Ref<T>,
+
+  /** Handler to update the state, passes `value` and `payload` to `onChange` */
+  (value: T, ...payload: any[]) => void,
+
+  /** `Ref<true>` if the state is controlled; `Ref<false>` if uncontrolled */
+  Ref<boolean>,
+]
+
+function useUncontrolled<T>(input: UseUncontrolledOptions<T>): UseUncontrolledReturnValue<T>
+```
+
+## Exported types
+
+The `UseUncontrolledOptions` and `UseUncontrolledReturnValue` types are exported from `@mantine-vue/hooks`:
+
+```ts
+import type { UseUncontrolledOptions, UseUncontrolledReturnValue } from '@mantine-vue/hooks'
+```

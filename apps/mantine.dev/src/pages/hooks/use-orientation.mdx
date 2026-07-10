@@ -1,0 +1,51 @@
+import { UseOrientationDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.useOrientation)
+
+## Usage
+
+The `useOrientation` hook returns a ref with an object that contains the current orientation of the device:
+
+<Demo data={UseOrientationDemos.usage} />
+
+## Definition
+
+```ts
+interface UseOrientationOptions {
+  /** Default angle value, used until the real value can be retrieved
+   * (during server-side rendering and before JS executes on the page).
+   * If not provided, the default value is `0`.
+   * */
+  defaultAngle?: number
+
+  /** Default type value, used until the real value can be retrieved
+   * (during server-side rendering and before JS executes on the page).
+   * If not provided, the default value is `'landscape-primary'`.
+   * */
+  defaultType?: OrientationType
+
+  /** If true, the initial value will be resolved after mount (SSR safe).
+   *  If false, the initial value will be resolved synchronously before mount (SSR unsafe).
+   *  True by default.
+   */
+  getInitialValueInEffect?: boolean
+}
+
+interface UseOrientationReturnType {
+  angle: number
+  type: OrientationType
+}
+
+function useOrientation(options?: UseOrientationOptions): Ref<UseOrientationReturnType>
+```
+
+## Exported types
+
+`UseOrientationOptions` and `UseOrientationReturnType` types are exported from the `@mantine-vue/hooks` package;
+you can import them in your application:
+
+```ts
+import type { UseOrientationOptions, UseOrientationReturnType } from '@mantine-vue/hooks'
+```

@@ -1,0 +1,62 @@
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.useShallowEffect)
+
+## Usage
+
+The `use-shallow-effect` hook works like an effect that watches an array of
+dependencies, but performs a shallow comparison instead of a strict reference
+comparison. Dependencies can be refs, getters, or plain values
+(`MaybeRefOrGetter<unknown>[]`); the effect runs immediately and then again
+whenever the shallow-compared value of any dependency changes:
+
+```ts
+import { ref } from 'vue'
+import { useShallowEffect } from '@mantine-vue/hooks'
+
+const dependency = ref({ a: 1 })
+
+// Runs once, does not rerun when a shallow-equal object is assigned
+useShallowEffect(() => {}, [dependency])
+
+dependency.value = { a: 1 } // shallow-equal to the previous value, effect does not rerun
+dependency.value = { a: 2 } // effect reruns
+```
+
+The hook works with primitive values, arrays, and objects:
+
+```ts
+import { useShallowEffect } from '@mantine-vue/hooks'
+
+// Primitive values are handled like a plain value dependency
+useShallowEffect(() => {}, [1, 2, 3])
+
+// Arrays with primitive values will not trigger callback again
+useShallowEffect(() => {}, [[1], [2], [3]])
+
+// Objects with primitive values will not trigger callback again
+useShallowEffect(() => {}, [{ a: 1 }, { b: 2 }])
+
+// Arrays with objects will trigger the callback since values are not shallow equal
+useShallowEffect(() => {}, [[{ a: 1 }], [{ b: 2 }]])
+```
+
+If you do not pass a `dependencies` array, the effect runs once immediately
+and then again after every component update (via Vue's `onUpdated` lifecycle
+hook):
+
+```ts
+import { useShallowEffect } from '@mantine-vue/hooks'
+
+// Runs on mount, then again after every update of the enclosing component
+useShallowEffect(() => {
+  console.log('rendered')
+})
+```
+
+## Definition
+
+```ts
+function useShallowEffect(effect: () => void, dependencies?: MaybeRefOrGetter<unknown>[]): void
+```

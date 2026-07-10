@@ -1,0 +1,47 @@
+import { UseElementSizeDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.useElementSize)
+
+## Usage
+
+<Demo data={UseElementSizeDemos.usage} />
+
+## API
+
+`use-element-size` is a simpler version of the
+[use-resize-observer](/hooks/use-resize-observer/) hook. The hook returns an
+object with a `ref` that should be bound to the observed element, and the
+element's `width` and `height` as reactive refs. On the first render (as well
+as during SSR), or when no element is being observed, the `width` and
+`height` values are equal to `0`.
+
+```ts
+import { useElementSize } from '@mantine-vue/hooks'
+
+const { ref, width, height } = useElementSize()
+```
+
+## Definition
+
+```ts
+interface UseElementSizeReturnValue<T extends Element = HTMLElement> {
+  ref: Ref<T | null>
+  width: Ref<number>
+  height: Ref<number>
+}
+
+function useElementSize<T extends Element = HTMLElement>(
+  options?: ResizeObserverOptions,
+): UseElementSizeReturnValue<T>
+```
+
+## Exported types
+
+The `UseElementSizeReturnValue` type is exported from the
+`@mantine-vue/hooks` package; you can import it in your application:
+
+```ts
+import type { UseElementSizeReturnValue } from '@mantine-vue/hooks'
+```

@@ -1,0 +1,89 @@
+import { UseHeadroomDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.useHeadroom)
+
+## Usage
+
+The `useHeadroom` hook creates headers that are hidden after the user scrolls past a given distance in pixels.
+It returns `{ pinned, scrollProgress }` refs where `pinned` is `true` when the element is at least partially
+visible and `scrollProgress` is a number between `0` (fully hidden) and `1` (fully visible).
+
+<Demo data={UseHeadroomDemos.usage} />
+
+## scrollProgress
+
+Use `scrollProgress` to create a scroll-linked reveal animation instead of an instant
+show/hide toggle. The value transitions from `1` (fully visible) to `0` (fully hidden)
+as the user scrolls down past `fixedAt`, and back to `1` as the user scrolls up.
+Direction changes mid-scroll are handled correctly — the progress continues from
+wherever it was when the direction changed. Set `scrollDistance` to control how many
+pixels of scrolling are needed to fully reveal or hide the element.
+
+<Demo data={UseHeadroomDemos.scrollProgress} />
+
+## Callbacks
+
+The hook supports `onPin`, `onRelease`, and `onFix` callbacks:
+
+- `onPin` is called when the header becomes visible (user scrolls up)
+- `onRelease` is called when the header is hidden (user scrolls down)
+- `onFix` is called when the scroll position enters the fixed zone (scroll position &le; `fixedAt`)
+
+<Demo data={UseHeadroomDemos.callbacks} />
+
+## Definition
+
+```tsx
+interface UseHeadroomInput {
+  /** Number in px at which element should be fixed */
+  fixedAt?: number
+
+  /** Number of px to scroll to fully reveal or hide the element, 100 by default */
+  scrollDistance?: number
+
+  /** Called when element is pinned */
+  onPin?: () => void
+
+  /** Called when element is at fixed position */
+  onFix?: () => void
+
+  /** Called when element is unpinned */
+  onRelease?: () => void
+}
+
+interface UseHeadroomReturnValue {
+  /** True when the element is at least partially visible */
+  pinned: Ref<boolean>
+
+  /** Reveal progress: 0 = fully hidden, 1 = fully visible */
+  scrollProgress: Ref<number>
+}
+
+function useHeadroom(input?: UseHeadroomInput): UseHeadroomReturnValue
+```
+
+## Exported types
+
+The `UseHeadroomInput` type (also aliased as `UseHeadroomOptions`) and `UseHeadroomReturnValue`
+type are exported from `@mantine-vue/hooks`:
+
+```tsx
+import type {
+  UseHeadroomInput,
+  UseHeadroomOptions,
+  UseHeadroomReturnValue,
+} from '@mantine-vue/hooks'
+```
+
+## Advanced
+
+`useHeadroom` is built on top of the [use-scroll-direction](/hooks/use-scroll-direction/) hook, which is
+re-exported from the same module. A handful of pure helper functions used internally to compute the pinned
+state (`isFixed`, `isPinned`, `isReleased`, `isPinnedOrReleased`) are also exported from `@mantine-vue/hooks`
+if you need to build custom scroll-linked behavior:
+
+```tsx
+import { isFixed, isPinned, isReleased, isPinnedOrReleased } from '@mantine-vue/hooks'
+```

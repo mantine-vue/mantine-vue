@@ -1,0 +1,23 @@
+import { UseDocumentTitleDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.useDocumentTitle)
+
+## Usage
+
+The `use-document-title` hook sets the `document.title` property using an isomorphic effect
+so it is safe to call during server-side rendering (the effect simply does not run on the server).
+Use this hook with client-only applications; for isomorphic use, consider more advanced options.
+
+Call the hook with a string, `Ref<string>`, or getter that should be set as the document title in any component.
+`use-document-title` triggers every time the value changes
+and the value is not an empty string (trailing whitespace is trimmed).
+
+<Demo data={UseDocumentTitleDemos.usage} />
+
+## Definition
+
+```ts
+function useDocumentTitle(title: MaybeRefOrGetter<string>): void
+```

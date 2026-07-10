@@ -1,0 +1,92 @@
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.useDisclosure)
+
+## Usage
+
+The `use-disclosure` hook manages boolean state. It returns a reactive `Ref` with the current value and `open`, `close`,
+and `toggle` handlers, and accepts optional `onOpen` and `onClose` callbacks. You can use it to manage controlled modals,
+popovers, and other similar components:
+
+```ts
+import { useDisclosure } from '@mantine-vue/hooks'
+
+const [opened, handlers] = useDisclosure(false)
+
+// Sets opened to true
+handlers.open()
+
+// Sets opened to false
+handlers.close()
+
+// Sets opened to true if it was false and vice versa
+handlers.toggle()
+
+// opened is a Ref<boolean>
+opened.value
+```
+
+## Callbacks
+
+The `onOpen` and `onClose` callbacks execute when the opened state changes:
+
+```ts
+import { useDisclosure } from '@mantine-vue/hooks'
+
+const [opened, handlers] = useDisclosure(false, {
+  onOpen: () => console.log('Opened'),
+  onClose: () => console.log('Closed'),
+})
+
+// Calls `onOpen` callback and sets opened to true
+handlers.open()
+
+// Does nothing, opened is already true
+handlers.open()
+
+// Calls `onClose` callback and sets opened to false
+handlers.close()
+
+// Does nothing, opened is already false
+handlers.close()
+
+// Calls `onOpen` or `onClose` depending on the current state
+handlers.toggle()
+```
+
+## Definition
+
+```ts
+interface UseDisclosureOptions {
+  onOpen?: () => void
+  onClose?: () => void
+}
+
+interface UseDisclosureHandlers {
+  set: (value: boolean) => void
+  open: () => void
+  close: () => void
+  toggle: () => void
+}
+
+type UseDisclosureReturnValue = [Ref<boolean>, UseDisclosureHandlers]
+
+function useDisclosure(
+  initialState?: boolean,
+  options?: UseDisclosureOptions,
+): UseDisclosureReturnValue
+```
+
+## Exported types
+
+`UseDisclosureOptions`, `UseDisclosureHandlers` and `UseDisclosureReturnValue` types are exported from the `@mantine-vue/hooks` package;
+you can import them in your application:
+
+```ts
+import type {
+  UseDisclosureOptions,
+  UseDisclosureHandlers,
+  UseDisclosureReturnValue,
+} from '@mantine-vue/hooks'
+```

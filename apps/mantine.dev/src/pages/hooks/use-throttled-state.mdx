@@ -1,0 +1,28 @@
+import { UseThrottledStateDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.useThrottledState)
+
+## Usage
+
+The `useThrottledState` hook works similarly to a regular `ref` but throttles state updates.
+The `setThrottledValue` handler in the example below will update the returned ref at most once every 1000ms.
+
+<Demo data={UseThrottledStateDemos.usage} />
+
+## Definition
+
+```tsx
+type UseThrottledStateReturnValue<T> = [Ref<T>, (value: T) => void]
+
+function useThrottledState<T = any>(defaultValue: T, wait: number): UseThrottledStateReturnValue<T>
+```
+
+## Exported types
+
+The `UseThrottledStateReturnValue` type is exported from `@mantine-vue/hooks`:
+
+```tsx
+import type { UseThrottledStateReturnValue } from '@mantine-vue/hooks'
+```

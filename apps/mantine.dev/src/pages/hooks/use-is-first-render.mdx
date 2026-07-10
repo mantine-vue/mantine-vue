@@ -1,0 +1,19 @@
+import { UseIsFirstRenderDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.useIsFirstRender)
+
+## Usage
+
+The `useIsFirstRender` hook returns a readonly ref that is `true` before the component has updated
+for the first time, and `false` afterward. Note that since it relies on Vue's `onUpdated` lifecycle
+hook, the value flips to `false` only after the component actually re-renders (not on a timer or on mount).
+
+<Demo data={UseIsFirstRenderDemos.usage} />
+
+## Definition
+
+```ts
+function useIsFirstRender(): Readonly<Ref<boolean>>
+```

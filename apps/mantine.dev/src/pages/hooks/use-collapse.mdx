@@ -1,0 +1,95 @@
+import { UseCollapseDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.useCollapse)
+
+## Usage
+
+`use-collapse` is the hook version of the [Collapse](/core/collapse) component.
+It allows animation of height from `0` to `auto` and vice versa.
+
+<Demo data={UseCollapseDemos.usage} />
+
+## Horizontal collapse
+
+[use-horizontal-collapse](/hooks/use-horizontal-collapse/) works the same way as `use-collapse`
+but animates `width` instead of `height`. It is a Mantine Vue only addition and shares the same
+input/return value shape as `use-collapse`.
+
+## ref prop
+
+`getCollapseProps` return value includes a `ref` function. It must be bound to the collapsible
+element (for example with `v-bind="getCollapseProps()"` or `:ref="getCollapseProps().ref"`) to
+make the hook work correctly – it is used to measure the element's content size.
+
+## Internals
+
+`use-collapse` and `use-horizontal-collapse` are both thin wrappers around an internal
+`createCollapse` function exported from the same module, which accepts a `dimension`
+(`'height'` or `'width'`) and a `getElementSize` function. `getElementContentSize` is the
+default size-measuring function used by both hooks – it falls back to summing children sizes
+or measuring bounding rects when `scrollHeight`/`scrollWidth` report `0` (for example, when
+the element uses `display: flex`). You generally do not need to use these exports directly.
+
+## Definition
+
+```ts
+type UseCollapseState = 'entering' | 'entered' | 'exiting' | 'exited'
+
+interface UseCollapseInput {
+  /** Expanded state */
+  expanded: MaybeRefOrGetter<boolean>
+
+  /** Transition duration in milliseconds, by default calculated based on content height */
+  transitionDuration?: number
+
+  /** Transition timing function, `ease` by default */
+  transitionTimingFunction?: string
+
+  /** Called when transition ends */
+  onTransitionEnd?: () => void
+
+  /** Called when transition starts */
+  onTransitionStart?: () => void
+
+  /** If true, collapsed content is kept in the DOM and hidden with `display: none` styles */
+  keepMounted?: boolean
+}
+
+interface GetCollapsePropsInput {
+  style?: CSSProperties
+  ref?: { value: HTMLDivElement | null } | ((value: HTMLDivElement | null) => void)
+}
+
+interface GetCollapsePropsReturnValue {
+  'aria-hidden': boolean
+  inert: boolean
+  ref: (value: any) => void
+  onTransitionend: (event: TransitionEvent) => void
+  style: CSSProperties
+}
+
+interface UseCollapseReturnValue {
+  state: Ref<UseCollapseState>
+  getCollapseProps: (input?: GetCollapsePropsInput) => GetCollapsePropsReturnValue
+}
+
+function useCollapse(input: UseCollapseInput): UseCollapseReturnValue
+```
+
+## Exported types
+
+The `UseCollapseInput`, `UseCollapseState`, `GetCollapsePropsInput`, `GetCollapsePropsReturnValue`
+and `UseCollapseReturnValue` types are exported from the `@mantine-vue/hooks` package; you can
+import them in your application:
+
+```ts
+import type {
+  UseCollapseInput,
+  UseCollapseState,
+  GetCollapsePropsInput,
+  GetCollapsePropsReturnValue,
+  UseCollapseReturnValue,
+} from '@mantine-vue/hooks'
+```

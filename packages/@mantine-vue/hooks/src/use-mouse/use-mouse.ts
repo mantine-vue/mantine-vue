@@ -24,10 +24,16 @@ export function useMouse<T extends HTMLElement = HTMLElement>(
       cleanup?.()
       cleanup = undefined
 
+      // `node` is normally an HTMLElement, but if a consumer accidentally binds
+      // the returned `ref` to a Vue component instance instead of a native DOM
+      // element, `node` will be a component proxy without DOM methods. Guard
+      // against that instead of throwing on `addEventListener`.
+      const target = node instanceof EventTarget ? node : null
+
       const setMousePosition = (event: Event) => {
         const mouseEvent = event as MouseEvent
-        if (node) {
-          const rect = node.getBoundingClientRect()
+        if (target) {
+          const rect = (target as HTMLElement).getBoundingClientRect()
           x.value = Math.max(0, Math.round(mouseEvent.clientX - rect.left))
           y.value = Math.max(0, Math.round(mouseEvent.clientY - rect.top))
         } else {
@@ -41,15 +47,15 @@ export function useMouse<T extends HTMLElement = HTMLElement>(
         y.value = 0
       }
 
-      node?.addEventListener('mousemove', setMousePosition)
+      target?.addEventListener('mousemove', setMousePosition)
       if (options.resetOnExit) {
-        node?.addEventListener('mouseleave', resetMousePosition)
+        target?.addEventListener('mouseleave', resetMousePosition)
       }
 
       cleanup = () => {
-        node?.removeEventListener('mousemove', setMousePosition)
+        target?.removeEventListener('mousemove', setMousePosition)
         if (options.resetOnExit) {
-          node?.removeEventListener('mouseleave', resetMousePosition)
+          target?.removeEventListener('mouseleave', resetMousePosition)
         }
       }
     },

@@ -1,0 +1,60 @@
+import { UseIdleDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.useIdle)
+
+## Usage
+
+The `use-idle` hook detects if the user does nothing for a given time in milliseconds. It returns a
+`Ref<boolean>`:
+
+<Demo data={UseIdleDemos.usage} />
+
+## Custom events
+
+By default, the hook will listen to `keydown`, `mousemove`, `touchmove`, `click`, `scroll`, and `wheel` events to set the idle status.
+To change that, provide a list of events in the `options` argument:
+
+<Demo data={UseIdleDemos.events} />
+
+## Initial state
+
+By default, the hook will return an idle state.
+To change this, provide an initial state value in the `options` argument:
+
+<Demo data={UseIdleDemos.state} />
+
+## Reactive timeout
+
+The `timeout` argument accepts a `MaybeRefOrGetter<number>`, so it can be a plain number, a `Ref<number>`,
+or a getter function. When the timeout value changes, the hook resets its internal timer:
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue'
+import { useIdle } from '@mantine-vue/hooks'
+
+const timeout = ref(2000)
+const idle = useIdle(timeout)
+</script>
+```
+
+## Definition
+
+```ts
+interface UseIdleOptions {
+  events?: (keyof DocumentEventMap)[]
+  initialState?: boolean
+}
+
+function useIdle(timeout: MaybeRefOrGetter<number>, options?: UseIdleOptions): Ref<boolean>
+```
+
+## Exported types
+
+The `UseIdleOptions` type is exported from `@mantine-vue/hooks`:
+
+```ts
+import type { UseIdleOptions } from '@mantine-vue/hooks'
+```

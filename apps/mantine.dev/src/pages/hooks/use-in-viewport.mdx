@@ -1,0 +1,33 @@
+import { UseInViewportDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.useInViewport)
+
+## Usage
+
+The `useInViewport` hook is a simpler alternative to [use-intersection](/hooks/use-intersection/) that only checks if the element
+is visible in the viewport. It returns a `ref` that should be bound to the target element and an `inViewport`
+ref that reflects its visibility:
+
+<Demo data={UseInViewportDemos.usage} />
+
+## Definition
+
+```tsx
+interface UseInViewportReturnValue<T extends HTMLElement = HTMLElement> {
+  inViewport: Ref<boolean>
+  ref: Ref<T | null>
+}
+
+function useInViewport<T extends HTMLElement = HTMLElement>(): UseInViewportReturnValue<T>
+```
+
+## Exported types
+
+The `UseInViewportReturnValue` type is exported from the `@mantine-vue/hooks` package;
+you can import it in your application:
+
+```tsx
+import type { UseInViewportReturnValue } from '@mantine-vue/hooks'
+```

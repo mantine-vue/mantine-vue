@@ -1,6 +1,6 @@
-import { defineComponent, h } from 'vue'
+import { defineComponent, h, ref } from 'vue'
 import type { PropType } from 'vue'
-import { Box, useStyles } from '../../core'
+import { Box, useForwardedRef, useStyles } from '../../core'
 import classes from './UnstyledButton.module.css'
 
 export const UnstyledButton = defineComponent({
@@ -41,6 +41,8 @@ export const UnstyledButton = defineComponent({
         return props.unstyled
       },
     })
+    const elementRef = ref<HTMLElement | null>(null)
+    useForwardedRef(elementRef)
 
     return () =>
       h(
@@ -52,6 +54,7 @@ export const UnstyledButton = defineComponent({
           variant: props.variant,
           mod: props.mod,
           type: props.component === 'button' ? 'button' : undefined,
+          ref: elementRef,
         },
         () => slots.default?.(),
       )

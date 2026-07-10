@@ -1,0 +1,101 @@
+import { UseFullscreenDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.useFullscreen)
+
+## Two hooks instead of one
+
+React Mantine exposes a single `useFullscreen` hook that fullscreens `document.documentElement` by
+default, or a custom element when you bind its returned `ref`. Mantine Vue splits this into two
+dedicated composables, both exported from `@mantine-vue/hooks`:
+
+- **`useFullscreenDocument`** – fullscreens the whole document (`document.documentElement`). Use this
+  when you want the same default behavior as React's `useFullscreen`.
+- **`useFullscreenElement`** – fullscreens a specific target element. Bind the returned `ref` to the
+  element that should enter fullscreen.
+
+Pick `useFullscreenDocument` for "fullscreen the whole page" experiences (presentation mode, kiosk
+mode, etc.), and `useFullscreenElement` when only part of the page (an image, a video, a chart) should
+go fullscreen.
+
+## useFullscreenDocument
+
+Fullscreens `document.documentElement` – this is the closest equivalent to React's default
+`useFullscreen` behavior (when no `ref` is bound):
+
+<Demo data={UseFullscreenDemos.usage} />
+
+```ts
+import { useFullscreenDocument } from '@mantine-vue/hooks'
+
+const { toggle, fullscreen } = useFullscreenDocument()
+```
+
+## useFullscreenElement
+
+Fullscreens a specific target element using the [Fullscreen API](https://developer.mozilla.org/en-US/docs/Web/API/Fullscreen_API).
+The hook returns a `ref` that must be bound to the element that should act as the fullscreen root. Be
+sure to follow best practices to not [confuse or trap the end user](https://developer.mozilla.org/en-US/docs/Web/API/Fullscreen_API/Guide#things_your_users_want_to_know):
+
+<Demo data={UseFullscreenDemos.ref} />
+
+```ts
+import { useFullscreenElement } from '@mantine-vue/hooks'
+
+const { ref, toggle, fullscreen } = useFullscreenElement()
+```
+
+```vue
+<template>
+  <img ref="ref" src="/image.png" />
+</template>
+```
+
+Note that binding `ref` directly only works with plain DOM elements (`img`, `div`, etc.) – see the
+[use-click-outside](/hooks/use-click-outside/) page for how to resolve a Mantine Vue component's root
+element if you need to target one instead.
+
+## Mobile Safari limitations
+
+Mobile Safari (especially on iPhone) has limited Fullscreen API support. In many cases, fullscreen is
+only supported for `<video>` elements and may not work for arbitrary elements (including
+`document.documentElement`).
+
+Both hooks include Safari-specific fallbacks where possible, but they cannot bypass browser/platform
+restrictions.
+
+Also note that entering fullscreen usually requires a direct user interaction (for example, a button
+click).
+
+## Definition
+
+```ts
+interface UseFullscreenElementReturnValue<T extends HTMLElement = HTMLElement> {
+  ref: Ref<T | null>
+  toggle: () => Promise<void>
+  fullscreen: Ref<boolean>
+}
+
+interface UseFullscreenDocumentReturnValue {
+  toggle: () => Promise<void>
+  fullscreen: Ref<boolean>
+}
+
+function useFullscreenElement<
+  T extends HTMLElement = HTMLElement,
+>(): UseFullscreenElementReturnValue<T>
+function useFullscreenDocument(): UseFullscreenDocumentReturnValue
+```
+
+## Exported types
+
+The `UseFullscreenElementReturnValue` and `UseFullscreenDocumentReturnValue` types are exported from
+the `@mantine-vue/hooks` package:
+
+```ts
+import type {
+  UseFullscreenElementReturnValue,
+  UseFullscreenDocumentReturnValue,
+} from '@mantine-vue/hooks'
+```

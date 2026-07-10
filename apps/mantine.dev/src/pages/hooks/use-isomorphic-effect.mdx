@@ -1,0 +1,26 @@
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.useIsomorphicEffect)
+
+## Usage
+
+The `use-isomorphic-effect` hook is a guard around Vue's `onMounted` lifecycle hook that only
+registers the effect when running in a browser environment (`typeof window !== 'undefined'`). Use
+it for effects that must not run during server-side rendering:
+
+```vue
+<script setup lang="ts">
+import { useIsomorphicEffect } from '@mantine-vue/hooks'
+
+useIsomorphicEffect(() => {
+  document.title = 'title'
+})
+</script>
+```
+
+## Definition
+
+```ts
+function useIsomorphicEffect(effect: () => void): void
+```

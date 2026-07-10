@@ -1,6 +1,7 @@
 import {
   defineComponent,
   h,
+  ref,
   type CSSProperties,
   type PropType,
   type SlotsType,
@@ -16,6 +17,7 @@ import {
   getSize,
   MantineSize,
   rem,
+  useForwardedRef,
   useProps,
   useStyles,
   MantineRadius,
@@ -154,6 +156,8 @@ const ButtonBase = defineComponent({
   },
   setup(rawProps, { attrs, slots }) {
     const props = useProps('Button', null, rawProps)
+    const elementRef = ref<HTMLElement | null>(null)
+    useForwardedRef(elementRef)
     const getStyles = useStyles({
       name: 'Button',
       props,
@@ -220,6 +224,7 @@ const ButtonBase = defineComponent({
             },
             props.mod,
           ],
+          ref: elementRef,
         },
         () => [
           h(

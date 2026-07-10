@@ -1,0 +1,108 @@
+import { UseScrollSpyDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.useScrollSpy)
+
+## Usage
+
+The `useScrollSpy` hook tracks the scroll position and returns the index of the
+element that is currently in the viewport. It is useful for creating
+table of contents components (like in the mantine.dev sidebar on the right side)
+and similar features.
+
+<Demo data={UseScrollSpyDemos.usage} />
+
+## Hook options
+
+The `useScrollSpy` hook accepts an object with options:
+
+- `selector` - selector to get headings; by default it is `'h1, h2, h3, h4, h5, h6'`. Accepts a `MaybeRefOrGetter<string>`.
+- `getDepth` - a function to retrieve the depth of a heading; by default depth is calculated based on the tag name
+- `getValue` - a function to retrieve the heading value; by default `element.textContent` is used
+- `scrollHost` - host element to attach scroll event listener, if not provided, `window` is used. Accepts a `MaybeRefOrGetter<HTMLElement | undefined>`.
+- `offset` - offset from the top of the viewport to use when determining the active heading, by default `0` is used. Accepts a `MaybeRefOrGetter<number>`.
+
+Example of using custom options to get headings with the `data-heading` attribute:
+
+<Demo data={UseScrollSpyDemos.selector} />
+
+## Reinitializing hook data
+
+By default, `useScrollSpy` does not track changes in the DOM. If you want
+to update the headings data after the parent component has mounted, you can use
+the `reinitialize` function:
+
+```vue
+<script setup lang="ts">
+import { watch } from 'vue'
+import { useScrollSpy } from '@mantine-vue/hooks'
+
+const props = defineProps<{ dependency: unknown }>()
+const { reinitialize } = useScrollSpy()
+
+watch(() => props.dependency, reinitialize)
+</script>
+```
+
+## Definition
+
+All types used in the definition are exported from `@mantine-vue/hooks` package.
+
+```ts
+interface UseScrollSpyHeadingData {
+  /** Heading depth, 1-6 */
+  depth: number
+
+  /** Heading text content value */
+  value: string
+
+  /** Heading id */
+  id: string
+
+  /** Function to get heading node */
+  getNode: () => HTMLElement
+}
+
+interface UseScrollSpyOptions {
+  /** Selector to get headings, `'h1, h2, h3, h4, h5, h6'` by default */
+  selector?: MaybeRefOrGetter<string>
+
+  /** A function to retrieve depth of heading, by default depth is calculated based on tag name */
+  getDepth?: (element: HTMLElement) => number
+
+  /** A function to retrieve heading value, by default `element.textContent` is used */
+  getValue?: (element: HTMLElement) => string
+
+  /** Host element to attach scroll event listener, if not provided, `window` is used */
+  scrollHost?: MaybeRefOrGetter<HTMLElement | undefined>
+
+  /** Offset from the top of the viewport to use when determining the active heading, `0` by default */
+  offset?: MaybeRefOrGetter<number>
+}
+
+interface UseScrollSpyReturnValue {
+  /** Readonly ref with the index of the active heading in the `data` array */
+  active: Readonly<Ref<number>>
+
+  /** Readonly ref with headings data. If not initialized, data is represented by an empty array. */
+  data: Readonly<Ref<UseScrollSpyHeadingData[]>>
+
+  /** Readonly ref, true if headings value have been retrieved from the DOM. */
+  initialized: Readonly<Ref<boolean>>
+
+  /** Function to update headings values after the parent component has mounted. */
+  reinitialize: () => void
+}
+
+function useScrollSpy(options?: UseScrollSpyOptions): UseScrollSpyReturnValue
+```
+
+## Exported types
+
+`UseScrollSpyOptions` and `UseScrollSpyReturnValue` types are exported from the `@mantine-vue/hooks` package;
+you can import them in your application:
+
+```ts
+import type { UseScrollSpyOptions, UseScrollSpyReturnValue } from '@mantine-vue/hooks'
+```

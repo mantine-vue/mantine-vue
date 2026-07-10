@@ -1,0 +1,40 @@
+import { UseOsDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.useOs)
+
+## Usage
+
+The `use-os` hook returns the user's operating system. Possible values are: `undetermined`, `macos`, `ios`, `windows`, `android`, `linux`, `chromeos`.
+If the OS cannot be identified, for example, during server-side rendering, `undetermined` will be returned.
+
+<Demo data={UseOsDemos.usage} />
+
+## Definition
+
+```ts
+type UseOSReturnValue =
+  | 'undetermined'
+  | 'macos'
+  | 'ios'
+  | 'windows'
+  | 'android'
+  | 'linux'
+  | 'chromeos'
+
+interface UseOsOptions {
+  getValueInEffect: boolean
+}
+
+function useOs(options?: UseOsOptions): Readonly<Ref<UseOSReturnValue>>
+```
+
+## Exported types
+
+`UseOsOptions` and `UseOSReturnValue` types are exported from the `@mantine-vue/hooks` package;
+you can import them in your application:
+
+```ts
+import type { UseOsOptions, UseOSReturnValue } from '@mantine-vue/hooks'
+```

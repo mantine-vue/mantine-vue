@@ -1,0 +1,94 @@
+import { UseMouseDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.useMouse)
+
+## Usage
+
+`useMouse` tracks mouse position and returns it as `x` and `y` coordinates relative
+to the element referenced by the returned `ref`:
+
+<Demo data={UseMouseDemos.ref} />
+
+If you do not bind `ref` to any element, the mouse position is tracked relative to
+the document element instead. In that case, you can use the `useMousePosition` hook,
+which is exported from the same package and does not require a `ref`:
+
+<Demo data={UseMouseDemos.usage} />
+
+## API
+
+Set the `resetOnExit` option to reset the mouse position to `0, 0` when the mouse
+leaves the element:
+
+```ts
+import { useMouse } from '@mantine-vue/hooks'
+
+const { ref, x, y } = useMouse({ resetOnExit: true })
+```
+
+The hook returns an object with a `ref` and reactive `x`, `y` mouse coordinates:
+
+```ts
+import { useMouse } from '@mantine-vue/hooks'
+
+const {
+  ref, // -> bind to target element with `:ref="ref"`; if not used, position stays relative to the viewport
+  x, // -> Ref<number> mouse x position
+  y, // -> Ref<number> mouse y position
+} = useMouse()
+```
+
+On the first render (as well as during SSR), both `x` and `y` values are equal to `0`.
+
+## useMousePosition
+
+`useMousePosition` tracks the mouse position relative to the document and does not
+require a `ref` – it attaches a `mousemove` listener to `document` on mount and
+removes it on unmount:
+
+```ts
+import { useMousePosition } from '@mantine-vue/hooks'
+
+const { x, y } = useMousePosition()
+```
+
+## Definition
+
+```ts
+interface UseMouseOptions {
+  resetOnExit?: boolean
+}
+
+interface UseMouseReturnValue<T extends HTMLElement = HTMLElement> {
+  ref: Ref<T | null>
+  x: Ref<number>
+  y: Ref<number>
+}
+
+function useMouse<T extends HTMLElement = HTMLElement>(
+  options?: UseMouseOptions,
+): UseMouseReturnValue<T>
+
+interface UseMousePositionReturnValue {
+  x: Ref<number>
+  y: Ref<number>
+}
+
+function useMousePosition(): UseMousePositionReturnValue
+```
+
+## Exported types
+
+The `UseMouseOptions`, `UseMouseReturnValue` and `UseMousePositionReturnValue` types
+are exported from the `@mantine-vue/hooks` package; you can import them in your
+application:
+
+```ts
+import type {
+  UseMouseOptions,
+  UseMouseReturnValue,
+  UseMousePositionReturnValue,
+} from '@mantine-vue/hooks'
+```

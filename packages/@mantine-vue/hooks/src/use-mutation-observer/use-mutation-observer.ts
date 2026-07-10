@@ -21,7 +21,11 @@ export function useMutationObserver<T extends HTMLElement = HTMLElement>(
       observer?.disconnect()
       observer = undefined
 
-      if (node) {
+      // `node` is normally an HTMLElement, but if a consumer accidentally binds
+      // the returned ref to a Vue component instance instead of a native DOM
+      // element, `node` will be a component proxy without DOM methods. Guard
+      // against that instead of throwing on `observe`.
+      if (node instanceof Element) {
         observer = new MutationObserver(callback)
         observer.observe(node, options)
       }
@@ -47,7 +51,7 @@ export function useMutationObserverTarget(
 
     const targetElement = toValue(target)
 
-    if (targetElement) {
+    if (targetElement instanceof Element) {
       observer = new MutationObserver(callback)
       observer.observe(targetElement, options)
     }

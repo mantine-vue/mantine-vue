@@ -1,0 +1,39 @@
+import { UseFocusWithinDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.useFocusWithin)
+
+## Usage
+
+The `use-focus-within` hook detects if any element within another element has focus.
+It works the same way as the `:focus-within` CSS selector:
+
+<Demo data={UseFocusWithinDemos.usage} />
+
+## Definition
+
+```ts
+interface UseFocusWithinOptions {
+  onFocus?: (event: FocusEvent) => void
+  onBlur?: (event: FocusEvent) => void
+}
+
+interface UseFocusWithinReturnValue<T extends HTMLElement = HTMLElement> {
+  ref: Ref<T | null>
+  focused: Ref<boolean>
+}
+
+function useFocusWithin<T extends HTMLElement = HTMLElement>(
+  options?: UseFocusWithinOptions,
+): UseFocusWithinReturnValue<T>
+```
+
+## Exported types
+
+`UseFocusWithinOptions` and `UseFocusWithinReturnValue` types are exported from the `@mantine-vue/hooks` package;
+you can import them in your application:
+
+```ts
+import type { UseFocusWithinOptions, UseFocusWithinReturnValue } from '@mantine-vue/hooks'
+```

@@ -184,6 +184,101 @@ const OTHER_EXTENSIONS_PAGES: MdxNavItem[] = [
   { label: 'Rich text editor', link: '/x/tiptap' },
 ]
 
+const HOOKS_UI_AND_DOM_PAGES: MdxNavItem[] = [
+  { label: 'use-click-outside', link: '/hooks/use-click-outside' },
+  { label: 'use-collapse', link: '/hooks/use-collapse' },
+  { label: 'use-color-scheme', link: '/hooks/use-color-scheme' },
+  { label: 'use-element-size', link: '/hooks/use-element-size' },
+  { label: 'use-event-listener', link: '/hooks/use-event-listener' },
+  { label: 'use-focus-return', link: '/hooks/use-focus-return' },
+  { label: 'use-focus-trap', link: '/hooks/use-focus-trap' },
+  { label: 'use-focus-within', link: '/hooks/use-focus-within' },
+  { label: 'use-fullscreen', link: '/hooks/use-fullscreen' },
+  { label: 'use-hotkeys', link: '/hooks/use-hotkeys' },
+  { label: 'use-hover', link: '/hooks/use-hover' },
+  { label: 'use-intersection', link: '/hooks/use-intersection' },
+  { label: 'use-media-query', link: '/hooks/use-media-query' },
+  { label: 'use-mouse', link: '/hooks/use-mouse' },
+  { label: 'use-move', link: '/hooks/use-move' },
+  { label: 'use-radial-move', link: '/hooks/use-radial-move' },
+  { label: 'use-floating-window', link: '/hooks/use-floating-window' },
+  { label: 'use-scroller', link: '/hooks/use-scroller' },
+  { label: 'use-reduced-motion', link: '/hooks/use-reduced-motion' },
+  { label: 'use-resize-observer', link: '/hooks/use-resize-observer' },
+  { label: 'use-mutation-observer', link: '/hooks/use-mutation-observer' },
+  { label: 'use-scroll-into-view', link: '/hooks/use-scroll-into-view' },
+  { label: 'use-scroll-spy', link: '/hooks/use-scroll-spy' },
+  { label: 'use-viewport-size', link: '/hooks/use-viewport-size' },
+  { label: 'use-window-event', link: '/hooks/use-window-event' },
+  { label: 'use-window-scroll', link: '/hooks/use-window-scroll' },
+  { label: 'use-in-viewport', link: '/hooks/use-in-viewport' },
+  { label: 'use-orientation', link: '/hooks/use-orientation' },
+  { label: 'use-file-dialog', link: '/hooks/use-file-dialog' },
+  { label: 'use-long-press', link: '/hooks/use-long-press' },
+  { label: 'use-drag', link: '/hooks/use-drag' },
+  { label: 'use-splitter', link: '/hooks/use-splitter' },
+  { label: 'use-mask', link: '/hooks/use-mask' },
+  { label: 'use-roving-index', link: '/hooks/use-roving-index' },
+  { label: 'use-horizontal-collapse', link: '/hooks/use-horizontal-collapse' },
+]
+
+const HOOKS_STATE_MANAGEMENT_PAGES: MdxNavItem[] = [
+  { label: 'use-counter', link: '/hooks/use-counter' },
+  { label: 'use-debounced-state', link: '/hooks/use-debounced-state' },
+  { label: 'use-debounced-value', link: '/hooks/use-debounced-value' },
+  { label: 'use-debounced-callback', link: '/hooks/use-debounced-callback' },
+  { label: 'use-throttled-state', link: '/hooks/use-throttled-state' },
+  { label: 'use-throttled-value', link: '/hooks/use-throttled-value' },
+  { label: 'use-throttled-callback', link: '/hooks/use-throttled-callback' },
+  { label: 'use-disclosure', link: '/hooks/use-disclosure' },
+  { label: 'use-id', link: '/hooks/use-id' },
+  { label: 'use-input-state', link: '/hooks/use-input-state' },
+  { label: 'use-list-state', link: '/hooks/use-list-state' },
+  { label: 'use-local-storage', link: '/hooks/use-local-storage' },
+  { label: 'use-session-storage', link: '/hooks/use-session-storage' },
+  { label: 'use-previous', link: '/hooks/use-previous' },
+  { label: 'use-queue', link: '/hooks/use-queue' },
+  { label: 'use-set-state', link: '/hooks/use-set-state' },
+  { label: 'use-toggle', link: '/hooks/use-toggle' },
+  { label: 'use-uncontrolled', link: '/hooks/use-uncontrolled' },
+  { label: 'use-validated-state', link: '/hooks/use-validated-state' },
+  { label: 'use-pagination', link: '/hooks/use-pagination' },
+  { label: 'use-state-history', link: '/hooks/use-state-history' },
+  { label: 'use-map', link: '/hooks/use-map' },
+  { label: 'use-set', link: '/hooks/use-set' },
+  { label: 'use-selection', link: '/hooks/use-selection' },
+]
+
+const HOOKS_UTILITIES_PAGES: MdxNavItem[] = [
+  { label: 'use-clipboard', link: '/hooks/use-clipboard' },
+  { label: 'use-document-title', link: '/hooks/use-document-title' },
+  { label: 'use-document-visibility', link: '/hooks/use-document-visibility' },
+  { label: 'use-eye-dropper', link: '/hooks/use-eye-dropper' },
+  { label: 'use-favicon', link: '/hooks/use-favicon' },
+  { label: 'use-hash', link: '/hooks/use-hash' },
+  { label: 'use-headroom', link: '/hooks/use-headroom' },
+  { label: 'use-scroll-direction', link: '/hooks/use-scroll-direction' },
+  { label: 'use-idle', link: '/hooks/use-idle' },
+  { label: 'use-interval', link: '/hooks/use-interval' },
+  { label: 'use-merged-ref', link: '/hooks/use-merged-ref' },
+  { label: 'use-network', link: '/hooks/use-network' },
+  { label: 'use-os', link: '/hooks/use-os' },
+  { label: 'use-page-leave', link: '/hooks/use-page-leave' },
+  { label: 'use-text-selection', link: '/hooks/use-text-selection' },
+  { label: 'use-timeout', link: '/hooks/use-timeout' },
+  { label: 'use-fetch', link: '/hooks/use-fetch' },
+]
+
+const HOOKS_LIFECYCLE_PAGES: MdxNavItem[] = [
+  { label: 'use-did-update', link: '/hooks/use-did-update' },
+  { label: 'use-force-update', link: '/hooks/use-force-update' },
+  { label: 'use-isomorphic-effect', link: '/hooks/use-isomorphic-effect' },
+  { label: 'use-logger', link: '/hooks/use-logger' },
+  { label: 'use-shallow-effect', link: '/hooks/use-shallow-effect' },
+  { label: 'use-mounted', link: '/hooks/use-mounted' },
+  { label: 'use-is-first-render', link: '/hooks/use-is-first-render' },
+]
+
 export const MDX_NAV_DATA: MdxNavCategory[] = [
   {
     category: 'Getting started',
@@ -200,6 +295,7 @@ export const MDX_NAV_DATA: MdxNavCategory[] = [
       },
     ],
   },
+
   {
     category: 'Components',
     groups: [
@@ -213,6 +309,15 @@ export const MDX_NAV_DATA: MdxNavCategory[] = [
       { title: 'Data display', pages: DATA_DISPLAY_PAGES },
       { title: 'Typography', pages: TYPOGRAPHY_PAGES },
       { title: 'Miscellaneous', pages: MISCELLANEOUS_PAGES },
+    ],
+  },
+  {
+    category: 'Hooks',
+    groups: [
+      { title: 'UI and Dom', pages: HOOKS_UI_AND_DOM_PAGES },
+      { title: 'State management', pages: HOOKS_STATE_MANAGEMENT_PAGES },
+      { title: 'Utilities', pages: HOOKS_UTILITIES_PAGES },
+      { title: 'Lifecycle', pages: HOOKS_LIFECYCLE_PAGES },
     ],
   },
   {

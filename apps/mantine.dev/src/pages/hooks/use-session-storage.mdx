@@ -1,0 +1,145 @@
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.useSessionStorage)
+
+## Usage
+
+The `use-session-storage` hook works the same way as the [use-local-storage](/hooks/use-local-storage/)
+hook, but reads and writes to `window.sessionStorage` instead of `window.localStorage`. It returns
+a tuple of a `Ref<T>`, a setter function, and a remove function:
+
+```vue
+<script setup lang="ts">
+import { useSessionStorage } from '@mantine-vue/hooks'
+
+// The hook will read the value from sessionStorage.getItem('color-scheme')
+// If sessionStorage is not available or the value at a given key does not exist,
+// 'dark' will be assigned to value.value
+const [value, setValue] = useSessionStorage({
+  key: 'color-scheme',
+  defaultValue: 'dark',
+})
+
+// The value is set both to state and sessionStorage at 'color-scheme'
+setValue('light')
+
+// You can also use a callback to set the value based on the current one
+setValue((current) => (current === 'dark' ? 'light' : 'dark'))
+</script>
+```
+
+## Example
+
+Example of a color scheme toggle button that uses `use-session-storage` hook to store the current
+color scheme for the duration of the browser tab session:
+
+```vue
+<script setup lang="ts">
+import { ActionIcon } from '@mantine-vue/core'
+import { useSessionStorage } from '@mantine-vue/hooks'
+import { PhMoonStars, PhSun } from '@phosphor-icons/vue'
+
+const [colorScheme, setColorScheme] = useSessionStorage<'light' | 'dark'>({
+  key: 'color-scheme',
+  defaultValue: 'light',
+})
+
+const toggleColorScheme = () => setColorScheme((current) => (current === 'dark' ? 'light' : 'dark'))
+</script>
+
+<template>
+  <ActionIcon @click="toggleColorScheme">
+    <PhSun v-if="colorScheme === 'dark'" />
+    <PhMoonStars v-else />
+  </ActionIcon>
+</template>
+```
+
+## Remove value
+
+Use the `removeValue` (third tuple item) callback to clean the value from `sessionStorage`.
+When the value is removed, it is reset to `defaultValue`:
+
+```ts
+import { useSessionStorage } from '@mantine-vue/hooks'
+
+const [value, setValue, removeValue] = useSessionStorage({
+  key: 'color-scheme',
+  defaultValue: 'light',
+})
+```
+
+## Tabs synchronization
+
+Unlike `use-local-storage`, `sessionStorage` is scoped to a single browser tab, so the native
+[storage event](https://developer.mozilla.org/en-US/docs/Web/API/Window/storage_event) will not
+fire across tabs. `use-session-storage` still dispatches an internal custom event so that multiple
+`useSessionStorage` calls with the same key stay in sync within the same tab/page. Set the `sync`
+option to `false` to opt out of this behavior.
+
+## Serialize/deserialize JSON
+
+By default, the hook will serialize/deserialize data with `JSON.stringify`/`JSON.parse`.
+If you need to store data that cannot be serialized with `JSON.stringify` – provide your own
+serialization handlers:
+
+```ts
+import { useSessionStorage } from '@mantine-vue/hooks'
+
+const [value, setValue] = useSessionStorage({
+  key: 'color-scheme',
+  serialize: (value) => {
+    /* return value serialized to string */
+  },
+  deserialize: (sessionStorageValue) => {
+    /* parse sessionStorage string value and return value */
+  },
+})
+```
+
+## Set value type
+
+You can specify the value type as a generic argument:
+
+```ts
+import { useSessionStorage } from '@mantine-vue/hooks'
+
+const [value, setValue] = useSessionStorage<'dark' | 'light'>({
+  key: 'color-scheme',
+  defaultValue: 'light',
+})
+```
+
+## Read storage value
+
+To read a value from `sessionStorage` without using a reactive hook, use the
+`readSessionStorageValue` function. It accepts the same `options` object as `use-session-storage`,
+and returns the plain value (not a `Ref`):
+
+```ts
+import { readSessionStorageValue } from '@mantine-vue/hooks'
+
+const value = readSessionStorageValue({ key: 'color-scheme' })
+```
+
+## Definition
+
+`use-session-storage` and `use-local-storage` share the same options and return value shapes –
+see the [use-local-storage](/hooks/use-local-storage/) definition for the full `UseStorageOptions`
+and `UseStorageReturnValue` types.
+
+```ts
+function useSessionStorage<T>(options: UseStorageOptions<T>): UseStorageReturnValue<T>
+
+function readSessionStorageValue<T>(options: UseStorageOptions<T>): T
+```
+
+## Exported types
+
+`UseStorageOptions` and `UseStorageReturnValue` types are exported from the `@mantine-vue/hooks`
+package; you can import them in your application:
+
+```ts
+import type { UseStorageOptions, UseStorageReturnValue } from '@mantine-vue/hooks'
+```

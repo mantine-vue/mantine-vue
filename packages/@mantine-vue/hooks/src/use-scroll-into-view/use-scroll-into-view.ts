@@ -191,13 +191,20 @@ function getRelativePosition({
   offset,
   isList,
 }: RelativePositionParams): number {
-  if (!target || (!parent && typeof document === 'undefined')) {
+  // `target`/`parent` are normally HTMLElements, but if a consumer accidentally
+  // binds the returned ref to a Vue component instance instead of a native DOM
+  // element, they'll be a component proxy without DOM methods. Guard against
+  // that instead of throwing on `getBoundingClientRect`.
+  const safeTarget = target instanceof Element ? target : null
+  const safeParent = parent instanceof Element ? parent : null
+
+  if (!safeTarget || (!safeParent && typeof document === 'undefined')) {
     return 0
   }
-  const isCustomParent = !!parent
-  const parentElement = parent || document.body
+  const isCustomParent = !!safeParent
+  const parentElement = safeParent || document.body
   const parentPosition = parentElement.getBoundingClientRect()
-  const targetPosition = target.getBoundingClientRect()
+  const targetPosition = safeTarget.getBoundingClientRect()
 
   const getDiff = (property: 'top' | 'left'): number =>
     targetPosition[property] - parentPosition[property]
@@ -271,14 +278,16 @@ interface ScrollStartParams {
 }
 
 function getScrollStart({ axis, parent }: ScrollStartParams): number {
-  if (!parent && typeof document === 'undefined') {
+  const safeParent = parent instanceof Element ? parent : null
+
+  if (!safeParent && typeof document === 'undefined') {
     return 0
   }
 
   const method = axis === 'y' ? 'scrollTop' : 'scrollLeft'
 
-  if (parent) {
-    return parent[method]
+  if (safeParent) {
+    return safeParent[method]
   }
 
   const { body, documentElement } = document
@@ -294,14 +303,16 @@ interface SetScrollParamParams {
 }
 
 function setScrollParam({ axis, parent, distance }: SetScrollParamParams): void {
-  if (!parent && typeof document === 'undefined') {
+  const safeParent = parent instanceof Element ? parent : null
+
+  if (!safeParent && typeof document === 'undefined') {
     return
   }
 
   const method = axis === 'y' ? 'scrollTop' : 'scrollLeft'
 
-  if (parent) {
-    parent[method] = distance
+  if (safeParent) {
+    safeParent[method] = distance
   } else {
     const { body, documentElement } = document
     body[method] = distance

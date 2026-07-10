@@ -1,0 +1,20 @@
+import { UseForceUpdateDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.useForceUpdate)
+
+## Usage
+
+The `use-force-update` hook returns a function that, when called, rerenders the component:
+
+<Demo data={UseForceUpdateDemos.usage} />
+
+## Definition
+
+Unlike the React version, `useForceUpdate` in Vue returns a tuple of a reactive key (which you can
+use as a `:key` binding to force-remount a subtree) and the update function itself:
+
+```ts
+function useForceUpdate(): [Ref<number>, () => void]
+```

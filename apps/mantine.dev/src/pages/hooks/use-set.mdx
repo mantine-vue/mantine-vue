@@ -1,0 +1,32 @@
+import { UseSetDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.useSet)
+
+## Usage
+
+The `useSet` hook returns a reactive [Set](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set)
+object built with Vue's `reactive`: calling `add`, `clear`, or `delete` on it triggers a rerender in any
+component that reads from it.
+
+<Demo data={UseSetDemos.usage} />
+
+## Definition
+
+```tsx
+function useSet<T>(values?: T[]): Set<T>
+```
+
+The returned set also exposes `union`, `intersection`, `difference`, and `symmetricDifference` combinators
+(mirroring the ES2024 `Set` methods), which each return a new plain (non-reactive) `Set`.
+
+## Exported helpers
+
+`@mantine-vue/hooks` also exports `readonlySetLikeToSet`, a small utility used internally by the combinator
+methods above to normalize any `ReadonlySetLike` value (anything with `size`, `has`, and `keys`) into a
+real `Set`. You most likely won't need it directly, but it is available if you build your own set utilities:
+
+```tsx
+import { readonlySetLikeToSet } from '@mantine-vue/hooks'
+```

@@ -1,0 +1,81 @@
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.useValidatedState)
+
+## Usage
+
+The `use-validated-state` hook validates state with a given rule each time the state is set. It
+returns a readonly `Ref` with the current validation state, last valid value, and current value:
+
+```ts
+import { useValidatedState } from '@mantine-vue/hooks'
+
+const [state, setValue] = useValidatedState('valid', (value) => value === 'valid')
+
+state.value.lastValidValue // -> valid
+state.value.value // -> valid
+state.value.valid // -> true
+
+setValue('invalid')
+
+state.value.lastValidValue // -> valid
+state.value.value // -> invalid
+state.value.valid // -> false
+```
+
+## Example
+
+```vue
+<script setup lang="ts">
+import { useValidatedState } from '@mantine-vue/hooks'
+
+const [state, setValue] = useValidatedState('validated state', (value) => value.trim().length >= 12)
+</script>
+
+<template>
+  <input
+    :value="state.value"
+    :style="{ borderColor: state.valid ? undefined : 'var(--mantine-color-red-6)' }"
+    @input="setValue(($event.target as HTMLInputElement).value)"
+  />
+  <p>Last valid value: {{ state.lastValidValue }}</p>
+</template>
+```
+
+## Definition
+
+```ts
+interface UseValidatedStateValue<T> {
+  /** Current value */
+  value: T
+
+  /** Last valid value */
+  lastValidValue: T | undefined
+
+  /** True if the current value is valid, false otherwise */
+  valid: boolean
+}
+
+type UseValidatedStateReturnValue<T> = [
+  /** Current value */
+  Readonly<Ref<UseValidatedStateValue<T>>>,
+
+  /** Handler to update the state, passes `value` to `onChange` */
+  (value: T) => void,
+]
+
+function useValidatedState<T>(
+  initialValue: T,
+  validate: (value: T) => boolean,
+  initialValidationState?: boolean,
+): UseValidatedStateReturnValue<T>
+```
+
+## Exported types
+
+The `UseValidatedStateValue` and `UseValidatedStateReturnValue` types are exported from `@mantine-vue/hooks`:
+
+```ts
+import type { UseValidatedStateValue, UseValidatedStateReturnValue } from '@mantine-vue/hooks'
+```

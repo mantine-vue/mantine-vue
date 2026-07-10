@@ -1,0 +1,32 @@
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.useDidUpdate)
+
+## Usage
+
+The `use-did-update` hook works the same way as a `watch` effect but it is not called when the component is mounted,
+only when the dependencies actually change after that:
+
+```ts
+import { useDidUpdate } from '@mantine-vue/hooks'
+
+useDidUpdate(() => console.log('Will not be called when mounted'), [dependency1, dependency2])
+```
+
+If no dependencies array is passed, the effect runs after every component update instead
+(backed by Vue's `onUpdated` lifecycle hook):
+
+```ts
+import { useDidUpdate } from '@mantine-vue/hooks'
+
+useDidUpdate(() => console.log('Called on every update, but not on mount'))
+```
+
+Each dependency may be a plain value, a `Ref`, or a getter function (`MaybeRefOrGetter`).
+
+## Definition
+
+```ts
+function useDidUpdate(effect: () => void | (() => void), deps?: MaybeRefOrGetter<unknown>[]): void
+```

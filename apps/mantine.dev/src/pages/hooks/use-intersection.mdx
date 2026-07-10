@@ -1,0 +1,71 @@
+import { UseIntersectionDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.useIntersection)
+
+## Usage
+
+The `use-intersection` hook returns information about the intersection of a given element with its
+scroll container or the viewport using the
+[Intersection Observer API](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API):
+
+<Demo data={UseIntersectionDemos.usage} />
+
+## API
+
+The hook accepts `IntersectionObserver`'s options as its only optional argument:
+
+```ts
+import { useIntersection } from '@mantine-vue/hooks'
+
+useIntersection({
+  root: document.querySelector('#some-element'),
+  rootMargin: '0rem',
+  threshold: 1.0,
+})
+```
+
+The hook returns a `ref` that should be bound to the observed element and a reactive `entry` with the
+latest value returned by the `IntersectionObserver`'s callback. See the
+[Intersection Observer API](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API)
+documentation to learn everything about the options.
+
+Before an element is bound to `ref` (as well as during SSR), `entry` is `null`:
+
+```vue
+<script setup lang="ts">
+import { useIntersection } from '@mantine-vue/hooks'
+
+const { ref: targetRef, entry } = useIntersection()
+</script>
+
+<template>
+  <div ref="targetRef" />
+</template>
+```
+
+Note that binding `ref` directly only works with plain DOM elements. To observe a Mantine Vue
+component, resolve its root element first (see the [use-click-outside](/hooks/use-click-outside/)
+page for the same pattern).
+
+## Definition
+
+```ts
+interface UseIntersectionReturnValue<T extends HTMLElement = HTMLElement> {
+  ref: Ref<T | null>
+  entry: Ref<IntersectionObserverEntry | null>
+}
+
+function useIntersection<T extends HTMLElement = HTMLElement>(
+  options?: IntersectionObserverInit,
+): UseIntersectionReturnValue<T>
+```
+
+## Exported types
+
+`UseIntersectionReturnValue` type is exported from the `@mantine-vue/hooks` package:
+
+```ts
+import type { UseIntersectionReturnValue } from '@mantine-vue/hooks'
+```

@@ -1,4 +1,4 @@
-import { toValue, watch, type MaybeRefOrGetter, type Ref } from 'vue'
+import { toValue, watch, type ComponentPublicInstance, type MaybeRefOrGetter, type Ref } from 'vue'
 import { useUncontrolled } from '../use-uncontrolled/use-uncontrolled'
 
 export interface UseRovingIndexInput {
@@ -50,7 +50,7 @@ export interface UseRovingIndexReturnValue {
     tabIndex: 0 | -1
     onKeyDown: (event: KeyboardEvent) => void
     onClick: (event: MouseEvent) => void
-    ref: (node: HTMLElement | null) => void
+    ref: (node: Element | ComponentPublicInstance | null) => void
   }
 
   /** Currently focused index */
@@ -342,9 +342,10 @@ export function useRovingIndex(input: UseRovingIndexInput): UseRovingIndexReturn
     return {
       tabIndex: (index === activeIndex.value ? 0 : -1) as 0 | -1,
 
-      ref: (node: HTMLElement | null) => {
-        if (node) {
-          itemRefs.set(index, node)
+      ref: (node: Element | ComponentPublicInstance | null) => {
+        const safeNode = node instanceof HTMLElement ? node : null
+        if (safeNode) {
+          itemRefs.set(index, safeNode)
         } else {
           itemRefs.delete(index)
         }

@@ -1,0 +1,61 @@
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.useInputState)
+
+## Usage
+
+The `use-input-state` hook handles the state of native inputs (with an `Event` passed to the setter) and custom inputs
+(with the value passed to the setter directly). It returns a reactive `Ref` and a setter function, and works with all
+Mantine Vue and native inputs:
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue'
+import { NumberInput, TextInput } from '@mantine-vue/core'
+import { useInputState } from '@mantine-vue/hooks'
+
+const [stringValue, setStringValue] = useInputState('')
+const [numberValue, setNumberValue] = useInputState<string | number>(0)
+
+// Equivalent with a plain ref
+const stringValueRef = ref('')
+const numberValueRef = ref<string | number>(0)
+</script>
+
+<template>
+  <!-- with useInputState -->
+  <input type="text" :value="stringValue" @input="setStringValue" />
+  <TextInput :value="stringValue" @input="setStringValue" />
+  <NumberInput :value="numberValue" :on-change="setNumberValue" />
+
+  <!-- with a plain ref -->
+  <input
+    type="text"
+    :value="stringValueRef"
+    @input="stringValueRef = ($event.target as HTMLInputElement).value"
+  />
+  <TextInput
+    :value="stringValueRef"
+    @input="stringValueRef = ($event.target as HTMLInputElement).value"
+  />
+  <NumberInput :value="numberValueRef" :on-change="(value) => (numberValueRef = value)" />
+</template>
+```
+
+## Definition
+
+```ts
+type UseInputStateReturnValue<T> = [Ref<T>, (eventOrValue: Event | T | ((current: T) => T)) => void]
+
+function useInputState<T>(initialValue: T): UseInputStateReturnValue<T>
+```
+
+## Exported types
+
+`UseInputStateReturnValue` type is exported from the `@mantine-vue/hooks` package,
+you can import it in your application:
+
+```ts
+import type { UseInputStateReturnValue } from '@mantine-vue/hooks'
+```

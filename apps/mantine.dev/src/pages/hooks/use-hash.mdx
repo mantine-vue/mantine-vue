@@ -1,0 +1,53 @@
+import { UseHashDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.useHash)
+
+## Usage
+
+The `use-hash` hook returns the hash from the URL as a reactive `Ref`, subscribes to its changes with
+the [hashchange event](https://developer.mozilla.org/en-US/docs/Web/API/Window/hashchange_event), and
+allows you to change it with the `setHash` function:
+
+<Demo data={UseHashDemos.usage} />
+
+## Initial state value
+
+By default, `use-hash` reads the initial value in `onMounted`. If you want to get the initial value as
+soon as the hook is called, set `getInitialValueInEffect` to `false`. Note that this option is not
+compatible with server-side rendering – you can only use it if your app is client-side only.
+
+```vue
+<script setup lang="ts">
+import { Button } from '@mantine-vue/core'
+import { useHash } from '@mantine-vue/hooks'
+
+const [hash, setHash] = useHash({ getInitialValueInEffect: false })
+</script>
+
+<template>
+  <Button @click="setHash('new-hash')">Change hash</Button>
+</template>
+```
+
+## Definition
+
+```ts
+interface UseHashInput {
+  getInitialValueInEffect?: boolean
+}
+
+type UseHashReturnValue = [Ref<string>, (value: string) => void]
+
+function useHash(options?: UseHashInput): UseHashReturnValue
+```
+
+## Exported types
+
+The `UseHashInput` and `UseHashReturnValue` types are exported from `@mantine-vue/hooks` (`UseHashInput`
+is also aliased as `UseHashOptions`):
+
+```ts
+import type { UseHashInput, UseHashOptions, UseHashReturnValue } from '@mantine-vue/hooks'
+```

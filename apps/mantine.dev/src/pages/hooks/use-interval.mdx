@@ -1,0 +1,81 @@
+import { UseIntervalDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.useInterval)
+
+## Usage
+
+<Demo data={UseIntervalDemos.usage} />
+
+## Auto invoke interval
+
+To automatically start the interval when the component is mounted, set the `autoInvoke` option to `true`:
+
+```ts
+import { useInterval } from '@mantine-vue/hooks'
+
+const interval = useInterval(() => console.log('Interval tick'), 1000, { autoInvoke: true })
+```
+
+## API
+
+```ts
+import { useInterval } from '@mantine-vue/hooks'
+
+const { start, stop, toggle, active } = useInterval(fn, interval)
+```
+
+Arguments:
+
+- `fn` – function that is called at each interval tick
+- `interval` – amount of milliseconds between each tick, accepts a `MaybeRefOrGetter<number>` so it
+  can be reactive – changing the value while the interval is active restarts it with the new delay
+
+Return object:
+
+- `start` – start the interval
+- `stop` – stop interval
+- `toggle` – toggle interval
+- `active` – `Ref<boolean>` with the current interval status
+
+Note that `active` is a `Ref`, so it must be unwrapped with `.value` in `<script setup>` code
+(templates unwrap it automatically).
+
+## Definition
+
+```ts
+interface UseIntervalOptions {
+  /** If set, the interval will start automatically when the component is mounted, `false` by default */
+  autoInvoke?: boolean
+}
+
+interface UseIntervalReturnValue {
+  /** Starts the interval */
+  start: () => void
+
+  /** Stops the interval */
+  stop: () => void
+
+  /** Toggles the interval */
+  toggle: () => void
+
+  /** Indicates if the interval is active */
+  active: Ref<boolean>
+}
+
+function useInterval(
+  fn: () => void,
+  interval: MaybeRefOrGetter<number>,
+  options?: UseIntervalOptions,
+): UseIntervalReturnValue
+```
+
+## Exported types
+
+`UseIntervalOptions` and `UseIntervalReturnValue` types are exported from the `@mantine-vue/hooks` package;
+you can import them in your application:
+
+```ts
+import type { UseIntervalOptions, UseIntervalReturnValue } from '@mantine-vue/hooks'
+```

@@ -1,4 +1,11 @@
-import { onBeforeUnmount, onMounted, readonly, ref, type Ref } from 'vue'
+import {
+  onBeforeUnmount,
+  onMounted,
+  readonly,
+  ref,
+  type ComponentPublicInstance,
+  type Ref,
+} from 'vue'
 
 export interface FloatingWindowPositionConfig {
   top?: number
@@ -158,20 +165,28 @@ export function useFloatingWindow<T extends HTMLElement>(options: UseFloatingWin
     document.addEventListener('touchend', end)
   }
 
-  const setRef = (node: T | null) => {
+  const setRef = (node: Element | ComponentPublicInstance | null) => {
+    const safeNode = node instanceof Element ? (node as T) : null
+
+    if (safeNode === element.value) {
+      return
+    }
+
     if (element.value) {
       element.value.removeEventListener('mousedown', start)
       element.value.removeEventListener('touchstart', start)
     }
-    element.value = node
-    if (node) {
-      node.addEventListener('mousedown', start)
-      node.addEventListener('touchstart', start, { passive: false })
-      position = calculateInitialPosition(node, options)
+    observer?.disconnect()
+    observer = undefined
+    element.value = safeNode
+    if (safeNode) {
+      safeNode.addEventListener('mousedown', start)
+      safeNode.addEventListener('touchstart', start, { passive: false })
+      position = calculateInitialPosition(safeNode, options)
       applyPosition(position, false)
       if (typeof ResizeObserver !== 'undefined') {
         observer = new ResizeObserver(() => applyPosition(position, false))
-        observer.observe(node)
+        observer.observe(safeNode)
       }
     }
   }

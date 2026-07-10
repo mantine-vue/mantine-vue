@@ -1,0 +1,42 @@
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.useId)
+
+## Usage
+
+The `use-id` hook generates a random id that persists across re-renders.
+The hook is usually used to bind input elements to labels.
+The generated random id is saved to a ref and will not change unless the component is unmounted and mounted again.
+
+```vue
+<script setup lang="ts">
+import { useId } from '@mantine-vue/hooks'
+
+const props = defineProps<{ id?: string }>()
+const uuid = useId(props.id)
+</script>
+
+<template>
+  <label :for="uuid">Input label</label>
+  <input type="text" :id="uuid" />
+</template>
+```
+
+```ts
+// input and label will have id 'my-id'
+// <Input id="my-id" />
+
+// input and label will have random id 'mantine-vue-1'
+// <Input />
+```
+
+## Definition
+
+The hook returns a `Ref<string>` instead of a plain string, so that the id can be used reactively
+in the template. The id is resolved to its final random value in `onMounted`, unless a static id
+was provided:
+
+```ts
+function useId(staticId?: string): Ref<string>
+```
