@@ -94,6 +94,49 @@ describe('@mantine-vue/core Accordion', () => {
     expect(buttons(wrapper)[1].element).toBe(document.activeElement)
   })
 
+  it('loops arrow key navigation by default', async () => {
+    const wrapper = renderAccordion({ defaultValue: 'item-1' })
+
+    buttons(wrapper)[0].element.focus()
+    await buttons(wrapper)[0].trigger('keydown', { key: 'ArrowUp' })
+    expect(buttons(wrapper)[2].element).toBe(document.activeElement)
+
+    await buttons(wrapper)[2].trigger('keydown', { key: 'ArrowDown' })
+    expect(buttons(wrapper)[0].element).toBe(document.activeElement)
+  })
+
+  it('adds variant classes to item and control elements', () => {
+    const wrapper = renderAccordion({ variant: 'contained' })
+
+    expect(wrapper.find('.mantine-Accordion-item').classes().join(' ')).toContain('item--contained')
+    expect(buttons(wrapper)[0].classes().join(' ')).toContain('control--contained')
+  })
+
+  it('forwards compound classNames and styles to accordion parts', () => {
+    const wrapper = renderAccordion(
+      {},
+      {
+        classNames: {
+          control: 'custom-control',
+          chevron: 'custom-chevron',
+          label: 'custom-label',
+          icon: 'custom-icon',
+        },
+        styles: {
+          label: { color: 'rgb(255, 0, 0)' },
+        },
+      },
+    )
+
+    expect(wrapper.find('.custom-control').exists()).toBe(true)
+    expect(wrapper.find('.custom-chevron').exists()).toBe(true)
+    expect(wrapper.find('.custom-label').exists()).toBe(true)
+    expect(wrapper.find('.custom-icon').exists()).toBe(true)
+    expect((wrapper.find('.custom-label').element as HTMLElement).style.color).toBe(
+      'rgb(255, 0, 0)',
+    )
+  })
+
   it('wraps controls with heading when order is set', () => {
     const wrapper = renderAccordion({ defaultValue: 'item-1', order: 3 })
 

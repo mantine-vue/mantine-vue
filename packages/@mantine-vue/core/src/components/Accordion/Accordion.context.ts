@@ -17,7 +17,17 @@ export interface AccordionContextValue {
   isItemActive: (value: string) => boolean
   getControlId: (value: string) => string
   getRegionId: (value: string) => string
-  getStyles: (selector: string, options?: { className?: any; style?: any; props?: any }) => any
+  getStyles: (
+    selector: string,
+    options?: {
+      className?: any
+      style?: any
+      classNames?: any
+      styles?: any
+      props?: any
+      variant?: string
+    },
+  ) => any
   variant?: string
   unstyled?: boolean
   keepMounted?: boolean
