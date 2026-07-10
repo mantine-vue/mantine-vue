@@ -8,7 +8,7 @@ import { Button } from '@mantine-vue/core'
 </script>
 
 <template>
-  <Button component="a" href="https://mantine.dev" data-disabled @click.prevent>
+  <Button component="a" href="https://mantine-vue" data-disabled @click.prevent>
     Disabled link
   </Button>
 </template>
@@ -21,7 +21,7 @@ const Demo = defineComponent({
       Button,
       {
         component: 'a',
-        href: 'https://mantine.dev',
+        href: 'https://mantine-vue',
         'data-disabled': true,
         onClick: (e: Event) => e.preventDefault(),
       },

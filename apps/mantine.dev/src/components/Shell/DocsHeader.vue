@@ -79,6 +79,7 @@ function isExternal(link: string) {
 
         <div class="desktopHeaderControls">
           <Menu
+            v-if="majorVersions.length > 0"
             :width="180"
             :within-portal="false"
             radius="md"
@@ -110,8 +111,10 @@ function isExternal(link: string) {
 
           <HeaderControls
             class="controls"
+            :withSupport="false"
+            :withDiscord="false"
             :on-search="searchHandlers.open"
-            github-link="https://github.com/mantinedev/mantine"
+            :github-link="meta.gitHubLinks.mantine"
             :discord-link="meta.discordLink"
           />
         </div>
@@ -119,7 +122,7 @@ function isExternal(link: string) {
         <Group :gap="5" class="mobileHeaderControls">
           <SearchMobileControl :on-search="searchHandlers.open" />
           <ColorSchemeControl />
-          <SupportControl />
+          <!-- <SupportControl /> -->
         </Group>
       </div>
 

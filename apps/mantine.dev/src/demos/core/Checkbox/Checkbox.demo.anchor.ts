@@ -11,7 +11,7 @@ import { Anchor, Checkbox } from '@mantine-vue/core'
   <Checkbox>
     <template #label>
       I accept
-      <Anchor href="https://mantine.dev" target="_blank" inherit> terms and conditions </Anchor>
+      <Anchor href="https://mantine-vue" target="_blank" inherit> terms and conditions </Anchor>
     </template>
   </Checkbox>
 </template>
@@ -25,7 +25,7 @@ const Demo = defineComponent({
         'I accept ',
         h(
           Anchor,
-          { href: 'https://mantine.dev', target: '_blank', inherit: true },
+          { href: 'https://mantine-vue', target: '_blank', inherit: true },
           {
             default: () => 'terms and conditions',
           },

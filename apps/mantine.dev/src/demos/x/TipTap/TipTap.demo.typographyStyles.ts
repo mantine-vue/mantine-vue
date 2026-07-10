@@ -31,7 +31,7 @@ const editor = useEditor({
   extensions: [StarterKit.configure({ link: false }), Link],
   content: \`
     <h2>Heading 2</h2>
-    <p>Paragraph with <a href="https://mantine.dev">link</a></p>
+    <p>Paragraph with <a href="https://mantine-vue">link</a></p>
   \`,
 })
 </script>
@@ -50,7 +50,7 @@ const Demo = defineComponent({
       extensions: [StarterKit.configure({ link: false }), Link],
       content: `
     <h2>Heading 2</h2>
-    <p>Paragraph with <a href="https://mantine.dev">link</a></p>
+    <p>Paragraph with <a href="https://mantine-vue">link</a></p>
     `,
     })
 

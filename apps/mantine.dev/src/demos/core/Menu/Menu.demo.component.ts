@@ -14,7 +14,7 @@ import { Button, Menu } from '@mantine-vue/core'
     </Menu.Target>
 
     <Menu.Dropdown>
-      <Menu.Item component="a" href="https://mantine.dev" target="_blank">
+      <Menu.Item component="a" href="https://mantine-vue" target="_blank">
         Mantine website
       </Menu.Item>
       <Menu.Item component="a" href="https://github.com/mantinedev" target="_blank">
@@ -41,7 +41,7 @@ const Demo = defineComponent({
               default: () => [
                 h(
                   Menu.Item,
-                  { component: 'a', href: 'https://mantine.dev', target: '_blank' },
+                  { component: 'a', href: 'https://mantine-vue', target: '_blank' },
                   () => 'Mantine website',
                 ),
                 h(

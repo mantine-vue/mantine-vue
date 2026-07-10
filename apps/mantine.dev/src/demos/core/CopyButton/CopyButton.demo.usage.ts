@@ -8,7 +8,7 @@ import { CopyButton, Button } from '@mantine-vue/core'
 </script>
 
 <template>
-  <CopyButton value="https://mantine.dev">
+  <CopyButton value="https://mantine-vue">
     <template #default="{ copied, copy }">
       <Button :color="copied ? 'teal' : 'blue'" @click="copy">
         {{ copied ? 'Copied url' : 'Copy url' }}
@@ -24,7 +24,7 @@ const Demo = defineComponent({
     return () =>
       h(
         CopyButton,
-        { value: 'https://mantine.dev' },
+        { value: 'https://mantine-vue' },
         {
           default: ({ copied, copy }: { copied: boolean; copy: () => void }) =>
             h(

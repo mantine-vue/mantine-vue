@@ -10,7 +10,7 @@ import { Anchor, Box, Center } from '@mantine-vue/core'
 </script>
 
 <template>
-  <Anchor href="https://mantine.dev" target="_blank">
+  <Anchor href="https://mantine-vue" target="_blank">
     <Center inline>
       <PhArrowLeft :size="12" />
       <Box ml="5">Back to Mantine website</Box>
@@ -25,7 +25,7 @@ const Demo = defineComponent({
     return () =>
       h(
         Anchor,
-        { href: 'https://mantine.dev', target: '_blank' },
+        { href: 'https://mantine-vue', target: '_blank' },
         {
           default: () =>
             h(
