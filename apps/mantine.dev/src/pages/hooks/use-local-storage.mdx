@@ -1,0 +1,201 @@
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.useLocalStorage)
+
+## Usage
+
+The `use-local-storage` hook allows you to use a value from `localStorage` as reactive Vue state.
+The hook works similarly to `ref`, but also writes the value to `localStorage`. It returns a tuple
+of a `Ref<T>`, a setter function, and a remove function:
+
+```vue
+<script setup lang="ts">
+import { useLocalStorage } from '@mantine-vue/hooks'
+
+// The hook will read the value from localStorage.getItem('color-scheme')
+// If localStorage is not available or the value at a given key does not exist,
+// 'dark' will be assigned to value.value
+const [value, setValue] = useLocalStorage({
+  key: 'color-scheme',
+  defaultValue: 'dark',
+})
+
+// The value is set both to state and localStorage at 'color-scheme'
+setValue('light')
+
+// You can also use a callback like in the useState hook to set the value
+setValue((current) => (current === 'dark' ? 'light' : 'dark'))
+</script>
+```
+
+## Example
+
+Example of a color scheme toggle button that uses `use-local-storage` hook to store the current
+color scheme in `localStorage`:
+
+```vue
+<script setup lang="ts">
+import { computed } from 'vue'
+import { ActionIcon } from '@mantine-vue/core'
+import { useLocalStorage } from '@mantine-vue/hooks'
+import { PhMoonStars, PhSun } from '@phosphor-icons/vue'
+
+const [colorScheme, setColorScheme] = useLocalStorage<'light' | 'dark'>({
+  key: 'color-scheme',
+  defaultValue: 'light',
+})
+
+const toggleColorScheme = () => setColorScheme((current) => (current === 'dark' ? 'light' : 'dark'))
+</script>
+
+<template>
+  <ActionIcon @click="toggleColorScheme">
+    <PhSun v-if="colorScheme === 'dark'" />
+    <PhMoonStars v-else />
+  </ActionIcon>
+</template>
+```
+
+## Remove value
+
+Use the `removeValue` (third tuple item) callback to clean `localStorage`/`sessionStorage`.
+When the value is removed, it is reset to `defaultValue`:
+
+```ts
+import { useLocalStorage } from '@mantine-vue/hooks'
+
+const [value, setValue, removeValue] = useLocalStorage({
+  key: 'color-scheme',
+  defaultValue: 'light',
+})
+```
+
+## Browser tabs synchronization
+
+`use-local-storage` subscribes to the [storage event](https://developer.mozilla.org/en-US/docs/Web/API/Window/storage_event)
+to keep the value in sync across browser tabs, and also dispatches an internal custom event so that
+multiple `useLocalStorage` calls with the same key stay in sync within the same tab/page. Set the
+`sync` option to `false` to opt out of both behaviors.
+
+## Serialize/deserialize JSON
+
+By default, the hook will serialize/deserialize data with `JSON.stringify`/`JSON.parse`.
+If you need to store data in local storage that cannot be serialized with `JSON.stringify`
+– provide your own serialization handlers:
+
+```ts
+import { useLocalStorage } from '@mantine-vue/hooks'
+
+const [value, setValue] = useLocalStorage({
+  key: 'color-scheme',
+  serialize: (value) => {
+    /* return value serialized to string */
+  },
+  deserialize: (localStorageValue) => {
+    /* parse localStorage string value and return value */
+  },
+})
+```
+
+## Usage with superjson
+
+[superjson](https://github.com/blitz-js/superjson) is compatible with `JSON.stringify`/`JSON.parse` but works for `Date`, `Map`, `Set` and `BigInt`:
+
+```ts
+import superjson from 'superjson'
+import { useLocalStorage } from '@mantine-vue/hooks'
+
+const defaultValue = { name: 'John', age: 25 }
+
+const [value, setValue] = useLocalStorage({
+  key: 'data',
+  defaultValue,
+  serialize: superjson.stringify,
+  deserialize: (str) => (str === undefined ? defaultValue : superjson.parse(str)),
+})
+```
+
+## use-session-storage
+
+The [use-session-storage](/hooks/use-session-storage/) hook works the same way as `use-local-storage`
+hook but uses `sessionStorage` instead of `window.localStorage`:
+
+```ts
+import { useSessionStorage } from '@mantine-vue/hooks'
+
+const [value, setValue] = useSessionStorage({
+  key: 'session-key',
+  defaultValue: 'mantine',
+})
+```
+
+## Set value type
+
+You can specify the value type as a generic argument:
+
+```ts
+import { useLocalStorage } from '@mantine-vue/hooks'
+
+const [value, setValue] = useLocalStorage<'dark' | 'light'>({
+  key: 'color-scheme',
+  defaultValue: 'light',
+})
+```
+
+## Read storage value
+
+To read a value from storage without using a reactive hook, use `readLocalStorageValue`/
+`readSessionStorageValue` functions. These functions accept the same `options` object as
+`use-local-storage`/`use-session-storage`, and return the plain value (not a `Ref`):
+
+```ts
+import { readLocalStorageValue } from '@mantine-vue/hooks'
+
+const value = readLocalStorageValue({ key: 'color-scheme' })
+```
+
+## Definition
+
+```ts
+type StorageType = 'localStorage' | 'sessionStorage'
+
+interface UseStorageOptions<T> {
+  /** Storage key */
+  key: string
+
+  /** Default value that will be set if value is not found in storage */
+  defaultValue?: T
+
+  /** If set to true, the real storage value is read after mount rather than during initialization. Default value is true. */
+  getInitialValueInEffect?: boolean
+
+  /** Determines whether the value must be synced between browser tabs, `true` by default */
+  sync?: boolean
+
+  /** Function to serialize value into string to be saved in storage */
+  serialize?: (value: T) => string
+
+  /** Function to deserialize string value from storage to value */
+  deserialize?: (value: string | undefined) => T
+}
+
+type UseStorageReturnValue<T> = [
+  Ref<T>, // current value
+  (val: T | ((prevState: T) => T)) => void, // callback to set value in storage
+  () => void, // callback to remove value from storage
+]
+
+function useLocalStorage<T>(options: UseStorageOptions<T>): UseStorageReturnValue<T>
+
+function readLocalStorageValue<T>(options: UseStorageOptions<T>): T
+```
+
+## Exported types
+
+`StorageType`, `UseStorageOptions`, and `UseStorageReturnValue` types are exported from the
+`@mantine-vue/hooks` package; you can import them in your application:
+
+```ts
+import type { StorageType, UseStorageOptions, UseStorageReturnValue } from '@mantine-vue/hooks'
+```

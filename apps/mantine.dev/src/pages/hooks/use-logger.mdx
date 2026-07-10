@@ -1,0 +1,37 @@
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.useLogger)
+
+## Usage
+
+The `use-logger` hook logs the given values to the console when the component mounts, every time the
+tracked values change, and when the component unmounts. Open your browser DevTools to see the log
+messages:
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue'
+import { useLogger } from '@mantine-vue/hooks'
+
+const count = ref(0)
+
+useLogger('Demo', [count])
+</script>
+
+<template>
+  <button @click="count++">Increment ({{ count }})</button>
+</template>
+```
+
+`useLogger` logs:
+
+- `"Demo mounted"` with the initial values when the component mounts
+- `"Demo updated"` with the current values whenever any of the tracked values change
+- `"Demo unmounted"` when the component unmounts
+
+## Definition
+
+```ts
+function useLogger(componentName: string, props: MaybeRefOrGetter<unknown>[]): null
+```

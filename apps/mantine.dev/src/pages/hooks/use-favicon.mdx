@@ -1,0 +1,22 @@
+import { UseFaviconDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.useFavicon)
+
+## Usage
+
+The `use-favicon` hook appends a `<link />` element to the `head` with the given favicon in an isomorphic effect.
+The hook is not triggered during server-side rendering.
+
+Call the hook with a favicon URL (supported formats: `.ico`, `.png`, `.svg`, and `.gif`), passed as a plain string,
+a `Ref`, or a getter function (`MaybeRefOrGetter<string>`). The favicon is updated every time the value changes and
+is not an empty string or `null`.
+
+<Demo data={UseFaviconDemos.usage} />
+
+## Definition
+
+```ts
+function useFavicon(url: MaybeRefOrGetter<string>): void
+```

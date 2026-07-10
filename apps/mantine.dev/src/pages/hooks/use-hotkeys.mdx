@@ -1,0 +1,122 @@
+import { UseHotkeysDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.useHotkeys)
+
+## Usage
+
+The `use-hotkeys` hook accepts an array of hotkey and handler tuples as its first argument:
+
+- `hotkey` – hotkey string, for example `ctrl+E`, `shift+alt+L`, `mod+S`
+- `handler` – event handler called when the given combination is pressed
+- `options` – object with extra options for the hotkey handler
+
+<Demo data={UseHotkeysDemos.index} />
+
+The second argument is a list of HTML tags on which hotkeys should be ignored. By default, hotkey
+events are ignored if the focus is in `input`, `textarea`, and `select` elements.
+
+```ts
+import { useHotkeys } from '@mantine-vue/hooks'
+
+// Ignore hotkey events only when focus is in input and textarea elements
+useHotkeys([['ctrl+K', () => console.log('Trigger search')]], ['INPUT', 'TEXTAREA'])
+
+// Empty array – do not ignore hotkey events on any element
+useHotkeys([['ctrl+K', () => console.log('Trigger search')]], [])
+```
+
+Both `tagsToIgnore` and `triggerOnContentEditable` accept `MaybeRefOrGetter` values in addition to
+plain values.
+
+## Targeting elements
+
+The `use-hotkeys` hook always listens on `window`, so it can only be used for global (document-level)
+shortcuts. If you need to scope hotkeys to a specific element, use the `getHotkeyHandler` function,
+which is exported from the same package, together with `@keydown`:
+
+<Demo data={UseHotkeysDemos.usage} />
+
+With `getHotkeyHandler` you can also add events to any DOM node using `.addEventListener`:
+
+```ts
+import { getHotkeyHandler } from '@mantine-vue/hooks'
+
+document.body.addEventListener(
+  'keydown',
+  getHotkeyHandler([
+    ['mod+Enter', () => console.log('Submit')],
+    ['mod+S', () => console.log('Save')],
+  ]),
+)
+```
+
+## Supported formats
+
+- `mod+S` – detects `⌘+S` on macOS and `Ctrl+S` on Windows
+- `ctrl+shift+X` – handles multiple modifiers
+- `alt + shift + L` – you can use whitespace inside hotkey
+- `ArrowLeft` – you can use special keys using [this format](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key/Key_Values)
+- `shift + [plus]` – you can use `[plus]` to detect `+` key
+- `Digit1` and `KeyD` – you can use physical key assignments [defined on MDN](https://developer.mozilla.org/en-US/docs/Web/API/UI_Events/Keyboard_event_code_values) by setting `usePhysicalKeys: true`
+
+## Types
+
+The `@mantine-vue/hooks` package exports `HotkeyItemOptions` and `HotkeyItem` types:
+
+```ts
+interface HotkeyItemOptions {
+  preventDefault?: boolean
+  usePhysicalKeys?: boolean
+}
+
+type HotkeyItem = [string, (event: KeyboardEvent) => void, HotkeyItemOptions?]
+```
+
+`HotkeyItemOptions` provides the `usePhysicalKeys` option to force physical key assignment. This is
+useful for non-QWERTY keyboard layouts.
+
+The `HotkeyItem` type can be used to create hotkey items outside of the `use-hotkeys` hook:
+
+```ts
+import { HotkeyItem, useHotkeys } from '@mantine-vue/hooks'
+
+const hotkeys: HotkeyItem[] = [
+  ['mod+J', () => console.log('Toggle color scheme'), { preventDefault: false }],
+  ['ctrl+K', () => console.log('Trigger search')],
+  ['alt+mod+shift+X', () => console.log('Rick roll')],
+  [
+    'D',
+    () => console.log('Triggers when pressing "E" on Dvorak keyboards!'),
+    { usePhysicalKeys: true },
+  ],
+]
+
+useHotkeys(hotkeys)
+```
+
+## Definition
+
+```ts
+interface HotkeyItemOptions {
+  preventDefault?: boolean
+  usePhysicalKeys?: boolean
+}
+
+type HotkeyItem = [string, (event: KeyboardEvent) => void, HotkeyItemOptions?]
+
+function useHotkeys(
+  hotkeys: MaybeRefOrGetter<HotkeyItem[]>,
+  tagsToIgnore?: MaybeRefOrGetter<string[] | undefined>,
+  triggerOnContentEditable?: MaybeRefOrGetter<boolean | undefined>,
+): void
+```
+
+## Exported types
+
+The `HotkeyItemOptions` and `HotkeyItem` types are exported from `@mantine-vue/hooks`:
+
+```ts
+import type { HotkeyItemOptions, HotkeyItem } from '@mantine-vue/hooks'
+```

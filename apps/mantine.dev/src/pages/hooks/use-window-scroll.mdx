@@ -1,0 +1,39 @@
+import { UseWindowScrollDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.useWindowScroll)
+
+## Usage
+
+The `use-window-scroll` hook returns the current scroll position as a reactive `Ref` and a function to
+scroll smoothly to a given position:
+
+<Demo data={UseWindowScrollDemos.usage} />
+
+## Definition
+
+```ts
+interface UseWindowScrollPosition {
+  x: number
+  y: number
+}
+
+type UseWindowScrollTo = (position: Partial<UseWindowScrollPosition>) => void
+type UseWindowScrollReturnValue = [Ref<UseWindowScrollPosition>, UseWindowScrollTo]
+
+function useWindowScroll(): UseWindowScrollReturnValue
+```
+
+## Exported types
+
+The `UseWindowScrollTo`, `UseWindowScrollPosition`, and `UseWindowScrollReturnValue` types are
+exported from `@mantine-vue/hooks`:
+
+```ts
+import type {
+  UseWindowScrollTo,
+  UseWindowScrollPosition,
+  UseWindowScrollReturnValue,
+} from '@mantine-vue/hooks'
+```

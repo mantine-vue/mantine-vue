@@ -1,0 +1,74 @@
+import { UseToggleDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.useToggle)
+
+## Usage
+
+The `use-toggle` hook implements a common state pattern – it switches state
+between given values:
+
+<Demo data={UseToggleDemos.usage} />
+
+## API
+
+The hook accepts an array as a single argument; the first option will be used
+as the default value.
+
+The hook returns a tuple with a `Ref` holding the state value and a toggle
+function:
+
+```ts
+import { useToggle } from '@mantine-vue/hooks'
+
+const [value, toggle] = useToggle(['light', 'dark'] as const)
+
+toggle() // -> value.value == 'dark'
+toggle() // -> value.value == 'light'
+
+// You can force a specific value; in this case, state will be set to the given value
+toggle('dark') // -> value.value == 'dark'
+```
+
+If you do not provide an array with options, then `use-toggle` will use
+boolean values with `false` as the default:
+
+```ts
+import { useToggle } from '@mantine-vue/hooks'
+
+const [value, toggle] = useToggle()
+// -> value.value === false
+toggle() // -> value.value === true
+```
+
+## Set type
+
+By default, TypeScript will guess your type, but in most cases it's better to
+use a const assertion to prevent type widening:
+
+```ts
+import { useToggle } from '@mantine-vue/hooks'
+
+useToggle(['light', 'dark']) // value is Ref<string>
+useToggle(['light', 'dark'] as const) // value is Ref<'dark' | 'light'>
+useToggle<'dark' | 'light'>(['light', 'dark']) // same as above
+```
+
+## Definition
+
+```ts
+type UseToggleAction<T> = (value?: T | ((value: T) => T)) => void
+type UseToggleReturnValue<T> = [Ref<T>, UseToggleAction<T>]
+
+function useToggle<T = boolean>(options?: readonly T[]): UseToggleReturnValue<T>
+```
+
+## Exported types
+
+The `UseToggleReturnValue` and `UseToggleAction` types are exported from
+`@mantine-vue/hooks`:
+
+```ts
+import type { UseToggleReturnValue, UseToggleAction } from '@mantine-vue/hooks'
+```

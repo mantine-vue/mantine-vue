@@ -1,0 +1,52 @@
+import { UseStateHistoryDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.useStateHistory)
+
+## Usage
+
+The `useStateHistory` hook creates a state with history. It returns a readonly `current` value ref, handlers to
+go back/forward, and a readonly `history` ref with all previous values and the current index.
+
+<Demo data={UseStateHistoryDemos.usage} />
+
+## Definition
+
+The `UseStateHistoryHandlers` and `UseStateHistoryValue` interfaces are exported from the `@mantine-vue/hooks`
+package.
+
+```tsx
+interface UseStateHistoryHandlers<T> {
+  set: (value: T) => void
+  back: (steps?: number) => void
+  forward: (steps?: number) => void
+  reset: () => void
+}
+
+interface UseStateHistoryValue<T> {
+  history: T[]
+  current: number
+}
+
+type UseStateHistoryReturnValue<T> = [
+  Readonly<Ref<T>>,
+  UseStateHistoryHandlers<T>,
+  Readonly<Ref<UseStateHistoryValue<T>>>,
+]
+
+function useStateHistory<T>(initialValue: T): UseStateHistoryReturnValue<T>
+```
+
+## Exported types
+
+The `UseStateHistoryHandlers`, `UseStateHistoryReturnValue`, and `UseStateHistoryValue` types are exported
+from `@mantine-vue/hooks` (`UseStateHistoryValue` is also aliased as `StateHistory`):
+
+```tsx
+import type {
+  UseStateHistoryHandlers,
+  UseStateHistoryReturnValue,
+  UseStateHistoryValue,
+} from '@mantine-vue/hooks'
+```

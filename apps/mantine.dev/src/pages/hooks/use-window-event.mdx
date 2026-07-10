@@ -1,0 +1,71 @@
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.useWindowEvent)
+
+## Usage
+
+The `use-window-event` hook adds an event listener to the `window` object when the component mounts,
+and removes it when the component unmounts:
+
+```vue
+<script setup lang="ts">
+import { useWindowEvent } from '@mantine-vue/hooks'
+
+const handler = (event: KeyboardEvent) => console.log(event)
+
+// with use-window-event hook
+useWindowEvent('keydown', handler)
+</script>
+```
+
+## Example
+
+Focus an input with `⌘ + K` on macOS or `Ctrl + K` on Windows and Linux:
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue'
+import { useWindowEvent } from '@mantine-vue/hooks'
+
+const inputRef = ref<HTMLInputElement | null>(null)
+
+useWindowEvent('keydown', (event) => {
+  if (event.code === 'KeyK' && (event.ctrlKey || event.metaKey)) {
+    event.preventDefault()
+    inputRef.value?.focus()
+  }
+})
+</script>
+
+<template>
+  <input ref="inputRef" />
+</template>
+```
+
+## Reactive type and listener
+
+Both the event `type` and the `listener` accept `MaybeRefOrGetter` values, so you can swap the event
+name or handler reactively – the hook removes the previous listener and attaches the new one
+automatically:
+
+```ts
+import { ref } from 'vue'
+import { useWindowEvent } from '@mantine-vue/hooks'
+
+const eventType = ref<'keydown' | 'keyup'>('keydown')
+useWindowEvent(eventType, (event) => console.log(event))
+```
+
+## Definition
+
+The hook has a definition close to the `window.addEventListener` function, with `type` and `listener`
+accepting `MaybeRefOrGetter` values:
+
+```ts
+function useWindowEvent<K extends keyof WindowEventMap>(
+  type: MaybeRefOrGetter<K>,
+  listener: MaybeRefOrGetter<(event: WindowEventMap[K]) => void>,
+  options?: AddEventListenerOptions,
+): void
+```

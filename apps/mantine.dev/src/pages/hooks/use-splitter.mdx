@@ -1,0 +1,231 @@
+import { UseSplitterDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.useSplitter)
+
+## Usage
+
+`use-splitter` hook provides resizable split-pane functionality. It handles pointer drag
+on resize handles, keyboard navigation following the WAI-ARIA Window Splitter pattern,
+collapsible panels and min/max constraints. All sizes are percentages to avoid
+SSR/hydration issues.
+
+If you need a ready-made component instead, use [Splitter](/core/splitter), which is built
+on top of this hook and provides a declarative API with Styles API integration. `useSplitter`'s
+`ref` and `getHandleProps().ref` are plain callbacks for native DOM elements – bind them
+directly to native `<div>` elements rather than to Mantine Vue components:
+
+<Demo data={UseSplitterDemos.usage} />
+
+## Vertical orientation
+
+Set `orientation: 'vertical'` to create a vertical split layout.
+Keyboard navigation uses ArrowUp/ArrowDown instead of ArrowLeft/ArrowRight:
+
+<Demo data={UseSplitterDemos.vertical} />
+
+## Collapsible panels
+
+Set `collapsible: true` on a panel to allow it to collapse to zero size.
+When dragged below the `collapseThreshold` (defaults to `min`), the panel
+snaps to 0%. Use `collapse()`, `expand()` and `toggleCollapse()` for
+programmatic control. Press Enter on a handle to toggle the smaller adjacent
+collapsible panel:
+
+<Demo data={UseSplitterDemos.collapsible} />
+
+## Multiple panels
+
+The hook supports any number of panels. Each handle controls the boundary
+between its two adjacent panels:
+
+<Demo data={UseSplitterDemos.multiple} />
+
+## Redistribute
+
+By default, each handle only affects its two adjacent panels. When a neighbor panel
+is at its minimum, the handle stops. Use the `redistribute` option to allow borrowing
+space from panels further away when the immediate neighbor cannot shrink any more.
+
+`redistribute: 'nearest'` takes space from the nearest panel in the drag direction first,
+then moves to the next one if more space is needed. `redistribute: 'equal'` distributes the
+needed space equally among all panels in the drag direction, respecting each panel's minimum.
+You can also pass a function for full control – it receives `{ sizes, panels, handleIndex, delta }`
+and must return a new sizes array:
+
+```ts
+import { useSplitter } from '@mantine-vue/hooks'
+
+const splitter = useSplitter({
+  panels: [
+    { defaultSize: 25, min: 10 },
+    { defaultSize: 25, min: 10 },
+    { defaultSize: 25, min: 10 },
+    { defaultSize: 25, min: 10 },
+  ],
+  redistribute: 'nearest', // or 'equal', or a custom function
+})
+```
+
+## Reset on double click
+
+By default, double-clicking a handle resets its two adjacent panels back to their default
+ratio (preserving their combined size). Set `resetOnDoubleClick: false` to disable this, or
+call `reset(handleIndex)` to trigger it programmatically:
+
+```ts
+import { useSplitter } from '@mantine-vue/hooks'
+
+const splitter = useSplitter({
+  panels: [{ defaultSize: 50 }, { defaultSize: 50 }],
+  resetOnDoubleClick: false,
+})
+
+splitter.reset(0) // manually reset panels adjacent to handle 0
+```
+
+## Controlled mode
+
+Pass `sizes` and `onSizeChange` to control the sizes externally (`sizes` accepts a
+`MaybeRefOrGetter<number[] | undefined>`). Use `setSizes()` for programmatic updates:
+
+<Demo data={UseSplitterDemos.controlled} />
+
+## Keyboard support
+
+Handles follow the WAI-ARIA Window Splitter pattern:
+
+| Key                  | Action                                                    |
+| -------------------- | --------------------------------------------------------- |
+| ArrowLeft/ArrowRight | Resize by `step` (horizontal)                             |
+| ArrowUp/ArrowDown    | Resize by `step` (vertical)                               |
+| Shift + Arrow        | Resize by `shiftStep`                                     |
+| Home                 | Shrink panel before handle to its min                     |
+| End                  | Grow panel before handle to its max                       |
+| Enter                | Toggle collapse of the smaller adjacent collapsible panel |
+
+## Touch support
+
+The hook uses the Pointer Events API which handles both mouse and touch automatically.
+Set `touch-action: none` on the handle element to prevent the browser from
+interpreting touch drag as scroll:
+
+```css
+.handle {
+  touch-action: none;
+}
+```
+
+## Definition
+
+```ts
+interface UseSplitterPanel {
+  /** Initial size as percentage (0-100). All panels must sum to 100. */
+  defaultSize: number
+  /** Minimum size percentage, `0` by default */
+  min?: number
+  /** Maximum size percentage, `100` by default */
+  max?: number
+  /** Whether this panel can be collapsed, `false` by default */
+  collapsible?: boolean
+  /** Size below which the panel snaps to collapsed (percentage), defaults to `min` */
+  collapseThreshold?: number
+}
+
+interface UseSplitterRedistributeInput {
+  /** Current sizes before applying delta */
+  sizes: number[]
+  /** Panel configurations */
+  panels: UseSplitterPanel[]
+  /** Index of the handle being dragged */
+  handleIndex: number
+  /** Requested size change in percentage (positive = grow before-panel) */
+  delta: number
+}
+
+type UseSplitterRedistributeFn = (input: UseSplitterRedistributeInput) => number[]
+
+interface UseSplitterOptions {
+  /** Panel configuration array (minimum 2 panels) */
+  panels: UseSplitterPanel[]
+  /** Layout direction, `'horizontal'` by default */
+  orientation?: 'horizontal' | 'vertical'
+  /** Controlled sizes (percentages summing to 100) */
+  sizes?: MaybeRefOrGetter<number[] | undefined>
+  /** Called during resize with updated sizes */
+  onSizeChange?: (sizes: number[]) => void
+  /** Called when drag starts */
+  onResizeStart?: (handleIndex: number) => void
+  /** Called when drag ends */
+  onResizeEnd?: (handleIndex: number, sizes: number[]) => void
+  /** Called when a panel collapses or expands */
+  onCollapseChange?: (panelIndex: number, collapsed: boolean) => void
+  /** How to borrow space from non-adjacent panels when the immediate neighbor is at its min/max */
+  redistribute?: 'nearest' | 'equal' | UseSplitterRedistributeFn
+  /** Keyboard step size in percentage, `1` by default */
+  step?: number
+  /** Shift+arrow step size in percentage, `10` by default */
+  shiftStep?: number
+  /** Text direction for keyboard nav, `'ltr'` by default */
+  dir?: 'ltr' | 'rtl'
+  /** Restore the two panels adjacent to a handle to their default ratio when the handle is double-clicked, `true` by default */
+  resetOnDoubleClick?: boolean
+  /** Enable/disable the hook, `true` by default */
+  enabled?: boolean
+}
+
+interface UseSplitterReturnValue<T extends HTMLElement = any> {
+  /** Ref callback for the container element */
+  ref: (node: T | null) => void
+  /** Current panel sizes as percentages */
+  sizes: Ref<number[]>
+  /** Which panels are currently collapsed */
+  collapsed: Ref<boolean[]>
+  /** Index of handle being dragged, or -1 */
+  activeHandle: Ref<number>
+  /** Get props to spread on each resize handle */
+  getHandleProps: (input: { index: number }) => {
+    ref: (node: HTMLElement | null) => void
+    role: 'separator'
+    'aria-orientation': 'horizontal' | 'vertical'
+    'aria-valuenow': number
+    'aria-valuemin': number
+    'aria-valuemax': number
+    tabIndex: number
+    onKeyDown: (event: KeyboardEvent) => void
+    onDoubleClick: (event: MouseEvent) => void
+    'data-active': boolean | undefined
+    'data-orientation': 'horizontal' | 'vertical'
+  }
+  /** Programmatically set sizes */
+  setSizes: (sizes: number[]) => void
+  /** Collapse a panel */
+  collapse: (panelIndex: number) => void
+  /** Expand a collapsed panel */
+  expand: (panelIndex: number) => void
+  /** Toggle collapse of a panel */
+  toggleCollapse: (panelIndex: number) => void
+  /** Reset the two panels adjacent to a handle to their default ratio, preserving their combined size */
+  reset: (handleIndex: number) => void
+}
+
+function useSplitter<T extends HTMLElement = any>(
+  options: UseSplitterOptions,
+): UseSplitterReturnValue<T>
+```
+
+## Exported types
+
+`UseSplitterPanel`, `UseSplitterOptions`, `UseSplitterReturnValue`, `UseSplitterRedistributeInput`
+and `UseSplitterRedistributeFn` types are exported from the `@mantine-vue/hooks` package:
+
+```ts
+import type {
+  UseSplitterPanel,
+  UseSplitterOptions,
+  UseSplitterReturnValue,
+  UseSplitterRedistributeInput,
+  UseSplitterRedistributeFn,
+} from '@mantine-vue/hooks'
+```

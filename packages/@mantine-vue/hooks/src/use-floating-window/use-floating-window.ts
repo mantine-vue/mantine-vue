@@ -159,19 +159,31 @@ export function useFloatingWindow<T extends HTMLElement>(options: UseFloatingWin
   }
 
   const setRef = (node: T | null) => {
+    // `node` is normally an HTMLElement, but if this callback ref is
+    // accidentally attached to a Vue component instead of a native DOM
+    // element, Vue will call it with the component's instance proxy, which
+    // has no DOM methods. Guard against that.
+    const safeNode = node instanceof Element ? node : null
+
+    if (safeNode === element.value) {
+      return
+    }
+
     if (element.value) {
       element.value.removeEventListener('mousedown', start)
       element.value.removeEventListener('touchstart', start)
     }
-    element.value = node
-    if (node) {
-      node.addEventListener('mousedown', start)
-      node.addEventListener('touchstart', start, { passive: false })
-      position = calculateInitialPosition(node, options)
+    observer?.disconnect()
+    observer = undefined
+    element.value = safeNode
+    if (safeNode) {
+      safeNode.addEventListener('mousedown', start)
+      safeNode.addEventListener('touchstart', start, { passive: false })
+      position = calculateInitialPosition(safeNode, options)
       applyPosition(position, false)
       if (typeof ResizeObserver !== 'undefined') {
         observer = new ResizeObserver(() => applyPosition(position, false))
-        observer.observe(node)
+        observer.observe(safeNode)
       }
     }
   }

@@ -1,0 +1,17 @@
+import { UseTextSelectionDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.useTextSelection)
+
+## Usage
+
+The `use-text-selection` hook returns a `Ref` with the current text selection:
+
+<Demo data={UseTextSelectionDemos.usage} />
+
+## Definition
+
+```ts
+function useTextSelection(): Ref<Selection | null>
+```

@@ -1,0 +1,32 @@
+import { UseViewportSizeDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.useViewportSize)
+
+## Usage
+
+The `use-viewport-size` hook returns the current viewport's `width` and `height` as reactive `Ref`
+values. It subscribes to `resize` and `orientationchange` events. Before the component mounts (as well
+as during SSR), the hook returns `{ width: 0, height: 0 }`:
+
+<Demo data={UseViewportSizeDemos.usage} />
+
+## Definition
+
+```ts
+interface UseViewportSizeReturnValue {
+  width: Ref<number>
+  height: Ref<number>
+}
+
+function useViewportSize(): UseViewportSizeReturnValue
+```
+
+## Exported types
+
+The `UseViewportSizeReturnValue` type is exported from `@mantine-vue/hooks`:
+
+```ts
+import type { UseViewportSizeReturnValue } from '@mantine-vue/hooks'
+```

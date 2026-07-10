@@ -1,0 +1,108 @@
+import { UseLongPressDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.useLongPress)
+
+## Usage
+
+<Demo data={UseLongPressDemos.usage} />
+
+## Definition
+
+```ts
+type UseLongPressEvent = 'mouse' | 'touch'
+
+interface UseLongPressOptions {
+  /** Time in milliseconds to trigger the long press, default is 400ms */
+  threshold?: number
+
+  /** Input types that can trigger the long press, `['mouse', 'touch']` by default */
+  events?: UseLongPressEvent[]
+
+  /** If set, the long press is canceled when the pointer moves further than the given distance in px from the start position. `true` uses a 10px threshold, a number sets a custom threshold. `false` by default */
+  cancelOnMove?: boolean | number
+
+  /** Callback triggered when the long press starts */
+  onStart?: (event: MouseEvent | TouchEvent) => void
+
+  /** Callback triggered when the long press finishes */
+  onFinish?: (event: MouseEvent | TouchEvent) => void
+
+  /** Callback triggered when the long press is canceled */
+  onCancel?: (event: MouseEvent | TouchEvent) => void
+}
+
+interface UseLongPressReturnValue {
+  onMousedown?: (event: MouseEvent) => void
+  onMouseup?: (event: MouseEvent) => void
+  onMouseleave?: (event: MouseEvent) => void
+  onMousemove?: (event: MouseEvent) => void
+  onTouchstart?: (event: TouchEvent) => void
+  onTouchend?: (event: TouchEvent) => void
+  onTouchcancel?: (event: TouchEvent) => void
+  onTouchmove?: (event: TouchEvent) => void
+}
+
+function useLongPress(
+  onLongPress: (event: MouseEvent | TouchEvent) => void,
+  options?: UseLongPressOptions,
+): UseLongPressReturnValue
+```
+
+The returned object can be spread onto an element's props with `v-on="handlers"` to bind all
+the relevant listeners at once.
+
+## Restrict to specific input types
+
+By default the long press is triggered by both mouse and touch input. Use the `events`
+option to restrict it to a subset – for example, `['touch']` returns only touch handlers,
+leaving mouse input to your own handlers:
+
+```vue
+<script setup lang="ts">
+import { useLongPress } from '@mantine-vue/hooks'
+
+const handlers = useLongPress(() => console.log('Long pressed'), {
+  events: ['touch'],
+})
+</script>
+
+<template>
+  <button v-on="handlers">Press me</button>
+</template>
+```
+
+## Cancel on movement
+
+Set `cancelOnMove` to cancel a pending long press when the pointer moves further than the
+given distance from the start position. This is useful on touch devices so that a scroll
+gesture does not trigger the long press. Pass `true` to use the default 10px threshold or a
+number to set a custom one:
+
+```vue
+<script setup lang="ts">
+import { useLongPress } from '@mantine-vue/hooks'
+
+const handlers = useLongPress(() => console.log('Long pressed'), {
+  cancelOnMove: true,
+})
+</script>
+
+<template>
+  <button v-on="handlers">Press me</button>
+</template>
+```
+
+## Exported types
+
+`UseLongPressEvent`, `UseLongPressOptions` and `UseLongPressReturnValue` types are exported
+from the `@mantine-vue/hooks` package; you can import them in your application:
+
+```ts
+import type {
+  UseLongPressEvent,
+  UseLongPressOptions,
+  UseLongPressReturnValue,
+} from '@mantine-vue/hooks'
+```

@@ -1,0 +1,67 @@
+import { UseResizeObserverDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.useResizeObserver)
+
+## Usage
+
+<Demo data={UseResizeObserverDemos.usage} />
+
+## API
+
+The `use-resize-observer` hook returns an object with a `ref` that should be
+bound to the observed element, and a `rect` ref with the current element
+content rect, as returned by the `ResizeObserver`'s callback
+`entry.contentRect`. See the
+[Resize Observer API](https://developer.mozilla.org/en-US/docs/Web/API/ResizeObserver)
+documentation to learn more. On the first render (as well as during SSR), or
+when no element is being observed, all of the properties are equal to `0`.
+
+Note that the Vue port returns an object (`{ ref, rect }`), not a tuple like
+React's `[ref, rect]`.
+
+```ts
+import { useResizeObserver } from '@mantine-vue/hooks'
+
+const { ref, rect } = useResizeObserver()
+```
+
+```vue
+<script setup lang="ts">
+import { useResizeObserver } from '@mantine-vue/hooks'
+
+const { ref: resizeRef, rect } = useResizeObserver()
+</script>
+
+<template>
+  <div :ref="resizeRef">Observed</div>
+</template>
+```
+
+See also the [use-element-size](/hooks/use-element-size/) hook in case you
+need to subscribe only to `width` and `height`.
+
+## Definition
+
+```ts
+type ObserverRect = Omit<DOMRectReadOnly, 'toJSON'>
+
+interface UseResizeObserverReturnValue<T extends Element = HTMLElement> {
+  ref: Ref<T | null>
+  rect: Ref<ObserverRect>
+}
+
+function useResizeObserver<T extends Element = HTMLElement>(
+  options?: ResizeObserverOptions,
+): UseResizeObserverReturnValue<T>
+```
+
+## Exported types
+
+The `UseResizeObserverReturnValue` and `ObserverRect` types are exported from
+the `@mantine-vue/hooks` package; you can import them in your application:
+
+```ts
+import type { UseResizeObserverReturnValue, ObserverRect } from '@mantine-vue/hooks'
+```

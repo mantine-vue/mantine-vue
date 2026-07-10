@@ -1,0 +1,104 @@
+import { UseClickOutsideDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.useClickOutside)
+
+## Usage
+
+<Demo data={UseClickOutsideDemos.usage} />
+
+## API
+
+The `use-click-outside` hook accepts 4 arguments:
+
+- `handler` – function that is called when clicking outside
+- `events` – optional list of events that trigger outside click, `['mousedown', 'touchstart']` by default
+- `nodes` - optional list of nodes that should not trigger outside click event
+- `enabled` - optional boolean (or `MaybeRefOrGetter<boolean>`) to dynamically enable/disable the listener, `true` by default
+
+The hook returns a `Ref` object that must be bound to the element (via the `ref` attribute)
+based on which outside clicks should be captured. Note that binding the returned ref directly
+only works with plain DOM elements – to track a component, pass its root element through
+the `nodes` argument instead (see [Multiple nodes](#multiple-nodes) below).
+
+```ts
+import { useClickOutside } from '@mantine-vue/hooks'
+
+function useExample() {
+  const handleClickOutside = () => console.log('Clicked outside of div')
+  const elementRef = useClickOutside(handleClickOutside)
+  return elementRef
+}
+```
+
+```vue
+<script setup lang="ts">
+import { useClickOutside } from '@mantine-vue/hooks'
+
+const elementRef = useClickOutside(() => console.log('Clicked outside of div'))
+</script>
+
+<template>
+  <div ref="elementRef" />
+</template>
+```
+
+## Change events
+
+By default, `use-click-outside` listens to `mousedown` and `touchstart` events,
+you can change these events by passing an array of events as second argument:
+
+<Demo data={UseClickOutsideDemos.events} />
+
+## Multiple nodes
+
+Since binding a `ref` to a Mantine Vue component only gives you the component's public
+instance (not its root DOM node), pass the resolved `$el` values through the `nodes` argument
+when you need to track components rather than plain elements:
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue'
+import { Portal } from '@mantine-vue/core'
+import { useClickOutside } from '@mantine-vue/hooks'
+
+const dropdown = ref<HTMLDivElement | null>(null)
+const control = ref<HTMLDivElement | null>(null)
+
+useClickOutside(
+  () => console.log('outside'),
+  null,
+  () => [control.value, dropdown.value],
+)
+</script>
+
+<template>
+  <!-- We cannot use a single root element ref as it does not contain the dropdown -->
+  <div>
+    <div ref="control">Control</div>
+    <Portal>
+      <div ref="dropdown">Dropdown</div>
+    </Portal>
+  </div>
+</template>
+```
+
+## Set ref type
+
+```ts
+import { useClickOutside } from '@mantine-vue/hooks'
+
+const elementRef = useClickOutside<HTMLDivElement>(() => console.log('Click outside'))
+```
+
+## Definition
+
+```ts
+function useClickOutside<T extends HTMLElement = HTMLElement>(
+  callback: (event: MouseEvent | TouchEvent) => void,
+  events?: MaybeRefOrGetter<string[] | null | undefined>,
+  nodes?: MaybeRefOrGetter<Array<HTMLElement | null | undefined>>,
+  enabled?: MaybeRefOrGetter<boolean>,
+): Ref<T | null>
+```

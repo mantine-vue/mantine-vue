@@ -750,6 +750,422 @@ const routes: RouteRecordRaw[] = [
     component: mdxRoute(() => import('./pages/dates/time-value.mdx')),
   },
 
+  {
+    path: '/hooks/use-debounced-callback',
+    name: 'hooks-use-debounced-callback',
+    component: mdxRoute(() => import('./pages/hooks/use-debounced-callback.mdx')),
+  },
+  {
+    path: '/hooks/use-click-outside',
+    name: 'hooks-use-click-outside',
+    component: mdxRoute(() => import('./pages/hooks/use-click-outside.mdx')),
+  },
+  {
+    path: '/hooks/use-clipboard',
+    name: 'hooks-use-clipboard',
+    component: mdxRoute(() => import('./pages/hooks/use-clipboard.mdx')),
+  },
+  {
+    path: '/hooks/use-color-scheme',
+    name: 'hooks-use-color-scheme',
+    component: mdxRoute(() => import('./pages/hooks/use-color-scheme.mdx')),
+  },
+  {
+    path: '/hooks/use-counter',
+    name: 'hooks-use-counter',
+    component: mdxRoute(() => import('./pages/hooks/use-counter.mdx')),
+  },
+  {
+    path: '/hooks/use-debounced-state',
+    name: 'hooks-use-debounced-state',
+    component: mdxRoute(() => import('./pages/hooks/use-debounced-state.mdx')),
+  },
+  {
+    path: '/hooks/use-debounced-value',
+    name: 'hooks-use-debounced-value',
+    component: mdxRoute(() => import('./pages/hooks/use-debounced-value.mdx')),
+  },
+  {
+    path: '/hooks/use-document-title',
+    name: 'hooks-use-document-title',
+    component: mdxRoute(() => import('./pages/hooks/use-document-title.mdx')),
+  },
+  {
+    path: '/hooks/use-document-visibility',
+    name: 'hooks-use-document-visibility',
+    component: mdxRoute(() => import('./pages/hooks/use-document-visibility.mdx')),
+  },
+  {
+    path: '/hooks/use-focus-return',
+    name: 'hooks-use-focus-return',
+    component: mdxRoute(() => import('./pages/hooks/use-focus-return.mdx')),
+  },
+  {
+    path: '/hooks/use-did-update',
+    name: 'hooks-use-did-update',
+    component: mdxRoute(() => import('./pages/hooks/use-did-update.mdx')),
+  },
+  {
+    path: '/hooks/use-focus-trap',
+    name: 'hooks-use-focus-trap',
+    component: mdxRoute(() => import('./pages/hooks/use-focus-trap.mdx')),
+  },
+  {
+    path: '/hooks/use-force-update',
+    name: 'hooks-use-force-update',
+    component: mdxRoute(() => import('./pages/hooks/use-force-update.mdx')),
+  },
+  {
+    path: '/hooks/use-id',
+    name: 'hooks-use-id',
+    component: mdxRoute(() => import('./pages/hooks/use-id.mdx')),
+  },
+  {
+    path: '/hooks/use-idle',
+    name: 'hooks-use-idle',
+    component: mdxRoute(() => import('./pages/hooks/use-idle.mdx')),
+  },
+  {
+    path: '/hooks/use-interval',
+    name: 'hooks-use-interval',
+    component: mdxRoute(() => import('./pages/hooks/use-interval.mdx')),
+  },
+  {
+    path: '/hooks/use-isomorphic-effect',
+    name: 'hooks-use-isomorphic-effect',
+    component: mdxRoute(() => import('./pages/hooks/use-isomorphic-effect.mdx')),
+  },
+  {
+    path: '/hooks/use-list-state',
+    name: 'hooks-use-list-state',
+    component: mdxRoute(() => import('./pages/hooks/use-list-state.mdx')),
+  },
+  {
+    path: '/hooks/use-local-storage',
+    name: 'hooks-use-local-storage',
+    component: mdxRoute(() => import('./pages/hooks/use-local-storage.mdx')),
+  },
+  {
+    path: '/hooks/use-session-storage',
+    name: 'hooks-use-session-storage',
+    component: mdxRoute(() => import('./pages/hooks/use-session-storage.mdx')),
+  },
+  {
+    path: '/hooks/use-media-query',
+    name: 'hooks-use-media-query',
+    component: mdxRoute(() => import('./pages/hooks/use-media-query.mdx')),
+  },
+  {
+    path: '/hooks/use-merged-ref',
+    name: 'hooks-use-merged-ref',
+    component: mdxRoute(() => import('./pages/hooks/use-merged-ref.mdx')),
+  },
+  {
+    path: '/hooks/use-mouse',
+    name: 'hooks-use-mouse',
+    component: mdxRoute(() => import('./pages/hooks/use-mouse.mdx')),
+  },
+  {
+    path: '/hooks/use-move',
+    name: 'hooks-use-move',
+    component: mdxRoute(() => import('./pages/hooks/use-move.mdx')),
+  },
+  {
+    path: '/hooks/use-pagination',
+    name: 'hooks-use-pagination',
+    component: mdxRoute(() => import('./pages/hooks/use-pagination.mdx')),
+  },
+  {
+    path: '/hooks/use-queue',
+    name: 'hooks-use-queue',
+    component: mdxRoute(() => import('./pages/hooks/use-queue.mdx')),
+  },
+  {
+    path: '/hooks/use-page-leave',
+    name: 'hooks-use-page-leave',
+    component: mdxRoute(() => import('./pages/hooks/use-page-leave.mdx')),
+  },
+  {
+    path: '/hooks/use-reduced-motion',
+    name: 'hooks-use-reduced-motion',
+    component: mdxRoute(() => import('./pages/hooks/use-reduced-motion.mdx')),
+  },
+  {
+    path: '/hooks/use-scroll-into-view',
+    name: 'hooks-use-scroll-into-view',
+    component: mdxRoute(() => import('./pages/hooks/use-scroll-into-view.mdx')),
+  },
+  {
+    path: '/hooks/use-resize-observer',
+    name: 'hooks-use-resize-observer',
+    component: mdxRoute(() => import('./pages/hooks/use-resize-observer.mdx')),
+  },
+  {
+    path: '/hooks/use-element-size',
+    name: 'hooks-use-element-size',
+    component: mdxRoute(() => import('./pages/hooks/use-element-size.mdx')),
+  },
+  {
+    path: '/hooks/use-shallow-effect',
+    name: 'hooks-use-shallow-effect',
+    component: mdxRoute(() => import('./pages/hooks/use-shallow-effect.mdx')),
+  },
+  {
+    path: '/hooks/use-toggle',
+    name: 'hooks-use-toggle',
+    component: mdxRoute(() => import('./pages/hooks/use-toggle.mdx')),
+  },
+  {
+    path: '/hooks/use-uncontrolled',
+    name: 'hooks-use-uncontrolled',
+    component: mdxRoute(() => import('./pages/hooks/use-uncontrolled.mdx')),
+  },
+  {
+    path: '/hooks/use-viewport-size',
+    name: 'hooks-use-viewport-size',
+    component: mdxRoute(() => import('./pages/hooks/use-viewport-size.mdx')),
+  },
+  {
+    path: '/hooks/use-window-event',
+    name: 'hooks-use-window-event',
+    component: mdxRoute(() => import('./pages/hooks/use-window-event.mdx')),
+  },
+  {
+    path: '/hooks/use-window-scroll',
+    name: 'hooks-use-window-scroll',
+    component: mdxRoute(() => import('./pages/hooks/use-window-scroll.mdx')),
+  },
+  {
+    path: '/hooks/use-intersection',
+    name: 'hooks-use-intersection',
+    component: mdxRoute(() => import('./pages/hooks/use-intersection.mdx')),
+  },
+  {
+    path: '/hooks/use-hash',
+    name: 'hooks-use-hash',
+    component: mdxRoute(() => import('./pages/hooks/use-hash.mdx')),
+  },
+  {
+    path: '/hooks/use-hotkeys',
+    name: 'hooks-use-hotkeys',
+    component: mdxRoute(() => import('./pages/hooks/use-hotkeys.mdx')),
+  },
+  {
+    path: '/hooks/use-fullscreen',
+    name: 'hooks-use-fullscreen',
+    component: mdxRoute(() => import('./pages/hooks/use-fullscreen.mdx')),
+  },
+  {
+    path: '/hooks/use-logger',
+    name: 'hooks-use-logger',
+    component: mdxRoute(() => import('./pages/hooks/use-logger.mdx')),
+  },
+  {
+    path: '/hooks/use-hover',
+    name: 'hooks-use-hover',
+    component: mdxRoute(() => import('./pages/hooks/use-hover.mdx')),
+  },
+  {
+    path: '/hooks/use-validated-state',
+    name: 'hooks-use-validated-state',
+    component: mdxRoute(() => import('./pages/hooks/use-validated-state.mdx')),
+  },
+  {
+    path: '/hooks/use-os',
+    name: 'hooks-use-os',
+    component: mdxRoute(() => import('./pages/hooks/use-os.mdx')),
+  },
+  {
+    path: '/hooks/use-set-state',
+    name: 'hooks-use-set-state',
+    component: mdxRoute(() => import('./pages/hooks/use-set-state.mdx')),
+  },
+  {
+    path: '/hooks/use-input-state',
+    name: 'hooks-use-input-state',
+    component: mdxRoute(() => import('./pages/hooks/use-input-state.mdx')),
+  },
+  {
+    path: '/hooks/use-event-listener',
+    name: 'hooks-use-event-listener',
+    component: mdxRoute(() => import('./pages/hooks/use-event-listener.mdx')),
+  },
+  {
+    path: '/hooks/use-disclosure',
+    name: 'hooks-use-disclosure',
+    component: mdxRoute(() => import('./pages/hooks/use-disclosure.mdx')),
+  },
+  {
+    path: '/hooks/use-focus-within',
+    name: 'hooks-use-focus-within',
+    component: mdxRoute(() => import('./pages/hooks/use-focus-within.mdx')),
+  },
+  {
+    path: '/hooks/use-network',
+    name: 'hooks-use-network',
+    component: mdxRoute(() => import('./pages/hooks/use-network.mdx')),
+  },
+  {
+    path: '/hooks/use-timeout',
+    name: 'hooks-use-timeout',
+    component: mdxRoute(() => import('./pages/hooks/use-timeout.mdx')),
+  },
+  {
+    path: '/hooks/use-text-selection',
+    name: 'hooks-use-text-selection',
+    component: mdxRoute(() => import('./pages/hooks/use-text-selection.mdx')),
+  },
+  {
+    path: '/hooks/use-previous',
+    name: 'hooks-use-previous',
+    component: mdxRoute(() => import('./pages/hooks/use-previous.mdx')),
+  },
+  {
+    path: '/hooks/use-favicon',
+    name: 'hooks-use-favicon',
+    component: mdxRoute(() => import('./pages/hooks/use-favicon.mdx')),
+  },
+  {
+    path: '/hooks/use-headroom',
+    name: 'hooks-use-headroom',
+    component: mdxRoute(() => import('./pages/hooks/use-headroom.mdx')),
+  },
+  {
+    path: '/hooks/use-scroll-direction',
+    name: 'hooks-use-scroll-direction',
+    component: mdxRoute(() => import('./pages/hooks/use-scroll-direction.mdx')),
+  },
+  {
+    path: '/hooks/use-eye-dropper',
+    name: 'hooks-use-eye-dropper',
+    component: mdxRoute(() => import('./pages/hooks/use-eye-dropper.mdx')),
+  },
+  {
+    path: '/hooks/use-in-viewport',
+    name: 'hooks-use-in-viewport',
+    component: mdxRoute(() => import('./pages/hooks/use-in-viewport.mdx')),
+  },
+  {
+    path: '/hooks/use-mutation-observer',
+    name: 'hooks-use-mutation-observer',
+    component: mdxRoute(() => import('./pages/hooks/use-mutation-observer.mdx')),
+  },
+  {
+    path: '/hooks/use-mounted',
+    name: 'hooks-use-mounted',
+    component: mdxRoute(() => import('./pages/hooks/use-mounted.mdx')),
+  },
+  {
+    path: '/hooks/use-state-history',
+    name: 'hooks-use-state-history',
+    component: mdxRoute(() => import('./pages/hooks/use-state-history.mdx')),
+  },
+  {
+    path: '/hooks/use-map',
+    name: 'hooks-use-map',
+    component: mdxRoute(() => import('./pages/hooks/use-map.mdx')),
+  },
+  {
+    path: '/hooks/use-set',
+    name: 'hooks-use-set',
+    component: mdxRoute(() => import('./pages/hooks/use-set.mdx')),
+  },
+  {
+    path: '/hooks/use-throttled-callback',
+    name: 'hooks-use-throttled-callback',
+    component: mdxRoute(() => import('./pages/hooks/use-throttled-callback.mdx')),
+  },
+  {
+    path: '/hooks/use-throttled-state',
+    name: 'hooks-use-throttled-state',
+    component: mdxRoute(() => import('./pages/hooks/use-throttled-state.mdx')),
+  },
+  {
+    path: '/hooks/use-throttled-value',
+    name: 'hooks-use-throttled-value',
+    component: mdxRoute(() => import('./pages/hooks/use-throttled-value.mdx')),
+  },
+  {
+    path: '/hooks/use-is-first-render',
+    name: 'hooks-use-is-first-render',
+    component: mdxRoute(() => import('./pages/hooks/use-is-first-render.mdx')),
+  },
+  {
+    path: '/hooks/use-orientation',
+    name: 'hooks-use-orientation',
+    component: mdxRoute(() => import('./pages/hooks/use-orientation.mdx')),
+  },
+  {
+    path: '/hooks/use-fetch',
+    name: 'hooks-use-fetch',
+    component: mdxRoute(() => import('./pages/hooks/use-fetch.mdx')),
+  },
+  {
+    path: '/hooks/use-radial-move',
+    name: 'hooks-use-radial-move',
+    component: mdxRoute(() => import('./pages/hooks/use-radial-move.mdx')),
+  },
+  {
+    path: '/hooks/use-scroll-spy',
+    name: 'hooks-use-scroll-spy',
+    component: mdxRoute(() => import('./pages/hooks/use-scroll-spy.mdx')),
+  },
+  {
+    path: '/hooks/use-scroller',
+    name: 'hooks-use-scroller',
+    component: mdxRoute(() => import('./pages/hooks/use-scroller.mdx')),
+  },
+  {
+    path: '/hooks/use-file-dialog',
+    name: 'hooks-use-file-dialog',
+    component: mdxRoute(() => import('./pages/hooks/use-file-dialog.mdx')),
+  },
+  {
+    path: '/hooks/use-long-press',
+    name: 'hooks-use-long-press',
+    component: mdxRoute(() => import('./pages/hooks/use-long-press.mdx')),
+  },
+  {
+    path: '/hooks/use-selection',
+    name: 'hooks-use-selection',
+    component: mdxRoute(() => import('./pages/hooks/use-selection.mdx')),
+  },
+  {
+    path: '/hooks/use-floating-window',
+    name: 'hooks-use-floating-window',
+    component: mdxRoute(() => import('./pages/hooks/use-floating-window.mdx')),
+  },
+  {
+    path: '/hooks/use-collapse',
+    name: 'hooks-use-collapse',
+    component: mdxRoute(() => import('./pages/hooks/use-collapse.mdx')),
+  },
+  {
+    path: '/hooks/use-mask',
+    name: 'hooks-use-mask',
+    component: mdxRoute(() => import('./pages/hooks/use-mask.mdx')),
+  },
+  {
+    path: '/hooks/use-roving-index',
+    name: 'hooks-use-roving-index',
+    component: mdxRoute(() => import('./pages/hooks/use-roving-index.mdx')),
+  },
+  {
+    path: '/hooks/use-drag',
+    name: 'hooks-use-drag',
+    component: mdxRoute(() => import('./pages/hooks/use-drag.mdx')),
+  },
+  {
+    path: '/hooks/use-splitter',
+    name: 'hooks-use-splitter',
+    component: mdxRoute(() => import('./pages/hooks/use-splitter.mdx')),
+  },
+  {
+    path: '/hooks/use-horizontal-collapse',
+    name: 'hooks-use-horizontal-collapse',
+    component: mdxRoute(() => import('./pages/hooks/use-horizontal-collapse.mdx')),
+  },
+
   { path: '/:pathMatch(.*)*', redirect: '/getting-started' },
 ]
 

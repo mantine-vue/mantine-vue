@@ -1,0 +1,72 @@
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.useHorizontalCollapse)
+
+## Usage
+
+`use-horizontal-collapse` is a Mantine Vue only addition – it has no equivalent in React Mantine.
+It works exactly like [use-collapse](/hooks/use-collapse/), but animates `width` instead of
+`height`, which makes it useful for collapsible sidebars, filter panels, and other horizontally
+collapsing layouts.
+
+```vue
+<script setup lang="ts">
+import { Button, Box } from '@mantine-vue/core'
+import { useHorizontalCollapse, useDisclosure } from '@mantine-vue/hooks'
+
+const [expanded, handlers] = useDisclosure(false)
+const { getCollapseProps } = useHorizontalCollapse({ expanded })
+</script>
+
+<template>
+  <Button @click="handlers.toggle" mb="md">
+    {{ expanded ? 'Collapse' : 'Expand' }}
+  </Button>
+
+  <div style="display: flex;">
+    <div v-bind="getCollapseProps({ style: { flexShrink: 0 } })">
+      <Box bg="var(--mantine-color-blue-light)" p="xs" :w="220">
+        Horizontally collapsible content
+      </Box>
+    </div>
+  </div>
+</template>
+```
+
+## API
+
+`use-horizontal-collapse` accepts the same `UseCollapseInput` options as `use-collapse`
+(`expanded`, `transitionDuration`, `transitionTimingFunction`, `onTransitionEnd`,
+`onTransitionStart`, `keepMounted`) and returns the same shape (`state` and `getCollapseProps`).
+The only difference is that the hook transitions the element's `width` CSS property instead of
+`height`, and measures content size with `scrollWidth` (via the shared `getElementContentSize`
+helper) instead of `scrollHeight`.
+
+As with `use-collapse`, the `ref` returned from `getCollapseProps()` must be bound to the
+collapsible element for the hook to be able to measure its content size.
+
+Internally, both `useCollapse` and `useHorizontalCollapse` are implemented on top of the same
+`createCollapse` factory function exported from `@mantine-vue/hooks`, parameterized with a
+`dimension` of `'height'` or `'width'` respectively.
+
+## Definition
+
+```ts
+type UseHorizontalCollapseInput = UseCollapseInput
+type UseHorizontalCollapseReturnValue = UseCollapseReturnValue
+
+function useHorizontalCollapse(input: UseCollapseInput): UseCollapseReturnValue
+```
+
+## Exported types
+
+The `UseHorizontalCollapseInput` and `UseHorizontalCollapseReturnValue` types are exported from
+the `@mantine-vue/hooks` package; you can import them in your application:
+
+```ts
+import type {
+  UseHorizontalCollapseInput,
+  UseHorizontalCollapseReturnValue,
+} from '@mantine-vue/hooks'
+```

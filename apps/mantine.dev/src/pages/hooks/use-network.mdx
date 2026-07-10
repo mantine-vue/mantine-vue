@@ -1,0 +1,40 @@
+import { UseNetworkDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.useNetwork)
+
+## Usage
+
+The `use-network` hook returns a `Ref` with an object describing the current connection status:
+
+<Demo data={UseNetworkDemos.usage} />
+
+## Browser support
+
+`use-network` uses the experimental `navigator.connection` API. See the [browser compatibility table](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/connection#browser_compatibility).
+
+## Definition
+
+```ts
+interface UserNetworkReturnValue {
+  online: boolean
+  downlink?: number
+  downlinkMax?: number
+  effectiveType?: 'slow-2g' | '2g' | '3g' | '4g'
+  rtt?: number
+  saveData?: boolean
+  type?: 'bluetooth' | 'cellular' | 'ethernet' | 'wifi' | 'wimax' | 'none' | 'other' | 'unknown'
+}
+
+function useNetwork(): Ref<UserNetworkReturnValue>
+```
+
+## Exported types
+
+The `UserNetworkReturnValue` type is exported from the `@mantine-vue/hooks` package;
+you can import it in your application:
+
+```ts
+import type { UserNetworkReturnValue } from '@mantine-vue/hooks'
+```

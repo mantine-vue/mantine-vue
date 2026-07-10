@@ -1,0 +1,26 @@
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.useMounted)
+
+## Usage
+
+The `useMounted` hook returns a readonly ref that is `true` after the component is mounted and `false` before that.
+
+```vue
+<script setup lang="ts">
+import { useMounted } from '@mantine-vue/hooks'
+
+const mounted = useMounted()
+</script>
+
+<template>
+  <div>{{ mounted ? 'Component is mounted' : 'Component is not mounted' }}</div>
+</template>
+```
+
+## Definition
+
+```tsx
+function useMounted(): Readonly<Ref<boolean>>
+```

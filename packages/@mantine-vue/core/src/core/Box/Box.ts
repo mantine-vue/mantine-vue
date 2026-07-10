@@ -1,7 +1,8 @@
-import { Fragment, defineComponent, h, type Component, type PropType } from 'vue'
+import { Fragment, defineComponent, h, ref, type Component, type PropType } from 'vue'
 import { camelToKebabCase, filterProps, isNumberLike } from '@mantine-vue/utils'
 import { InlineStyles } from '../InlineStyles'
 import { useSafeMantineTheme } from '../MantineProvider'
+import { useForwardedRef } from '../factory/use-forwarded-ref'
 import {
   hashStyleProps,
   parseStyleProps,
@@ -170,6 +171,8 @@ export const Box = defineComponent({
   },
   setup(props, { attrs, slots }) {
     const theme = useSafeMantineTheme()
+    const elementRef = ref<Element | null>(null)
+    useForwardedRef(elementRef)
 
     return () => {
       const styleProps = Object.keys(STYLE_PROPS_DATA).reduce<Record<string, any>>((acc, key) => {
@@ -203,6 +206,7 @@ export const Box = defineComponent({
           'data-size':
             (attrs as any)['data-size'] ?? (isNumberLike(props.size) ? undefined : props.size),
           style: [filterProps(parsed.inlineStyles), attrs.style],
+          ref: elementRef,
         },
         isVueComponent(props.component) && children ? { default: children } : children?.(),
       )

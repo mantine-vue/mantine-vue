@@ -1,0 +1,130 @@
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.useFocusTrap)
+
+## Usage
+
+The `use-focus-trap` hook traps focus at the given node, for example in a modal, drawer, or menu.
+The node must include at least one focusable element. When the node unmounts, the focus trap is automatically released.
+
+```vue
+<script setup lang="ts">
+import { useFocusTrap } from '@mantine-vue/hooks'
+
+const focusTrapRef = useFocusTrap()
+</script>
+
+<template>
+  <div :ref="focusTrapRef">
+    <input />
+  </div>
+</template>
+```
+
+## API
+
+The hook accepts the focus trap active state as a single argument. The argument can be a plain
+boolean, a `Ref<boolean>`, or a getter function (`MaybeRefOrGetter<boolean>`), so the active state
+can be reactive:
+
+```ts
+import { ref } from 'vue'
+import { useFocusTrap } from '@mantine-vue/hooks'
+
+useFocusTrap() // -> focus trap active by default
+useFocusTrap(false) // -> focus trap disabled
+
+const active = ref(true)
+useFocusTrap(active) // -> reactive active state
+useFocusTrap(() => active.value) // -> getter also works
+```
+
+Note that unlike the React version, the Vue `useFocusTrap` hook is **active by default** – call
+`useFocusTrap(false)` if you want the trap to start disabled.
+
+The hook returns a callback function that should be bound to the `ref` attribute of the element:
+
+```vue
+<script setup lang="ts">
+import { Paper } from '@mantine-vue/core'
+import { useFocusTrap } from '@mantine-vue/hooks'
+
+const focusTrapRef = useFocusTrap()
+</script>
+
+<template>
+  <!-- With a regular element: -->
+  <div :ref="focusTrapRef" />
+
+  <!-- With a Mantine Vue component -->
+  <!-- the hook automatically unwraps the component instance to its root element -->
+  <Paper :ref="focusTrapRef" />
+</template>
+```
+
+## Combine with other ref based hooks
+
+To combine `use-focus-trap` with other ref-based hooks, use the [use-merged-ref](/hooks/use-merged-ref/) hook:
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue'
+import { useClickOutside, useFocusTrap, useMergedRef } from '@mantine-vue/hooks'
+
+const myRef = ref<HTMLElement | null>(null)
+const clickOutsideRef = useClickOutside(() => {})
+const focusTrapRef = useFocusTrap()
+const mergedRef = useMergedRef(myRef, clickOutsideRef, focusTrapRef)
+</script>
+
+<template>
+  <div :ref="mergedRef" />
+</template>
+```
+
+## Initial focus
+
+By default, the focus trap will move focus to the first interactive element.
+To specify the element that should receive initial focus, add the `data-autofocus` attribute:
+
+```vue
+<script setup lang="ts">
+import { useFocusTrap } from '@mantine-vue/hooks'
+
+const focusTrapRef = useFocusTrap()
+</script>
+
+<template>
+  <div :ref="focusTrapRef">
+    <input />
+    <!-- The second input in the modal will have initial focus -->
+    <input data-autofocus />
+    <input />
+  </div>
+</template>
+```
+
+## Advanced/internal exports
+
+`use-focus-trap/use-focus-trap.ts` also exports a few lower-level utilities that power the hook
+internally. They are not required for typical usage but are available if you need to build custom
+focus trap behavior: `scopeTab` (moves focus to the next/previous tabbable element on `Tab` key
+press), `FOCUS_SELECTOR` (the CSS selector used to query focusable descendants),
+`findTabbableDescendants`, `focusable`, and `tabbable`.
+
+```ts
+import {
+  scopeTab,
+  FOCUS_SELECTOR,
+  findTabbableDescendants,
+  focusable,
+  tabbable,
+} from '@mantine-vue/hooks'
+```
+
+## Definition
+
+```ts
+function useFocusTrap(active?: MaybeRefOrGetter<boolean>): (node: any) => void
+```

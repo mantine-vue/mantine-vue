@@ -1,0 +1,28 @@
+import { UseHoverDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.useHover)
+
+## Usage
+
+<Demo data={UseHoverDemos.usage} />
+
+## Definition
+
+```ts
+interface UseHoverReturnValue<T extends HTMLElement = HTMLElement> {
+  ref: Ref<T | null>
+  hovered: Ref<boolean>
+}
+
+function useHover<T extends HTMLElement = HTMLElement>(): UseHoverReturnValue<T>
+```
+
+## Exported types
+
+The `UseHoverReturnValue` type is exported from `@mantine-vue/hooks`:
+
+```ts
+import type { UseHoverReturnValue } from '@mantine-vue/hooks'
+```

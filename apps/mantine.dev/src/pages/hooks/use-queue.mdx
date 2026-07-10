@@ -1,0 +1,140 @@
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.useQueue)
+
+## Usage
+
+The `use-queue` hook limits the number of data items in the current state and
+places the rest of them in a queue. For example, in a notifications system,
+the number of notifications that is currently displayed is limited, and other
+new notifications are added to the queue and displayed once available space
+appears.
+
+```ts
+import { useQueue } from '@mantine-vue/hooks'
+
+const { state, queue, add, update, cleanQueue } = useQueue({
+  initialValues: [1],
+  limit: 2,
+})
+
+// state.value -> [1], queue.value -> []
+
+// When state.length is less than limit, new items are added to state
+add(2)
+// state.value -> [1,2], queue.value -> []
+
+// When state.length is equal to the limit, new items are added to the queue
+add(3, 4, 5, 6)
+// state.value -> [1,2], queue.value -> [3,4,5,6]
+
+// Use the update function to modify items
+update((values) => values.map((item) => item * 3))
+// state.value -> [3,6], queue.value -> [9,12,15,18]
+
+// If you add or remove items in the update function,
+// they will be divided between queue and state according to the limit;
+// order is always preserved
+update((values) => values.filter((item) => item % 2))
+// state.value -> [3,9], queue.value -> [15]
+
+// Remove all items from queue
+cleanQueue()
+// state.value -> [3,9], queue.value -> []
+
+// Remove all items from queue and state
+update(() => [])
+// state.value -> [], queue.value -> []
+```
+
+## API
+
+The hook accepts one argument – a configuration object with keys:
+
+- `initialValues` – optional initial values (divided between state and queue according to limit), defaults to empty array
+- `limit` – maximum number of items that state can include, every next item after the limit is exceeded is put in queue
+
+Return value:
+
+- `state` – readonly `Ref` with the current state
+- `queue` – readonly `Ref` with the current queue
+- `add` – add any number of items to state or queue
+- `update` – apply given function to all items in state and queue, use it to filter, modify or add items
+- `cleanQueue` – remove all items from the queue
+
+Since `state` and `queue` are returned as readonly refs, you must read their
+current value with `.value` (or destructure and let Vue's template compiler
+auto-unwrap them when used directly in `<script setup>`).
+
+## Set item type
+
+By default, the hook will get type information from `initialValues`
+automatically:
+
+```ts
+import { useQueue } from '@mantine-vue/hooks'
+
+const q = useQueue({
+  limit: 2,
+  initialValues: [
+    { name: 'Bob', id: 1 },
+    { name: 'Alice', id: 2 },
+  ],
+})
+
+typeof q.state.value[number] // -> { name: string; id: number; }
+```
+
+If you do not provide `initialValues`, pass in a type for the state item:
+
+```ts
+import { useQueue } from '@mantine-vue/hooks'
+
+const q = useQueue<{ name: string; id: number }>({
+  limit: 2,
+  initialValues: [],
+})
+
+q.add({ name: 'Bob', id: 1 })
+```
+
+## Definition
+
+```ts
+interface UseQueueOptions<T> {
+  /** Initial values to be added to the queue */
+  initialValues?: T[]
+
+  /** Maximum number of items in the state */
+  limit: number
+}
+
+interface UseQueueReturnValue<T> {
+  /** Array of items in the queue */
+  queue: Readonly<Ref<T[]>>
+
+  /** Array of items in the state */
+  state: Readonly<Ref<T[]>>
+
+  /** Function to add items to state or queue */
+  add: (...items: T[]) => void
+
+  /** Function to apply updates to current items */
+  update: (fn: (state: T[]) => T[]) => void
+
+  /** Function to clear the queue */
+  cleanQueue: () => void
+}
+
+function useQueue<T>(options: UseQueueOptions<T>): UseQueueReturnValue<T>
+```
+
+## Exported types
+
+`UseQueueOptions` and `UseQueueReturnValue` types are exported from the
+`@mantine-vue/hooks` package; you can import them in your application:
+
+```ts
+import type { UseQueueOptions, UseQueueReturnValue } from '@mantine-vue/hooks'
+```

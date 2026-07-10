@@ -1,0 +1,19 @@
+import { UsePreviousDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.usePrevious)
+
+## Usage
+
+The `use-previous` hook stores the previous value of a reactive source in a `ShallowRef`. It accepts a `Ref`,
+a getter function or a plain value (`MaybeRefOrGetter<T>`) and returns `undefined` on the initial render and the
+previous value after the source changes:
+
+<Demo data={UsePreviousDemos.usage} />
+
+## Definition
+
+```ts
+function usePrevious<T>(value: MaybeRefOrGetter<T>): ShallowRef<T | undefined>
+```

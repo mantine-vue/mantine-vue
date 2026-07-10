@@ -1,0 +1,75 @@
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.useFocusReturn)
+
+## Usage
+
+The `use-focus-return` hook automatically returns focus to the last focused element when a given condition is met.
+For example, it is used in the [Modal](/core/modal/) component to restore focus after the modal was closed.
+
+Open the [Modal usage example](/core/modal/) and close it with the `Escape` key to see how focus returns
+to the button that opened it once the modal closes.
+
+In most cases, you should use this hook with [use-focus-trap](/hooks/use-focus-trap/).
+
+```ts
+import { useFocusReturn } from '@mantine-vue/hooks'
+
+useFocusReturn({
+  // Is region with focus trap active?
+  // When it activates hook saves document.activeElement to the internal state
+  // and focuses this element once focus trap is deactivated
+  opened: false,
+
+  // Determines whether focus should be returned automatically, true by default
+  shouldReturnFocus: true,
+})
+```
+
+`opened` and `shouldReturnFocus` accept a plain value, a `Ref`, or a getter function (`MaybeRefOrGetter`),
+so they can be wired up directly to reactive state:
+
+```ts
+import { ref } from 'vue'
+import { useFocusReturn } from '@mantine-vue/hooks'
+
+const opened = ref(false)
+useFocusReturn({ opened })
+```
+
+If the `shouldReturnFocus` option is set to `false`, you can call the returned function to focus the last active element:
+
+```ts
+import { useFocusReturn } from '@mantine-vue/hooks'
+
+const returnFocus = useFocusReturn({
+  opened: false,
+  shouldReturnFocus: false,
+})
+
+// ... later
+returnFocus()
+```
+
+## Definition
+
+```ts
+interface UseFocusReturnInput {
+  opened: MaybeRefOrGetter<boolean>
+  shouldReturnFocus?: MaybeRefOrGetter<boolean>
+}
+
+type UseFocusReturnReturnValue = () => void
+
+function useFocusReturn(options: UseFocusReturnInput): UseFocusReturnReturnValue
+```
+
+## Exported types
+
+`UseFocusReturnInput` and `UseFocusReturnReturnValue` types are exported from the `@mantine-vue/hooks` package;
+you can import them in your application:
+
+```ts
+import type { UseFocusReturnInput, UseFocusReturnReturnValue } from '@mantine-vue/hooks'
+```

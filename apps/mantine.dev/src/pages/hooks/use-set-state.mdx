@@ -1,0 +1,55 @@
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.useSetState)
+
+## Usage
+
+The `use-set-state` hook works similarly to how `this.setState` works in class components – it shallow merges the state partial
+into the current state. It returns a reactive `Ref` with the state and a setter function, so you can read the current
+value with `state.value` and use it directly in templates.
+
+```ts
+import { useSetState } from '@mantine-vue/hooks'
+
+const [state, setState] = useSetState({
+  name: 'John',
+  age: 35,
+  job: 'Engineer',
+})
+
+state.value // -> { name: 'John', age: 35, job: 'Engineer' }
+
+setState({ name: 'Jane' }) // -> { name: 'Jane', age: 35, job: 'Engineer' }
+setState({ age: 25, job: 'Manager' }) // -> { name: 'Jane', age: 25, job: 'Manager' }
+setState((current) => ({ age: current.age + 7 })) // -> { name: 'Jane', age: 32, job: 'Manager' }
+```
+
+Note that it can work only with objects; primitive values and arrays are not supported:
+
+```ts
+import { useSetState } from '@mantine-vue/hooks'
+
+useSetState([1, 2, 3]) // -> will not work
+useSetState(1) // -> will not work
+useSetState({ skills: ['JavaScript', 'TypeScript'] }) // -> works fine
+```
+
+## Definition
+
+```ts
+type UseSetStateCallback<T> = (state: Partial<T> | ((currentState: T) => Partial<T>)) => void
+
+type UseSetStateReturnValue<T> = [Ref<T>, UseSetStateCallback<T>]
+
+function useSetState<T extends Record<string, any>>(initialState: T): UseSetStateReturnValue<T>
+```
+
+## Exported types
+
+`UseSetStateCallback` and `UseSetStateReturnValue` types are exported from the `@mantine-vue/hooks` package;
+you can import them in your application:
+
+```ts
+import type { UseSetStateCallback, UseSetStateReturnValue } from '@mantine-vue/hooks'
+```

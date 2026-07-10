@@ -1,0 +1,18 @@
+import { UseThrottledValueDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.useThrottledValue)
+
+## Usage
+
+The `useThrottledValue` hook accepts a `MaybeRefOrGetter` value and a wait time in milliseconds.
+It returns a readonly ref with a throttled value that cannot change more than once every `wait` milliseconds.
+
+<Demo data={UseThrottledValueDemos.usage} />
+
+## Definition
+
+```ts
+function useThrottledValue<T>(value: MaybeRefOrGetter<T>, wait: number): Readonly<Ref<T>>
+```

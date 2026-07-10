@@ -1,0 +1,29 @@
+import { UseScrollDirectionDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.useScrollDirection)
+
+## Usage
+
+The `useScrollDirection` hook detects whether the user is currently scrolling up or down.
+It returns a readonly ref that holds `'up'` when the user is scrolling up, `'down'` when scrolling down,
+and `'unknown'` before any scroll event has occurred.
+
+<Demo data={UseScrollDirectionDemos.usage} />
+
+## Definition
+
+```tsx
+type ScrollDirection = 'up' | 'down' | 'unknown'
+
+function useScrollDirection(): Readonly<Ref<ScrollDirection>>
+```
+
+## Exported types
+
+The `ScrollDirection` type is exported from `@mantine-vue/hooks`:
+
+```tsx
+import type { ScrollDirection } from '@mantine-vue/hooks'
+```

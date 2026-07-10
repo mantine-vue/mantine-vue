@@ -1,0 +1,19 @@
+import { UseDocumentVisibilityDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.useDocumentVisibility)
+
+## Usage
+
+The `use-document-visibility` hook returns a readonly ref with the current [document.visibilityState](https://developer.mozilla.org/en-US/docs/Web/API/Document/visibilityState)
+– it allows you to detect if the current tab is active:
+
+<Demo data={UseDocumentVisibilityDemos.usage} />
+
+## Definition
+
+```ts
+// DocumentVisibilityState is 'visible' | 'hidden'
+function useDocumentVisibility(): Readonly<Ref<DocumentVisibilityState>>
+```

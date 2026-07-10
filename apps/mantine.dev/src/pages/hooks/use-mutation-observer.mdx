@@ -1,0 +1,36 @@
+import { UseMutationObserverDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.useMutationObserver)
+
+## Usage
+
+The `useMutationObserver` hook is a wrapper for the [MutationObserver](https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver).
+It allows you to subscribe to changes being made to the DOM tree. It returns a `ref` that you should bind
+to the target element:
+
+<Demo data={UseMutationObserverDemos.usage} />
+
+## Target element
+
+If you cannot bind a `ref` to the target element (for example, when observing `document.documentElement`),
+use `useMutationObserverTarget` instead. It accepts the target as a third argument, which can be a plain
+element, a getter function, or a `ref`/`computed` – anything accepted by `MaybeRefOrGetter`.
+
+<Demo data={UseMutationObserverDemos.target} />
+
+## Definition
+
+```tsx
+function useMutationObserver<T extends HTMLElement = HTMLElement>(
+  callback: MutationCallback,
+  options: MutationObserverInit,
+): Ref<T | null>
+
+function useMutationObserverTarget(
+  callback: MutationCallback,
+  options: MutationObserverInit,
+  target?: MaybeRefOrGetter<HTMLElement | null | undefined>,
+): void
+```

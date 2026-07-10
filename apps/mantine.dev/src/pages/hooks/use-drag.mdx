@@ -1,0 +1,156 @@
+import { UseDragDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.useDrag)
+
+## Usage
+
+`use-drag` hook handles pointer drag gestures over an element. It tracks movement,
+velocity, direction and supports axis constraints, threshold activation and tap detection.
+The hook uses the Pointer Events API and works with both mouse and touch input.
+
+The hook returns a plain callback `ref` meant for a native DOM element – bind it directly to a
+native element (like a `<div>` or `<button>`) rather than to a Mantine Vue component, otherwise
+the `ref` resolves to the component instance instead of its underlying element:
+
+<Demo data={UseDragDemos.usage} />
+
+## Axis constraint
+
+Use the `axis` option to constrain movement to a single axis.
+Set `axis` to `'x'` or `'y'` for a fixed constraint, or `'lock'` to
+lock to whichever axis has more movement after `axisThreshold` is exceeded:
+
+<Demo data={UseDragDemos.axis} />
+
+## Distinguishing taps from drags
+
+When `filterTaps` is enabled, the last state includes a `tap` property that is `true`
+when the total distance is below `tapThreshold` (default `3px`). Combined with `threshold`,
+this lets you distinguish clicks from drags on the same element:
+
+<Demo data={UseDragDemos.filterTaps} />
+
+## Swipe to dismiss
+
+Use `movement` and `velocity` on the last event to decide whether to dismiss an item.
+This pattern works well for notifications:
+
+<Demo data={UseDragDemos.swipe} />
+
+## Drag to scroll
+
+Apply `delta` to a container's `scrollLeft` to create a drag-to-scroll interaction:
+
+<Demo data={UseDragDemos.scroll} />
+
+## Touch support
+
+The hook uses the Pointer Events API which handles both mouse and touch automatically.
+For touch devices, set `touch-action: none` on the draggable element to prevent
+the browser from interpreting touch drag as scroll:
+
+```css
+.draggable {
+  touch-action: none;
+}
+```
+
+If you want to allow scrolling on one axis while dragging on the other (e.g. horizontal
+drag with vertical scroll), use `touch-action: pan-y` or `touch-action: pan-x`.
+
+## Definition
+
+```ts
+type Vector2 = [number, number]
+
+interface UseDragState {
+  /** Current pointer position [x, y] */
+  xy: Vector2
+
+  /** Position where the gesture started [x, y] */
+  initial: Vector2
+
+  /** Displacement from start [x, y], respects axis constraint */
+  movement: Vector2
+
+  /** Change since previous event [x, y] */
+  delta: Vector2
+
+  /** Absolute distance per axis [x, y] */
+  distance: Vector2
+
+  /** Movement direction per axis: -1, 0, or 1 */
+  direction: Vector2
+
+  /** Speed per axis in px/ms */
+  velocity: Vector2
+
+  /** Time since drag started in ms */
+  elapsedTime: number
+
+  /** `true` on the first handler call after the threshold is met */
+  first: boolean
+
+  /** `true` on the last handler call (pointer released or canceled) */
+  last: boolean
+
+  /** `true` while the gesture is ongoing */
+  active: boolean
+
+  /** `true` when the gesture qualifies as a tap (requires `filterTaps: true`) */
+  tap: boolean
+
+  /** `true` when the gesture was interrupted by a `pointercancel` event */
+  canceled: boolean
+
+  /** Function to programmatically cancel the current gesture */
+  cancel: () => void
+
+  /** The source `PointerEvent` */
+  event: PointerEvent
+}
+
+interface UseDragOptions {
+  /** Constrain movement to a specific axis. `'lock'` locks to whichever axis has more movement after `axisThreshold` is exceeded. */
+  axis?: 'x' | 'y' | 'lock'
+
+  /** Movement in px required to determine axis when `axis` is `'lock'`, `1` by default */
+  axisThreshold?: number
+
+  /** When `true`, the last state includes `tap: true` when total distance is below `tapThreshold`, `false` by default */
+  filterTaps?: boolean
+
+  /** Max displacement in px to still be considered a tap, `3` by default */
+  tapThreshold?: number
+
+  /** Minimum displacement in px before the drag activates. Can be a number (both axes) or `[x, y]`. `0` by default */
+  threshold?: number | Vector2
+
+  /** Enable or disable the hook, `true` by default */
+  enabled?: boolean
+}
+
+interface UseDragReturnValue<T extends HTMLElement = any> {
+  /** Ref callback to attach to the draggable element */
+  ref: (node: T | null) => void
+
+  /** `true` while the element is being dragged */
+  active: Ref<boolean>
+}
+
+function useDrag<T extends HTMLElement = any>(
+  handler: (state: UseDragState) => void,
+  options?: UseDragOptions,
+): UseDragReturnValue<T>
+```
+
+## Exported types
+
+`UseDragState`, `UseDragOptions` and `UseDragReturnValue` types are exported from the `@mantine-vue/hooks` package;
+you can import them in your application:
+
+```ts
+import type { UseDragState, UseDragOptions, UseDragReturnValue } from '@mantine-vue/hooks'
+```
