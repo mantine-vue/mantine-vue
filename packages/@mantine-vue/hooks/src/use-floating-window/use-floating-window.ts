@@ -1,4 +1,11 @@
-import { onBeforeUnmount, onMounted, readonly, ref, type Ref } from 'vue'
+import {
+  onBeforeUnmount,
+  onMounted,
+  readonly,
+  ref,
+  type ComponentPublicInstance,
+  type Ref,
+} from 'vue'
 
 export interface FloatingWindowPositionConfig {
   top?: number
@@ -158,12 +165,8 @@ export function useFloatingWindow<T extends HTMLElement>(options: UseFloatingWin
     document.addEventListener('touchend', end)
   }
 
-  const setRef = (node: T | null) => {
-    // `node` is normally an HTMLElement, but if this callback ref is
-    // accidentally attached to a Vue component instead of a native DOM
-    // element, Vue will call it with the component's instance proxy, which
-    // has no DOM methods. Guard against that.
-    const safeNode = node instanceof Element ? node : null
+  const setRef = (node: Element | ComponentPublicInstance | null) => {
+    const safeNode = node instanceof Element ? (node as T) : null
 
     if (safeNode === element.value) {
       return

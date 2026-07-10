@@ -1,4 +1,4 @@
-import { onBeforeUnmount, ref, type Ref } from 'vue'
+import { onBeforeUnmount, ref, type ComponentPublicInstance, type Ref } from 'vue'
 
 export interface UseScrollerOptions {
   scrollAmount?: number
@@ -11,8 +11,8 @@ export interface UseScrollerScrollState {
   canScrollEnd: boolean
 }
 
-export interface UseScrollerReturnValue<T extends HTMLElement = HTMLDivElement> {
-  ref: (node: T | null) => void
+export interface UseScrollerReturnValue {
+  ref: (node: Element | ComponentPublicInstance | null) => void
   canScrollStart: Ref<boolean>
   canScrollEnd: Ref<boolean>
   scrollStart: () => void
@@ -30,7 +30,7 @@ export function useScroller<T extends HTMLElement = HTMLDivElement>({
   scrollAmount = 200,
   draggable = true,
   onScrollStateChange,
-}: UseScrollerOptions = {}): UseScrollerReturnValue<T> {
+}: UseScrollerOptions = {}): UseScrollerReturnValue {
   let containerRef: T | null = null
   let resizeObserver: ResizeObserver | undefined
   let isDraggingRef = false
@@ -61,20 +61,22 @@ export function useScroller<T extends HTMLElement = HTMLDivElement>({
     onScrollStateChange?.({ canScrollStart: nextCanScrollStart, canScrollEnd: nextCanScrollEnd })
   }
 
-  const setRef = (node: T | null) => {
+  const setRef = (node: Element | ComponentPublicInstance | null) => {
+    const safeNode = node instanceof HTMLElement ? (node as T) : null
+
     if (containerRef) {
       containerRef.removeEventListener('scroll', updateScrollState)
       resizeObserver?.disconnect()
     }
 
-    containerRef = node
+    containerRef = safeNode
 
-    if (node) {
-      node.addEventListener('scroll', updateScrollState)
+    if (safeNode) {
+      safeNode.addEventListener('scroll', updateScrollState)
 
       if (typeof ResizeObserver !== 'undefined') {
         resizeObserver = new ResizeObserver(updateScrollState)
-        resizeObserver.observe(node)
+        resizeObserver.observe(safeNode)
       }
 
       updateScrollState()

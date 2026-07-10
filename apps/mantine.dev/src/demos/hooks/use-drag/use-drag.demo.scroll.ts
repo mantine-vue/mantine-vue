@@ -77,9 +77,9 @@ const Demo = defineComponent({
       { axis: 'x', filterTaps: true, threshold: 5 },
     )
 
-    const assignRef = (node: HTMLDivElement | null) => {
-      scrollEl.value = node
-      dragRef(node)
+    const assignRef = (el: any) => {
+      scrollEl.value = el ?? null
+      dragRef(el ?? null)
     }
 
     return () =>

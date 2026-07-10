@@ -1,4 +1,4 @@
-import { onBeforeUnmount, onMounted, readonly, ref } from 'vue'
+import { onBeforeUnmount, onMounted, readonly, ref, type ComponentPublicInstance } from 'vue'
 
 export interface UseMovePosition {
   x: number
@@ -69,10 +69,11 @@ export function useMove<T extends HTMLElement = HTMLElement>(
     if ('changedTouches' in event) touchMove(event)
     else mouseMove(event)
   }
-  const setRef = (node: T | null) => {
+  const setRef = (node: Element | ComponentPublicInstance | null) => {
+    const safeNode = node instanceof HTMLElement ? (node as T) : null
     element?.removeEventListener('mousedown', start)
     element?.removeEventListener('touchstart', start)
-    element = node
+    element = safeNode
     element?.addEventListener('mousedown', start)
     element?.addEventListener('touchstart', start, { passive: false })
   }
