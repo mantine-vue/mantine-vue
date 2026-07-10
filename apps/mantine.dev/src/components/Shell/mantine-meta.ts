@@ -1,4 +1,10 @@
-export const majorVersions = []
+interface MajorVersion {
+  v: string
+  name: string
+  link: string
+}
+
+export const majorVersions: MajorVersion[] = []
 
 export const meta = {
   docsLink: 'https://mantine-vue.com',
