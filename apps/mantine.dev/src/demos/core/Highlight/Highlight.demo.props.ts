@@ -10,7 +10,7 @@ import { Highlight } from '@mantine-vue/core'
 <template>
   <Highlight
     component="a"
-    href="https://mantine.dev"
+    href="https://mantine-vue"
     target="_blank"
     highlight="mantine"
     :fw="500"
@@ -29,7 +29,7 @@ const Demo = defineComponent({
         Highlight,
         {
           component: 'a',
-          href: 'https://mantine.dev',
+          href: 'https://mantine-vue',
           target: '_blank',
           highlight: 'mantine',
           fw: 500,

@@ -10,7 +10,7 @@ import { ActionIcon } from '@mantine-vue/core'
 <template>
   <ActionIcon
     component="a"
-    href="https://mantine.dev"
+    href="https://mantine-vue"
     data-disabled
     size="xl"
     aria-label="Open in a new tab"
@@ -32,7 +32,7 @@ const Demo = defineComponent({
       ActionIcon,
       {
         component: 'a',
-        href: 'https://mantine.dev',
+        href: 'https://mantine-vue',
         'data-disabled': true,
         size: 'xl',
         'aria-label': 'Open in a new tab',

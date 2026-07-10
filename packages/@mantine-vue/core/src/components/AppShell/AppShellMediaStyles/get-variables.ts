@@ -86,51 +86,117 @@ export function getVariables({
   }
   assignVertical(header, 'header')
   assignVertical(footer, 'footer')
-  const assignSide = (
-    config: AppShellNavbarConfiguration | AppShellAsideConfiguration | undefined,
-    name: 'navbar' | 'aside',
-  ) => {
+  const assignNavbarVariables = (config: AppShellNavbarConfiguration | undefined) => {
     if (!config) return
-    responsive(config.width, `--app-shell-${name}-width`, baseStyles, minMediaStyles, theme)
-    responsive(config.width, `--app-shell-${name}-offset`, baseStyles, minMediaStyles, theme)
+    responsive(config.width, '--app-shell-navbar-width', baseStyles, minMediaStyles, theme)
+    responsive(config.width, '--app-shell-navbar-offset', baseStyles, minMediaStyles, theme)
+    if (mode === 'static') {
+      responsive(config.width, '--app-shell-navbar-grid-width', baseStyles, minMediaStyles, theme)
+    }
+
     const bp = breakpointPx(config.breakpoint, theme)
     const minQuery = `(min-width: ${em(bp)})`
     const maxQuery = `(max-width: ${em(bp - 0.1)})`
-    const sign = name === 'navbar' ? '-1' : '1'
-    const rtlSign = name === 'navbar' ? '1' : '-1'
-    if (!config.collapsed?.mobile)
+
+    if (!config.collapsed?.mobile) {
       media(maxMediaStyles, maxQuery, {
-        [`--app-shell-${name}-offset`]: '0px',
-        [`--app-shell-${name}-width`]: mode === 'fixed' ? '100%' : '0px',
+        '--app-shell-navbar-offset': '0px',
+        '--app-shell-navbar-width': '100%',
+        ...(mode === 'static' ? { '--app-shell-navbar-grid-width': '0px' } : {}),
       })
-    if (config.collapsed?.mobile)
+    }
+
+    if (mode === 'static') {
+      media(minMediaStyles, minQuery, {
+        '--app-shell-navbar-position': 'sticky',
+        '--app-shell-navbar-grid-row': '2',
+        '--app-shell-navbar-grid-column': '1',
+        '--app-shell-main-column-start': '2',
+      })
+    }
+
+    if (config.collapsed?.desktop) {
+      media(minMediaStyles, minQuery, {
+        '--app-shell-navbar-transform': 'translateX(calc(var(--app-shell-navbar-width) * -1))',
+        '--app-shell-navbar-transform-rtl': 'translateX(var(--app-shell-navbar-width))',
+        ...(mode === 'fixed'
+          ? { '--app-shell-navbar-offset': '0px !important' }
+          : {
+              '--app-shell-navbar-width': '0px',
+              '--app-shell-navbar-display': 'none',
+              '--app-shell-main-column-start': '1',
+            }),
+      })
+    }
+
+    if (config.collapsed?.mobile) {
       media(maxMediaStyles, maxQuery, {
-        [`--app-shell-${name}-offset`]: '0px',
-        [`--app-shell-${name}-width`]: mode === 'fixed' ? '100%' : '0px',
-        [`--app-shell-${name}-transform`]: `translateX(calc(var(--app-shell-${name}-width) * ${sign}))`,
-        [`--app-shell-${name}-transform-rtl`]: `translateX(calc(var(--app-shell-${name}-width) * ${rtlSign}))`,
+        '--app-shell-navbar-width': '100%',
+        '--app-shell-navbar-offset': '0px',
+        ...(mode === 'static' ? { '--app-shell-navbar-grid-width': '0px' } : {}),
+        '--app-shell-navbar-transform': 'translateX(calc(var(--app-shell-navbar-width) * -1))',
+        '--app-shell-navbar-transform-rtl': 'translateX(var(--app-shell-navbar-width))',
       })
-    if (config.collapsed?.desktop)
-      media(minMediaStyles, minQuery, {
-        [`--app-shell-${name}-offset`]: '0px !important',
-        [`--app-shell-${name}-transform`]: `translateX(calc(var(--app-shell-${name}-width) * ${sign}))`,
-        [`--app-shell-${name}-transform-rtl`]: `translateX(calc(var(--app-shell-${name}-width) * ${rtlSign}))`,
-        ...(mode === 'static'
-          ? { [`--app-shell-${name}-width`]: '0px', [`--app-shell-${name}-display`]: 'none' }
-          : {}),
-      })
-    if (mode === 'static')
-      media(minMediaStyles, minQuery, {
-        [`--app-shell-${name}-position`]: 'sticky',
-        [`--app-shell-${name}-grid-row`]: '2',
-        [`--app-shell-${name}-grid-column`]: name === 'navbar' ? '1' : '3',
-        ...(name === 'navbar'
-          ? { '--app-shell-main-column-start': '2' }
-          : { '--app-shell-main-column-end': '3' }),
-      })
+    }
   }
-  assignSide(navbar, 'navbar')
-  assignSide(aside, 'aside')
+
+  const assignAsideVariables = (config: AppShellAsideConfiguration | undefined) => {
+    if (!config) return
+    responsive(config.width, '--app-shell-aside-width', baseStyles, minMediaStyles, theme)
+    responsive(config.width, '--app-shell-aside-offset', baseStyles, minMediaStyles, theme)
+
+    const bp = breakpointPx(config.breakpoint, theme)
+    const minQuery = `(min-width: ${em(bp)})`
+    const maxQuery = `(max-width: ${em(bp - 0.1)})`
+
+    if (!config.collapsed?.mobile) {
+      media(
+        maxMediaStyles,
+        maxQuery,
+        mode === 'fixed'
+          ? { '--app-shell-aside-width': '100%', '--app-shell-aside-offset': '0px' }
+          : { '--app-shell-aside-width': '0px', '--app-shell-aside-offset': '0px' },
+      )
+    }
+
+    if (mode === 'static') {
+      media(minMediaStyles, minQuery, {
+        '--app-shell-aside-position': 'sticky',
+        '--app-shell-aside-grid-row': '2',
+        '--app-shell-aside-grid-column': '3',
+        '--app-shell-main-column-end': '3',
+      })
+    }
+
+    if (config.collapsed?.desktop) {
+      media(minMediaStyles, minQuery, {
+        '--app-shell-aside-transform': 'translateX(var(--app-shell-aside-width))',
+        '--app-shell-aside-transform-rtl': 'translateX(calc(var(--app-shell-aside-width) * -1))',
+        '--app-shell-aside-scroll-locked-visibility': 'hidden',
+        ...(mode === 'fixed'
+          ? { '--app-shell-aside-offset': '0px !important' }
+          : {
+              '--app-shell-aside-width': '0px',
+              '--app-shell-aside-display': 'none',
+              '--app-shell-main-column-end': '-1',
+            }),
+      })
+    }
+
+    if (config.collapsed?.mobile) {
+      media(maxMediaStyles, maxQuery, {
+        ...(mode === 'fixed'
+          ? { '--app-shell-aside-width': '100%', '--app-shell-aside-offset': '0px' }
+          : { '--app-shell-aside-width': '0px' }),
+        '--app-shell-aside-transform': 'translateX(var(--app-shell-aside-width))',
+        '--app-shell-aside-transform-rtl': 'translateX(calc(var(--app-shell-aside-width) * -1))',
+        '--app-shell-aside-scroll-locked-visibility': 'hidden',
+      })
+    }
+  }
+
+  assignNavbarVariables(navbar)
+  assignAsideVariables(aside)
   if (mode === 'static') {
     baseStyles['--app-shell-main-grid-column'] = '1 / -1'
     baseStyles['--app-shell-main-grid-row'] = '2'

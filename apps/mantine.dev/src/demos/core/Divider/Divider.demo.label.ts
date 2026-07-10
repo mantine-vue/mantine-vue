@@ -21,7 +21,7 @@ import { PhMagnifyingGlass } from '@phosphor-icons/vue'
   </Divider>
   <Divider my="xs">
     <template #default>
-      <Anchor href="https://mantine.dev" target="_blank" inherit>Link label</Anchor>
+      <Anchor href="https://mantine-vue" target="_blank" inherit>Link label</Anchor>
     </template>
   </Divider>
 </template>
@@ -52,7 +52,7 @@ const Demo = defineComponent({
             default: () =>
               h(
                 Anchor,
-                { href: 'https://mantine.dev', target: '_blank', inherit: true },
+                { href: 'https://mantine-vue', target: '_blank', inherit: true },
                 {
                   default: () => 'Link label',
                 },

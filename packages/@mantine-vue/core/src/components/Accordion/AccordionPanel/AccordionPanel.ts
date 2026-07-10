@@ -26,7 +26,13 @@ export const AccordionPanel = withBoxProps(
           Collapse,
           {
             ...attrs,
-            ...ctx.getStyles('panel', { className: attrs.class, style: attrs.style as any, props }),
+            ...ctx.getStyles('panel', {
+              className: attrs.class,
+              style: attrs.style as any,
+              classNames: props.classNames,
+              styles: props.styles,
+              props,
+            }),
             expanded: ctx.isItemActive(value),
             transitionDuration: ctx.transitionDuration ?? 200,
             role: 'region',
@@ -41,7 +47,11 @@ export const AccordionPanel = withBoxProps(
               Box,
               {
                 component: 'div',
-                ...ctx.getStyles('content', { props }),
+                ...ctx.getStyles('content', {
+                  classNames: props.classNames,
+                  styles: props.styles,
+                  props,
+                }),
               },
               () => slots.default?.(),
             ),

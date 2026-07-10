@@ -87,6 +87,7 @@ const loaderTransition: MantineTransition = {
   in: { opacity: 1, transform: `translate(-50%, calc(-50% + ${rem(1)}))` },
   out: { opacity: 0, transform: 'translate(-50%, -200%)' },
   common: { transformOrigin: 'center' },
+  transitionProperty: 'opacity, transform',
 }
 
 const varsResolver = createVarsResolver<any>(

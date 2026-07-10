@@ -593,27 +593,26 @@ const PopoverBase = defineComponent({
     return () => [
       slots.default?.(),
       props.withOverlay &&
-        h(OptionalPortal, { withinPortal: props.withinPortal, ...props.portalProps }, () =>
-          h(
-            Transition,
-            {
-              mounted: opened.value,
-              keepMounted: props.keepMounted ?? false,
-              ...props.transitionProps,
-            },
-            {
-              default: (transitionStyle: any) =>
+        h(
+          Transition,
+          {
+            mounted: opened.value,
+            transition: 'fade',
+            duration: props.transitionProps?.duration || 250,
+            exitDuration: props.transitionProps?.exitDuration || 250,
+          },
+          {
+            default: (transitionStyle: any) =>
+              h(OptionalPortal, { withinPortal: props.withinPortal }, () =>
                 h(Overlay, {
                   ...props.overlayProps,
-                  fixed: true,
-                  zIndex: props.zIndex,
                   ...getStyles('overlay', {
                     className: props.overlayProps?.class,
                     style: [transitionStyle, props.overlayProps?.style],
                   }),
                 }),
-            },
-          ),
+              ),
+          },
         ),
     ]
   },

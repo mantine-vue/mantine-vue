@@ -33,5 +33,5 @@
     }
   },
   "include": ["packages", "scripts", "vitest.config.ts"],
-  "exclude": ["packages/**/__tests__/**"]
+  "exclude": ["packages/**/*.test.ts", "packages/**/*.test.tsx", "packages/**/__tests__/**"]
 }

@@ -1,3 +1,4 @@
+/* oxlint-disable no-console */
 import { setPackagesVersion } from './set-packages-version'
 
 const version = process.argv[2]

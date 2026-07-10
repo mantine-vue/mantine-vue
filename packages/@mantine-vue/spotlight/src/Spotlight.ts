@@ -160,12 +160,24 @@ const SpotlightBase = defineComponent({
           ...actionData,
         })
       })
+      const {
+        searchProps: _searchProps,
+        actions: _actions,
+        filter: _filter,
+        nothingFound: _nothingFound,
+        highlightQuery: _highlightQuery,
+        limit: _limit,
+        scrollAreaProps: _scrollAreaProps,
+        query: _query,
+        onQueryChange: _onQueryChange,
+        ...rootProps
+      } = props
 
       return h(
         SpotlightRoot,
         {
           ...attrs,
-          ...props,
+          ...rootProps,
           query: currentQuery.value,
           onQueryChange: setQuery,
         },

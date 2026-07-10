@@ -24,7 +24,14 @@ export const AccordionItem = withBoxProps(
           Box,
           {
             ...attrs,
-            ...ctx.getStyles('item', { className: attrs.class, style: attrs.style as any, props }),
+            ...ctx.getStyles('item', {
+              className: attrs.class,
+              style: attrs.style as any,
+              classNames: props.classNames,
+              styles: props.styles,
+              props,
+              variant: ctx.variant,
+            }),
             variant: ctx.variant,
             mod: [{ active: ctx.isItemActive(props.value) }, props.mod],
           },

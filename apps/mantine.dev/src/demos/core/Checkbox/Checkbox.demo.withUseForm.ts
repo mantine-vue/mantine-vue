@@ -1,3 +1,4 @@
+/* oxlint-disable no-console */
 import { defineComponent, h } from 'vue'
 import { Button, Checkbox } from '@mantine-vue/core'
 import { isNotEmpty, useForm } from '@mantine-vue/form'

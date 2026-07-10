@@ -9,7 +9,7 @@ import { Card, Image, Text, Badge, Button, Group } from '@mantine-vue/core'
 
 <template>
   <Card shadow="sm" padding="lg" withBorder>
-    <Card.Section component="a" href="https://mantine.dev/">
+    <Card.Section component="a" href="https://mantine-vue/">
       <Image
         src="https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-8.png"
         :height="160"
@@ -45,7 +45,7 @@ const Demo = defineComponent({
           default: () => [
             h(
               Card.Section,
-              { component: 'a', href: 'https://mantine.dev/' },
+              { component: 'a', href: 'https://mantine-vue/' },
               {
                 default: () =>
                   h(Image, {

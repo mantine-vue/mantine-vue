@@ -1,3 +1,4 @@
+/* oxlint-disable no-console */
 import { bundlePackage } from './bundle-package'
 import { getPackageBuildOrder, readPackages } from './read-packages'
 import { generateDeclarations } from './types'

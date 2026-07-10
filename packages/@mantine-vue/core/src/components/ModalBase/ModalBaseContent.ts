@@ -15,6 +15,7 @@ export const ModalBaseContent = withBoxProps(
     },
     setup(props, { attrs, slots }) {
       const ctx = useModalBaseContext()
+
       return () =>
         h(
           Transition,
