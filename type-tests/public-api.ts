@@ -1,4 +1,5 @@
 import { Autocomplete, Badge, Box, Button, PinInput, ThemeIcon } from '@mantine-vue/core'
+import type { BadgeVariant, ButtonVariant, ThemeIconVariant } from '@mantine-vue/core'
 
 type ButtonProps = InstanceType<typeof Button>['$props']
 type AutocompleteProps = InstanceType<typeof Autocomplete>['$props']
@@ -12,6 +13,9 @@ type _BoxMyIsNotAny = ExpectFalse<IsAny<BoxPublicProps['my']>>
 type _BoxBgIsNotAny = ExpectFalse<IsAny<BoxPublicProps['bg']>>
 
 const buttonProps: ButtonProps = { variant: 'filled', size: 'sm', fullWidth: true }
+const customButtonProps: ButtonProps = { variant: 'danger' }
+const customBadgeProps: BadgeProps = { variant: 'danger' }
+const customThemeIconProps: ThemeIconProps = { variant: 'danger' }
 const autocompleteProps: AutocompleteProps = {
   modelValue: 'Vue',
   'onUpdate:modelValue': (value: string) => value.toUpperCase(),
@@ -24,6 +28,9 @@ const boxProps: BoxPublicProps = {
 }
 
 void buttonProps
+void customButtonProps
+void customBadgeProps
+void customThemeIconProps
 void autocompleteProps
 void boxProps
 
@@ -31,17 +38,16 @@ void boxProps
 const invalidBoxProps: BoxPublicProps = { my: true }
 void invalidBoxProps
 
-// @ts-expect-error Button variants are a closed public union.
-const invalidButtonProps: ButtonProps = { variant: 'not-a-variant' }
-void invalidButtonProps
-
-// @ts-expect-error Badge variants are a closed public union.
-const invalidBadgeProps: BadgeProps = { variant: 'not-a-variant' }
-void invalidBadgeProps
-
-// @ts-expect-error ThemeIcon variants are a closed public union.
-const invalidThemeIconProps: ThemeIconProps = { variant: 'not-a-variant' }
-void invalidThemeIconProps
+// Exported named variant types remain closed unions for editor autocomplete.
+// @ts-expect-error Custom variants are accepted by component props, not built-in variant aliases.
+const invalidButtonVariant: ButtonVariant = 'danger'
+// @ts-expect-error Custom variants are accepted by component props, not built-in variant aliases.
+const invalidBadgeVariant: BadgeVariant = 'danger'
+// @ts-expect-error Custom variants are accepted by component props, not built-in variant aliases.
+const invalidThemeIconVariant: ThemeIconVariant = 'danger'
+void invalidButtonVariant
+void invalidBadgeVariant
+void invalidThemeIconVariant
 
 // @ts-expect-error PinInput inputMode matches the HTML inputmode attribute.
 const invalidPinInputProps: PinInputProps = { inputMode: 'not-an-input-mode' }

@@ -5,6 +5,7 @@ export type MantineStyle = CSSProperties
 export type MantineClassNames = Record<string, string>
 export type MantineStyles = Record<string, MantineStyle>
 export type MantineVars = Record<string, Record<string, string | undefined>>
+export type MantineVariant<T extends string> = T | (string & {})
 
 export interface MantineComponentTheme {
   classNames?: MantineClassNames | ((theme: MantineTheme, props: any) => MantineClassNames)

@@ -21,6 +21,7 @@ import {
   useProps,
   useStyles,
   MantineRadius,
+  type MantineVariant,
 } from '../../core'
 import { Loader } from '../Loader'
 import { Transition, type MantineTransition } from '../Transition'
@@ -74,7 +75,7 @@ export interface ButtonProps extends BoxProps {
   /** Component or element used as the root */
   component?: string
   /** Visual variant */
-  variant?: ButtonVariant
+  variant?: MantineVariant<ButtonVariant>
   'data-disabled'?: boolean
   classNames?: Record<string, string> | ((...args: any[]) => Record<string, string>)
   styles?: Record<string, any> | ((...args: any[]) => Record<string, any>)
@@ -144,7 +145,7 @@ const ButtonBase = defineComponent({
     loading: { type: Boolean, default: false },
     loaderProps: { type: Object as PropType<Record<string, any>>, default: undefined },
     autoContrast: { type: Boolean, default: undefined },
-    variant: { type: String as PropType<ButtonVariant>, default: undefined },
+    variant: { type: String as PropType<MantineVariant<ButtonVariant>>, default: undefined },
     mod: { type: [Object, Array] as PropType<any>, default: undefined },
     'data-disabled': { type: Boolean, default: false },
     dataDisabled: { type: Boolean, default: false },

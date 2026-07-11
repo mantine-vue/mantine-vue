@@ -14,23 +14,6 @@ const sourceLink = computed(() =>
     <div class="header">
       <h1 class="title">{{ meta.title }}</h1>
       <p v-if="meta.description" class="description">{{ meta.description }}</p>
-      <div class="links" v-if="false">
-        <a v-if="meta.package" class="badge">{{ meta.package }}</a>
-        <RouterLink v-if="meta.polymorphic" to="/core/button" class="link">
-          Polymorphic component
-        </RouterLink>
-        <a v-if="sourceLink" :href="sourceLink" target="_blank" rel="noreferrer" class="link">
-          Source
-        </a>
-        <a
-          v-if="meta.docs"
-          class="link"
-          :href="`https://github.com/mantinedev/mantine-vue/blob/master/apps/mantine.dev/src/pages/${meta.docs}`"
-          target="_blank"
-          rel="noreferrer"
-          >Docs</a
-        >
-      </div>
     </div>
   </div>
 </template>
