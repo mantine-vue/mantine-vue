@@ -14,8 +14,8 @@ Mantine Vue uses a monorepo architecture, allowing you to install only the featu
 
 | Package                       | Description                                               | Documentation                                                |
 | :---------------------------- | :-------------------------------------------------------- | :----------------------------------------------------------- |
-| `@mantine-vue/core`           | Core library featuring 100+ essential UI components       | [View Docs](https://mantine-vue.dev/core/package/)           |
-| `@mantine-vue/hooks`          | Collection of 80+ composables for state and UI management | [View Docs](https://mantine-vue.dev/hooks/package/)          |
+| `@mantine-vue/core`           | Core library featuring 100+ essential UI components       | [View Docs](https://mantine-vue.dev/core/button/)            |
+| `@mantine-vue/hooks`          | Collection of 80+ composables for state and UI management | [View Docs](https://mantine-vue.dev/hooks/use-click-outside) |
 | `@mantine-vue/form`           | Powerful form management and validation library           | [View Docs](https://mantine-vue.dev/form/use-form)           |
 | `@mantine-vue/charts`         | Recharts-based charting and data visualization library    | [View Docs](https://mantine-vue.dev/charts/getting-started/) |
 | `@mantine-vue/notifications`  | Fully featured, customizable notifications system         | [View Docs](https://mantine-vue.dev/x/notifications)         |

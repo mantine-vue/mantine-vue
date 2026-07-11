@@ -32,34 +32,44 @@ import {
 } from 'echarts/components'
 import { CanvasRenderer, SVGRenderer } from 'echarts/renderers'
 
-use([
-  EBarChart,
-  EffectScatterChart,
-  EFunnelChart,
-  GaugeChart,
-  GraphChart,
-  EHeatmapChart,
-  ELineChart,
-  EPieChart,
-  ERadarChart,
-  ESankeyChart,
-  EScatterChart,
-  ETreemapChart,
-  AriaComponent,
-  CalendarComponent,
-  DatasetComponent,
-  DataZoomComponent,
-  GraphicComponent,
-  GridComponent,
-  LegendComponent,
-  MarkLineComponent,
-  PolarComponent,
-  RadarComponent,
-  TitleComponent,
-  ToolboxComponent,
-  TooltipComponent,
-  TransformComponent,
-  VisualMapComponent,
-  CanvasRenderer,
-  SVGRenderer,
-])
+let registered = false
+
+export function registerECharts(): void {
+  if (registered) {
+    return
+  }
+
+  use([
+    EBarChart,
+    EffectScatterChart,
+    EFunnelChart,
+    GaugeChart,
+    GraphChart,
+    EHeatmapChart,
+    ELineChart,
+    EPieChart,
+    ERadarChart,
+    ESankeyChart,
+    EScatterChart,
+    ETreemapChart,
+    AriaComponent,
+    CalendarComponent,
+    DatasetComponent,
+    DataZoomComponent,
+    GraphicComponent,
+    GridComponent,
+    LegendComponent,
+    MarkLineComponent,
+    PolarComponent,
+    RadarComponent,
+    TitleComponent,
+    ToolboxComponent,
+    TooltipComponent,
+    TransformComponent,
+    VisualMapComponent,
+    CanvasRenderer,
+    SVGRenderer,
+  ])
+
+  registered = true
+}
