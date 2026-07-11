@@ -694,6 +694,7 @@ __metadata:
     "@vitejs/plugin-vue": "npm:^6.0.0"
     chroma-js: "npm:^3.2.0"
     dayjs: "npm:^1.11.21"
+    echarts: "npm:^6.0.0"
     embla-carousel: "npm:^8.6.0"
     embla-carousel-autoplay: "npm:^8.6.0"
     embla-carousel-vue: "npm:^8.6.0"
@@ -708,6 +709,7 @@ __metadata:
     typescript: "npm:^6.0.3"
     vite: "npm:^8.0.0"
     vue: "npm:^3.5.0"
+    vue-echarts: "npm:^8.0.1"
     vue-router: "npm:^4.4.0"
     vue-tsc: "npm:^3.1.0"
   languageName: unknown
