@@ -562,8 +562,8 @@ __metadata:
     embla-carousel-vue: "npm:^8.6.0"
     vue: "npm:^3.5.0"
   peerDependencies:
-    "@mantine-vue/core": 1.0.0
-    "@mantine-vue/hooks": 1.0.0
+    "@mantine-vue/core": 1.1.3
+    "@mantine-vue/hooks": 1.1.3
     embla-carousel: ">=8.0.0"
     embla-carousel-vue: ">=8.0.0"
     vue: ^3.5.0
@@ -579,7 +579,7 @@ __metadata:
     vue: "npm:^3.5.0"
     vue-echarts: "npm:^8.0.1"
   peerDependencies:
-    "@mantine-vue/core": 1.0.0
+    "@mantine-vue/core": 1.1.3
     echarts: ">=6.0.0"
     vue: ^3.5.0
     vue-echarts: ">=8.0.0"
@@ -596,8 +596,8 @@ __metadata:
     "@vue/test-utils": "npm:^2.4.6"
     vue: "npm:^3.5.0"
   peerDependencies:
-    "@mantine-vue/core": 1.0.0
-    "@mantine-vue/hooks": 1.0.0
+    "@mantine-vue/core": 1.1.3
+    "@mantine-vue/hooks": 1.1.3
     vue: ^3.5.0
   languageName: unknown
   linkType: soft
@@ -625,8 +625,8 @@ __metadata:
     "@vue/test-utils": "npm:^2.4.6"
     vue: "npm:^3.5.0"
   peerDependencies:
-    "@mantine-vue/hooks": 1.0.0
-    "@mantine-vue/utils": 1.0.0
+    "@mantine-vue/hooks": 1.1.3
+    "@mantine-vue/utils": 1.1.3
     vue: ^3.5.0
   languageName: unknown
   linkType: soft
@@ -642,8 +642,8 @@ __metadata:
     dayjs: "npm:^1.11.21"
     vue: "npm:^3.5.0"
   peerDependencies:
-    "@mantine-vue/core": 1.0.0
-    "@mantine-vue/hooks": 1.0.0
+    "@mantine-vue/core": 1.1.3
+    "@mantine-vue/hooks": 1.1.3
     dayjs: ">=1.0.0"
     vue: ^3.5.0
   languageName: unknown
@@ -725,8 +725,8 @@ __metadata:
     "@vue/test-utils": "npm:^2.4.6"
     vue: "npm:^3.5.0"
   peerDependencies:
-    "@mantine-vue/core": 1.0.0
-    "@mantine-vue/hooks": 1.0.0
+    "@mantine-vue/core": 1.1.3
+    "@mantine-vue/hooks": 1.1.3
     vue: ^3.5.0
   languageName: unknown
   linkType: soft
@@ -761,7 +761,7 @@ __metadata:
     "@phosphor-icons/vue": "npm:^2.2"
     vue: "npm:^3.5.0"
   peerDependencies:
-    "@mantine-vue/core": 1.0.0
+    "@mantine-vue/core": 1.1.3
     "@phosphor-icons/vue": ^2.2
     vue: ^3.5.0
   languageName: unknown
@@ -777,8 +777,8 @@ __metadata:
     "@vue/test-utils": "npm:^2.4.6"
     vue: "npm:^3.5.0"
   peerDependencies:
-    "@mantine-vue/core": 1.0.0
-    "@mantine-vue/store": 1.0.0
+    "@mantine-vue/core": 1.1.3
+    "@mantine-vue/store": 1.1.3
     vue: ^3.5.0
   languageName: unknown
   linkType: soft
@@ -794,9 +794,9 @@ __metadata:
     "@vue/test-utils": "npm:^2.4.6"
     vue: "npm:^3.5.0"
   peerDependencies:
-    "@mantine-vue/core": 1.0.0
-    "@mantine-vue/hooks": 1.0.0
-    "@mantine-vue/store": 1.0.0
+    "@mantine-vue/core": 1.1.3
+    "@mantine-vue/hooks": 1.1.3
+    "@mantine-vue/store": 1.1.3
     vue: ^3.5.0
   languageName: unknown
   linkType: soft
@@ -811,8 +811,8 @@ __metadata:
     "@vue/test-utils": "npm:^2.4.6"
     vue: "npm:^3.5.0"
   peerDependencies:
-    "@mantine-vue/core": 1.0.0
-    "@mantine-vue/store": 1.0.0
+    "@mantine-vue/core": 1.1.3
+    "@mantine-vue/store": 1.1.3
     vue: ^3.5.0
   languageName: unknown
   linkType: soft
@@ -828,9 +828,9 @@ __metadata:
     "@vue/test-utils": "npm:^2.4.6"
     vue: "npm:^3.5.0"
   peerDependencies:
-    "@mantine-vue/core": 1.0.0
-    "@mantine-vue/hooks": 1.0.0
-    "@mantine-vue/store": 1.0.0
+    "@mantine-vue/core": 1.1.3
+    "@mantine-vue/hooks": 1.1.3
+    "@mantine-vue/store": 1.1.3
     vue: ^3.5.0
   languageName: unknown
   linkType: soft
@@ -861,8 +861,8 @@ __metadata:
     vue: "npm:^3.5.0"
   peerDependencies:
     "@floating-ui/dom": ^1.0.0
-    "@mantine-vue/core": 1.0.0
-    "@mantine-vue/hooks": 1.0.0
+    "@mantine-vue/core": 1.1.3
+    "@mantine-vue/hooks": 1.1.3
     "@tiptap/core": ">=3.3.0"
     "@tiptap/extension-link": ">=3.3.0"
     "@tiptap/pm": ">=3.3.0"
