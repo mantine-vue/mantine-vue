@@ -4,6 +4,8 @@ import { UnstyledButton } from '../UnstyledButton'
 import { CloseIcon } from './CloseIcon'
 import classes from './CloseButton.module.css'
 
+export type CloseButtonVariant = 'subtle' | 'transparent'
+
 const defaultProps = {
   variant: 'subtle',
 } as const
@@ -26,7 +28,7 @@ export const CloseButton = defineComponent({
     disabled: { type: Boolean, default: false },
     iconSize: [String, Number] as PropType<string | number>,
     icon: { type: [String, Object, Function], default: undefined },
-    variant: { type: String as PropType<'subtle' | 'transparent'>, default: undefined },
+    variant: { type: String as PropType<CloseButtonVariant>, default: undefined },
     __staticSelector: { type: String, default: undefined },
     classNames: { type: [Object, Function], default: undefined },
     styles: { type: [Object, Function], default: undefined },

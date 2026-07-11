@@ -1,4 +1,4 @@
-import { defineComponent, h, type PropType } from 'vue'
+import { defineComponent, h, type CSSProperties, type PropType } from 'vue'
 import {
   withBoxProps,
   Box,
@@ -84,7 +84,7 @@ const TableBase = defineComponent({
   name: 'Table',
   inheritAttrs: false,
   props: {
-    layout: { type: String as PropType<string>, default: undefined },
+    layout: { type: String as PropType<CSSProperties['tableLayout']>, default: undefined },
     captionSide: { type: String as PropType<'top' | 'bottom'>, default: undefined },
     borderColor: { type: String, default: undefined },
     withTableBorder: { type: Boolean, default: false },

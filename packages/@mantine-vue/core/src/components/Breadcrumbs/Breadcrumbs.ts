@@ -1,4 +1,13 @@
-import { cloneVNode, defineComponent, h, Text, type PropType, type VNode } from 'vue'
+import {
+  cloneVNode,
+  Comment,
+  defineComponent,
+  Fragment,
+  h,
+  Text,
+  type PropType,
+  type VNode,
+} from 'vue'
 import { withBoxProps, Box, createVarsResolver, getSpacing, useProps, useStyles } from '../../core'
 import classes from './Breadcrumbs.module.css'
 
@@ -14,6 +23,16 @@ const varsResolver = createVarsResolver<any>((_, { separatorMargin }) => ({
 
 function renderContent(content: any) {
   return typeof content === 'function' ? content() : content
+}
+
+function flattenChildren(children: VNode[]): VNode[] {
+  return children.flatMap((child) =>
+    child.type === Fragment && Array.isArray(child.children)
+      ? flattenChildren(child.children as VNode[])
+      : child.type === Comment
+        ? []
+        : [child],
+  )
 }
 
 export const Breadcrumbs = withBoxProps(
@@ -44,7 +63,7 @@ export const Breadcrumbs = withBoxProps(
       })
 
       return () => {
-        const children = slots.default?.() ?? []
+        const children = flattenChildren(slots.default?.() ?? [])
         const items = children.reduce<VNode[]>((acc, child, index) => {
           const item =
             child.type === Text

@@ -1,11 +1,14 @@
 import { defineComponent, h, type PropType } from 'vue'
 import { useProps } from '../../core'
 import { Text } from '../Text'
+import type { TextVariant } from '../Text/Text'
 import classes from './Anchor.module.css'
 
 const defaultProps = {
   underline: 'hover',
 } as const
+
+export type AnchorVariant = TextVariant
 
 export const Anchor = defineComponent({
   name: 'Anchor',
@@ -17,7 +20,7 @@ export const Anchor = defineComponent({
       default: undefined,
     },
     unstyled: { type: Boolean, default: false },
-    variant: { type: String as PropType<'text' | 'gradient'>, default: undefined },
+    variant: { type: String as PropType<AnchorVariant>, default: undefined },
     classNames: { type: [Object, Function], default: undefined },
     styles: { type: [Object, Function], default: undefined },
     vars: { type: [Object, Function], default: undefined },
