@@ -1,6 +1,6 @@
 {
   "name": "@mantine-vue/colors-generator",
-  "version": "1.0.0",
+  "version": "1.1.3",
   "description": "A library to generate 10 shades of color based on provided color value",
   "license": "MIT",
   "files": [

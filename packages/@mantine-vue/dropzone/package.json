@@ -1,6 +1,6 @@
 {
   "name": "@mantine-vue/dropzone",
-  "version": "1.0.0",
+  "version": "1.1.3",
   "description": "Vue file drag & drop zone component equivalent to @mantine/dropzone",
   "license": "MIT",
   "files": [
@@ -37,8 +37,8 @@
     "vue": "^3.5.0"
   },
   "peerDependencies": {
-    "@mantine-vue/core": "1.0.0",
-    "@mantine-vue/hooks": "1.0.0",
+    "@mantine-vue/core": "1.1.3",
+    "@mantine-vue/hooks": "1.1.3",
     "vue": "^3.5.0"
   }
 }

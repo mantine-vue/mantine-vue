@@ -26,11 +26,34 @@ function parseArgs(argv: string[]) {
   return { type, stage, tag, dryRun }
 }
 
+// On Windows, spawnSync's `shell` option runs the command through cmd.exe by
+// joining `[command, ...args]` with plain spaces - it does NOT quote each arg the
+// way the non-shell path (CreateProcess with an argv array) does. Any arg that
+// itself contains spaces (e.g. a commit message like "[release] Version: 1.1.3")
+// gets re-split by cmd.exe into several separate arguments. That's what turned
+// `git commit -m "[release] Version: 1.1.3"` into `git commit -m [release]
+// Version: 1.1.3`, which git parsed as `-m [release]` plus two stray pathspecs
+// ("Version:" and "1.1.3"), producing "pathspec 'Version:' did not match any
+// file(s)". Quoting each arg ourselves before handing it to the shell keeps it
+// intact regardless of platform.
+function quoteForWindowsShell(arg: string) {
+  if (arg === '') {
+    return '""'
+  }
+  if (!/[\s"^&|<>()%!]/.test(arg)) {
+    return arg
+  }
+  return `"${arg.replace(/"/g, '\\"')}"`
+}
+
 function run(command: string, args: string[]) {
-  const result = spawnSync(command, args, {
+  const useShell = process.platform === 'win32'
+  const preparedArgs = useShell ? args.map(quoteForWindowsShell) : args
+
+  const result = spawnSync(command, preparedArgs, {
     cwd: root,
     stdio: 'inherit',
-    shell: process.platform === 'win32',
+    shell: useShell,
   })
 
   if (result.status !== 0) {

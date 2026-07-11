@@ -101,7 +101,11 @@ export default defineConfig({
       fileName: () => ${JSON.stringify(fileName)},
     },
     rollupOptions: {
-      external: (id) => !id.startsWith('.') && !isAbsolute(id),
+      external: (id) =>
+        id !== '@mantine-vue/utils' &&
+        !id.startsWith('@mantine-vue/utils/') &&
+        !id.startsWith('.') &&
+        !isAbsolute(id),
       output: {
         preserveModules: false,
       },
