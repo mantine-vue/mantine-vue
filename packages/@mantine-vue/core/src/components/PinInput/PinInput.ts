@@ -16,6 +16,39 @@ export type PinInputStylesNames = 'root' | 'pinInput' | 'input'
 export type PinInputCssVariables = {
   root: '--pin-input-size'
 }
+export type PinInputTypeAttribute =
+  | 'button'
+  | 'checkbox'
+  | 'color'
+  | 'date'
+  | 'datetime-local'
+  | 'email'
+  | 'file'
+  | 'hidden'
+  | 'image'
+  | 'month'
+  | 'number'
+  | 'password'
+  | 'radio'
+  | 'range'
+  | 'reset'
+  | 'search'
+  | 'submit'
+  | 'tel'
+  | 'text'
+  | 'time'
+  | 'url'
+  | 'week'
+  | (string & {})
+export type PinInputMode =
+  | 'none'
+  | 'text'
+  | 'tel'
+  | 'url'
+  | 'email'
+  | 'numeric'
+  | 'decimal'
+  | 'search'
 
 export interface PinInputProps {
   name?: string
@@ -38,8 +71,8 @@ export interface PinInputProps {
   mask?: boolean
   length?: number
   readOnly?: boolean
-  inputType?: string
-  inputMode?: string
+  inputType?: PinInputTypeAttribute
+  inputMode?: PinInputMode
   ariaLabel?: string
   hiddenInputProps?: Record<string, any>
   rootRef?: VueRefTarget<HTMLDivElement>
@@ -113,8 +146,11 @@ export const PinInput = withBoxProps(
       mask: { type: Boolean, default: false },
       length: { type: Number, default: undefined },
       readOnly: { type: Boolean, default: false },
-      inputType: { type: String, default: undefined },
-      inputMode: { type: String, default: undefined },
+      inputType: { type: String as PropType<PinInputTypeAttribute>, default: undefined },
+      inputMode: {
+        type: String as PropType<PinInputMode>,
+        default: undefined,
+      },
       ariaLabel: { type: String, default: undefined },
       hiddenInputProps: { type: Object as PropType<Record<string, any>>, default: undefined },
       rootRef: {

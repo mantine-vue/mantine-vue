@@ -39,7 +39,6 @@ export type ButtonVariant =
   | 'subtle'
   | 'default'
   | 'gradient'
-  | (string & {})
 
 export interface ButtonSlots {
   default?: () => VNodeChild

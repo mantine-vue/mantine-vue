@@ -12,7 +12,8 @@ import {
 } from '../../core'
 import classes from './Text.module.css'
 
-type TextTruncate = 'end' | 'start' | boolean
+export type TextTruncate = 'end' | 'start' | boolean
+export type TextVariant = 'text' | 'gradient'
 
 function getTextTruncate(truncate: TextTruncate | undefined) {
   if (truncate === 'start') {
@@ -63,7 +64,7 @@ export const Text = withBoxProps(
         type: String as PropType<'wrap' | 'nowrap' | 'balance' | 'pretty' | 'stable'>,
         default: undefined,
       },
-      variant: { type: String as PropType<'text' | 'gradient'>, default: undefined },
+      variant: { type: String as PropType<TextVariant>, default: undefined },
       mod: { type: [Object, Array] as PropType<any>, default: undefined },
       classNames: { type: [Object, Function], default: undefined },
       styles: { type: [Object, Function], default: undefined },
