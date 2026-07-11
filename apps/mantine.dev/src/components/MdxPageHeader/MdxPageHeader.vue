@@ -4,9 +4,6 @@ import type { Frontmatter } from '@/types'
 import { SOURCE_BASE } from '@/links'
 
 const props = defineProps<{ meta: Frontmatter }>()
-const sourceLink = computed(() =>
-  props.meta.source ? `${SOURCE_BASE}/${props.meta.source}` : null,
-)
 </script>
 
 <template>
