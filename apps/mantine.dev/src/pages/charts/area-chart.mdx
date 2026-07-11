@@ -1,0 +1,14 @@
+import { ChartsDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+export default Layout(MDX_DATA.AreaChart)
+
+## Usage
+
+`AreaChart` displays one or more numeric series with an optional area fill. Use `type="stacked"`, `type="percent"`, or `type="split"` to change how areas relate to each other.
+
+<Demo data={ChartsDemos.areaChart} />
+
+## Gradient and points
+
+Use `withGradient`, `fillOpacity`, `withDots`, `strokeWidth`, and `curveType` to control the presentation. Set `withPointLabels` to display values next to points.

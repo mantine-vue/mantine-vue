@@ -1,0 +1,14 @@
+import { ChartsDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+export default Layout(MDX_DATA.RadialBarChart)
+
+## Usage
+
+`RadialBarChart` displays values as bars around a polar coordinate system.
+
+<Demo data={ChartsDemos.radialBarChart} />
+
+## Scale
+
+Set `maxValue` to control the angle scale and use `startAngle` and `endAngle` to render a full or partial circle.

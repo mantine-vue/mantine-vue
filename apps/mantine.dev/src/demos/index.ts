@@ -119,6 +119,7 @@ export { DropzoneDemos } from './x/Dropzone'
 export { CarouselDemos } from './x/Carousel'
 export { TipTapDemos } from './x/TipTap'
 export { CodeHighlightDemos } from './x/CodeHighlight'
+export { ChartsDemos } from './charts'
 
 export * as DatesProviderDemos from './dates/DatesProvider'
 export * as CalendarDemos from './dates/Calendar'

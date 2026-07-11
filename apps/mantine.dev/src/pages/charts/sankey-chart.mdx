@@ -1,0 +1,14 @@
+import { ChartsDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+export default Layout(MDX_DATA.SankeyChart)
+
+## Usage
+
+`SankeyChart` displays weighted flow between nodes. Links reference node names or indexes through `source` and `target`.
+
+<Demo data={ChartsDemos.sankeyChart} />
+
+## Data structure
+
+Pass `nodes` and `links`. Every link requires `source`, `target`, and numeric `value`; nodes require unique names.

@@ -1,0 +1,14 @@
+import { ChartsDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+export default Layout(MDX_DATA.LineChart)
+
+## Usage
+
+`LineChart` visualizes trends across categories and supports multiple series, legends, reference lines, dual Y axes, point labels, and value formatting.
+
+<Demo data={ChartsDemos.lineChart} />
+
+## Curve type
+
+Use `curveType` to select linear, natural, monotone, bump, or step interpolation. Null values are connected by default; set `:connectNulls="false"` to preserve gaps.

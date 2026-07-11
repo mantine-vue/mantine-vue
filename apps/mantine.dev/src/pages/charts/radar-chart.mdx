@@ -1,0 +1,14 @@
+import { ChartsDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+export default Layout(MDX_DATA.RadarChart)
+
+## Usage
+
+`RadarChart` compares multiple measures around a radial axis.
+
+<Demo data={ChartsDemos.radarChart} />
+
+## Grid shape
+
+Set `shape="circle"` for a circular grid or keep the polygon default. Use `maxValue` to provide a shared fixed scale.

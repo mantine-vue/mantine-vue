@@ -42,6 +42,10 @@ export interface ChartRootProps {
   option?: EChartsOption
   loading?: boolean
   autoresize?: boolean
+  /** ECharts renderer used to draw the chart. @default 'canvas' */
+  renderer?: 'canvas' | 'svg'
+  /** Additional options passed to `echarts.init`. */
+  initOptions?: Record<string, unknown>
 }
 
 export interface GridChartBaseProps extends ChartRootProps {

@@ -1,0 +1,14 @@
+import { ChartsDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+export default Layout(MDX_DATA.DonutChart)
+
+## Usage
+
+`DonutChart` shares the PieChart data API and adds a configurable inner radius and center label.
+
+<Demo data={ChartsDemos.donutChart} />
+
+## Center label
+
+Set `chartLabel`, `chartLabelColor`, and `chartLabelFontSize` to display a summary inside the donut.

@@ -12,6 +12,7 @@
   "dependencies": {
     "@floating-ui/dom": "^1.0.0",
     "@mantine-vue/carousel": "workspace:*",
+    "@mantine-vue/charts": "workspace:*",
     "@mantine-vue/code-highlight": "workspace:*",
     "@mantine-vue/colors-generator": "workspace:*",
     "@mantine-vue/core": "workspace:*",

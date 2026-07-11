@@ -1,0 +1,14 @@
+import { ChartsDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+export default Layout(MDX_DATA.ScatterChart)
+
+## Usage
+
+`ScatterChart` plots the relationship between two numeric values. Set `xAxisKey` and `yAxisKey` to select fields from the data.
+
+<Demo data={ChartsDemos.scatterChart} />
+
+## Multiple series
+
+Provide multiple series with distinct names and colors to compare groups. Axis, tooltip, legend, grid, and value-formatting props match cartesian charts.

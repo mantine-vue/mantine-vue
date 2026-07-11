@@ -1,0 +1,14 @@
+import { ChartsDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+export default Layout(MDX_DATA.BarChart)
+
+## Usage
+
+`BarChart` supports grouped, stacked, percent, and waterfall datasets and both horizontal and vertical orientations.
+
+<Demo data={ChartsDemos.barChart} />
+
+## Value labels
+
+Set `withBarValueLabel` to display values and use `maxBarWidth`, `minBarSize`, and `fillOpacity` to tune bar geometry.
