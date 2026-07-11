@@ -1,0 +1,46 @@
+{
+  "name": "@mantine-vue/charts",
+  "version": "1.0.0",
+  "description": "Charts components built with Apache ECharts and Mantine Vue",
+  "license": "MIT",
+  "files": [
+    "cjs",
+    "esm",
+    "lib",
+    "styles.css",
+    "styles.layer.css",
+    "styles"
+  ],
+  "sideEffects": [
+    "*.css"
+  ],
+  "main": "./cjs/index.cjs",
+  "module": "./esm/index.mjs",
+  "types": "./lib/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./lib/index.d.mts",
+        "default": "./esm/index.mjs"
+      },
+      "require": {
+        "types": "./lib/index.d.ts",
+        "default": "./cjs/index.cjs"
+      }
+    },
+    "./styles.css": "./styles.css",
+    "./styles.layer.css": "./styles.layer.css"
+  },
+  "devDependencies": {
+    "@mantine-vue/core": "workspace:*",
+    "echarts": "^6.0.0",
+    "vue": "^3.5.0",
+    "vue-echarts": "^8.0.1"
+  },
+  "peerDependencies": {
+    "@mantine-vue/core": "1.0.0",
+    "echarts": ">=6.0.0",
+    "vue": "^3.5.0",
+    "vue-echarts": ">=8.0.0"
+  }
+}

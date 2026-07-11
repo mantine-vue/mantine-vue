@@ -570,6 +570,22 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@mantine-vue/charts@workspace:packages/@mantine-vue/charts":
+  version: 0.0.0-use.local
+  resolution: "@mantine-vue/charts@workspace:packages/@mantine-vue/charts"
+  dependencies:
+    "@mantine-vue/core": "workspace:*"
+    echarts: "npm:^6.0.0"
+    vue: "npm:^3.5.0"
+    vue-echarts: "npm:^8.0.1"
+  peerDependencies:
+    "@mantine-vue/core": 1.0.0
+    echarts: ">=6.0.0"
+    vue: ^3.5.0
+    vue-echarts: ">=8.0.0"
+  languageName: unknown
+  linkType: soft
+
 "@mantine-vue/code-highlight@workspace:*, @mantine-vue/code-highlight@workspace:packages/@mantine-vue/code-highlight":
   version: 0.0.0-use.local
   resolution: "@mantine-vue/code-highlight@workspace:packages/@mantine-vue/code-highlight"
@@ -2863,6 +2879,16 @@ __metadata:
   version: 0.2.0
   resolution: "eastasianwidth@npm:0.2.0"
   checksum: 10c0/26f364ebcdb6395f95124fda411f63137a4bfb5d3a06453f7f23dfe52502905bd84e0488172e0f9ec295fdc45f05c23d5d91baf16bd26f0fe9acd777a188dc39
+  languageName: node
+  linkType: hard
+
+"echarts@npm:^6.0.0":
+  version: 6.1.0
+  resolution: "echarts@npm:6.1.0"
+  dependencies:
+    tslib: "npm:2.3.0"
+    zrender: "npm:6.1.0"
+  checksum: 10c0/a0911a9d75969ff946d0bce998e95e1924cdec7f5ca6be13ded376e2a47067c70b264ee8d04ba84345aa7895363e202f54c87d2bae114859bd154d565babc09c
   languageName: node
   linkType: hard
 
@@ -6109,6 +6135,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"tslib@npm:2.3.0":
+  version: 2.3.0
+  resolution: "tslib@npm:2.3.0"
+  checksum: 10c0/a845aed84e7e7dbb4c774582da60d7030ea39d67307250442d35c4c5dd77e4b44007098c37dd079e100029c76055f2a362734b8442ba828f8cc934f15ed9be61
+  languageName: node
+  linkType: hard
+
 "tslib@npm:^2.4.0":
   version: 2.8.1
   resolution: "tslib@npm:2.8.1"
@@ -6482,6 +6515,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"vue-echarts@npm:^8.0.1":
+  version: 8.0.1
+  resolution: "vue-echarts@npm:8.0.1"
+  peerDependencies:
+    echarts: ^6.0.0
+    vue: ^3.3.0
+  checksum: 10c0/75d9215fce78e692a93b12df5e5a901ce01e106f732d1d1ec2143d20e37d0021f9adf313d53e07840048bdf2062632bf6e4d2d77f8c7552239880267c54020fd
+  languageName: node
+  linkType: hard
+
 "vue-eslint-parser@npm:^10.4.0, vue-eslint-parser@npm:^10.4.1":
   version: 10.4.1
   resolution: "vue-eslint-parser@npm:10.4.1"
@@ -6677,6 +6720,15 @@ __metadata:
   version: 0.1.0
   resolution: "yocto-queue@npm:0.1.0"
   checksum: 10c0/dceb44c28578b31641e13695d200d34ec4ab3966a5729814d5445b194933c096b7ced71494ce53a0e8820685d1d010df8b2422e5bf2cdea7e469d97ffbea306f
+  languageName: node
+  linkType: hard
+
+"zrender@npm:6.1.0":
+  version: 6.1.0
+  resolution: "zrender@npm:6.1.0"
+  dependencies:
+    tslib: "npm:2.3.0"
+  checksum: 10c0/bfdb5e2ccd70893a9e2c7f33959749a6a1abc8912c2b1af301a05593d677a2f6f6087cdc4f0bf73883b99eea2f2d11d1922c71c3bf0bd4e9e5b362fd32129bce
   languageName: node
   linkType: hard
 
