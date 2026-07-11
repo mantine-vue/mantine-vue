@@ -41,9 +41,7 @@ export default defineConfig({
       '@mantine-vue/form': alias('../../packages/@mantine-vue/form/src/index.ts'),
       '@mantine-vue/dropzone': alias('../../packages/@mantine-vue/dropzone/src/index.ts'),
       '@mantine-vue/carousel': alias('../../packages/@mantine-vue/carousel/src/index.ts'),
-      '@mantine-vue/charts/styles.css': alias(
-        '../../packages/@mantine-vue/charts/src/styles.css',
-      ),
+      '@mantine-vue/charts/styles.css': alias('../../packages/@mantine-vue/charts/src/styles.css'),
       '@mantine-vue/charts': alias('../../packages/@mantine-vue/charts/src/index.ts'),
       '@mantine-vue/modals': alias('../../packages/@mantine-vue/modals/src/index.ts'),
       '@mantine-vue/notifications': alias('../../packages/@mantine-vue/notifications/src/index.ts'),
