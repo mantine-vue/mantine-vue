@@ -5,14 +5,14 @@ import type { BoxProps } from '../Box'
  * Mantine style props (m, mt, p, w, h, bg, c, …) and Box layout props
  * (hiddenFrom, visibleFrom, mod, …) are available for autocomplete/IntelliSense
  * and type-checking.
- *
- * Runtime is untouched: these props already pass through to the underlying Box
- * as fall-through attributes. The merge happens at the instance level
- * (`InstanceType<C> & { $props: BoxProps }`) so the component's own props,
- * slots, emits and static members (e.g. `Group`) are all preserved.
  */
+type InstanceOf<C> = C extends new (...args: any[]) => infer I ? I : object
+type OwnProps<C> = InstanceOf<C> extends { $props: infer P } ? P : object
+
 export type WithBoxProps<C> = C & {
-  new (): (C extends new (...args: any[]) => infer I ? I : object) & { $props: BoxProps }
+  new (): InstanceOf<C> & {
+    $props: OwnProps<C> & Omit<BoxProps, keyof OwnProps<C>>
+  }
 }
 
 export function withBoxProps<C>(component: C): WithBoxProps<C> {
