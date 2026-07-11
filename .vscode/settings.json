@@ -15,8 +15,7 @@
     "**/.pnp.*": true
   },
   "eslint.nodePath": ".yarn/sdks",
-  "typescript.tsdk": ".yarn/sdks/typescript/lib",
-  "typescript.enablePromptUseWorkspaceTsdk": true,
+  "js/ts.tsdk.promptToUseWorkspaceVersion": true,
   "oxc.path.oxfmt": ".yarn/sdks/oxfmt/bin/oxfmt",
   "oxc.path.oxlint": ".yarn/sdks/oxlint/bin/oxlint",
   "js/ts.tsdk.path": ".yarn/sdks/typescript/lib",
