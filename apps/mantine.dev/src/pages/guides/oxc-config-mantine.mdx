@@ -1,0 +1,61 @@
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.GuideOxcConfig)
+
+# oxc-config-mantine
+
+[oxc-config-mantine](https://www.npmjs.com/package/oxc-config-mantine) is a shared
+[Oxc](https://oxc.rs/) configuration used across Mantine templates. It provides a ready-to-use
+[oxlint](https://oxc.rs/docs/guide/usage/linter.html) and [oxfmt](https://oxc.rs/docs/guide/usage/formatter.html)
+setup so all projects share the same linting rules and formatting style.
+
+Mantine Vue templates use this package for TypeScript sources and extend it with the `vue` oxlint plugin
+so that `<script>` blocks inside `.vue` single-file components are linted too.
+
+## Installation
+
+<InstallScript packages="oxc-config-mantine oxlint oxfmt" dev />
+
+## Oxlint configuration
+
+Create an `oxlint.config.mjs` file at the root of your application:
+
+```js
+import { defineConfig } from 'oxlint'
+import { oxlint } from 'oxc-config-mantine'
+
+export default defineConfig({
+  ...oxlint,
+  // Enable the vue plugin so .vue script blocks are linted
+  plugins: [...(oxlint.plugins ?? []), 'vue'],
+  ignorePatterns: ['**/*.{mjs,cjs,js,d.ts,d.mts}', 'dist', 'storybook-static'],
+})
+```
+
+## Oxfmt configuration
+
+Create an `oxfmt.config.mjs` file at the root of your application:
+
+```js
+import { defineConfig } from 'oxfmt'
+import { oxfmt } from 'oxc-config-mantine'
+
+export default defineConfig(oxfmt)
+```
+
+## Scripts
+
+Add the following scripts to your `package.json`:
+
+```json
+{
+  "scripts": {
+    "oxlint": "oxlint -c oxlint.config.mjs .",
+    "format:test": "oxfmt -c oxfmt.config.mjs --check \"**/*.{ts,vue}\"",
+    "format:write": "oxfmt -c oxfmt.config.mjs --write \"**/*.{ts,vue}\""
+  }
+}
+```
+
+All Mantine Vue templates come with this configuration pre-installed.

@@ -14,7 +14,7 @@ const sourceLink = computed(() =>
     <div class="header">
       <h1 class="title">{{ meta.title }}</h1>
       <p v-if="meta.description" class="description">{{ meta.description }}</p>
-      <div class="links">
+      <div class="links" v-if="false">
         <a v-if="meta.package" class="badge">{{ meta.package }}</a>
         <RouterLink v-if="meta.polymorphic" to="/core/button" class="link">
           Polymorphic component

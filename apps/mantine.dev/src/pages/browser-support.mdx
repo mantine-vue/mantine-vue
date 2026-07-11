@@ -1,0 +1,51 @@
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.BrowserSupport)
+
+# Browser support
+
+Mantine Vue is tested in the following browsers before each minor and major release: Chrome, Safari,
+Firefox, Edge, Safari for iOS, Chrome for Android. Testing in other browsers is not performed.
+
+## Supported browsers
+
+All Mantine Vue components and composables were tested to work in the following browsers:
+
+- Chromium browsers 108+ – Chrome, Edge, Chrome for Android, etc.
+- Firefox 101+
+- Safari 15.4+
+- IE (any version) is not supported
+
+Browser versions that support the [:where selector](https://caniuse.com/mdn-css_selectors_where) and
+[@layer directive](https://caniuse.com/mdn-css_at-rules_layer) features that are required for Mantine
+styles (any versions below may have major issues with styles):
+
+- Chromium browsers 99+ – Chrome, Edge, Chrome for Android, etc.
+- Firefox 97+
+- Safari 15.4+
+
+## CSS features that contribute to browser support
+
+Mantine Vue components use the following CSS features:
+
+- [:where selector](https://caniuse.com/mdn-css_selectors_where) in all components
+- [@layer directive](https://caniuse.com/mdn-css_at-rules_layer) in all styles
+- [:has pseudo-class](https://caniuse.com/css-has) in several components for non-critical styles
+- [flexbox gap](https://caniuse.com/flexbox-gap) in most components
+- [dvh units](https://caniuse.com/mdn-css_types_length_viewport_percentage_units_dynamic) in several components
+- [aspect-ratio](https://caniuse.com/mdn-css_properties_aspect-ratio) CSS property is used in several components
+
+All CSS features listed above are supported in all modern browsers.
+
+If you need to support older browsers, you should:
+
+- check the component `Browser support` section before usage and decide whether this component will work for your case
+- install corresponding polyfills that are required for the composable/component to work in older browsers
+- check that the component works in those browsers on your side
+
+## Polyfills
+
+Mantine Vue does not include any polyfills by default, you should install them manually if you need to
+support older browsers. Usually, polyfills are automatically added to the project by your framework
+bundler (Vite, Nuxt, etc.) based on the browserslist configuration.

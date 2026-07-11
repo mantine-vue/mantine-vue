@@ -318,13 +318,34 @@ export const MDX_NAV_DATA: MdxNavCategory[] = [
     category: 'Getting started',
     groups: [
       {
-        title: null,
+        title: 'Overview',
         pages: [
           { label: 'Getting started', link: '/getting-started' },
-          { label: 'Usage with Vite', link: '/guides/vite' },
+          { label: 'Browser support', link: '/browser-support' },
+          { label: 'Contributing to Mantine', link: '/contribute' },
+          { label: 'About Mantine', link: '/about' },
+          { label: 'Support', link: '/support' },
+        ],
+      },
+      {
+        title: 'Framework guides',
+        pages: [
           { label: 'Usage with Nuxt', link: '/guides/nuxt' },
+          { label: 'Usage with Vite', link: '/guides/vite' },
           { label: 'Usage with Vue Router', link: '/guides/vue-router' },
           { label: 'Without framework', link: '/guides/without-framework' },
+        ],
+      },
+      {
+        title: 'Integrations',
+        pages: [
+          { label: 'Usage with Storybook', link: '/guides/storybook' },
+          { label: 'Usage with TypeScript', link: '/guides/typescript' },
+          { label: 'Usage with JavaScript', link: '/guides/javascript' },
+          { label: 'Testing with Jest', link: '/guides/jest' },
+          { label: 'Testing with Vitest', link: '/guides/vitest' },
+          { label: 'oxc-config-mantine', link: '/guides/oxc-config-mantine' },
+          { label: 'Icon libraries', link: '/guides/icons' },
         ],
       },
     ],

@@ -1,0 +1,93 @@
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.GuideTypeScript)
+
+# Usage with TypeScript
+
+All `@mantine-vue/*` packages are written in TypeScript and ship their own type definitions. This guide
+covers the types that are most useful when building a typed Mantine Vue application.
+
+## Components props types
+
+Every component exports a props type that you can import and extend. Props types follow the
+`<ComponentName>Props` naming convention:
+
+```ts
+import type { ButtonProps } from '@mantine-vue/core'
+```
+
+You can use these types to build typed wrapper components with `defineProps`:
+
+```vue
+<script setup lang="ts">
+import { Button, type ButtonProps } from '@mantine-vue/core'
+
+interface MyButtonProps extends /* @vue-ignore */ ButtonProps {
+  label: string
+}
+
+defineProps<MyButtonProps>()
+</script>
+
+<template>
+  <Button>{{ label }}</Button>
+</template>
+```
+
+## MantineThemeOverride and MantineTheme types
+
+Use `MantineThemeOverride` for the object you pass to `MantineProvider` and `MantineTheme` for the fully
+resolved theme (for example inside `useMantineTheme`):
+
+```ts
+import type { MantineThemeOverride } from '@mantine-vue/core'
+
+export const theme: MantineThemeOverride = {
+  primaryColor: 'blue',
+  defaultRadius: 'md',
+}
+```
+
+## MantineColor and other theme types
+
+The library exports helper types for values that reference the theme:
+
+- `MantineColor` – any color key from the theme, e.g. `'blue'`, `'red.5'`
+- `MantineSize` – `'xs' | 'sm' | 'md' | 'lg' | 'xl'`
+- `MantineColorScheme` – `'light' | 'dark' | 'auto'`
+- `MantineColorsTuple` – a 10-shade color tuple used to define custom colors
+
+```ts
+import type { MantineColor, MantineColorsTuple } from '@mantine-vue/core'
+
+const color: MantineColor = 'blue'
+
+const brand: MantineColorsTuple = [
+  '#e6f2ff', '#cfe0ff', '#9ec0ff', '#6a9eff', '#4084fe',
+  '#2874fe', '#156bff', '#005ae6', '#004fce', '#0043b6',
+]
+```
+
+## Enabling autocompletion for custom colors
+
+To get autocompletion for custom theme colors, extend the `MantineThemeColorsOverride` interface in a
+`.d.ts` file:
+
+```ts
+import type { DefaultMantineColor, MantineColorsTuple } from '@mantine-vue/core'
+
+type ExtendedCustomColors = 'brand' | DefaultMantineColor
+
+declare module '@mantine-vue/core' {
+  export interface MantineThemeColorsOverride {
+    colors: Record<ExtendedCustomColors, MantineColorsTuple>
+  }
+}
+```
+
+## Vue SFC type checking
+
+Type checking of `.vue` single-file components is performed with
+[vue-tsc](https://github.com/vuejs/language-tools). All templates run `vue-tsc --noEmit` as part of the
+`typecheck` script.

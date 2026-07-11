@@ -1,0 +1,113 @@
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.GuideStorybook)
+
+# Setup Mantine Vue in Storybook
+
+Note that this guide covers only Storybook 10+ integration. If you're using an older version of Storybook,
+it won't work for you.
+
+## Add Storybook to your application
+
+If you already have Storybook in your application, you can skip this step.
+Follow the [Storybook getting started](https://storybook.js.org/docs/get-started/install/) guide
+to add Storybook to your application:
+
+```bash
+npx storybook@latest init
+```
+
+For a Vite + Vue project Storybook uses the `@storybook/vue3-vite` framework, for Nuxt it uses
+`@storybook-vue/nuxt`.
+
+## Configure addons
+
+Install the `@storybook/addon-themes` Storybook addon:
+
+<InstallScript packages="@storybook/addon-themes" dev />
+
+Add the addon to `.storybook/main.ts`:
+
+```ts
+import type { StorybookConfig } from '@storybook/vue3-vite'
+
+const config: StorybookConfig = {
+  // ... other config properties
+  stories: ['../src/**/*.mdx', '../src/**/*.story.@(js|jsx|ts|tsx)'],
+  addons: ['@storybook/addon-themes'],
+  framework: {
+    name: '@storybook/vue3-vite',
+    options: {},
+  },
+}
+
+export default config
+```
+
+## Theme object
+
+To share the [theme object](https://mantine.dev/theming/theme-object) between your application and
+Storybook, create a `src/theme.ts` file with your theme override:
+
+```ts
+// src/theme.ts
+import type { MantineThemeOverride } from '@mantine-vue/core'
+
+export const theme: MantineThemeOverride = {
+  fontFamily: 'serif',
+  // ... other theme override properties
+}
+```
+
+Then you'll be able to use the same theme both in your application and Storybook.
+
+## Storybook preview
+
+If the `.storybook/preview.ts` file doesn't exist, create it and add the following content:
+
+```ts
+// Import styles of packages that you've installed.
+// All packages except `@mantine-vue/hooks` require styles imports
+import '@mantine-vue/core/styles.css'
+import { MantineProvider } from '@mantine-vue/core'
+import { h } from 'vue'
+import { theme } from '../src/theme'
+
+export const parameters = {
+  layout: 'fullscreen',
+  options: {
+    showPanel: false,
+    storySort: (a, b) => a.title.localeCompare(b.title, undefined, { numeric: true }),
+  },
+  backgrounds: { disable: true },
+}
+
+export const globalTypes = {
+  theme: {
+    name: 'Theme',
+    description: 'Mantine color scheme',
+    defaultValue: 'light',
+    toolbar: {
+      icon: 'mirror',
+      items: [
+        { value: 'light', title: 'Light' },
+        { value: 'dark', title: 'Dark' },
+      ],
+    },
+  },
+}
+
+export const decorators = [
+  (story, context) => {
+    const scheme = context.globals.theme || 'light'
+    return () => h(MantineProvider, { theme, forceColorScheme: scheme }, () => h(story()))
+  },
+]
+```
+
+All set! Start Storybook:
+
+```bash
+npm run storybook
+```

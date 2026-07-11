@@ -6,6 +6,7 @@ import { MdxInstallScript } from './MdxInstallScript'
 import { MdxKeyboardEventsTable } from './MdxKeyboardEventsTable'
 import { MdxPre } from './MdxPre'
 import { createMdxTitle } from './MdxTitle'
+import { MdxCode, MdxLi, MdxParagraph, MdxUl } from './MdxTypography'
 import {
   MdxAutoContrast,
   MdxClearSectionMode,
@@ -51,6 +52,10 @@ export const mdxComponents: Record<string, Component> = {
   ComboboxProps: MdxComboboxProps,
   // Intrinsic element overrides
   a: MdxAnchor,
+  p: MdxParagraph,
+  ul: MdxUl,
+  li: MdxLi,
+  code: MdxCode,
   pre: MdxPre,
   h1: createMdxTitle(1),
   h2: createMdxTitle(2),
