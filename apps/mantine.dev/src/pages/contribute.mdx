@@ -1,0 +1,60 @@
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.Contribute)
+
+# Contributing to Mantine Vue
+
+First of all, thank you for showing interest in contributing to Mantine Vue! All your contributions are
+extremely valuable to the project!
+
+## Ways to contribute
+
+- **Improve documentation:** Fix incomplete or missing docs, bad wording, examples or explanations.
+- **Give feedback:** We are constantly working on making Mantine Vue better. Please share how you use
+  Mantine Vue, what features are missing and what is done well via
+  [GitHub Discussions](https://github.com/mantine-vue/mantine-vue/discussions).
+- **Share Mantine Vue:** Share links to the docs with everyone who might be interested!
+- **Contribute to the codebase:** Propose new features via
+  [GitHub Issues](https://github.com/mantine-vue/mantine-vue/issues/new), or find an
+  [existing issue](https://github.com/mantine-vue/mantine-vue/labels/help%20wanted) and work on it!
+- **Give us a code review:** Help us identify problems with the source code or make Mantine Vue more performant.
+
+## Contributing workflow
+
+- Decide on what you want to contribute.
+- If you would like to implement a new feature, discuss it with the maintainers before jumping into coding.
+- After finalizing issue details, you can begin working on the code.
+- Run tests with `yarn test:all` and submit a PR once all tests have passed.
+- Get a code review and fix all issues noticed by the maintainers.
+- Your PR is merged. You are awesome ❤️!
+
+## Get started with Mantine Vue locally
+
+- Install the [editorconfig](https://editorconfig.org/) extension for your editor.
+- Fork the [repository](https://github.com/mantine-vue/mantine-vue), then clone or download your fork.
+- Run `nvm use` to switch to the Node version specified in the `.nvmrc` file.
+- Install dependencies with yarn – `yarn`
+- Build local version of all packages – `yarn build`
+- To start storybook – `yarn storybook`
+- To start docs – `yarn docs`
+
+## npm scripts
+
+### Development scripts
+
+- `docs` – Starts the docs development server.
+- `storybook` – Starts the storybook development server.
+
+### Testing scripts
+
+- `typecheck` – runs TypeScript typechecking with `vue-tsc --noEmit` on all packages and docs
+- `lint` – runs oxlint and eslint on the source folders
+- `format:test` – checks files with oxfmt
+- `vitest` – runs tests with vitest
+- `test:all` – runs all testing scripts
+
+### Docs scripts
+
+- `docs:build` – builds docs for production
+- `docs:deploy` – builds and deploys docs to GitHub Pages

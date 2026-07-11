@@ -1,0 +1,42 @@
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.GuideIcons)
+
+# Icon libraries with Mantine Vue
+
+You can use any icon library with Mantine Vue components. The most popular options for Vue are:
+
+- [Phosphor icons for Vue](https://github.com/phosphor-icons/vue) (`@phosphor-icons/vue`)
+- [Tabler icons for Vue](https://tabler.io/icons) (`@tabler/icons-vue`)
+- [Lucide Vue](https://lucide.dev/guide/packages/lucide-vue-next) (`lucide-vue-next`)
+- [unplugin-icons](https://github.com/unplugin/unplugin-icons) – access thousands of icons from
+  [Iconify](https://iconify.design/) directly in your components
+
+## Phosphor icons
+
+[Phosphor icons](https://phosphoricons.com/) are used in Mantine documentation and demos. If you don't
+know which icon library to use, we recommend Phosphor icons.
+
+<InstallScript packages="@phosphor-icons/vue" />
+
+## Icon size
+
+Most icon libraries support a `size` prop (or `width` and `height` props) that allows you to change the
+icon width and height. Usually, it's a number in pixels:
+
+```vue
+<script setup lang="ts">
+import { Button } from '@mantine-vue/core'
+import { PhHeart } from '@phosphor-icons/vue'
+</script>
+
+<template>
+  <Button :left-section="() => h(PhHeart, { size: 18 })">Like</Button>
+</template>
+```
+
+## Custom icons
+
+We recommend using icons as Vue components. In this case, you'll be able to use `currentColor` in the
+`fill` and `stroke` attributes, so the icon color changes based on the context it's used in.

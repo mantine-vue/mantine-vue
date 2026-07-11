@@ -6,6 +6,7 @@ import {
   getRadius,
   getSize,
   getThemeColor,
+  type MantineVariant,
   useProps,
   useStyles,
 } from '../../core'
@@ -64,7 +65,7 @@ export const Badge = withBoxProps(
       rightSection: { type: [String, Number, Object, Function], default: undefined },
       fullWidth: { type: Boolean, default: false },
       autoContrast: { type: Boolean, default: undefined },
-      variant: { type: String as PropType<BadgeVariant>, default: undefined },
+      variant: { type: String as PropType<MantineVariant<BadgeVariant>>, default: undefined },
       classNames: { type: [Object, Function], default: undefined },
       styles: { type: [Object, Function], default: undefined },
       vars: { type: [Object, Function], default: undefined },

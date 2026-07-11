@@ -65,6 +65,61 @@ const routes: RouteRecordRaw[] = [
     component: mdxRoute(() => import('./pages/guides/without-framework.mdx')),
   },
   {
+    path: '/browser-support',
+    name: 'browser-support',
+    component: mdxRoute(() => import('./pages/browser-support.mdx')),
+  },
+  {
+    path: '/contribute',
+    name: 'contribute',
+    component: mdxRoute(() => import('./pages/contribute.mdx')),
+  },
+  {
+    path: '/about',
+    name: 'about',
+    component: mdxRoute(() => import('./pages/about.mdx')),
+  },
+  {
+    path: '/support',
+    name: 'support',
+    component: mdxRoute(() => import('./pages/support.mdx')),
+  },
+  {
+    path: '/guides/storybook',
+    name: 'guide-storybook',
+    component: mdxRoute(() => import('./pages/guides/storybook.mdx')),
+  },
+  {
+    path: '/guides/typescript',
+    name: 'guide-typescript',
+    component: mdxRoute(() => import('./pages/guides/typescript.mdx')),
+  },
+  {
+    path: '/guides/javascript',
+    name: 'guide-javascript',
+    component: mdxRoute(() => import('./pages/guides/javascript.mdx')),
+  },
+  {
+    path: '/guides/jest',
+    name: 'guide-jest',
+    component: mdxRoute(() => import('./pages/guides/jest.mdx')),
+  },
+  {
+    path: '/guides/vitest',
+    name: 'guide-vitest',
+    component: mdxRoute(() => import('./pages/guides/vitest.mdx')),
+  },
+  {
+    path: '/guides/oxc-config-mantine',
+    name: 'guide-oxc-config-mantine',
+    component: mdxRoute(() => import('./pages/guides/oxc-config-mantine.mdx')),
+  },
+  {
+    path: '/guides/icons',
+    name: 'guide-icons',
+    component: mdxRoute(() => import('./pages/guides/icons.mdx')),
+  },
+  {
     path: '/app-shell',
     name: 'app-shell-examples',
     component: () => import('./app-shell-examples/AppShellPage.vue'),

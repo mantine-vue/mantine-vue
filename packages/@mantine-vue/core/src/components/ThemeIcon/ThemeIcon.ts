@@ -5,6 +5,7 @@ import {
   createVarsResolver,
   getRadius,
   getSize,
+  type MantineVariant,
   useProps,
   useStyles,
 } from '../../core'
@@ -54,7 +55,7 @@ export const ThemeIcon = withBoxProps(
         default: undefined,
       },
       autoContrast: { type: Boolean, default: undefined },
-      variant: { type: String as PropType<ThemeIconVariant>, default: undefined },
+      variant: { type: String as PropType<MantineVariant<ThemeIconVariant>>, default: undefined },
       classNames: { type: [Object, Function], default: undefined },
       styles: { type: [Object, Function], default: undefined },
       vars: { type: [Object, Function], default: undefined },

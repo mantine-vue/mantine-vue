@@ -5,10 +5,17 @@ import { CodeHighlight, type CodeHighlightProps } from '@mantine-vue/code-highli
 function extractText(node: unknown): string {
   if (node == null) return ''
   if (typeof node === 'string' || typeof node === 'number') return String(node)
+  if (typeof node === 'function') return extractText(node())
   const vnode = node as VNode
   if (typeof vnode.children === 'string') return vnode.children
   if (Array.isArray(vnode.children)) {
     return (vnode.children as unknown[]).map(extractText).join('')
+  }
+  if (vnode.children && typeof vnode.children === 'object') {
+    const defaultSlot = (vnode.children as { default?: unknown }).default
+    if (typeof defaultSlot === 'function') {
+      return extractText(defaultSlot())
+    }
   }
   return ''
 }

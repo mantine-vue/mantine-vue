@@ -1,0 +1,42 @@
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.About)
+
+# About Mantine Vue
+
+Mantine Vue is a Vue 3 components library that is architecturally equivalent to
+[Mantine React](https://mantine.dev/). It focuses on providing a great user and developer experience
+with native dark theme support, accessibility and usability, while using the standard Vue 3 ecosystem
+and best practices.
+
+## Relationship with Mantine React
+
+Mantine Vue mirrors the structure, theming system, styles API and PostCSS preset of Mantine React. If
+you already know Mantine React, the concepts transfer directly – components accept the same style props,
+share the same theme object shape, and use the same CSS variables. React-specific APIs are replaced with
+their Vue 3 equivalents (for example, hooks become composables and JSX becomes Vue single-file components).
+
+## Releases cycle
+
+All `@mantine-vue/*` packages follow [semver](https://semver.org/):
+
+- Patches (1.0.X) are usually released every one or two weeks
+- Minor versions (1.X.0) are usually released once every 1-2 months
+- Major versions (X.0.0) are released when breaking changes are required
+
+## Packages
+
+- `@mantine-vue/core` – core components
+- `@mantine-vue/hooks` – composables for state and UI management
+- `@mantine-vue/form` – form management
+- `@mantine-vue/dates` – date and calendar components
+- `@mantine-vue/charts` – recharts/echarts based charts
+- `@mantine-vue/notifications`, `@mantine-vue/modals`, `@mantine-vue/spotlight`,
+  `@mantine-vue/nprogress`, `@mantine-vue/dropzone`, `@mantine-vue/carousel`,
+  `@mantine-vue/code-highlight`, `@mantine-vue/tiptap` – additional extensions
+
+## Project maintenance
+
+Mantine Vue is an open-source project. You can participate in discussions and contribute on
+[GitHub](https://github.com/mantine-vue/mantine-vue).
