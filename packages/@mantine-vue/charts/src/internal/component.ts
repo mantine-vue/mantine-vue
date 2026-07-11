@@ -1,7 +1,9 @@
-import './echarts'
 import { computed, defineComponent, h, ref, type Component, type PropType } from 'vue'
 import type { EChartsOption } from 'echarts'
 import VChart from 'vue-echarts'
+import { registerECharts } from './echarts'
+
+registerECharts()
 
 export type OptionBuilder = (props: Record<string, unknown>) => EChartsOption
 
