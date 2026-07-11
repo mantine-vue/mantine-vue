@@ -1,7 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
 import type { Frontmatter } from '@/types'
-import { SOURCE_BASE } from '@/links'
 
 const props = defineProps<{ meta: Frontmatter }>()
 </script>
