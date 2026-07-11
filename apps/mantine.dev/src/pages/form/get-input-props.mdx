@@ -1,0 +1,85 @@
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.FormGetInputProps)
+
+## Usage
+
+`getInputProps` returns props that connect an input to the form state.
+
+```vue
+<script setup lang="ts">
+import { TextInput } from '@mantine-vue/core'
+import { useForm } from '@mantine-vue/form'
+
+const form = useForm({
+  initialValues: {
+    email: '',
+  },
+})
+</script>
+
+<template>
+  <TextInput label="Email" v-bind="form.getInputProps('email')" />
+</template>
+```
+
+For regular inputs it returns `value`, `error`, `onInput`, `onChange`, `onFocus`, `onBlur` and `data-path`.
+
+In uncontrolled mode it returns `defaultValue` or `defaultChecked` instead of `value` or `checked`, matching React Mantine behavior.
+
+## Checkboxes
+
+Set `type: 'checkbox'` to bind the `checked` prop instead of `value`.
+
+```vue
+<Checkbox label="I accept terms" v-bind="form.getInputProps('accepted', { type: 'checkbox' })" />
+```
+
+## Radio inputs
+
+Set `type: 'radio'` and pass the radio value.
+
+```vue
+<Radio label="Vue" v-bind="form.getInputProps('framework', { type: 'radio', value: 'vue' })" />
+```
+
+## Disable error prop
+
+Pass `withError: false` to omit the `error` prop from the returned object.
+
+```vue
+<TextInput v-bind="form.getInputProps('email', { withError: false })" />
+```
+
+## Disable focus handlers
+
+Pass `withFocus: false` to omit `onFocus` and `onBlur`.
+
+```vue
+<TextInput v-bind="form.getInputProps('email', { withFocus: false })" />
+```
+
+## Enhance input props
+
+Use `enhanceGetInputProps` to add props to every `getInputProps` result.
+
+```ts
+const form = useForm({
+  initialValues: { email: '' },
+  enhanceGetInputProps: ({ field }) => ({
+    disabled: field === 'email',
+  }),
+})
+```
+
+## Form name
+
+If you pass `name` to `useForm`, `getInputProps` adds it to the generated `data-path` attribute.
+
+```ts
+const form = useForm({
+  name: 'checkout',
+  initialValues: { email: '' },
+})
+```

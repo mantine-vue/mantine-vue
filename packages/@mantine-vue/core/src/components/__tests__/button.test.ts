@@ -47,6 +47,16 @@ describe('@mantine-vue/core Button', () => {
     expect(wrapper.find('.mantine-Button-label').text()).toBe('Save')
   })
 
+  it('forwards native button type', () => {
+    const defaultButton = withProvider(Button, {}, () => 'Default')
+    const submitButton = withProvider(Button, { type: 'submit' }, () => 'Submit')
+    const resetButton = withProvider(Button, { type: 'reset' }, () => 'Reset')
+
+    expect(defaultButton.find('button').attributes('type')).toBe('button')
+    expect(submitButton.find('button').attributes('type')).toBe('submit')
+    expect(resetButton.find('button').attributes('type')).toBe('reset')
+  })
+
   it('reactively updates variant attributes and styles', async () => {
     const variant = ref<'light' | 'transparent'>('light')
     const wrapper = mount({

@@ -53,7 +53,7 @@ export const UnstyledButton = defineComponent({
           component: props.component,
           variant: props.variant,
           mod: props.mod,
-          type: props.component === 'button' ? 'button' : undefined,
+          type: attrs.type ?? (props.component === 'button' ? 'button' : undefined),
           ref: elementRef,
         },
         () => slots.default?.(),

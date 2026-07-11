@@ -1,0 +1,199 @@
+import { FormDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.useForm)
+
+## Usage
+
+`useForm` creates a form object with reactive values, validation state and input helpers.
+
+<Demo data={FormDemos.usage} />
+
+## API overview
+
+```ts
+import { useForm } from '@mantine-vue/form'
+
+const form = useForm({
+  initialValues: {
+    email: '',
+    accepted: false,
+    user: {
+      firstName: 'John',
+      lastName: 'Doe',
+    },
+  },
+})
+```
+
+### Values
+
+[Form values guide](/form/values)
+
+```ts
+form.values.value
+form.getValues()
+form.getInitialValues()
+form.setValues({ email: 'hi@mantine.dev' })
+form.setValues((values) => ({ user: { ...values.user, firstName: 'Jane' } }))
+form.setFieldValue('user.firstName', 'Jane')
+form.setInitialValues({
+  email: 'initial@mantine.dev',
+  accepted: false,
+  user: { firstName: 'John', lastName: 'Doe' },
+})
+form.reset()
+form.resetField('email')
+form.initialize({
+  email: 'hi@mantine.dev',
+  accepted: true,
+  user: { firstName: 'Jane', lastName: 'Doe' },
+})
+```
+
+### Validation
+
+[Form validation guide](/form/validation)
+
+```ts
+const result = form.validate()
+const fieldResult = form.validateField('email')
+
+form.isValid()
+form.isValid('email')
+```
+
+### Errors
+
+[Form errors guide](/form/errors)
+
+```ts
+form.errors.value
+form.setErrors({ email: 'Invalid email' })
+form.setFieldError('email', 'Invalid email')
+form.clearFieldError('email')
+form.clearErrors()
+```
+
+### Status
+
+[Touched and dirty guide](/form/status)
+
+```ts
+form.touched.value
+form.dirty.value
+form.isTouched()
+form.isTouched('email')
+form.isDirty()
+form.isDirty('email')
+form.setTouched({ email: true })
+form.setDirty({ email: true })
+form.getTouched()
+form.getDirty()
+form.resetTouched()
+form.resetDirty()
+```
+
+### List items
+
+[Form values guide](/form/values)
+
+```ts
+form.insertListItem('fruits', { name: 'Apple', available: true })
+form.insertListItem('fruits', { name: 'Orange', available: true }, 1)
+form.removeListItem('fruits', 1)
+form.replaceListItem('fruits', 1, { name: 'Apple', available: true })
+form.reorderListItem('fruits', { from: 1, to: 0 })
+```
+
+### Submit
+
+`form.onSubmit` validates values before calling your submit handler. By default, it prevents default browser submit behavior.
+
+```vue
+<script setup lang="ts">
+import { useForm } from '@mantine-vue/form'
+
+const form = useForm({
+  initialValues: { email: '' },
+})
+
+const handleSubmit = form.onSubmit(
+  (values, event) => {
+    console.log(values, event)
+  },
+  (errors, values, event) => {
+    console.log(errors, values, event)
+  },
+)
+</script>
+
+<template>
+  <form @submit="handleSubmit" />
+</template>
+```
+
+Use `onSubmitPreventDefault` to control when `event.preventDefault()` is called:
+
+```ts
+useForm({
+  onSubmitPreventDefault: 'always', // default
+})
+
+useForm({
+  onSubmitPreventDefault: 'never',
+})
+
+useForm({
+  onSubmitPreventDefault: 'validation-failed',
+})
+```
+
+Use `form.onReset` to reset form values and status from a form reset event:
+
+```vue
+<script setup lang="ts">
+const handleSubmit = form.onSubmit((values) => {
+  console.log(values)
+})
+</script>
+
+<template>
+  <form @submit="handleSubmit" @reset="form.onReset" />
+</template>
+```
+
+If you call `form.onSubmit` inline in a Vue template, call the returned handler with `$event`:
+
+```vue
+<form @submit="form.onSubmit((values) => console.log(values))($event)" />
+```
+
+### Transformed values
+
+`transformValues` changes the values received by the submit handler and returned from `getTransformedValues`.
+
+<Demo data={FormDemos.transformValues} />
+
+## Controlled and uncontrolled modes
+
+The default mode is `controlled`. In `uncontrolled` mode, `form.key(path)` changes when the field value is updated, which lets you force input remounts when needed.
+
+```vue
+<TextInput :key="form.key('email')" v-bind="form.getInputProps('email')" />
+```
+
+## Watch fields
+
+Use `watch` to subscribe to field value changes. It returns a cleanup function.
+
+```ts
+const cleanup = form.watch('email', ({ previousValue, value, touched, dirty }) => {
+  console.log(previousValue, value, touched, dirty)
+})
+
+cleanup()
+```
+
+Set `cascadeUpdates: true` to notify nested watchers when parent paths change and parent watchers when nested paths change.

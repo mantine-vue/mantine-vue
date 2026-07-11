@@ -1,0 +1,125 @@
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.FormValues)
+
+## Initial values
+
+Set initial form values with the `initialValues` option:
+
+```ts
+import { useForm } from '@mantine-vue/form'
+
+const form = useForm({
+  initialValues: {
+    name: '',
+    email: '',
+    user: {
+      firstName: '',
+      lastName: '',
+    },
+  },
+})
+```
+
+## Get values
+
+`values` is a Vue ref. Use `form.values.value` to access it directly.
+
+```ts
+form.values.value
+form.getValues()
+form.getInitialValues()
+```
+
+## Set values
+
+`setValues` shallow merges the given object into current values, matching React Mantine behavior. You can also pass a function that receives current values.
+
+```ts
+form.setValues({ name: 'John' })
+
+form.setValues((values) => ({
+  user: {
+    ...values.user,
+    firstName: 'Jane',
+  },
+}))
+```
+
+## Set field value
+
+Use `setFieldValue` to update a single field. Dot notation can be used for nested fields.
+
+```ts
+form.setFieldValue('name', 'John')
+form.setFieldValue('user.firstName', 'Jane')
+```
+
+Pass `forceUpdate: false` as the third argument to skip uncontrolled field key updates:
+
+```ts
+form.setFieldValue('name', 'John', { forceUpdate: false })
+```
+
+## List items
+
+Use list helpers to update array fields. Error indices are updated to match inserted, removed and reordered items.
+
+```ts
+form.insertListItem('fruits', { name: 'Apple', available: true })
+form.insertListItem('fruits', { name: 'Orange', available: true }, 1)
+form.removeListItem('fruits', 1)
+form.replaceListItem('fruits', 1, { name: 'Apple', available: true })
+form.reorderListItem('fruits', { from: 1, to: 0 })
+```
+
+## Reset values
+
+`reset` restores all values to the initial snapshot and clears errors, touched and dirty state.
+
+```ts
+form.reset()
+form.resetField('name')
+```
+
+Use `setInitialValues` to update the snapshot used by `reset`.
+
+```ts
+form.setInitialValues({
+  name: 'John',
+  email: 'john@mantine.dev',
+  user: {
+    firstName: 'John',
+    lastName: 'Doe',
+  },
+})
+```
+
+## Initialize values
+
+`initialize` replaces the initial snapshot and current values once. It is useful after async data loading.
+
+```ts
+form.initialize({
+  name: 'John',
+  email: 'john@mantine.dev',
+  user: {
+    firstName: 'John',
+    lastName: 'Doe',
+  },
+})
+```
+
+## Values change callback
+
+`onValuesChange` is called after `setValues` or `setFieldValue`.
+
+```ts
+const form = useForm({
+  initialValues: { name: '' },
+  onValuesChange: (values, previous) => {
+    console.log(values, previous)
+  },
+})
+```

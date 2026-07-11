@@ -173,6 +173,20 @@ const DATES_PAGES: MdxNavItem[] = [
   { label: 'Calendar', link: '/dates/calendar' },
 ]
 
+const FORM_PAGES: MdxNavItem[] = [
+  { label: 'Getting started', link: '/form/package' },
+  { label: 'use-form', link: '/form/use-form' },
+  { label: 'Values', link: '/form/values' },
+  { label: 'getInputProps', link: '/form/get-input-props' },
+  { label: 'Validation', link: '/form/validation' },
+  { label: 'Errors', link: '/form/errors' },
+  { label: 'Touched and dirty', link: '/form/status' },
+  { label: 'Validators', link: '/form/validators' },
+  { label: 'Schema validation', link: '/form/schema-validation' },
+  { label: 'use-field', link: '/form/use-field' },
+  { label: 'createFormContext', link: '/form/create-form-context' },
+]
+
 const OTHER_EXTENSIONS_PAGES: MdxNavItem[] = [
   { label: 'CodeHighlight', link: '/x/code-highlight' },
   { label: 'Notifications system', link: '/x/notifications' },
@@ -323,6 +337,10 @@ export const MDX_NAV_DATA: MdxNavCategory[] = [
   {
     category: 'Dates',
     groups: [{ title: 'Dates', pages: DATES_PAGES }],
+  },
+  {
+    category: 'Form',
+    groups: [{ title: 'Form', pages: FORM_PAGES }],
   },
   {
     category: 'Extensions',

@@ -1,0 +1,41 @@
+import { FormDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.FormPackage)
+
+## Installation
+
+`@mantine-vue/form` does not depend on `@mantine-vue/core`. You can use it with Mantine Vue inputs, native inputs, or your own components.
+
+<InstallScript packages="@mantine-vue/form" />
+
+## Usage
+
+<Demo data={FormDemos.usage} />
+
+## Exports
+
+The package exports `useForm`, `useField`, `createFormContext`, validation helpers, and TypeScript types:
+
+```ts
+import {
+  createFormContext,
+  hasLength,
+  isEmail,
+  isInRange,
+  isJsonString,
+  isNotEmpty,
+  isNotEmptyHtml,
+  matches,
+  matchesField,
+  schemaResolver,
+  useField,
+  useForm,
+  zodResolver,
+} from '@mantine-vue/form'
+```
+
+## Source
+
+The Vue implementation follows the same responsibilities as React Mantine `@mantine/form`: value storage, field props, validation, errors, dirty/touched status and submit handling.
