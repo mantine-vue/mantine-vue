@@ -1,0 +1,40 @@
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.FormSchemaValidation)
+
+## schemaResolver
+
+Use `schemaResolver` with libraries that expose a `safeParse` method, for example Zod.
+
+<InstallScript packages="zod" />
+
+```ts
+import { z } from 'zod'
+import { schemaResolver, useForm } from '@mantine-vue/form'
+
+const schema = z.object({
+  name: z.string().min(2, 'Name must have at least 2 characters'),
+  email: z.string().email('Invalid email'),
+})
+
+const form = useForm({
+  initialValues: {
+    name: '',
+    email: '',
+  },
+  validate: schemaResolver(schema),
+})
+```
+
+`schemaResolver` maps schema issue paths to form error paths. For nested values, errors use dot notation:
+
+```ts
+const schema = z.object({
+  user: z.object({
+    email: z.string().email('Invalid email'),
+  }),
+})
+
+// validation error path: "user.email"
+```

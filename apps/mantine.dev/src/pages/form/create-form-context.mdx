@@ -1,0 +1,60 @@
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.createFormContext)
+
+## Usage
+
+`createFormContext` creates a typed Vue provide/inject pair for a form instance. It is useful when deeply nested components need access to the same form.
+
+```ts
+// form-context.ts
+import { createFormContext } from '@mantine-vue/form'
+
+interface FormValues {
+  name: string
+  email: string
+}
+
+export const [provideForm, useFormContext] = createFormContext<FormValues>()
+```
+
+Provide the form from a parent component:
+
+```vue
+<script setup lang="ts">
+import { useForm } from '@mantine-vue/form'
+import { provideForm } from './form-context'
+import NameInput from './NameInput.vue'
+
+const form = useForm({
+  initialValues: {
+    name: '',
+    email: '',
+  },
+})
+
+provideForm(form)
+</script>
+
+<template>
+  <NameInput />
+</template>
+```
+
+Use the form in a child component:
+
+```vue
+<script setup lang="ts">
+import { TextInput } from '@mantine-vue/core'
+import { useFormContext } from './form-context'
+
+const form = useFormContext()
+</script>
+
+<template>
+  <TextInput label="Name" v-bind="form.getInputProps('name')" />
+</template>
+```
+
+If `useFormContext` is called without a matching provider, it throws an error.

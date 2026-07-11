@@ -669,6 +669,62 @@ const routes: RouteRecordRaw[] = [
     name: 'x-code-highlight',
     component: mdxRoute(() => import('./pages/x/code-highlight.mdx')),
   },
+  { path: '/form', redirect: '/form/use-form' },
+  {
+    path: '/form/package',
+    name: 'form-package',
+    component: mdxRoute(() => import('./pages/form/package.mdx')),
+  },
+  {
+    path: '/form/use-form',
+    name: 'form-use-form',
+    component: mdxRoute(() => import('./pages/form/use-form.mdx')),
+  },
+  {
+    path: '/form/values',
+    name: 'form-values',
+    component: mdxRoute(() => import('./pages/form/values.mdx')),
+  },
+  {
+    path: '/form/get-input-props',
+    name: 'form-get-input-props',
+    component: mdxRoute(() => import('./pages/form/get-input-props.mdx')),
+  },
+  {
+    path: '/form/validation',
+    name: 'form-validation',
+    component: mdxRoute(() => import('./pages/form/validation.mdx')),
+  },
+  {
+    path: '/form/errors',
+    name: 'form-errors',
+    component: mdxRoute(() => import('./pages/form/errors.mdx')),
+  },
+  {
+    path: '/form/status',
+    name: 'form-status',
+    component: mdxRoute(() => import('./pages/form/status.mdx')),
+  },
+  {
+    path: '/form/validators',
+    name: 'form-validators',
+    component: mdxRoute(() => import('./pages/form/validators.mdx')),
+  },
+  {
+    path: '/form/schema-validation',
+    name: 'form-schema-validation',
+    component: mdxRoute(() => import('./pages/form/schema-validation.mdx')),
+  },
+  {
+    path: '/form/use-field',
+    name: 'form-use-field',
+    component: mdxRoute(() => import('./pages/form/use-field.mdx')),
+  },
+  {
+    path: '/form/create-form-context',
+    name: 'form-create-form-context',
+    component: mdxRoute(() => import('./pages/form/create-form-context.mdx')),
+  },
   {
     path: '/dates/getting-started',
     name: 'dates-getting-started',

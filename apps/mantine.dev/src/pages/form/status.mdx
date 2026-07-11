@@ -1,0 +1,57 @@
+import { FormDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.FormStatus)
+
+## Touched and dirty state
+
+The form tracks two status objects:
+
+- `touched` marks fields that received focus or were updated
+- `dirty` marks fields with values different from the initial snapshot
+
+<Demo data={FormDemos.status} />
+
+## Initial status
+
+```ts
+const form = useForm({
+  initialValues: { name: '' },
+  initialTouched: { name: true },
+  initialDirty: { name: true },
+})
+```
+
+## Read status
+
+```ts
+form.touched.value
+form.dirty.value
+form.getTouched()
+form.getDirty()
+
+form.isTouched()
+form.isTouched('name')
+
+form.isDirty()
+form.isDirty('name')
+```
+
+## Set status
+
+```ts
+form.setTouched({ name: true })
+form.setDirty({ name: true })
+```
+
+## Reset status
+
+`form.reset()` clears both touched and dirty state. You can also reset them separately.
+
+```ts
+form.reset()
+form.resetTouched()
+form.resetDirty()
+form.resetDirty({ name: 'New initial value' })
+```

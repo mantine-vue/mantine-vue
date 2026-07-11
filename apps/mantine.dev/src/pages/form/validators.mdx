@@ -1,0 +1,125 @@
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.FormValidators)
+
+## Validators
+
+`@mantine-vue/form` includes small validation helpers that return form rule functions.
+
+```ts
+import {
+  hasLength,
+  isEmail,
+  isInRange,
+  isJsonString,
+  isNotEmpty,
+  isNotEmptyHtml,
+  matches,
+  matchesField,
+} from '@mantine-vue/form'
+```
+
+## isNotEmpty
+
+Checks that a value is not `null`, not `undefined`, and is not an empty string after trim. Arrays must contain at least one item.
+
+```ts
+const form = useForm({
+  initialValues: { name: '' },
+  validate: {
+    name: isNotEmpty('Name is required'),
+  },
+})
+```
+
+## isEmail
+
+Checks that a value has email-like shape.
+
+```ts
+const form = useForm({
+  initialValues: { email: '' },
+  validate: {
+    email: isEmail('Invalid email'),
+  },
+})
+```
+
+## hasLength
+
+Checks string or array length.
+
+```ts
+const form = useForm({
+  initialValues: { name: '' },
+  validate: {
+    name: hasLength({ min: 2, max: 20 }, 'Name must be 2-20 characters long'),
+  },
+})
+```
+
+## matches
+
+Checks a value against a regular expression.
+
+```ts
+const form = useForm({
+  initialValues: { phone: '' },
+  validate: {
+    phone: matches(/^\+?[0-9 ]+$/, 'Invalid phone number'),
+  },
+})
+```
+
+## isInRange
+
+Checks that a number is within the given range.
+
+```ts
+const form = useForm({
+  initialValues: { age: 0 },
+  validate: {
+    age: isInRange({ min: 18, max: 99 }, 'Age must be between 18 and 99'),
+  },
+})
+```
+
+## matchesField
+
+Checks that a value matches another field value.
+
+```ts
+const form = useForm({
+  initialValues: { password: '', confirmPassword: '' },
+  validate: {
+    confirmPassword: matchesField('password', 'Passwords do not match'),
+  },
+})
+```
+
+## isJsonString
+
+Checks that a string can be parsed with `JSON.parse`.
+
+```ts
+const form = useForm({
+  initialValues: { payload: '' },
+  validate: {
+    payload: isJsonString('Invalid JSON'),
+  },
+})
+```
+
+## isNotEmptyHtml
+
+Checks that HTML content has non-empty text content.
+
+```ts
+const form = useForm({
+  initialValues: { content: '' },
+  validate: {
+    content: isNotEmptyHtml('Content is required'),
+  },
+})
+```

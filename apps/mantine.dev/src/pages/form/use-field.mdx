@@ -1,0 +1,45 @@
+import { FormDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.useField)
+
+## Usage
+
+`useField` creates a field-level API from a form instance and a path.
+
+<Demo data={FormDemos.useField} />
+
+## Return value
+
+```ts
+const field = useField({ form, path: 'name' })
+
+field.value
+field.error
+field.touched
+field.dirty
+field.getInputProps()
+```
+
+`value`, `error`, `touched` and `dirty` are computed refs.
+
+## v-model
+
+You can use `field.value` with native inputs or custom components that support `v-model`.
+
+```vue
+<script setup lang="ts">
+import { useField, useForm } from '@mantine-vue/form'
+
+const form = useForm({
+  initialValues: { name: '' },
+})
+
+const { value: name } = useField({ form, path: 'name' })
+</script>
+
+<template>
+  <input v-model="name" />
+</template>
+```

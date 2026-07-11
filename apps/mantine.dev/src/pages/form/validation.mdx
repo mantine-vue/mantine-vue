@@ -1,0 +1,91 @@
+import { FormDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.FormValidation)
+
+## Usage
+
+Pass validation rules to `useForm` with the `validate` option. A rule returns an error value when validation fails and `null` or `undefined` when it passes.
+
+<Demo data={FormDemos.validation} />
+
+## Rules object
+
+```ts
+const form = useForm({
+  initialValues: {
+    email: '',
+    age: 18,
+  },
+  validate: {
+    email: (value) => (/^\S+@\S+$/.test(value) ? null : 'Invalid email'),
+    age: (value) => (value < 18 ? 'You must be at least 18' : null),
+  },
+})
+```
+
+Rules receive `value`, `values` and `path` arguments.
+
+```ts
+const form = useForm({
+  initialValues: {
+    password: '',
+    confirmPassword: '',
+  },
+  validate: {
+    confirmPassword: (value, values) =>
+      value !== values.password ? 'Passwords do not match' : null,
+  },
+})
+```
+
+## Validate function
+
+You can also pass a function that receives all values and returns an errors object.
+
+```ts
+const form = useForm({
+  initialValues: { email: '' },
+  validate: (values) => ({
+    email: values.email.includes('@') ? null : 'Invalid email',
+  }),
+})
+```
+
+## Validate on change
+
+Use `validateInputOnChange` to validate all fields or only selected fields when their value changes.
+
+```ts
+useForm({
+  initialValues: { email: '', name: '' },
+  validateInputOnChange: ['email'],
+  validate: {
+    email: (value) => (value.includes('@') ? null : 'Invalid email'),
+  },
+})
+```
+
+## Validate on blur
+
+Use `validateInputOnBlur` to validate all fields or only selected fields when inputs lose focus.
+
+```ts
+useForm({
+  initialValues: { email: '' },
+  validateInputOnBlur: true,
+  validate: {
+    email: (value) => (value.includes('@') ? null : 'Invalid email'),
+  },
+})
+```
+
+## Manual validation
+
+```ts
+form.validate()
+form.validateField('email')
+form.isValid()
+form.isValid('email')
+```

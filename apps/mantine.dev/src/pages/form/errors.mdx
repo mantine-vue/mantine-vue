@@ -1,0 +1,63 @@
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.FormErrors)
+
+## Initial errors
+
+Use `initialErrors` to display errors before validation runs.
+
+```ts
+const form = useForm({
+  initialValues: { email: '' },
+  initialErrors: {
+    email: 'Invalid email',
+  },
+})
+```
+
+## Read errors
+
+`errors` is a Vue ref.
+
+```ts
+form.errors.value
+form.errors.value.email
+```
+
+When the ref is nested on the `form` object, use `.value` in templates:
+
+```vue
+<template>
+  {{ form.errors.value.email }}
+</template>
+```
+
+## Set errors
+
+```ts
+form.setErrors({
+  email: 'Invalid email',
+  password: 'Password is required',
+})
+
+form.setFieldError('email', 'Invalid email')
+```
+
+## Clear errors
+
+```ts
+form.clearFieldError('email')
+form.clearErrors()
+```
+
+## Clear input error on change
+
+By default, an input error is cleared when the field changes. Set `clearInputErrorOnChange: false` to keep errors until the next validation or manual clear.
+
+```ts
+const form = useForm({
+  initialValues: { email: '' },
+  clearInputErrorOnChange: false,
+})
+```
