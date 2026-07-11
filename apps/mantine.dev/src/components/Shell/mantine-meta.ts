@@ -7,7 +7,7 @@ interface MajorVersion {
 export const majorVersions: MajorVersion[] = []
 
 export const meta = {
-  docsLink: 'https://mantine-vue.com',
+  docsLink: 'https://mantine-vue.dev',
   uiLink: '',
   helpCenterLink: '',
 
