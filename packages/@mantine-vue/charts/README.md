@@ -27,7 +27,12 @@ const data = [
 </script>
 
 <template>
-  <LineChart :h="300" :data="data" data-key="date" :series="[{ name: 'value', color: 'indigo.6' }]" />
+  <LineChart
+    :h="300"
+    :data="data"
+    data-key="date"
+    :series="[{ name: 'value', color: 'indigo.6' }]"
+  />
 </template>
 ```
 
