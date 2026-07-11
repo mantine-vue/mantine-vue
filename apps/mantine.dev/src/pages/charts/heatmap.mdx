@@ -1,0 +1,14 @@
+import { ChartsDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+export default Layout(MDX_DATA.Heatmap)
+
+## Usage
+
+`Heatmap` maps date keys in `YYYY-MM-DD` format to numeric intensity values.
+
+<Demo data={ChartsDemos.heatmap} />
+
+## Date range and colors
+
+Use `startDate`, `endDate`, and `domain` to control the displayed interval and scale. Provide `colors` to customize intensity levels.

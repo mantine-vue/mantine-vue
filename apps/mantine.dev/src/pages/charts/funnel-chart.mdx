@@ -1,0 +1,14 @@
+import { ChartsDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+export default Layout(MDX_DATA.FunnelChart)
+
+## Usage
+
+`FunnelChart` visualizes progressive reduction through stages, such as visits, signups, and purchases.
+
+<Demo data={ChartsDemos.funnelChart} />
+
+## Labels and tooltip
+
+Enable `withLabels`, `withLegend`, and `withTooltip` independently. Use `valueFormatter` to format counts, currency, or percentages.

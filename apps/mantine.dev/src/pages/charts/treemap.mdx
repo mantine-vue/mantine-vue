@@ -1,0 +1,14 @@
+import { ChartsDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+export default Layout(MDX_DATA.Treemap)
+
+## Usage
+
+`Treemap` displays hierarchical data as nested rectangles whose areas correspond to values.
+
+<Demo data={ChartsDemos.treemap} />
+
+## Nested data
+
+Each node accepts `name`, optional `value`, `color`, and recursive `children`. Leaf values determine the visible area.

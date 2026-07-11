@@ -1,0 +1,14 @@
+import { ChartsDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+export default Layout(MDX_DATA.Sparkline)
+
+## Usage
+
+`Sparkline` is a compact chart for showing a trend without axes or labels.
+
+<Demo data={ChartsDemos.sparkline} />
+
+## Trend colors
+
+Use `trendColors` to select positive, negative, and neutral colors automatically from the first and last values.

@@ -669,6 +669,91 @@ const routes: RouteRecordRaw[] = [
     name: 'x-code-highlight',
     component: mdxRoute(() => import('./pages/x/code-highlight.mdx')),
   },
+  {
+    path: '/charts/getting-started',
+    name: 'charts-getting-started',
+    component: mdxRoute(() => import('./pages/charts/getting-started.mdx')),
+  },
+  {
+    path: '/charts/area-chart',
+    name: 'charts-area-chart',
+    component: mdxRoute(() => import('./pages/charts/area-chart.mdx')),
+  },
+  {
+    path: '/charts/bar-chart',
+    name: 'charts-bar-chart',
+    component: mdxRoute(() => import('./pages/charts/bar-chart.mdx')),
+  },
+  {
+    path: '/charts/bars-list',
+    name: 'charts-bars-list',
+    component: mdxRoute(() => import('./pages/charts/bars-list.mdx')),
+  },
+  {
+    path: '/charts/bubble-chart',
+    name: 'charts-bubble-chart',
+    component: mdxRoute(() => import('./pages/charts/bubble-chart.mdx')),
+  },
+  {
+    path: '/charts/composite-chart',
+    name: 'charts-composite-chart',
+    component: mdxRoute(() => import('./pages/charts/composite-chart.mdx')),
+  },
+  {
+    path: '/charts/donut-chart',
+    name: 'charts-donut-chart',
+    component: mdxRoute(() => import('./pages/charts/donut-chart.mdx')),
+  },
+  {
+    path: '/charts/funnel-chart',
+    name: 'charts-funnel-chart',
+    component: mdxRoute(() => import('./pages/charts/funnel-chart.mdx')),
+  },
+  {
+    path: '/charts/heatmap',
+    name: 'charts-heatmap',
+    component: mdxRoute(() => import('./pages/charts/heatmap.mdx')),
+  },
+  {
+    path: '/charts/line-chart',
+    name: 'charts-line-chart',
+    component: mdxRoute(() => import('./pages/charts/line-chart.mdx')),
+  },
+  {
+    path: '/charts/pie-chart',
+    name: 'charts-pie-chart',
+    component: mdxRoute(() => import('./pages/charts/pie-chart.mdx')),
+  },
+  {
+    path: '/charts/radar-chart',
+    name: 'charts-radar-chart',
+    component: mdxRoute(() => import('./pages/charts/radar-chart.mdx')),
+  },
+  {
+    path: '/charts/radial-bar-chart',
+    name: 'charts-radial-bar-chart',
+    component: mdxRoute(() => import('./pages/charts/radial-bar-chart.mdx')),
+  },
+  {
+    path: '/charts/sankey-chart',
+    name: 'charts-sankey-chart',
+    component: mdxRoute(() => import('./pages/charts/sankey-chart.mdx')),
+  },
+  {
+    path: '/charts/scatter-chart',
+    name: 'charts-scatter-chart',
+    component: mdxRoute(() => import('./pages/charts/scatter-chart.mdx')),
+  },
+  {
+    path: '/charts/sparkline',
+    name: 'charts-sparkline',
+    component: mdxRoute(() => import('./pages/charts/sparkline.mdx')),
+  },
+  {
+    path: '/charts/treemap',
+    name: 'charts-treemap',
+    component: mdxRoute(() => import('./pages/charts/treemap.mdx')),
+  },
   { path: '/form', redirect: '/form/use-form' },
   {
     path: '/form/package',

@@ -1,0 +1,14 @@
+import { ChartsDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+export default Layout(MDX_DATA.BubbleChart)
+
+## Usage
+
+`BubbleChart` extends a scatter plot with a third numeric dimension that controls point size.
+
+<Demo data={ChartsDemos.bubbleChart} />
+
+## Bubble range
+
+Set `zAxisKey` to the size field and use `range` to scale bubbles while preserving their relative magnitude.

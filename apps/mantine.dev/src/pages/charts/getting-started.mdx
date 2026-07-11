@@ -1,0 +1,47 @@
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.ChartsGettingStarted)
+
+## Installation
+
+Install `@mantine-vue/charts` together with its Apache ECharts integration:
+
+<InstallScript packages="@mantine-vue/charts echarts vue-echarts" />
+
+Import chart styles after core styles at the root of your application:
+
+```ts
+import '@mantine-vue/core/styles.css'
+import '@mantine-vue/charts/styles.css'
+```
+
+## Apache ECharts
+
+All components use Apache ECharts through `vue-echarts`. The ECharts implementation is encapsulated behind the Mantine Vue component API, so most applications only need to provide `data`, `series`, and the chart-specific props documented on these pages.
+
+## Chart size
+
+Charts use `width="100%"` and `height="300"` by default. Set `height` explicitly when the parent does not provide a stable height. Charts automatically resize with their container unless `:autoresize="false"` is set.
+
+## Access ECharts instance
+
+Every chart exposes `getEchartsInstance`, `resize`, and `setOption` through its Vue template ref for advanced integration:
+
+```vue
+<script setup lang="ts">
+import { ref, onMounted } from 'vue'
+import { LineChart } from '@mantine-vue/charts'
+
+const chart = ref<InstanceType<typeof LineChart>>()
+onMounted(() => chart.value?.resize())
+</script>
+
+<template>
+  <LineChart ref="chart" :data="data" data-key="month" :series="series" />
+</template>
+```
+
+## Events
+
+Charts emit `click`, `dblclick`, `mouseover`, `mouseout`, `legendselectchanged`, and `datazoom` with the original ECharts event payload.

@@ -293,6 +293,26 @@ const HOOKS_LIFECYCLE_PAGES: MdxNavItem[] = [
   { label: 'use-is-first-render', link: '/hooks/use-is-first-render' },
 ]
 
+const CHARTS_PAGES: MdxNavItem[] = [
+  { label: 'Getting started', link: '/charts/getting-started' },
+  { label: 'AreaChart', link: '/charts/area-chart' },
+  { label: 'BarChart', link: '/charts/bar-chart' },
+  { label: 'BarsList', link: '/charts/bars-list' },
+  { label: 'BubbleChart', link: '/charts/bubble-chart' },
+  { label: 'CompositeChart', link: '/charts/composite-chart' },
+  { label: 'DonutChart', link: '/charts/donut-chart' },
+  { label: 'FunnelChart', link: '/charts/funnel-chart' },
+  { label: 'Heatmap', link: '/charts/heatmap' },
+  { label: 'LineChart', link: '/charts/line-chart' },
+  { label: 'PieChart', link: '/charts/pie-chart' },
+  { label: 'RadarChart', link: '/charts/radar-chart' },
+  { label: 'RadialBarChart', link: '/charts/radial-bar-chart' },
+  { label: 'SankeyChart', link: '/charts/sankey-chart' },
+  { label: 'ScatterChart', link: '/charts/scatter-chart' },
+  { label: 'Sparkline', link: '/charts/sparkline' },
+  { label: 'Treemap', link: '/charts/treemap' },
+]
+
 export const MDX_NAV_DATA: MdxNavCategory[] = [
   {
     category: 'Getting started',
@@ -337,6 +357,10 @@ export const MDX_NAV_DATA: MdxNavCategory[] = [
   {
     category: 'Dates',
     groups: [{ title: 'Dates', pages: DATES_PAGES }],
+  },
+  {
+    category: 'Charts',
+    groups: [{ title: 'Charts', pages: CHARTS_PAGES }],
   },
   {
     category: 'Form',

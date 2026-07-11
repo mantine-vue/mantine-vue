@@ -1,0 +1,14 @@
+import { ChartsDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+export default Layout(MDX_DATA.BarsList)
+
+## Usage
+
+`BarsList` renders a compact ranked list with proportional horizontal bars.
+
+<Demo data={ChartsDemos.barsList} />
+
+## Formatting
+
+Use `valueFormatter` for the displayed value and `barColor`, `barHeight`, `barGap`, and `minBarSize` to customize layout.

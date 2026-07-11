@@ -1,0 +1,14 @@
+import { ChartsDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+export default Layout(MDX_DATA.PieChart)
+
+## Usage
+
+`PieChart` displays proportional data. Each data item requires `name` and `value` and can define a Mantine color.
+
+<Demo data={ChartsDemos.pieChart} />
+
+## Labels
+
+Enable `withLabels` and `withLabelsLine` to display segment labels. Use `labelsType="percent"` for percentage values.

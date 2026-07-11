@@ -1,0 +1,14 @@
+import { ChartsDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+export default Layout(MDX_DATA.CompositeChart)
+
+## Usage
+
+`CompositeChart` combines bar, line, and area series in one coordinate system. Set `type` on each series item.
+
+<Demo data={ChartsDemos.compositeChart} />
+
+## Series options
+
+Use `lineProps`, `areaProps`, and `barProps` for global or per-series ECharts customization. Common axis, tooltip, legend, and reference-line props match the other cartesian charts.
