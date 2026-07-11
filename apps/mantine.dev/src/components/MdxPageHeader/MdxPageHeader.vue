@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { Frontmatter } from '@/types'
 
-const props = defineProps<{ meta: Frontmatter }>()
+defineProps<{ meta: Frontmatter }>()
 </script>
 
 <template>
