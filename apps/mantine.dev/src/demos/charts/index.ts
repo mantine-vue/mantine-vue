@@ -237,7 +237,7 @@ const links = ${JSON.stringify(links, null, 2)}
 )
 
 const heatmapData = Object.fromEntries(
-  Array.from({ length: 90 }, (_, index) => {
+  Array.from({ length: 150 }, (_, index) => {
     const date = new Date(Date.UTC(2026, 0, index + 1))
     return [date.toISOString().slice(0, 10), (index * 17) % 12]
   }),
@@ -247,11 +247,13 @@ export const heatmap = demo(
   {
     data: heatmapData,
     startDate: '2026-01-01',
-    endDate: '2026-03-31',
+    endDate: '2026-05-31',
     withMonthLabels: true,
     withWeekdayLabels: true,
     withLegend: true,
-    height: 220,
+    height: 300,
+    rectSize: 20,
+    gap: 2,
   },
   `<script setup lang="ts">
 import { Heatmap } from '@mantine-vue/charts'
