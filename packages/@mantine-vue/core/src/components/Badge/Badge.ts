@@ -1,4 +1,4 @@
-import { defineComponent, h, type PropType } from 'vue'
+import { defineComponent, h, type PropType, type SlotsType, type VNodeChild } from 'vue'
 import {
   withBoxProps,
   Box,
@@ -7,6 +7,10 @@ import {
   getSize,
   getThemeColor,
   type MantineVariant,
+  type MantineNode,
+  type SectionSlots,
+  hasNode,
+  resolveNode,
   useProps,
   useStyles,
 } from '../../core'
@@ -21,6 +25,10 @@ export type BadgeVariant =
   | 'white'
   | 'default'
   | 'gradient'
+
+export interface BadgeSlots extends SectionSlots {
+  default?: () => VNodeChild
+}
 
 const varsResolver = createVarsResolver<any>(
   (theme, { radius, color, gradient, variant, size, autoContrast, circle }) => {
@@ -51,6 +59,7 @@ export const Badge = withBoxProps(
   defineComponent({
     name: 'Badge',
     inheritAttrs: false,
+    slots: Object as SlotsType<BadgeSlots>,
     props: {
       component: { type: String, default: 'div' },
       size: [String, Number] as PropType<string | number>,
@@ -61,8 +70,8 @@ export const Badge = withBoxProps(
         type: Object as PropType<{ from: string; to: string; deg?: number }>,
         default: undefined,
       },
-      leftSection: { type: [String, Number, Object, Function], default: undefined },
-      rightSection: { type: [String, Number, Object, Function], default: undefined },
+      leftSection: { type: null as unknown as PropType<MantineNode>, default: undefined },
+      rightSection: { type: null as unknown as PropType<MantineNode>, default: undefined },
       fullWidth: { type: Boolean, default: false },
       autoContrast: { type: Boolean, default: undefined },
       variant: { type: String as PropType<MantineVariant<BadgeVariant>>, default: undefined },
@@ -87,19 +96,21 @@ export const Badge = withBoxProps(
       })
 
       const renderSection = (section: any, position: 'left' | 'right') =>
-        section
+        hasNode(section)
           ? h(
               'span',
               {
                 ...getStyles('section'),
                 'data-position': position,
               },
-              typeof section === 'function' ? section() : section,
+              () => section as any,
             )
           : null
 
       return () => {
-        const children = slots.default?.()
+        const children = slots.default?.() ?? []
+        const leftSection = resolveNode(props.leftSection, slots.leftSection)
+        const rightSection = resolveNode(props.rightSection, slots.rightSection)
         return h(
           Box,
           {
@@ -110,14 +121,14 @@ export const Badge = withBoxProps(
             mod: {
               block: props.fullWidth,
               circle: props.circle,
-              withRightSection: Boolean(props.rightSection),
-              withLeftSection: Boolean(props.leftSection),
+              withRightSection: hasNode(rightSection),
+              withLeftSection: hasNode(leftSection),
             },
           },
           () => [
-            renderSection(props.leftSection, 'left'),
+            renderSection(leftSection, 'left'),
             h('span', getStyles('label'), children),
-            renderSection(props.rightSection, 'right'),
+            renderSection(rightSection, 'right'),
           ],
         )
       }

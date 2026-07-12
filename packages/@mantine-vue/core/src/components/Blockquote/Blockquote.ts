@@ -1,17 +1,26 @@
-import { defineComponent, h, type PropType } from 'vue'
+import { defineComponent, h, type PropType, type SlotsType, type VNodeChild } from 'vue'
 import {
   withBoxProps,
   Box,
   createVarsResolver,
   getRadius,
   getThemeColor,
+  hasNode,
   parseThemeColor,
   rem,
+  resolveNode,
   rgba,
+  type MantineNode,
   useProps,
   useStyles,
 } from '../../core'
 import classes from './Blockquote.module.css'
+
+export interface BlockquoteSlots {
+  default?: () => VNodeChild
+  icon?: () => VNodeChild
+  cite?: () => VNodeChild
+}
 
 const defaultProps = {
   iconSize: 48,
@@ -42,20 +51,17 @@ const varsResolver = createVarsResolver<any>((theme, { color, iconSize, radius, 
   }
 })
 
-function renderContent(content: any) {
-  return typeof content === 'function' ? content() : content
-}
-
 export const Blockquote = withBoxProps(
   defineComponent({
     name: 'Blockquote',
     inheritAttrs: false,
+    slots: Object as SlotsType<BlockquoteSlots>,
     props: {
-      icon: { type: [String, Number, Object, Function], default: undefined },
+      icon: { type: null as unknown as PropType<MantineNode>, default: undefined },
       iconSize: [String, Number] as PropType<string | number>,
       color: { type: String, default: undefined },
       radius: [String, Number] as PropType<string | number>,
-      cite: { type: [String, Number, Object, Function], default: undefined },
+      cite: { type: null as unknown as PropType<MantineNode>, default: undefined },
       textWrap: {
         type: String as PropType<'wrap' | 'nowrap' | 'balance' | 'pretty' | 'stable'>,
         default: undefined,
@@ -81,8 +87,8 @@ export const Blockquote = withBoxProps(
       })
 
       return () => {
-        const icon = props.icon ?? slots.icon?.()
-        const cite = props.cite ?? slots.cite?.()
+        const icon = resolveNode(props.icon, slots.icon)
+        const cite = resolveNode(props.cite, slots.cite)
 
         return h(
           Box,
@@ -92,9 +98,9 @@ export const Blockquote = withBoxProps(
             component: 'blockquote',
           },
           () => [
-            icon ? h('span', getStyles('icon'), renderContent(icon)) : null,
+            hasNode(icon) ? h('span', getStyles('icon'), icon as any) : null,
             slots.default?.(),
-            cite ? h('cite', getStyles('cite'), renderContent(cite)) : null,
+            hasNode(cite) ? h('cite', getStyles('cite'), cite as any) : null,
           ],
         )
       }

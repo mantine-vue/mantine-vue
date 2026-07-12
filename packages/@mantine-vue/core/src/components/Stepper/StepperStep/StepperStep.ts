@@ -1,11 +1,22 @@
-import { defineComponent, h, isVNode, type PropType } from 'vue'
-import { withBoxProps, getThemeColor, useMantineTheme, useProps } from '../../../core'
+import { defineComponent, h, isVNode, type PropType, type SlotsType, type VNodeChild } from 'vue'
+import {
+  withBoxProps,
+  getThemeColor,
+  type MantineNode,
+  useMantineTheme,
+  useProps,
+} from '../../../core'
 import { CheckIcon } from '../../Checkbox'
 import { Loader } from '../../Loader'
 import { Transition } from '../../Transition'
 import { UnstyledButton } from '../../UnstyledButton'
 import { useStepperContext } from '../Stepper.context'
 import classes from '../Stepper.module.css'
+
+export interface StepperStepFragmentSlotProps {
+  step: number
+}
+type StepperStepFragment = MantineNode | ((payload: { step: number }) => VNodeChild)
 
 export type StepperStepState = 'stepInactive' | 'stepProgress' | 'stepCompleted'
 export type StepperStepStylesNames =
@@ -20,12 +31,33 @@ export type StepperStepStylesNames =
   | 'stepLabel'
   | 'stepDescription'
 
+export interface StepperStepSlots {
+  icon?: (payload: StepperStepFragmentSlotProps) => VNodeChild
+  completedIcon?: (payload: StepperStepFragmentSlotProps) => VNodeChild
+  progressIcon?: (payload: StepperStepFragmentSlotProps) => VNodeChild
+  label?: (payload: StepperStepFragmentSlotProps) => VNodeChild
+  description?: (payload: StepperStepFragmentSlotProps) => VNodeChild
+}
+
 function renderFragment(fragment: any, step = 0) {
   if (typeof fragment === 'function') {
     return fragment({ step })
   }
 
   return isVNode(fragment) ? fragment : fragment
+}
+
+/** Resolve a Stepper fragment, honouring prop-over-slot precedence and passing `{ step }`. */
+function resolveFragment(
+  prop: StepperStepFragment | undefined,
+  slot: ((payload: { step: number }) => VNodeChild) | undefined,
+  step: number,
+) {
+  if (prop !== undefined) {
+    return renderFragment(prop, step)
+  }
+
+  return slot ? slot({ step }) : undefined
 }
 
 const defaultProps = {
@@ -38,6 +70,7 @@ export const StepperStep = withBoxProps(
   defineComponent({
     name: 'StepperStep',
     inheritAttrs: false,
+    slots: Object as SlotsType<StepperStepSlots>,
     props: {
       step: { type: Number, default: undefined },
       state: { type: String as PropType<StepperStepState>, default: undefined },
@@ -69,7 +102,7 @@ export const StepperStep = withBoxProps(
       className: { type: [String, Array, Object] as PropType<any>, default: undefined },
       style: { type: [String, Array, Object] as PropType<any>, default: undefined },
     },
-    setup(rawProps, { attrs }) {
+    setup(rawProps, { attrs, slots }) {
       const props = useProps('StepperStep', defaultProps, rawProps)
       const ctx = useStepperContext()
       const theme = useMantineTheme()
@@ -79,13 +112,24 @@ export const StepperStep = withBoxProps(
           'data-progress': props.state === 'stepProgress' || undefined,
           'data-completed': props.state === 'stepCompleted' || undefined,
         }
+        const step = props.step ?? 0
         const iconPosition = props.iconPosition ?? ctx.iconPosition
         const stylesApi = { classNames: props.classNames, styles: props.styles, props }
+        const iconNode = resolveFragment(props.icon, slots.icon, step)
+        const progressIconNode =
+          props.progressIcon !== undefined || slots.progressIcon
+            ? resolveFragment(props.progressIcon, slots.progressIcon, step)
+            : undefined
         const currentIcon =
-          props.state === 'stepProgress' ? (props.progressIcon ?? props.icon) : props.icon
-        const completed = props.completedIcon
-          ? renderFragment(props.completedIcon, props.step)
+          props.state === 'stepProgress' ? (progressIconNode ?? iconNode) : iconNode
+        const hasCompletedIcon = props.completedIcon !== undefined || !!slots.completedIcon
+        const completed = hasCompletedIcon
+          ? resolveFragment(props.completedIcon, slots.completedIcon, step)
           : h(CheckIcon, { width: '60%', height: '60%' })
+        const labelPresent = props.label !== undefined || !!slots.label
+        const descriptionPresent = props.description !== undefined || !!slots.description
+        const labelNode = resolveFragment(props.label, slots.label, step)
+        const descriptionNode = resolveFragment(props.description, slots.description, step)
         const stepStyles = ctx.getStyles('step', {
           className: [
             props.className ?? attrs.class,
@@ -149,7 +193,7 @@ export const StepperStep = withBoxProps(
                                 color: props.color,
                                 ...ctx.getStyles('stepLoader', stylesApi),
                               })
-                            : renderFragment(currentIcon, props.step),
+                            : currentIcon,
                         )
                       : null,
                   ]),
@@ -161,7 +205,7 @@ export const StepperStep = withBoxProps(
                     : null,
                 ])
               : null,
-            props.label !== undefined || props.description !== undefined
+            labelPresent || descriptionPresent
               ? h(
                   'span',
                   {
@@ -170,19 +214,11 @@ export const StepperStep = withBoxProps(
                     'data-icon-position': iconPosition,
                   },
                   [
-                    props.label !== undefined
-                      ? h(
-                          'span',
-                          ctx.getStyles('stepLabel', stylesApi),
-                          renderFragment(props.label, props.step),
-                        )
+                    labelPresent
+                      ? h('span', ctx.getStyles('stepLabel', stylesApi), labelNode)
                       : null,
-                    props.description !== undefined
-                      ? h(
-                          'span',
-                          ctx.getStyles('stepDescription', stylesApi),
-                          renderFragment(props.description, props.step),
-                        )
+                    descriptionPresent
+                      ? h('span', ctx.getStyles('stepDescription', stylesApi), descriptionNode)
                       : null,
                   ],
                 )

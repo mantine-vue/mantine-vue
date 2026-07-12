@@ -1,4 +1,13 @@
-import { computed, defineComponent, h, ref, watch, type PropType } from 'vue'
+import {
+  computed,
+  defineComponent,
+  h,
+  ref,
+  watch,
+  type PropType,
+  type SlotsType,
+  type VNodeChild,
+} from 'vue'
 import { useMove, useUncontrolled } from '@mantine-vue/hooks'
 import {
   createVarsResolver,
@@ -51,9 +60,15 @@ const varsResolver = createVarsResolver<any>((theme, { size, color, thumbSize, r
       thumbSize !== undefined ? rem(thumbSize) : 'calc(var(--slider-size) * 2)',
   },
 }))
+export interface RangeSliderSlots {
+  label?: (payload: { value: number; index: number }) => VNodeChild
+  thumbChildren?: (payload: { index: number }) => VNodeChild
+}
+
 export const RangeSlider = defineComponent({
   name: 'RangeSlider',
   inheritAttrs: false,
+  slots: Object as SlotsType<RangeSliderSlots>,
   props: {
     value: { type: Array as unknown as PropType<RangeSliderValue>, default: undefined },
     defaultValue: { type: Array as unknown as PropType<RangeSliderValue>, default: undefined },
@@ -97,7 +112,7 @@ export const RangeSlider = defineComponent({
     vars: { type: [Object, Function], default: undefined },
     unstyled: { type: Boolean, default: false },
   },
-  setup(rawProps, { attrs }) {
+  setup(rawProps, { attrs, slots }) {
     const props = useProps('RangeSlider', defaults as any, rawProps) as any
     const direction = useDirection()
     const activeThumb = ref(0)
@@ -229,8 +244,9 @@ export const RangeSlider = defineComponent({
                       value: props.scale(current.value[index]),
                       position: positions[index],
                       dragging: move.active.value && activeThumb.value === index,
-                      label:
-                        typeof props.label === 'function'
+                      label: slots.label
+                        ? slots.label({ value: props.scale(current.value[index]), index })
+                        : typeof props.label === 'function'
                           ? props.label(props.scale(current.value[index]))
                           : props.label,
                       labelAlwaysOn: props.labelAlwaysOn,
@@ -244,7 +260,10 @@ export const RangeSlider = defineComponent({
                       onFocus: () => (focused.value = index),
                       onKeydown: (event: KeyboardEvent) => keydown(index, event),
                     },
-                    () => props.thumbChildren?.[index],
+                    () =>
+                      slots.thumbChildren
+                        ? slots.thumbChildren({ index })
+                        : props.thumbChildren?.[index],
                   ),
                 ),
             },

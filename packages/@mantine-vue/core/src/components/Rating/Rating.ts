@@ -1,4 +1,4 @@
-import { defineComponent, h, ref, type PropType } from 'vue'
+import { defineComponent, h, ref, type PropType, type SlotsType, type VNodeChild } from 'vue'
 import { useId, useUncontrolled } from '@mantine-vue/hooks'
 import {
   withBoxProps,
@@ -6,6 +6,7 @@ import {
   createVarsResolver,
   getSize,
   getThemeColor,
+  type MantineNode,
   useDirection,
   useProps,
   useStyles,
@@ -21,6 +22,11 @@ export type RatingStylesNames =
   | 'label'
   | 'symbolBody'
   | 'symbolGroup'
+
+export interface RatingSlots {
+  emptySymbol?: (props: { value: number }) => VNodeChild
+  fullSymbol?: (props: { value: number }) => VNodeChild
+}
 
 function roundValueTo(value: number, to: number) {
   const rounded = Math.round(value / to) * to
@@ -51,15 +57,19 @@ export const Rating = withBoxProps(
   defineComponent({
     name: 'Rating',
     inheritAttrs: false,
+    slots: Object as SlotsType<RatingSlots>,
     props: {
       defaultValue: { type: Number, default: undefined },
       value: { type: Number, default: undefined },
       onChange: { type: Function as PropType<(value: number) => void>, default: undefined },
       emptySymbol: {
-        type: [String, Number, Object, Function] as PropType<any>,
+        type: null as unknown as PropType<MantineNode | ((value: number) => VNodeChild)>,
         default: undefined,
       },
-      fullSymbol: { type: [String, Number, Object, Function] as PropType<any>, default: undefined },
+      fullSymbol: {
+        type: null as unknown as PropType<MantineNode | ((value: number) => VNodeChild)>,
+        default: undefined,
+      },
       fractions: { type: Number, default: undefined },
       size: { type: [String, Number] as PropType<string | number>, default: undefined },
       count: { type: Number, default: undefined },
@@ -76,7 +86,7 @@ export const Rating = withBoxProps(
       vars: { type: [Object, Function], default: undefined },
       unstyled: { type: Boolean, default: false },
     },
-    setup(rawProps, { attrs }) {
+    setup(rawProps, { attrs, slots }) {
       const props = useProps('Rating', defaultProps, rawProps)
       const rootRef = ref<HTMLDivElement | null>(null)
       const hovered = ref(-1)
@@ -119,6 +129,12 @@ export const Rating = withBoxProps(
       }
 
       return () => {
+        const emptySymbol =
+          props.emptySymbol ??
+          (slots.emptySymbol ? (value: number) => slots.emptySymbol!({ value }) : undefined)
+        const fullSymbol =
+          props.fullSymbol ??
+          (slots.fullSymbol ? (value: number) => slots.fullSymbol!({ value }) : undefined)
         const count = Math.max(0, Math.floor(props.count ?? defaultProps.count))
         const fractions = Math.floor(props.fractions ?? defaultProps.fractions)
 
@@ -148,8 +164,8 @@ export const Rating = withBoxProps(
               return h(RatingItem, {
                 key: `${integerValue}-${symbolValue}`,
                 getSymbolLabel: props.getSymbolLabel,
-                emptyIcon: props.emptySymbol,
-                fullIcon: props.fullSymbol,
+                emptyIcon: emptySymbol,
+                fullIcon: fullSymbol,
                 full: props.highlightSelectedOnly
                   ? symbolValue === finalValue
                   : symbolValue <= finalValue,

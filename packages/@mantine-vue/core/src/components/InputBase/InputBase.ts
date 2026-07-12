@@ -1,6 +1,8 @@
 import { withBoxProps } from '../../core'
-import { defineComponent, h, type PropType } from 'vue'
+import { defineComponent, h, type PropType, type SlotsType, type VNodeChild } from 'vue'
 import { Input } from '../Input'
+import type { InputSlots } from '../Input/Input'
+import type { MantineNode } from '../../core'
 
 export type InputBaseStylesNames =
   | 'input'
@@ -13,21 +15,28 @@ export type InputBaseStylesNames =
   | 'description'
   | 'error'
 
+export interface InputBaseSlots extends InputSlots {
+  label?: () => VNodeChild
+  description?: () => VNodeChild
+  error?: () => VNodeChild
+}
+
 export const InputBase = withBoxProps(
   defineComponent({
     name: 'InputBase',
     inheritAttrs: false,
+    slots: Object as SlotsType<InputBaseSlots>,
     props: {
       component: { type: [String, Object, Function] as PropType<any>, default: 'input' },
       __staticSelector: { type: String, default: 'InputBase' },
       __stylesApiProps: { type: Object as PropType<Record<string, any>>, default: undefined },
-      label: { type: [String, Number, Object, Function] as PropType<any>, default: undefined },
+      label: { type: null as unknown as PropType<MantineNode>, default: undefined },
       description: {
-        type: [String, Number, Object, Function] as PropType<any>,
+        type: null as unknown as PropType<MantineNode>,
         default: undefined,
       },
       error: {
-        type: [String, Number, Object, Function, Boolean] as PropType<any>,
+        type: null as unknown as PropType<MantineNode | boolean>,
         default: undefined,
       },
       required: { type: Boolean, default: false },
@@ -59,7 +68,7 @@ export const InputBase = withBoxProps(
       leftSectionProps: { type: Object as PropType<Record<string, any>>, default: undefined },
       leftSectionPointerEvents: { type: String, default: undefined },
       rightSection: {
-        type: [String, Number, Object, Function, null] as PropType<any>,
+        type: null as unknown as PropType<MantineNode>,
         default: undefined,
       },
       rightSectionWidth: {
@@ -122,50 +131,59 @@ export const InputBase = withBoxProps(
             unstyled: props.unstyled,
             mod: props.mod,
           },
-          () =>
-            h(
-              Input,
-              {
-                ...attrs,
-                component: props.component,
-                __staticSelector: props.__staticSelector,
-                __stylesApiProps: props.__stylesApiProps ?? props,
-                error: props.error,
-                required: props.required,
-                id: props.id,
-                size: props.size,
-                variant: props.variant,
-                multiline: props.multiline,
-                withAria: props.withAria,
-                classNames: props.classNames,
-                styles: props.styles,
-                vars: props.vars,
-                unstyled: props.unstyled,
-                leftSection: props.leftSection,
-                leftSectionWidth: props.leftSectionWidth,
-                leftSectionProps: props.leftSectionProps,
-                leftSectionPointerEvents: props.leftSectionPointerEvents,
-                rightSection: props.rightSection,
-                rightSectionWidth: props.rightSectionWidth,
-                rightSectionProps: props.rightSectionProps,
-                rightSectionPointerEvents: props.rightSectionPointerEvents,
-                __clearSection: props.__clearSection,
-                __clearable: props.__clearable,
-                __clearSectionMode: props.__clearSectionMode,
-                __defaultRightSection: props.__defaultRightSection,
-                radius: props.radius,
-                disabled: props.disabled,
-                pointer: props.pointer,
-                withErrorStyles: props.withErrorStyles,
-                inputSize: props.inputSize,
-                loading: props.loading,
-                loadingPosition: props.loadingPosition,
-                __bottomSection: props.__bottomSection,
-                __bottomSectionProps: props.__bottomSectionProps,
-                rootRef: props.rootRef,
-              },
-              () => slots.default?.(),
-            ),
+          {
+            label: slots.label,
+            description: slots.description,
+            error: slots.error,
+            default: () =>
+              h(
+                Input,
+                {
+                  ...attrs,
+                  component: props.component,
+                  __staticSelector: props.__staticSelector,
+                  __stylesApiProps: props.__stylesApiProps ?? props,
+                  error: props.error ?? (slots.error ? true : undefined),
+                  required: props.required,
+                  id: props.id,
+                  size: props.size,
+                  variant: props.variant,
+                  multiline: props.multiline,
+                  withAria: props.withAria,
+                  classNames: props.classNames,
+                  styles: props.styles,
+                  vars: props.vars,
+                  unstyled: props.unstyled,
+                  leftSection: props.leftSection,
+                  leftSectionWidth: props.leftSectionWidth,
+                  leftSectionProps: props.leftSectionProps,
+                  leftSectionPointerEvents: props.leftSectionPointerEvents,
+                  rightSection: props.rightSection,
+                  rightSectionWidth: props.rightSectionWidth,
+                  rightSectionProps: props.rightSectionProps,
+                  rightSectionPointerEvents: props.rightSectionPointerEvents,
+                  __clearSection: props.__clearSection,
+                  __clearable: props.__clearable,
+                  __clearSectionMode: props.__clearSectionMode,
+                  __defaultRightSection: props.__defaultRightSection,
+                  radius: props.radius,
+                  disabled: props.disabled,
+                  pointer: props.pointer,
+                  withErrorStyles: props.withErrorStyles,
+                  inputSize: props.inputSize,
+                  loading: props.loading,
+                  loadingPosition: props.loadingPosition,
+                  __bottomSection: props.__bottomSection,
+                  __bottomSectionProps: props.__bottomSectionProps,
+                  rootRef: props.rootRef,
+                },
+                {
+                  default: () => slots.default?.(),
+                  leftSection: slots.leftSection,
+                  rightSection: slots.rightSection,
+                },
+              ),
+          },
         )
     },
   }),

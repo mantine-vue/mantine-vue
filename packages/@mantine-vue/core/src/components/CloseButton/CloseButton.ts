@@ -1,10 +1,25 @@
-import { defineComponent, h, type PropType } from 'vue'
-import { createVarsResolver, getRadius, getSize, rem, useProps, useStyles } from '../../core'
+import { defineComponent, h, type PropType, type SlotsType, type VNodeChild } from 'vue'
+import {
+  createVarsResolver,
+  getRadius,
+  getSize,
+  hasNode,
+  rem,
+  resolveNode,
+  type MantineNode,
+  useProps,
+  useStyles,
+} from '../../core'
 import { UnstyledButton } from '../UnstyledButton'
 import { CloseIcon } from './CloseIcon'
 import classes from './CloseButton.module.css'
 
 export type CloseButtonVariant = 'subtle' | 'transparent'
+
+export interface CloseButtonSlots {
+  default?: () => VNodeChild
+  icon?: () => VNodeChild
+}
 
 const defaultProps = {
   variant: 'subtle',
@@ -21,13 +36,14 @@ const varsResolver = createVarsResolver<any>((_, { size, radius, iconSize }) => 
 export const CloseButton = defineComponent({
   name: 'CloseButton',
   inheritAttrs: false,
+  slots: Object as SlotsType<CloseButtonSlots>,
   props: {
     component: { type: String, default: 'button' },
     size: [String, Number] as PropType<string | number>,
     radius: [String, Number] as PropType<string | number>,
     disabled: { type: Boolean, default: false },
     iconSize: [String, Number] as PropType<string | number>,
-    icon: { type: [String, Object, Function], default: undefined },
+    icon: { type: null as unknown as PropType<MantineNode>, default: undefined },
     variant: { type: String as PropType<CloseButtonVariant>, default: undefined },
     __staticSelector: { type: String, default: undefined },
     classNames: { type: [Object, Function], default: undefined },
@@ -50,8 +66,10 @@ export const CloseButton = defineComponent({
       varsResolver,
     })
 
-    return () =>
-      h(
+    return () => {
+      const icon = resolveNode(props.icon, slots.icon)
+
+      return h(
         UnstyledButton,
         {
           ...attrs,
@@ -62,7 +80,8 @@ export const CloseButton = defineComponent({
           disabled: props.disabled,
           mod: { disabled: props.disabled },
         },
-        () => [props.icon ? props.icon : h(CloseIcon), slots.default?.()],
+        () => [hasNode(icon) ? icon : h(CloseIcon), slots.default?.()],
       )
+    }
   },
 })

@@ -1,4 +1,14 @@
-import { computed, defineComponent, h, nextTick, ref, watch, type PropType } from 'vue'
+import {
+  computed,
+  defineComponent,
+  h,
+  nextTick,
+  ref,
+  watch,
+  type PropType,
+  type SlotsType,
+  type VNodeChild,
+} from 'vue'
 import type { Primitive } from '../../core'
 import { useId } from '@mantine-vue/hooks'
 import {
@@ -53,9 +63,20 @@ export interface SelectProps<Value extends Primitive = string> {
 }
 export type SelectStylesNames = string
 
+export interface SelectSlots {
+  label?: () => VNodeChild
+  description?: () => VNodeChild
+  error?: () => VNodeChild
+  leftSection?: () => VNodeChild
+  rightSection?: () => VNodeChild
+  renderOption?: (input: { option: any; checked?: boolean }) => VNodeChild
+  nothingFound?: () => VNodeChild
+}
+
 export const Select = defineComponent({
   name: 'Select',
   inheritAttrs: false,
+  slots: Object as SlotsType<SelectSlots>,
   props: {
     modelValue: { type: null as any, default: undefined },
     value: { type: null as any, default: undefined },
@@ -97,7 +118,7 @@ export const Select = defineComponent({
     chevronColor: { type: String, default: undefined },
   },
   emits: ['update:modelValue', 'update:searchValue'],
-  setup(props, { attrs, emit }) {
+  setup(props, { attrs, emit, slots }) {
     const parsed = computed(() => getParsedComboboxData(props.data))
     const lockup = computed(() => getOptionsLockup(parsed.value))
     const retained: Record<string, ComboboxItem<any>> = {}
@@ -213,69 +234,80 @@ export const Select = defineComponent({
                 autoComplete: (attrs as any).autoComplete,
               },
               () =>
-                h(InputBase, {
-                  ...forwarded,
-                  id: id.value,
-                  __defaultRightSection: h(Combobox.Chevron, {
-                    size: (attrs as any).size ?? 'sm',
-                    error: (attrs as any).error,
-                    color: props.chevronColor,
-                    unstyled: (attrs as any).unstyled,
-                  }),
-                  __clearSection: h(Combobox.ClearButton, {
-                    ...(attrs as any).clearButtonProps,
-                    onClick: clear,
-                  }),
-                  __clearable: clearable,
-                  __clearSectionMode: props.clearSectionMode,
-                  __staticSelector: 'Select',
-                  component: 'input',
-                  disabled,
-                  readOnly: readOnly || !props.searchable,
-                  pointer: !props.searchable,
-                  value: search(),
-                  rightSection: (attrs as any).rightSection,
-                  rightSectionPointerEvents: (attrs as any).rightSectionPointerEvents || 'none',
-                  onInput: (event: Event) => {
-                    setSearch((event.currentTarget as HTMLInputElement).value)
-                    combobox.openDropdown()
+                h(
+                  InputBase,
+                  {
+                    ...forwarded,
+                    id: id.value,
+                    __defaultRightSection: h(Combobox.Chevron, {
+                      size: (attrs as any).size ?? 'sm',
+                      error: (attrs as any).error,
+                      color: props.chevronColor,
+                      unstyled: (attrs as any).unstyled,
+                    }),
+                    __clearSection: h(Combobox.ClearButton, {
+                      ...(attrs as any).clearButtonProps,
+                      onClick: clear,
+                    }),
+                    __clearable: clearable,
+                    __clearSectionMode: props.clearSectionMode,
+                    __staticSelector: 'Select',
+                    component: 'input',
+                    disabled,
+                    readOnly: readOnly || !props.searchable,
+                    pointer: !props.searchable,
+                    value: search(),
+                    rightSection: (attrs as any).rightSection,
+                    rightSectionPointerEvents: (attrs as any).rightSectionPointerEvents || 'none',
+                    onInput: (event: Event) => {
+                      setSearch((event.currentTarget as HTMLInputElement).value)
+                      combobox.openDropdown()
+                    },
+                    onFocus: (event: FocusEvent) => {
+                      if (props.openOnFocus && props.searchable) combobox.openDropdown()
+                      ;(attrs as any).onFocus?.(event)
+                    },
+                    onBlur: (event: FocusEvent) => {
+                      if (props.autoSelectOnBlur) combobox.clickSelectedOption()
+                      if (props.searchable) combobox.closeDropdown()
+                      setSearch(selected.value?.label ?? '')
+                      ;(attrs as any).onBlur?.(event)
+                    },
+                    onClick: (event: MouseEvent) => {
+                      if (props.searchable) combobox.openDropdown()
+                      else combobox.toggleDropdown()
+                      ;(attrs as any).onClick?.(event)
+                    },
                   },
-                  onFocus: (event: FocusEvent) => {
-                    if (props.openOnFocus && props.searchable) combobox.openDropdown()
-                    ;(attrs as any).onFocus?.(event)
-                  },
-                  onBlur: (event: FocusEvent) => {
-                    if (props.autoSelectOnBlur) combobox.clickSelectedOption()
-                    if (props.searchable) combobox.closeDropdown()
-                    setSearch(selected.value?.label ?? '')
-                    ;(attrs as any).onBlur?.(event)
-                  },
-                  onClick: (event: MouseEvent) => {
-                    if (props.searchable) combobox.openDropdown()
-                    else combobox.toggleDropdown()
-                    ;(attrs as any).onClick?.(event)
-                  },
-                }),
+                  slots,
+                ),
             ),
-            h(OptionsDropdown, {
-              data: parsed.value as any,
-              hidden: readOnly || disabled,
-              filter: props.filter,
-              search: search(),
-              limit: props.limit,
-              hiddenWhenEmpty: !props.nothingFoundMessage,
-              withScrollArea: props.withScrollArea,
-              maxDropdownHeight: props.maxDropdownHeight,
-              filterOptions: !!props.searchable && selected.value?.label !== search(),
-              value: current(),
-              checkIconPosition: props.checkIconPosition,
-              withCheckIcon: props.withCheckIcon,
-              withAlignedLabels: props.withAlignedLabels,
-              nothingFoundMessage: props.nothingFoundMessage,
-              labelId: (attrs as any).label ? `${id.value}-label` : undefined,
-              renderOption: props.renderOption,
-              scrollAreaProps: props.scrollAreaProps,
-            }),
+            h(
+              OptionsDropdown,
+              {
+                data: parsed.value as any,
+                hidden: readOnly || disabled,
+                filter: props.filter,
+                search: search(),
+                limit: props.limit,
+                hiddenWhenEmpty: !props.nothingFoundMessage && !slots.nothingFound,
+                withScrollArea: props.withScrollArea,
+                maxDropdownHeight: props.maxDropdownHeight,
+                filterOptions: !!props.searchable && selected.value?.label !== search(),
+                value: current(),
+                checkIconPosition: props.checkIconPosition,
+                withCheckIcon: props.withCheckIcon,
+                withAlignedLabels: props.withAlignedLabels,
+                nothingFoundMessage: props.nothingFoundMessage,
+                labelId: (attrs as any).label ? `${id.value}-label` : undefined,
+                renderOption: props.renderOption,
+                scrollAreaProps: props.scrollAreaProps,
+              },
+              {
+                renderOption: slots.renderOption,
+                nothingFound: slots.nothingFound,
+              },
+            ),
           ],
         ),
         h(Combobox.HiddenInput, {

@@ -1,4 +1,4 @@
-import { defineComponent, h, type PropType } from 'vue'
+import { defineComponent, h, type PropType, type SlotsType, type VNodeChild } from 'vue'
 import {
   withBoxProps,
   Box,
@@ -6,12 +6,20 @@ import {
   getFontSize,
   getLineHeight,
   getSpacing,
+  hasNode,
+  resolveNode,
+  type MantineNode,
   useProps,
   useStyles,
 } from '../../core'
 import { ListItem } from './ListItem/ListItem'
 import { provideListContext } from './List.context'
 import classes from './List.module.css'
+
+export interface ListSlots {
+  default?: () => VNodeChild
+  icon?: () => VNodeChild
+}
 
 const defaultProps = {
   type: 'unordered',
@@ -28,11 +36,12 @@ const varsResolver = createVarsResolver<any>((_, { size, spacing }) => ({
 const ListBase = defineComponent({
   name: 'List',
   inheritAttrs: false,
+  slots: Object as SlotsType<ListSlots>,
   props: {
     type: { type: String as PropType<'ordered' | 'unordered'>, default: undefined },
     withPadding: { type: Boolean, default: false },
     size: { type: String, default: undefined },
-    icon: { type: [String, Number, Object, Function], default: undefined },
+    icon: { type: null as unknown as PropType<MantineNode>, default: undefined },
     spacing: [String, Number] as PropType<string | number>,
     center: { type: Boolean, default: false },
     listStyleType: { type: String, default: undefined },
@@ -62,11 +71,15 @@ const ListBase = defineComponent({
     provideListContext({
       getStyles,
       center: props.center,
-      icon: props.icon,
+      get icon() {
+        return resolveNode(props.icon, slots.icon)
+      },
     })
 
-    return () =>
-      h(
+    return () => {
+      const icon = resolveNode(props.icon, slots.icon)
+
+      return h(
         Box,
         {
           ...attrs,
@@ -77,13 +90,14 @@ const ListBase = defineComponent({
           mod: [
             {
               withPadding: props.withPadding,
-              type: props.icon ? 'none' : props.listStyleType,
+              type: hasNode(icon) ? 'none' : props.listStyleType,
             },
             props.mod,
           ],
         },
         () => slots.default?.(),
       )
+    }
   },
 })
 

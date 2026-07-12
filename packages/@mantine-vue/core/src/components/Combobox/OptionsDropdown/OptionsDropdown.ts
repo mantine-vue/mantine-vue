@@ -1,4 +1,4 @@
-import { defineComponent, h, type PropType } from 'vue'
+import { defineComponent, h, type PropType, type SlotsType, type VNodeChild } from 'vue'
 import type { Primitive } from '../../../core'
 import { CheckIcon } from '../../Checkbox'
 import { ScrollAreaAutosize } from '../../ScrollArea'
@@ -40,6 +40,11 @@ export interface OptionsDropdownProps {
   renderOption?: (input: ComboboxLikeRenderOptionInput<any>) => any
   scrollAreaProps?: Record<string, any>
 }
+
+export interface OptionsDropdownSlots {
+  renderOption?: (input: ComboboxLikeRenderOptionInput<any>) => VNodeChild
+  nothingFound?: () => VNodeChild
+}
 const checked = (value: Primitive | Primitive[] | null | undefined, option: Primitive) =>
   Array.isArray(value) ? value.includes(option) : value === option
 function renderItem(item: ComboboxParsedItem<Primitive>, props: OptionsDropdownProps): any {
@@ -77,6 +82,7 @@ function renderItem(item: ComboboxParsedItem<Primitive>, props: OptionsDropdownP
 export const OptionsDropdown = defineComponent({
   name: 'OptionsDropdown',
   inheritAttrs: false,
+  slots: Object as SlotsType<OptionsDropdownSlots>,
   props: {
     data: { type: Array as PropType<OptionsData>, required: true },
     filter: Function as PropType<OptionsFilter<Primitive>>,
@@ -99,11 +105,16 @@ export const OptionsDropdown = defineComponent({
     renderOption: Function as PropType<any>,
     scrollAreaProps: Object,
   },
-  setup(props) {
+  setup(props, { slots }) {
     const ctx = useComboboxContext()
 
     return () => {
       validateOptions(props.data)
+      const renderOption =
+        props.renderOption ??
+        (slots.renderOption ? (input: any) => slots.renderOption!(input) : undefined)
+      const nothingFound =
+        props.nothingFoundMessage ?? (slots.nothingFound ? slots.nothingFound() : undefined)
       const data =
         typeof props.search === 'string'
           ? (props.filter || defaultOptionsFilter)({
@@ -113,7 +124,7 @@ export const OptionsDropdown = defineComponent({
             })
           : props.data
       const empty = isEmptyComboboxData(data)
-      const options = data.map((item) => renderItem(item, props as any))
+      const options = data.map((item) => renderItem(item, { ...props, renderOption } as any))
       const content = props.withScrollArea
         ? h(
             ScrollAreaAutosize,
@@ -136,9 +147,7 @@ export const OptionsDropdown = defineComponent({
         () =>
           h(Combobox.Options, { labelledBy: props.labelId, 'aria-label': props.ariaLabel }, () => [
             content,
-            empty &&
-              props.nothingFoundMessage != null &&
-              h(Combobox.Empty, null, () => props.nothingFoundMessage),
+            empty && nothingFound != null && h(Combobox.Empty, null, () => nothingFound),
           ]),
       )
     }

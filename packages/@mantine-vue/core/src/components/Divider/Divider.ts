@@ -1,16 +1,24 @@
-import { defineComponent, h, type PropType } from 'vue'
+import { defineComponent, h, type PropType, type SlotsType, type VNodeChild } from 'vue'
 import {
   withBoxProps,
   Box,
   createVarsResolver,
   getSize,
   getThemeColor,
+  hasNode,
+  resolveNode,
+  type MantineNode,
   useProps,
   useStyles,
 } from '../../core'
 import classes from './Divider.module.css'
 
 export type DividerVariant = 'solid' | 'dashed' | 'dotted'
+
+export interface DividerSlots {
+  default?: () => VNodeChild
+  label?: () => VNodeChild
+}
 
 const defaultProps = {
   orientation: 'horizontal',
@@ -30,10 +38,11 @@ export const Divider = withBoxProps(
   defineComponent({
     name: 'Divider',
     inheritAttrs: false,
+    slots: Object as SlotsType<DividerSlots>,
     props: {
       color: { type: String, default: undefined },
       size: [String, Number] as PropType<string | number>,
-      label: { type: [String, Number, Object, Function], default: undefined },
+      label: { type: null as unknown as PropType<MantineNode>, default: undefined },
       labelPosition: { type: String as PropType<'left' | 'center' | 'right'>, default: undefined },
       orientation: { type: String as PropType<'horizontal' | 'vertical'>, default: undefined },
       variant: { type: String as PropType<DividerVariant>, default: undefined },
@@ -58,7 +67,7 @@ export const Divider = withBoxProps(
       })
 
       return () => {
-        const label = slots.default?.() ?? props.label
+        const label = resolveNode(props.label, slots.label ?? slots.default)
 
         return h(
           Box,
@@ -66,10 +75,10 @@ export const Divider = withBoxProps(
             ...attrs,
             role: 'separator',
             ...getStyles('root'),
-            mod: { orientation: props.orientation, withLabel: Boolean(label) },
+            mod: { orientation: props.orientation, withLabel: hasNode(label) },
           },
           () =>
-            label
+            hasNode(label)
               ? h(
                   Box as any,
                   {

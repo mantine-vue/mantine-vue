@@ -1,10 +1,13 @@
-import { defineComponent, h, type PropType } from 'vue'
+import { defineComponent, h, type PropType, type SlotsType, type VNodeChild } from 'vue'
 import {
   withBoxProps,
   Box,
   createVarsResolver,
   getRadius,
   getThemeColor,
+  hasNode,
+  resolveNode,
+  type MantineNode,
   useProps,
   useStyles,
 } from '../../core'
@@ -21,6 +24,12 @@ export type NotificationStylesNames =
   | 'description'
   | 'closeButton'
 
+export interface NotificationSlots {
+  default?: () => VNodeChild
+  icon?: () => VNodeChild
+  title?: () => VNodeChild
+}
+
 const defaultProps = {
   withCloseButton: true,
 } as const
@@ -36,12 +45,13 @@ export const Notification = withBoxProps(
   defineComponent({
     name: 'Notification',
     inheritAttrs: false,
+    slots: Object as SlotsType<NotificationSlots>,
     props: {
       onClose: { type: Function as PropType<() => void>, default: undefined },
       color: { type: String, default: undefined },
       radius: { type: [String, Number] as PropType<string | number>, default: undefined },
-      icon: { type: [String, Number, Object, Function] as PropType<any>, default: undefined },
-      title: { type: [String, Number, Object, Function] as PropType<any>, default: undefined },
+      icon: { type: null as unknown as PropType<MantineNode>, default: undefined },
+      title: { type: null as unknown as PropType<MantineNode>, default: undefined },
       loading: { type: Boolean, default: false },
       withBorder: { type: Boolean, default: false },
       withCloseButton: { type: Boolean, default: undefined },
@@ -67,24 +77,23 @@ export const Notification = withBoxProps(
         vars: props.vars as any,
         varsResolver,
       })
-      const renderContent = (value: any) => (typeof value === 'function' ? value() : value)
+      return () => {
+        const icon = resolveNode(props.icon, slots.icon)
+        const title = resolveNode(props.title, slots.title)
 
-      return () =>
-        h(
+        return h(
           Box,
           {
             ...attrs,
             role: attrs.role || 'alert',
             mod: [
-              { withIcon: Boolean(props.icon) || props.loading, withBorder: props.withBorder },
+              { withIcon: hasNode(icon) || props.loading, withBorder: props.withBorder },
               props.mod,
             ],
             ...getStyles('root', { className: attrs.class, style: attrs.style as any }),
           },
           () => [
-            props.icon && !props.loading
-              ? h('div', getStyles('icon'), renderContent(props.icon))
-              : null,
+            hasNode(icon) && !props.loading ? h('div', getStyles('icon'), icon as any) : null,
             props.loading
               ? h(Loader, {
                   size: 28,
@@ -94,12 +103,12 @@ export const Notification = withBoxProps(
                 })
               : null,
             h('div', getStyles('body'), [
-              props.title ? h('div', getStyles('title'), renderContent(props.title)) : null,
+              hasNode(title) ? h('div', getStyles('title'), title as any) : null,
               h(
                 Box,
                 {
                   ...getStyles('description'),
-                  mod: { withTitle: Boolean(props.title) },
+                  mod: { withTitle: hasNode(title) },
                 },
                 () => slots.default?.(),
               ),
@@ -120,6 +129,7 @@ export const Notification = withBoxProps(
               : null,
           ],
         )
+      }
     },
   }),
 )

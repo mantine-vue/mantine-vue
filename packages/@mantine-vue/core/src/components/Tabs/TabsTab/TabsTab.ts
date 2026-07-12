@@ -1,12 +1,21 @@
-import { defineComponent, h, type PropType } from 'vue'
-import { Box, getThemeColor, useDirection, useMantineTheme } from '../../../core'
+import { defineComponent, h, type PropType, type SlotsType, type VNodeChild } from 'vue'
+import {
+  Box,
+  getThemeColor,
+  hasNode,
+  resolveNode,
+  type MantineNode,
+  type SectionSlots,
+  useDirection,
+  useMantineTheme,
+} from '../../../core'
 import { UnstyledButton } from '../../UnstyledButton'
 import { useTabsContext } from '../Tabs.context'
 
 export type TabsTabStylesNames = 'tab' | 'tabSection' | 'tabLabel'
 
-function renderContent(content: any) {
-  return typeof content === 'function' ? content() : content
+export interface TabsTabSlots extends SectionSlots {
+  default?: () => VNodeChild
 }
 
 function getTabs(event: KeyboardEvent, selector: string) {
@@ -93,10 +102,11 @@ function createTabsKeydownHandler({
 export const TabsTab = defineComponent({
   name: 'TabsTab',
   inheritAttrs: false,
+  slots: Object as SlotsType<TabsTabSlots>,
   props: {
     value: { type: String, required: true },
-    rightSection: { type: [String, Number, Object, Function] as PropType<any>, default: undefined },
-    leftSection: { type: [String, Number, Object, Function] as PropType<any>, default: undefined },
+    rightSection: { type: null as unknown as PropType<MantineNode>, default: undefined },
+    leftSection: { type: null as unknown as PropType<MantineNode>, default: undefined },
     color: { type: String, default: undefined },
     disabled: { type: Boolean, default: false },
     tabIndex: { type: Number, default: undefined },
@@ -114,6 +124,8 @@ export const TabsTab = defineComponent({
 
     return () => {
       const active = props.value === ctx.value
+      const leftSection = resolveNode(props.leftSection, slots.leftSection)
+      const rightSection = resolveNode(props.rightSection, slots.rightSection)
       const stylesApiProps = { classNames: props.classNames, styles: props.styles, props }
       const activateTab = (event: MouseEvent) => {
         ctx.onChange(
@@ -164,7 +176,7 @@ export const TabsTab = defineComponent({
           }),
         },
         () => [
-          props.leftSection
+          hasNode(leftSection)
             ? h(
                 Box,
                 {
@@ -172,7 +184,7 @@ export const TabsTab = defineComponent({
                   ...ctx.getStyles('tabSection', stylesApiProps),
                   'data-position': 'left',
                 },
-                () => renderContent(props.leftSection),
+                () => leftSection,
               )
             : null,
           slots.default
@@ -180,7 +192,7 @@ export const TabsTab = defineComponent({
                 slots.default?.(),
               )
             : null,
-          props.rightSection
+          hasNode(rightSection)
             ? h(
                 Box,
                 {
@@ -188,7 +200,7 @@ export const TabsTab = defineComponent({
                   ...ctx.getStyles('tabSection', stylesApiProps),
                   'data-position': 'right',
                 },
-                () => renderContent(props.rightSection),
+                () => rightSection,
               )
             : null,
         ],

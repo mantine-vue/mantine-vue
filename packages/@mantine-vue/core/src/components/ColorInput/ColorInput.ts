@@ -54,7 +54,7 @@ export const ColorInput = defineComponent({
     swatchesPerRow: { type: Number, default: 7 },
   },
   emits: ['update:modelValue'],
-  setup(props, { attrs, emit }) {
+  setup(props, { attrs, emit, slots }) {
     const internal = ref(props.defaultValue)
     const current = () => props.modelValue ?? props.value ?? internal.value
     const controlled = () => props.modelValue !== undefined || props.value !== undefined
@@ -137,33 +137,43 @@ export const ColorInput = defineComponent({
         },
         () => [
           h(Popover.Target, null, () =>
-            h(InputBase, {
-              ...forwarded,
-              component: 'input',
-              __staticSelector: 'ColorInput',
-              autocomplete: 'off',
-              spellcheck: false,
-              disabled,
-              readonly: props.disallowInput || readOnly,
-              pointer: props.disallowInput,
-              value,
-              leftSection: (attrs as any).leftSection ?? preview,
-              rightSection: (attrs as any).rightSection ?? eye,
-              onInput: (event: Event) => setValue((event.target as HTMLInputElement).value, true),
-              onFocus: (event: FocusEvent) => {
-                opened.value = true
-                ;(attrs as any).onFocus?.(event)
+            h(
+              InputBase,
+              {
+                ...forwarded,
+                component: 'input',
+                __staticSelector: 'ColorInput',
+                autocomplete: 'off',
+                spellcheck: false,
+                disabled,
+                readonly: props.disallowInput || readOnly,
+                pointer: props.disallowInput,
+                value,
+                leftSection:
+                  (attrs as any).leftSection !== undefined || slots.leftSection
+                    ? (attrs as any).leftSection
+                    : preview,
+                rightSection:
+                  (attrs as any).rightSection !== undefined || slots.rightSection
+                    ? (attrs as any).rightSection
+                    : eye,
+                onInput: (event: Event) => setValue((event.target as HTMLInputElement).value, true),
+                onFocus: (event: FocusEvent) => {
+                  opened.value = true
+                  ;(attrs as any).onFocus?.(event)
+                },
+                onClick: (event: MouseEvent) => {
+                  opened.value = true
+                  ;(attrs as any).onClick?.(event)
+                },
+                onBlur: (event: FocusEvent) => {
+                  if (props.fixOnBlur && value !== lastValid.value) setValue(lastValid.value)
+                  opened.value = false
+                  ;(attrs as any).onBlur?.(event)
+                },
               },
-              onClick: (event: MouseEvent) => {
-                opened.value = true
-                ;(attrs as any).onClick?.(event)
-              },
-              onBlur: (event: FocusEvent) => {
-                if (props.fixOnBlur && value !== lastValid.value) setValue(lastValid.value)
-                opened.value = false
-                ;(attrs as any).onBlur?.(event)
-              },
-            }),
+              slots,
+            ),
           ),
           h(
             Popover.Dropdown,

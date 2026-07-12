@@ -1,6 +1,16 @@
-import { defineComponent, h, type PropType } from 'vue'
+import { defineComponent, h, type PropType, type SlotsType, type VNodeChild } from 'vue'
 import { useUncontrolled } from '@mantine-vue/hooks'
-import { withBoxProps, Box, createVarsResolver, getSpacing, useStyles } from '../../core'
+import {
+  withBoxProps,
+  Box,
+  createVarsResolver,
+  getSpacing,
+  hasNode,
+  resolveNode,
+  type MantineNode,
+  type SectionSlots,
+  useStyles,
+} from '../../core'
 import { AccordionChevron } from '../Accordion'
 import { Collapse } from '../Collapse'
 import { UnstyledButton } from '../UnstyledButton'
@@ -16,6 +26,12 @@ export type NavLinkStylesNames =
   | 'collapse'
   | 'children'
 export type NavLinkVariant = 'filled' | 'light' | 'subtle'
+
+export interface NavLinkSlots extends SectionSlots {
+  default?: () => VNodeChild
+  label?: () => VNodeChild
+  description?: () => VNodeChild
+}
 
 const varsResolver = createVarsResolver<any>(
   (theme, { variant, color, childrenOffset, autoContrast }) => {
@@ -55,11 +71,12 @@ export const NavLink = withBoxProps(
   defineComponent({
     name: 'NavLink',
     inheritAttrs: false,
+    slots: Object as SlotsType<NavLinkSlots>,
     props: {
       component: { type: String, default: 'a' },
       label: { type: [String, Number, Object, Function] as PropType<any>, default: undefined },
       description: {
-        type: [String, Number, Object, Function] as PropType<any>,
+        type: null as unknown as PropType<MantineNode>,
         default: undefined,
       },
       leftSection: {
@@ -67,7 +84,7 @@ export const NavLink = withBoxProps(
         default: undefined,
       },
       rightSection: {
-        type: [String, Number, Object, Function, null] as PropType<any>,
+        type: null as unknown as PropType<MantineNode>,
         default: undefined,
       },
       active: { type: Boolean, default: false },
@@ -109,10 +126,10 @@ export const NavLink = withBoxProps(
       })
 
       return () => {
-        const children = slots.default?.()
-        const withChildren = Boolean(children && children.length > 0)
-        const rightSection = props.rightSection ?? slots.rightSection?.()
-        const leftSection = props.leftSection ?? slots.leftSection?.()
+        const children = slots.default?.() ?? []
+        const withChildren = hasNode(children)
+        const rightSection = resolveNode(props.rightSection, slots.rightSection)
+        const leftSection = resolveNode(props.leftSection, slots.leftSection)
 
         const toggle = (event: Event) => {
           if (withChildren) {
@@ -147,7 +164,7 @@ export const NavLink = withBoxProps(
               },
             },
             () => [
-              leftSection
+              hasNode(leftSection)
                 ? h(
                     Box,
                     { component: 'span', ...getStyles('section'), mod: { position: 'left' } },
@@ -170,7 +187,7 @@ export const NavLink = withBoxProps(
                     )
                   : null,
               ]),
-              withChildren || rightSection !== undefined
+              withChildren || hasNode(rightSection)
                 ? h(
                     Box,
                     {
@@ -183,7 +200,7 @@ export const NavLink = withBoxProps(
                     },
                     () =>
                       withChildren
-                        ? rightSection !== undefined
+                        ? hasNode(rightSection)
                           ? renderContent(rightSection)
                           : h(AccordionChevron, getStyles('chevron'))
                         : renderContent(rightSection),

@@ -9,8 +9,17 @@ import {
   ref,
   type InjectionKey,
   type PropType,
+  type SlotsType,
+  type VNodeChild,
 } from 'vue'
-import { Box, useStyles } from '../../core'
+import {
+  Box,
+  hasNode,
+  resolveNode,
+  type MantineNode,
+  type SectionSlots,
+  useStyles,
+} from '../../core'
 import { useDelayedHover } from '../../utils/Floating'
 import { AccordionChevron } from '../Accordion'
 import { Input } from '../Input'
@@ -299,12 +308,13 @@ export const MenuDropdown = defineComponent({
 export const MenuItem = defineComponent({
   name: 'MenuItem',
   inheritAttrs: false,
+  slots: Object as SlotsType<SectionSlots & { default?: () => VNodeChild }>,
   props: {
     component: { type: [String, Object, Function], default: 'button' },
     color: String,
     closeMenuOnClick: { type: Boolean, default: undefined },
-    leftSection: { type: null as any, default: undefined },
-    rightSection: { type: null as any, default: undefined },
+    leftSection: { type: null as unknown as PropType<MantineNode>, default: undefined },
+    rightSection: { type: null as unknown as PropType<MantineNode>, default: undefined },
     indicator: { type: null as any, default: undefined },
     disabled: Boolean,
     reserveIndicator: Boolean,
@@ -313,6 +323,8 @@ export const MenuItem = defineComponent({
     const ctx = useMenuContext()
     return () => {
       const indicator = ctx.alignItemsLabels === 'all' || props.reserveIndicator
+      const leftSection = resolveNode(props.leftSection, slots.leftSection)
+      const rightSection = resolveNode(props.rightSection, slots.rightSection)
       return h(
         UnstyledButton,
         {
@@ -340,18 +352,18 @@ export const MenuItem = defineComponent({
         },
         () => [
           indicator && h('span', ctx.getStyles('itemIndicator'), props.indicator as any),
-          props.leftSection != null &&
+          hasNode(leftSection) &&
             h(
               'span',
               { ...ctx.getStyles('itemSection'), 'data-position': 'left' },
-              props.leftSection as any,
+              leftSection as any,
             ),
           h('span', ctx.getStyles('itemLabel'), slots),
-          props.rightSection != null &&
+          hasNode(rightSection) &&
             h(
               'span',
               { ...ctx.getStyles('itemSection'), 'data-position': 'right' },
-              props.rightSection as any,
+              rightSection as any,
             ),
         ],
       )
@@ -549,15 +561,22 @@ function group(key: InjectionKey<SelectContext>, multiple: boolean) {
 }
 export const MenuCheckboxGroup = group(CheckboxGroupKey, true)
 export const MenuRadioGroup = group(RadioGroupKey, false)
+export interface MenuCheckboxItemSlots {
+  default?: () => VNodeChild
+  leftSection?: () => VNodeChild
+  rightSection?: () => VNodeChild
+  checkIcon?: (payload: { checked: boolean }) => VNodeChild
+}
 export const MenuCheckboxItem = defineComponent({
   name: 'MenuCheckboxItem',
   inheritAttrs: false,
+  slots: Object as SlotsType<MenuCheckboxItemSlots>,
   props: {
     value: String,
     checked: { type: Boolean, default: undefined },
     defaultChecked: Boolean,
     onChange: Function,
-    checkIcon: { type: null as unknown as PropType<any>, default: undefined },
+    checkIcon: { type: null as unknown as PropType<MantineNode>, default: undefined },
     closeMenuOnClick: { type: Boolean, default: false },
   },
   setup(props, { attrs, slots }) {
@@ -580,6 +599,15 @@ export const MenuCheckboxItem = defineComponent({
         else if (props.checked === undefined) local.value = next
         ;(props.onChange as any)?.(next)
       }
+      const checkIcon =
+        props.checkIcon !== undefined
+          ? typeof props.checkIcon === 'function'
+            ? (props.checkIcon as any)()
+            : props.checkIcon
+          : slots.checkIcon
+            ? slots.checkIcon({ checked: !!checked })
+            : (menu.checkIcon ?? '✓')
+      const { checkIcon: _checkIconSlot, ...forwardedSlots } = slots
       return h(
         MenuItem,
         {
@@ -587,22 +615,30 @@ export const MenuCheckboxItem = defineComponent({
           role: 'menuitemcheckbox',
           'aria-checked': checked,
           reserveIndicator: menu.alignItemsLabels !== 'none' || checked,
-          indicator: checked ? (props.checkIcon ?? menu.checkIcon ?? '✓') : undefined,
+          indicator: checked ? checkIcon : undefined,
           closeMenuOnClick: props.closeMenuOnClick,
           onClick: toggle,
         },
-        slots,
+        forwardedSlots,
       )
     }
   },
 })
+export interface MenuRadioItemSlots {
+  default?: () => VNodeChild
+  leftSection?: () => VNodeChild
+  rightSection?: () => VNodeChild
+  checkIcon?: (payload: { checked: boolean }) => VNodeChild
+}
 export const MenuRadioItem = defineComponent({
   name: 'MenuRadioItem',
   inheritAttrs: false,
+  slots: Object as SlotsType<MenuRadioItemSlots>,
   props: {
     value: { type: String, required: true },
     checked: { type: Boolean, default: undefined },
     onChange: Function,
+    checkIcon: { type: null as unknown as PropType<MantineNode>, default: undefined },
     closeMenuOnClick: { type: Boolean, default: false },
   },
   setup(props, { attrs, slots }) {
@@ -614,6 +650,15 @@ export const MenuRadioItem = defineComponent({
         group?.setValue(props.value)
         ;(props.onChange as any)?.(props.value)
       }
+      const checkIcon =
+        props.checkIcon !== undefined
+          ? typeof props.checkIcon === 'function'
+            ? (props.checkIcon as any)()
+            : props.checkIcon
+          : slots.checkIcon
+            ? slots.checkIcon({ checked: !!checked })
+            : (menu.checkIcon ?? '✓')
+      const { checkIcon: _checkIconSlot, ...forwardedSlots } = slots
       return h(
         MenuItem,
         {
@@ -621,11 +666,11 @@ export const MenuRadioItem = defineComponent({
           role: 'menuitemradio',
           'aria-checked': checked,
           reserveIndicator: menu.alignItemsLabels !== 'none' || checked,
-          indicator: checked ? (menu.checkIcon ?? '✓') : undefined,
+          indicator: checked ? checkIcon : undefined,
           closeMenuOnClick: props.closeMenuOnClick,
           onClick: select,
         },
-        slots,
+        forwardedSlots,
       )
     }
   },
@@ -746,8 +791,8 @@ export type MenuStylesNames =
 export interface MenuItemProps {
   color?: string
   closeMenuOnClick?: boolean
-  leftSection?: any
-  rightSection?: any
+  leftSection?: MantineNode
+  rightSection?: MantineNode
   disabled?: boolean
   [key: string]: any
 }

@@ -1,4 +1,13 @@
-import { computed, defineComponent, h, ref, watch, type PropType } from 'vue'
+import {
+  computed,
+  defineComponent,
+  h,
+  ref,
+  watch,
+  type PropType,
+  type SlotsType,
+  type VNodeChild,
+} from 'vue'
 import { useMove, useUncontrolled } from '@mantine-vue/hooks'
 import {
   withBoxProps,
@@ -7,6 +16,7 @@ import {
   getSize,
   getThemeColor,
   rem,
+  resolveNode,
   useDirection,
   useProps,
   useStyles,
@@ -29,6 +39,12 @@ import {
 import classes from '../Slider.module.css'
 
 export type { SliderStylesNames }
+
+export interface SliderSlots {
+  label?: (payload: { value: number }) => VNodeChild
+  thumbChildren?: () => VNodeChild
+}
+
 const defaultProps = {
   radius: 'xl',
   min: 0,
@@ -56,6 +72,7 @@ export const Slider = withBoxProps(
   defineComponent({
     name: 'Slider',
     inheritAttrs: false,
+    slots: Object as SlotsType<SliderSlots>,
     props: {
       color: { type: String, default: undefined },
       radius: { type: [String, Number] as PropType<string | number>, default: undefined },
@@ -95,7 +112,7 @@ export const Slider = withBoxProps(
       vars: { type: [Object, Function], default: undefined },
       unstyled: { type: Boolean, default: false },
     },
-    setup(rawProps, { attrs }) {
+    setup(rawProps, { attrs, slots }) {
       const props = useProps('Slider', defaultProps as any, rawProps) as any
       const direction = useDirection()
       const hovered = ref(false)
@@ -184,7 +201,11 @@ export const Slider = withBoxProps(
           max: domain.value[1],
         })
         const scaled = props.scale(current.value)
-        const label = typeof props.label === 'function' ? props.label(scaled) : props.label
+        const label = slots.label
+          ? slots.label({ value: scaled })
+          : typeof props.label === 'function'
+            ? props.label(scaled)
+            : props.label
         const start =
           typeof props.startPointValue === 'number' && !props.inverted
             ? getPosition({
@@ -238,7 +259,7 @@ export const Slider = withBoxProps(
                       orientation: props.orientation,
                       onKeydown: keydown,
                     },
-                    () => props.thumbChildren,
+                    () => resolveNode(props.thumbChildren, slots.thumbChildren),
                   ),
               },
             ),

@@ -1,4 +1,4 @@
-import { defineComponent, h, type PropType } from 'vue'
+import { defineComponent, h, type PropType, type SlotsType, type VNodeChild } from 'vue'
 import {
   withBoxProps,
   Box,
@@ -7,13 +7,21 @@ import {
   getContrastColor,
   getRadius,
   getThemeColor,
+  hasNode,
   rem,
+  resolveNode,
+  type MantineNode,
   useProps,
   useStyles,
 } from '../../core'
 import { getPositionVariables } from './get-position-variables/get-position-variables'
 import type { IndicatorPosition } from './Indicator.types'
 import classes from './Indicator.module.css'
+
+export interface IndicatorSlots {
+  default?: () => VNodeChild
+  label?: () => VNodeChild
+}
 
 const defaultProps = {
   position: 'top-end',
@@ -37,14 +45,11 @@ const varsResolver = createVarsResolver<any>(
   }),
 )
 
-function renderContent(content: any) {
-  return typeof content === 'function' ? content() : content
-}
-
 export const Indicator = withBoxProps(
   defineComponent({
     name: 'Indicator',
     inheritAttrs: false,
+    slots: Object as SlotsType<IndicatorSlots>,
     props: {
       position: { type: String as PropType<IndicatorPosition>, default: undefined },
       offset: {
@@ -53,7 +58,7 @@ export const Indicator = withBoxProps(
       },
       inline: { type: Boolean, default: false },
       size: [String, Number] as PropType<string | number>,
-      label: { type: [String, Number, Object, Function], default: undefined },
+      label: { type: null as unknown as PropType<MantineNode>, default: undefined },
       radius: [String, Number] as PropType<string | number>,
       color: { type: String, default: undefined },
       withBorder: { type: Boolean, default: false },
@@ -85,13 +90,14 @@ export const Indicator = withBoxProps(
       })
 
       return () => {
+        const labelContent = resolveNode(props.label, slots.label)
         const shouldHideZero = !props.showZero && (props.label === 0 || props.label === '0')
         const formattedLabel =
           props.maxValue !== undefined &&
           typeof props.label === 'number' &&
           props.label > props.maxValue
             ? `${props.maxValue}+`
-            : props.label
+            : labelContent
 
         return h(
           Box,
@@ -107,12 +113,12 @@ export const Indicator = withBoxProps(
                   {
                     ...getStyles('indicator'),
                     mod: {
-                      withLabel: Boolean(props.label),
+                      withLabel: hasNode(labelContent),
                       withBorder: props.withBorder,
                       processing: props.processing,
                     },
                   },
-                  () => renderContent(formattedLabel),
+                  () => formattedLabel,
                 )
               : null,
             slots.default?.(),

@@ -1,4 +1,14 @@
-import { Comment, Fragment, cloneVNode, defineComponent, h, type PropType, type VNode } from 'vue'
+import {
+  Comment,
+  Fragment,
+  cloneVNode,
+  defineComponent,
+  h,
+  type PropType,
+  type SlotsType,
+  type VNode,
+  type VNodeChild,
+} from 'vue'
 import {
   withBoxProps,
   Box,
@@ -18,6 +28,13 @@ import { provideStepperContext } from './Stepper.context'
 import { StepperCompleted } from './StepperCompleted/StepperCompleted'
 import { StepperStep } from './StepperStep/StepperStep'
 import classes from './Stepper.module.css'
+
+export interface StepperSlots {
+  default?: () => VNodeChild
+  icon?: (payload: { step: number }) => VNodeChild
+  completedIcon?: (payload: { step: number }) => VNodeChild
+  progressIcon?: (payload: { step: number }) => VNodeChild
+}
 
 export type StepperStylesNames =
   | 'root'
@@ -77,6 +94,7 @@ function flattenChildren(children: VNode[]): VNode[] {
 const StepperBase = defineComponent({
   name: 'Stepper',
   inheritAttrs: false,
+  slots: Object as SlotsType<StepperSlots>,
   props: {
     active: { type: Number, required: true },
     onStepClick: { type: Function as PropType<(stepIndex: number) => void>, default: undefined },
@@ -152,13 +170,26 @@ const StepperBase = defineComponent({
           cloneVNode(
             item,
             {
-              icon: itemProps.icon ?? props.icon ?? index + 1,
+              icon:
+                itemProps.icon ??
+                props.icon ??
+                (slots.icon ? (payload: { step: number }) => slots.icon!(payload) : index + 1),
               step: index,
               state,
               onClick: () => selectable && props.onStepClick?.(index),
               allowStepClick: selectable,
-              completedIcon: itemProps.completedIcon ?? props.completedIcon,
-              progressIcon: itemProps.progressIcon ?? props.progressIcon,
+              completedIcon:
+                itemProps.completedIcon ??
+                props.completedIcon ??
+                (slots.completedIcon
+                  ? (payload: { step: number }) => slots.completedIcon!(payload)
+                  : undefined),
+              progressIcon:
+                itemProps.progressIcon ??
+                props.progressIcon ??
+                (slots.progressIcon
+                  ? (payload: { step: number }) => slots.progressIcon!(payload)
+                  : undefined),
               color: itemProps.color ?? props.color,
               iconSize: props.iconSize,
               iconPosition: itemProps.iconPosition ?? props.iconPosition,

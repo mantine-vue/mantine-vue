@@ -1,4 +1,4 @@
-import { defineComponent, h, type PropType } from 'vue'
+import { defineComponent, h, type PropType, type SlotsType, type VNodeChild } from 'vue'
 import {
   withBoxProps,
   Box,
@@ -15,6 +15,10 @@ import { useCheckboxCardContext } from '../CheckboxCard/CheckboxCard'
 import classes from './CheckboxIndicator.module.css'
 
 export type CheckboxIndicatorVariant = 'filled' | 'outline'
+
+export interface CheckboxIndicatorSlots {
+  icon?: (props: { indeterminate?: boolean; class?: any; style?: any }) => VNodeChild
+}
 
 const varsResolver = createVarsResolver<any>(
   (theme, { radius, color, size, iconColor, autoContrast }) => ({
@@ -35,6 +39,7 @@ export const CheckboxIndicator = withBoxProps(
   defineComponent({
     name: 'CheckboxIndicator',
     inheritAttrs: false,
+    slots: Object as SlotsType<CheckboxIndicatorSlots>,
     props: {
       color: { type: String, default: undefined },
       size: { type: [String, Number] as PropType<string | number>, default: 'sm' },
@@ -52,7 +57,7 @@ export const CheckboxIndicator = withBoxProps(
       vars: { type: [Object, Function], default: undefined },
       unstyled: { type: Boolean, default: false },
     },
-    setup(props, { attrs }) {
+    setup(props, { attrs, slots }) {
       const cardContext = useCheckboxCardContext()
       const getStyles = useStyles({
         name: 'CheckboxIndicator',
@@ -68,6 +73,7 @@ export const CheckboxIndicator = withBoxProps(
       })
 
       return () => {
+        const iconStyles = getStyles('icon')
         const Icon = props.icon || CheckboxIcon
         const checked =
           typeof props.checked === 'boolean' || props.indeterminate
@@ -85,7 +91,10 @@ export const CheckboxIndicator = withBoxProps(
               props.mod,
             ],
           },
-          () => h(Icon, { indeterminate: props.indeterminate, ...getStyles('icon') }),
+          () =>
+            slots.icon
+              ? slots.icon({ indeterminate: props.indeterminate, ...iconStyles })
+              : h(Icon, { indeterminate: props.indeterminate, ...iconStyles }),
         )
       }
     },

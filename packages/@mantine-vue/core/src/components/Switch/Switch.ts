@@ -1,4 +1,4 @@
-import { defineComponent, h, ref, type PropType } from 'vue'
+import { defineComponent, h, ref, type PropType, type SlotsType, type VNodeChild } from 'vue'
 import { useId, useUncontrolled, assignRef } from '@mantine-vue/hooks'
 import {
   withBoxProps,
@@ -7,11 +7,22 @@ import {
   getRadius,
   getSize,
   getThemeColor,
+  resolveNode,
+  type MantineNode,
   useStyles,
 } from '../../core'
 import { InlineInput, InlineInputClasses } from '../../utils'
 import { SwitchGroup, useSwitchGroupContext } from './SwitchGroup/SwitchGroup'
 import classes from './Switch.module.css'
+
+export interface SwitchSlots {
+  label?: () => VNodeChild
+  description?: () => VNodeChild
+  error?: () => VNodeChild
+  thumbIcon?: () => VNodeChild
+  onLabel?: () => VNodeChild
+  offLabel?: () => VNodeChild
+}
 
 export type SwitchStylesNames =
   | 'root'
@@ -39,10 +50,6 @@ const varsResolver = createVarsResolver<any>((theme, { radius, color, size }) =>
   },
 }))
 
-function renderContent(content: any) {
-  return typeof content === 'function' ? content() : content
-}
-
 function callHandler(handler: any, event: Event) {
   if (Array.isArray(handler)) {
     handler.forEach((item) => item?.(event))
@@ -54,20 +61,21 @@ function callHandler(handler: any, event: Event) {
 const SwitchBase = defineComponent({
   name: 'Switch',
   inheritAttrs: false,
+  slots: Object as SlotsType<SwitchSlots>,
   props: {
     id: { type: String, default: undefined },
-    label: { type: [String, Number, Object, Function] as PropType<any>, default: undefined },
-    offLabel: { type: [String, Number, Object, Function] as PropType<any>, default: undefined },
-    onLabel: { type: [String, Number, Object, Function] as PropType<any>, default: undefined },
+    label: { type: null as unknown as PropType<MantineNode>, default: undefined },
+    offLabel: { type: null as unknown as PropType<MantineNode>, default: undefined },
+    onLabel: { type: null as unknown as PropType<MantineNode>, default: undefined },
     color: { type: String, default: undefined },
     size: { type: [String, Number] as PropType<string | number>, default: 'sm' },
     radius: { type: [String, Number] as PropType<string | number>, default: 'xl' },
     wrapperProps: { type: Object as PropType<Record<string, any>>, default: undefined },
-    thumbIcon: { type: [String, Number, Object, Function] as PropType<any>, default: undefined },
+    thumbIcon: { type: null as unknown as PropType<MantineNode>, default: undefined },
     labelPosition: { type: String as PropType<'left' | 'right'>, default: 'right' },
-    description: { type: [String, Number, Object, Function] as PropType<any>, default: undefined },
+    description: { type: null as unknown as PropType<MantineNode>, default: undefined },
     error: {
-      type: [String, Number, Object, Function, Boolean] as PropType<any>,
+      type: null as unknown as PropType<MantineNode | boolean>,
       default: undefined,
     },
     rootRef: { type: [Object, Function] as PropType<any>, default: undefined },
@@ -83,7 +91,7 @@ const SwitchBase = defineComponent({
     vars: { type: [Object, Function], default: undefined },
     unstyled: { type: Boolean, default: false },
   },
-  setup(props, { attrs }) {
+  setup(props, { attrs, slots }) {
     const uuid = useId(props.id)
     const groupContext = useSwitchGroupContext()
     const internalChecked = ref(false)
@@ -110,8 +118,14 @@ const SwitchBase = defineComponent({
 
     return () => {
       const id = uuid.value || props.id || ''
-      const descriptionId = props.description ? `${id}-description` : undefined
-      const errorId = props.error && typeof props.error !== 'boolean' ? `${id}-error` : undefined
+      const label = resolveNode(props.label, slots.label)
+      const description = resolveNode(props.description, slots.description)
+      const error = resolveNode(props.error, slots.error)
+      const thumbIcon = resolveNode(props.thumbIcon, slots.thumbIcon)
+      const onLabel = resolveNode(props.onLabel, slots.onLabel)
+      const offLabel = resolveNode(props.offLabel, slots.offLabel)
+      const descriptionId = description ? `${id}-description` : undefined
+      const errorId = error && typeof error !== 'boolean' ? `${id}-error` : undefined
       const describedBy =
         [descriptionId, errorId, attrs['aria-describedby']].filter(Boolean).join(' ') || undefined
       const value = String(attrs.value ?? '')
@@ -129,9 +143,9 @@ const SwitchBase = defineComponent({
           id,
           size,
           labelPosition: props.labelPosition,
-          label: props.label,
-          description: props.description,
-          error: props.error,
+          label,
+          description,
+          error,
           disabled,
           bodyElement: 'label',
           labelElement: 'span',
@@ -169,9 +183,9 @@ const SwitchBase = defineComponent({
               component: 'span',
               'aria-hidden': 'true',
               mod: {
-                error: Boolean(props.error),
+                error: Boolean(error),
                 labelPosition: props.labelPosition,
-                withoutLabels: !props.onLabel && !props.offLabel,
+                withoutLabels: !onLabel && !offLabel,
               },
               ...getStyles('track'),
             },
@@ -180,16 +194,12 @@ const SwitchBase = defineComponent({
                 Box,
                 {
                   component: 'span',
-                  mod: { withThumbIndicator: props.withThumbIndicator && !props.thumbIcon },
+                  mod: { withThumbIndicator: props.withThumbIndicator && !thumbIcon },
                   ...getStyles('thumb'),
                 },
-                () => renderContent(props.thumbIcon),
+                () => thumbIcon,
               ),
-              h(
-                'span',
-                getStyles('trackLabel'),
-                renderContent(currentChecked ? props.onLabel : props.offLabel),
-              ),
+              h('span', getStyles('trackLabel'), (currentChecked ? onLabel : offLabel) as any),
             ],
           ),
         ],

@@ -1,4 +1,13 @@
-import { computed, defineComponent, h, nextTick, ref, type PropType } from 'vue'
+import {
+  computed,
+  defineComponent,
+  h,
+  nextTick,
+  ref,
+  type PropType,
+  type SlotsType,
+  type VNodeChild,
+} from 'vue'
 import {
   Combobox,
   OptionsDropdown,
@@ -10,6 +19,16 @@ import {
 import { InputBase } from '../InputBase'
 import { Pill } from '../Pill'
 import { PillsInput } from '../PillsInput'
+
+export interface TagsInputSlots {
+  label?: () => VNodeChild
+  description?: () => VNodeChild
+  error?: () => VNodeChild
+  leftSection?: () => VNodeChild
+  rightSection?: () => VNodeChild
+  renderOption?: (input: { option: any; checked?: boolean }) => VNodeChild
+  nothingFound?: () => VNodeChild
+}
 
 export interface TagsInputProps {
   modelValue?: string[]
@@ -62,6 +81,7 @@ export function getSplittedTags({
 export const TagsInput = defineComponent({
   name: 'TagsInput',
   inheritAttrs: false,
+  slots: Object as SlotsType<TagsInputSlots>,
   props: {
     modelValue: Array as PropType<string[]>,
     value: Array as PropType<string[]>,
@@ -101,7 +121,7 @@ export const TagsInput = defineComponent({
     selectFirstOptionOnDropdownOpen: Boolean,
   },
   emits: ['update:modelValue', 'update:searchValue'],
-  setup(props, { attrs, emit }) {
+  setup(props, { attrs, emit, slots }) {
     const parsed = computed(() => getParsedComboboxData(props.data))
     const lockup = computed(() => getOptionsLockup(parsed.value))
     const internal = ref([...props.defaultValue])
@@ -217,89 +237,103 @@ export const TagsInput = defineComponent({
                   rightSection,
                   rightSectionPointerEvents: canClear ? 'all' : undefined,
                 },
-                () =>
-                  h(Pill.Group, null, () => [
-                    ...current.map((item, index) => {
-                      const onRemove = () => removeAt(index)
-                      const option = lockup.value[item] ?? {
-                        value: item,
-                        label: item,
-                        disabled: false,
-                      }
-                      return props.renderPill
-                        ? props.renderPill({ option, value: item, onRemove, disabled })
-                        : h(
-                            Pill,
-                            {
-                              key: `${item}-${index}`,
-                              withRemoveButton: !readOnly,
-                              disabled,
-                              onRemove,
-                            },
-                            () => item,
+                {
+                  label: slots.label,
+                  description: slots.description,
+                  error: slots.error,
+                  leftSection: slots.leftSection,
+                  rightSection: slots.rightSection,
+                  default: () =>
+                    h(Pill.Group, null, () => [
+                      ...current.map((item, index) => {
+                        const onRemove = () => removeAt(index)
+                        const option = lockup.value[item] ?? {
+                          value: item,
+                          label: item,
+                          disabled: false,
+                        }
+                        return props.renderPill
+                          ? props.renderPill({ option, value: item, onRemove, disabled })
+                          : h(
+                              Pill,
+                              {
+                                key: `${item}-${index}`,
+                                withRemoveButton: !readOnly,
+                                disabled,
+                                onRemove,
+                              },
+                              () => item,
+                            )
+                      }),
+                      h(PillsInput.Field, {
+                        value: search(),
+                        readonly: readOnly,
+                        disabled,
+                        placeholder: current.length === 0 ? (attrs as any).placeholder : undefined,
+                        onInput: (event: Event) => {
+                          const input = (event.target as HTMLInputElement).value
+                          if (props.splitChars.some((char) => input.includes(char))) split(input)
+                          else setSearch(input)
+                          combobox.openDropdown()
+                        },
+                        onPaste: (event: ClipboardEvent) => {
+                          if (!event.clipboardData) return
+                          event.preventDefault()
+                          split(`${search()}${event.clipboardData.getData('text/plain')}`)
+                          ;(attrs as any).onPaste?.(event)
+                        },
+                        onFocus: (event: FocusEvent) => {
+                          if (props.openOnFocus) combobox.openDropdown()
+                          ;(attrs as any).onFocus?.(event)
+                        },
+                        onBlur: (event: FocusEvent) => {
+                          if (props.acceptValueOnBlur) submit(search())
+                          combobox.closeDropdown()
+                          ;(attrs as any).onBlur?.(event)
+                        },
+                        onClick: () => combobox.openDropdown(),
+                        onKeydown: (event: KeyboardEvent) => {
+                          if (event.isComposing) return
+                          if (event.key === 'Enter' && search().trim()) {
+                            event.preventDefault()
+                            submit(search())
+                          } else if (props.splitChars.includes(event.key) && search().trim()) {
+                            event.preventDefault()
+                            split(search())
+                          } else if (
+                            event.key === 'Backspace' &&
+                            !search() &&
+                            current.length &&
+                            !readOnly
                           )
-                    }),
-                    h(PillsInput.Field, {
-                      value: search(),
-                      readonly: readOnly,
-                      disabled,
-                      placeholder: current.length === 0 ? (attrs as any).placeholder : undefined,
-                      onInput: (event: Event) => {
-                        const input = (event.target as HTMLInputElement).value
-                        if (props.splitChars.some((char) => input.includes(char))) split(input)
-                        else setSearch(input)
-                        combobox.openDropdown()
-                      },
-                      onPaste: (event: ClipboardEvent) => {
-                        if (!event.clipboardData) return
-                        event.preventDefault()
-                        split(`${search()}${event.clipboardData.getData('text/plain')}`)
-                        ;(attrs as any).onPaste?.(event)
-                      },
-                      onFocus: (event: FocusEvent) => {
-                        if (props.openOnFocus) combobox.openDropdown()
-                        ;(attrs as any).onFocus?.(event)
-                      },
-                      onBlur: (event: FocusEvent) => {
-                        if (props.acceptValueOnBlur) submit(search())
-                        combobox.closeDropdown()
-                        ;(attrs as any).onBlur?.(event)
-                      },
-                      onClick: () => combobox.openDropdown(),
-                      onKeydown: (event: KeyboardEvent) => {
-                        if (event.isComposing) return
-                        if (event.key === 'Enter' && search().trim()) {
-                          event.preventDefault()
-                          submit(search())
-                        } else if (props.splitChars.includes(event.key) && search().trim()) {
-                          event.preventDefault()
-                          split(search())
-                        } else if (
-                          event.key === 'Backspace' &&
-                          !search() &&
-                          current.length &&
-                          !readOnly
-                        )
-                          removeAt(current.length - 1)
-                        ;(attrs as any).onKeydown?.(event)
-                      },
-                    }),
-                  ]),
+                            removeAt(current.length - 1)
+                          ;(attrs as any).onKeydown?.(event)
+                        },
+                      }),
+                    ]),
+                },
               ),
             ),
-            h(OptionsDropdown, {
-              data: parsed.value as any,
-              hidden: disabled || readOnly,
-              search: search(),
-              filter: props.filter,
-              limit: props.limit,
-              hiddenWhenEmpty: props.nothingFoundMessage == null,
-              nothingFoundMessage: props.nothingFoundMessage,
-              withScrollArea: props.withScrollArea,
-              maxDropdownHeight: props.maxDropdownHeight,
-              renderOption: props.renderOption,
-              scrollAreaProps: props.scrollAreaProps,
-            }),
+            h(
+              OptionsDropdown,
+              {
+                data: parsed.value as any,
+                hidden: disabled || readOnly,
+                search: search(),
+                filter: props.filter,
+                limit: props.limit,
+                hiddenWhenEmpty: props.nothingFoundMessage == null && !slots.nothingFound,
+                nothingFoundMessage: props.nothingFoundMessage,
+                withScrollArea: props.withScrollArea,
+                maxDropdownHeight: props.maxDropdownHeight,
+                renderOption: props.renderOption,
+                scrollAreaProps: props.scrollAreaProps,
+              },
+              {
+                renderOption: slots.renderOption,
+                nothingFound: slots.nothingFound,
+              },
+            ),
           ],
         ),
         h(Combobox.HiddenInput, {

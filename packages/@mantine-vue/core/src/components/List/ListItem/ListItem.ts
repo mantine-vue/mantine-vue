@@ -1,6 +1,19 @@
-import { cloneVNode, defineComponent, h, isVNode, type PropType } from 'vue'
-import { withBoxProps, Box, useProps } from '../../../core'
+import {
+  cloneVNode,
+  defineComponent,
+  h,
+  isVNode,
+  type PropType,
+  type SlotsType,
+  type VNodeChild,
+} from 'vue'
+import { withBoxProps, Box, hasNode, resolveNode, type MantineNode, useProps } from '../../../core'
 import { useListContext } from '../List.context'
+
+export interface ListItemSlots {
+  default?: () => VNodeChild
+  icon?: () => VNodeChild
+}
 
 function renderListIcon(icon: any) {
   if (typeof icon === 'function') {
@@ -14,8 +27,9 @@ export const ListItem = withBoxProps(
   defineComponent({
     name: 'ListItem',
     inheritAttrs: false,
+    slots: Object as SlotsType<ListItemSlots>,
     props: {
-      icon: { type: [String, Number, Object, Function], default: undefined },
+      icon: { type: null as unknown as PropType<MantineNode>, default: undefined },
       mod: { type: [Object, Array] as PropType<any>, default: undefined },
       classNames: { type: [Object, Function], default: undefined },
       styles: { type: [Object, Function], default: undefined },
@@ -26,7 +40,8 @@ export const ListItem = withBoxProps(
       const ctx = useListContext()
 
       return () => {
-        const icon = props.icon ?? ctx.icon
+        const ownIcon = resolveNode(props.icon, slots.icon)
+        const icon = hasNode(ownIcon) ? ownIcon : renderListIcon(ctx.icon)
 
         return h(
           Box,
@@ -34,12 +49,12 @@ export const ListItem = withBoxProps(
             ...attrs,
             ...ctx.getStyles('item', { className: attrs.class, style: attrs.style as any }),
             component: 'li',
-            mod: [{ withIcon: Boolean(icon), centered: ctx.center }, props.mod],
+            mod: [{ withIcon: hasNode(icon), centered: ctx.center }, props.mod],
           },
           () =>
             h('div', ctx.getStyles('itemWrapper'), [
-              icon ? h('span', ctx.getStyles('itemIcon'), renderListIcon(icon)) : null,
-              h('span', ctx.getStyles('itemLabel'), slots.default?.()),
+              hasNode(icon) ? h('span', ctx.getStyles('itemIcon'), icon as any) : null,
+              h('span', ctx.getStyles('itemLabel'), slots.default?.() as any),
             ]),
         )
       }

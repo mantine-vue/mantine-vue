@@ -1,23 +1,34 @@
-import { defineComponent, h, ref, type PropType } from 'vue'
+import { defineComponent, h, ref, type PropType, type SlotsType, type VNodeChild } from 'vue'
+import { type MantineNode } from '../../core'
 import { InputBase } from '../InputBase'
 import { providePillsInputContext } from './PillsInput.context'
 import { PillsInputField } from './PillsInputField/PillsInputField'
 
+export interface PillsInputSlots {
+  default?: () => VNodeChild
+  label?: () => VNodeChild
+  description?: () => VNodeChild
+  error?: () => VNodeChild
+  leftSection?: () => VNodeChild
+  rightSection?: () => VNodeChild
+}
+
 const PillsInputBase = defineComponent({
   name: 'PillsInput',
   inheritAttrs: false,
+  slots: Object as SlotsType<PillsInputSlots>,
   props: {
     size: { type: [String, Number] as PropType<string | number>, default: 'sm' },
     disabled: { type: Boolean, default: false },
     error: {
-      type: [String, Number, Object, Function, Boolean] as PropType<any>,
+      type: null as unknown as PropType<MantineNode | boolean>,
       default: undefined,
     },
     variant: { type: String as PropType<'default' | 'filled' | 'unstyled'>, default: 'default' },
     __staticSelector: { type: String, default: undefined },
     __stylesApiProps: { type: Object as PropType<Record<string, any>>, default: undefined },
-    label: { type: [String, Number, Object, Function] as PropType<any>, default: undefined },
-    description: { type: [String, Number, Object, Function] as PropType<any>, default: undefined },
+    label: { type: null as unknown as PropType<MantineNode>, default: undefined },
+    description: { type: null as unknown as PropType<MantineNode>, default: undefined },
     required: { type: Boolean, default: false },
     withAsterisk: { type: Boolean, default: undefined },
     wrapperProps: { type: Object as PropType<Record<string, any>>, default: undefined },
@@ -101,7 +112,14 @@ const PillsInputBase = defineComponent({
             }
           },
         },
-        () => slots.default?.(),
+        {
+          default: () => slots.default?.(),
+          label: slots.label,
+          description: slots.description,
+          error: slots.error,
+          leftSection: slots.leftSection,
+          rightSection: slots.rightSection,
+        },
       )
   },
 })

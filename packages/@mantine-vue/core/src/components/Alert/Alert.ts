@@ -1,10 +1,26 @@
-import { defineComponent, h, type PropType } from 'vue'
+import { defineComponent, h, type PropType, type SlotsType, type VNodeChild } from 'vue'
 import { useId } from '@mantine-vue/hooks'
-import { withBoxProps, Box, createVarsResolver, getRadius, useProps, useStyles } from '../../core'
+import {
+  withBoxProps,
+  Box,
+  createVarsResolver,
+  getRadius,
+  hasNode,
+  resolveNode,
+  type MantineNode,
+  useProps,
+  useStyles,
+} from '../../core'
 import { CloseButton } from '../CloseButton'
 import classes from './Alert.module.css'
 
 export type AlertVariant = 'filled' | 'light' | 'outline' | 'default' | 'transparent' | 'white'
+
+export interface AlertSlots {
+  default?: () => VNodeChild
+  title?: () => VNodeChild
+  icon?: () => VNodeChild
+}
 
 const varsResolver = createVarsResolver<any>((theme, { radius, color, variant, autoContrast }) => {
   const colors = theme.variantColorResolver({
@@ -24,20 +40,17 @@ const varsResolver = createVarsResolver<any>((theme, { radius, color, variant, a
   }
 })
 
-function renderContent(content: any) {
-  return typeof content === 'function' ? content() : content
-}
-
 export const Alert = withBoxProps(
   defineComponent({
     name: 'Alert',
     inheritAttrs: false,
+    slots: Object as SlotsType<AlertSlots>,
     props: {
       id: { type: String, default: undefined },
       radius: [String, Number] as PropType<string | number>,
       color: { type: String, default: undefined },
-      title: { type: [String, Number, Object, Function], default: undefined },
-      icon: { type: [String, Number, Object, Function], default: undefined },
+      title: { type: null as unknown as PropType<MantineNode>, default: undefined },
+      icon: { type: null as unknown as PropType<MantineNode>, default: undefined },
       withCloseButton: { type: Boolean, default: false },
       onClose: { type: Function as PropType<() => void>, default: undefined },
       closeButtonLabel: { type: String, default: undefined },
@@ -66,11 +79,11 @@ export const Alert = withBoxProps(
       })
 
       return () => {
-        const title = props.title ?? slots.title?.()
-        const icon = props.icon ?? slots.icon?.()
+        const title = resolveNode(props.title, slots.title)
+        const icon = resolveNode(props.icon, slots.icon)
         const message = slots.default?.()
         const id = rootId.value || undefined
-        const titleId = title && id ? `${id}-title` : undefined
+        const titleId = hasNode(title) && id ? `${id}-title` : undefined
         const bodyId = id ? `${id}-body` : undefined
 
         return h(
@@ -81,24 +94,24 @@ export const Alert = withBoxProps(
             id,
             variant: props.variant,
             role: props.role || 'alert',
-            'aria-describedby': message ? bodyId : undefined,
-            'aria-labelledby': title ? titleId : undefined,
+            'aria-describedby': hasNode(message) ? bodyId : undefined,
+            'aria-labelledby': hasNode(title) ? titleId : undefined,
           },
           () =>
             h('div', getStyles('wrapper'), [
-              icon ? h('div', getStyles('icon'), renderContent(icon)) : null,
+              hasNode(icon) ? h('div', getStyles('icon'), icon as any) : null,
               h('div', getStyles('body'), [
-                title
+                hasNode(title)
                   ? h(
                       'div',
                       {
                         ...getStyles('title'),
                         'data-with-close-button': props.withCloseButton ? '' : undefined,
                       },
-                      [h('span', { id: titleId, ...getStyles('label') }, renderContent(title))],
+                      [h('span', { id: titleId, ...getStyles('label') }, title as any)],
                     )
                   : null,
-                message
+                hasNode(message)
                   ? h(
                       'div',
                       {
@@ -106,7 +119,7 @@ export const Alert = withBoxProps(
                         ...getStyles('message'),
                         'data-variant': props.variant,
                       },
-                      message,
+                      message as any,
                     )
                   : null,
               ]),
