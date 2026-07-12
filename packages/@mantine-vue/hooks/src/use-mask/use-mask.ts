@@ -851,7 +851,7 @@ export function useMask(options: UseMaskOptions): UseMaskReturnValue {
     }
   }
 
-  const refCallback = (newNode: HTMLInputElement | null) => {
+  const refCallback = (newNode: HTMLElement | null) => {
     const prevNode = node
 
     if (prevNode) {
@@ -864,25 +864,30 @@ export function useMask(options: UseMaskOptions): UseMaskReturnValue {
       prevNode.removeEventListener('paste', handlePaste as EventListener)
     }
 
-    node = newNode
+    const inputNode =
+      newNode instanceof HTMLInputElement
+        ? newNode
+        : newNode?.querySelector<HTMLInputElement>('input')
 
-    if (newNode) {
-      newNode.addEventListener('input', handleInput)
-      newNode.addEventListener('focus', handleFocus)
-      newNode.addEventListener('blur', handleBlur)
-      newNode.addEventListener('mousedown', handleMouseDown)
-      newNode.addEventListener('mouseup', handleMouseUp)
-      newNode.addEventListener('keydown', handleKeyDown as EventListener)
-      newNode.addEventListener('paste', handlePaste as EventListener)
+    node = inputNode ?? null
 
-      setAriaAttributes(newNode)
+    if (inputNode) {
+      inputNode.addEventListener('input', handleInput)
+      inputNode.addEventListener('focus', handleFocus)
+      inputNode.addEventListener('blur', handleBlur)
+      inputNode.addEventListener('mousedown', handleMouseDown)
+      inputNode.addEventListener('mouseup', handleMouseUp)
+      inputNode.addEventListener('keydown', handleKeyDown as EventListener)
+      inputNode.addEventListener('paste', handlePaste as EventListener)
 
-      const hasInitialValue = initializeInputValue(newNode)
+      setAriaAttributes(inputNode)
+
+      const hasInitialValue = initializeInputValue(inputNode)
 
       if (options.alwaysShowMask && !hasInitialValue) {
         const { slots, slotChar } = getResolvedOptions(options, '')
         const displayValue = buildDisplayValue('', slots, slotChar, true)
-        newNode.value = displayValue
+        inputNode.value = displayValue
         display = displayValue
         maskedValue.value = displayValue
       }

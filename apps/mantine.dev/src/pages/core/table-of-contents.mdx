@@ -14,8 +14,8 @@ the scroll position and highlights the current heading in the list.
 
 ## use-scroll-spy options
 
-`TableOfContents` is based on the `use-scroll-spy` hook.
-You can pass options down to the hook using the `scrollSpyOptions` prop.
+`TableOfContents` is based on the [use-scroll-spy](/hooks/use-scroll-spy) hook.
+You can pass options down to the `use-scroll-spy` hook using the `scrollSpyOptions` prop.
 
 Example of customizing selector, depth and value retrieval:
 
@@ -101,7 +101,7 @@ To control the offset value in px, set the `depthOffset` prop:
 
 ## Styles API
 
-Example of customizing `TableOfContents` with Styles API and `data-*` attributes:
+Example of customizing `TableOfContents` with [Styles API](/styles/styles-api) and [data-\* attributes](/styles/data-attributes):
 
 <Demo data={TableOfContentsDemos.styles} />
 
@@ -109,7 +109,7 @@ Example of customizing `TableOfContents` with Styles API and `data-*` attributes
 
 By default, `TableOfContents` does not track changes in the DOM. If you want
 to update headings data after the parent component has mounted, you can use
-`reinitializeRef` to get the reinitialize function from the `use-scroll-spy` hook:
+`reinitializeRef` to get the reinitialize function from the [use-scroll-spy](/hooks/use-scroll-spy) hook:
 
 ```vue
 <script setup lang="ts">

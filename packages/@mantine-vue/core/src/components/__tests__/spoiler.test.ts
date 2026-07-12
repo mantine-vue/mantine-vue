@@ -46,6 +46,7 @@ describe('@mantine-vue/core Spoiler', () => {
       [{ contentRect: { width: 200, height: 120 } } as ResizeObserverEntry],
       {} as ResizeObserver,
     )
+    await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()))
     await nextTick()
 
     const control = wrapper.find('button')

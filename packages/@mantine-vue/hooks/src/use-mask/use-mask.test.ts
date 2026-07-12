@@ -54,6 +54,21 @@ describe('@mantine-vue/hooks/use-mask', () => {
     expect(input.getAttribute('aria-invalid')).toBe('true')
   })
 
+  it('resolves the input element from a Mantine input root', () => {
+    const root = document.createElement('div')
+    const input = document.createElement('input')
+    root.appendChild(input)
+    const result = renderHook({ mask: '(999) 999-9999' })
+
+    result.ref(root as unknown as HTMLInputElement)
+    input.dispatchEvent(new FocusEvent('focus'))
+    input.dispatchEvent(new KeyboardEvent('keydown', { key: '1' }))
+
+    expect(input.value).toBe('(1__) ___-____')
+    expect(result.value.value).toBe('(1__) ___-____')
+    expect(result.rawValue.value).toBe('1')
+  })
+
   it('formats and unformats masked values', () => {
     expect(formatMask('1234567890', { mask: '(999) 999-9999' })).toBe('(123) 456-7890')
     expect(formatMask('1a2b3', { mask: '999' })).toBe('123')
