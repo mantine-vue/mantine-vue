@@ -1,6 +1,6 @@
 {
   "name": "mantine-vue",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "private": true,
   "description": "Mantine vue Components Monorepo ported of Mantine React",
   "license": "MIT",
