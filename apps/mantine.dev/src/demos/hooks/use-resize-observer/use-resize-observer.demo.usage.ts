@@ -2,6 +2,7 @@ import { defineComponent, h } from 'vue'
 import { Group, Table } from '@mantine-vue/core'
 import { useResizeObserver } from '@mantine-vue/hooks'
 import type { MantineDemo } from '@/demo'
+import classes from './use-resize-observer.demo.usage.module.css'
 
 const cssCode = `.root {
   min-height: 380px;
@@ -67,12 +68,7 @@ const Demo = defineComponent({
       h(
         'div',
         {
-          style: {
-            minHeight: '380px',
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'space-between',
-          },
+          class: classes.root,
         },
         [
           h(
@@ -84,23 +80,7 @@ const Demo = defineComponent({
                   'div',
                   {
                     ref: resizeRef,
-                    style: {
-                      width: '400px',
-                      maxWidth: '800px',
-                      minWidth: '160px',
-                      height: '200px',
-                      maxHeight: '220px',
-                      minHeight: '80px',
-                      backgroundColor: 'var(--mantine-color-blue-6)',
-                      resize: 'both',
-                      overflow: 'auto',
-                      color: 'var(--mantine-color-white)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      fontSize: '20px',
-                      fontWeight: 600,
-                    },
+                    class: classes.demo,
                   },
                   'Resize me!',
                 ),

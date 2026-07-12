@@ -24,19 +24,18 @@ export function useResizeObserver<T extends Element = HTMLElement>(
   const elementRef = ref<T | null>(null) as Ref<T | null>
   const rect = ref<ObserverRect>(defaultState) as Ref<ObserverRect>
   let observer: ResizeObserver | undefined
+  let frameId = 0
 
   const disconnect = () => {
     observer?.disconnect()
     observer = undefined
+    if (frameId) {
+      cancelAnimationFrame(frameId)
+      frameId = 0
+    }
   }
 
-  // NOTE: updates apply synchronously inside the ResizeObserver callback
-  // (no `requestAnimationFrame` throttling, unlike React Mantine's version).
-  // Vue's reactivity already batches/schedules DOM updates via its own
-  // scheduler, and tests in this codebase drive resize updates by invoking
-  // the observer callback directly and awaiting `nextTick()` — wrapping
-  // this in `requestAnimationFrame` would defer past that flush.
-  //
+  // Resize updates are batched to the next animation frame to avoid layout thrashing.
   // `flush: 'sync'` is required (not the default 'pre' scheduling) so that
   // the observer is created and `.observe()` is called the instant the
   // template ref binds the DOM node — i.e. synchronously within the same
@@ -57,21 +56,24 @@ export function useResizeObserver<T extends Element = HTMLElement>(
       observer = new ResizeObserver((entries) => {
         const entry = entries[0]
         if (entry) {
-          const boxSize = entry.borderBoxSize?.[0] || entry.contentBoxSize?.[0]
-          if (boxSize) {
-            rect.value = {
-              width: boxSize.inlineSize,
-              height: boxSize.blockSize,
-              x: entry.contentRect.x,
-              y: entry.contentRect.y,
-              top: entry.contentRect.top,
-              left: entry.contentRect.left,
-              bottom: entry.contentRect.bottom,
-              right: entry.contentRect.right,
+          cancelAnimationFrame(frameId)
+          frameId = requestAnimationFrame(() => {
+            const boxSize = entry.borderBoxSize?.[0] || entry.contentBoxSize?.[0]
+            if (boxSize) {
+              rect.value = {
+                width: boxSize.inlineSize,
+                height: boxSize.blockSize,
+                x: entry.contentRect.x,
+                y: entry.contentRect.y,
+                top: entry.contentRect.top,
+                left: entry.contentRect.left,
+                bottom: entry.contentRect.bottom,
+                right: entry.contentRect.right,
+              }
+            } else {
+              rect.value = entry.contentRect
             }
-          } else {
-            rect.value = entry.contentRect
-          }
+          })
         }
       })
       observer.observe(node, options)
