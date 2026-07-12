@@ -1,6 +1,6 @@
 {
   "name": "@mantine-vue/utils",
-  "version": "1.1.4",
+  "version": "2.0.0",
   "description": "Framework-independent utilities ported from Mantine foundation",
   "license": "MIT",
   "files": [
