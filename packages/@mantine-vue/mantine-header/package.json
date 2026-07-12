@@ -1,6 +1,6 @@
 {
   "name": "@mantine-vue/mantine-header",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Components used in headers of *.mantine.dev websites (Vue port of @mantinex/mantine-header)",
   "license": "MIT",
   "files": [
@@ -35,7 +35,7 @@
     "vue": "^3.5.0"
   },
   "peerDependencies": {
-    "@mantine-vue/core": "2.0.0",
+    "@mantine-vue/core": "2.0.1",
     "@phosphor-icons/vue": "^2.2",
     "vue": "^3.5.0"
   }
