@@ -4,6 +4,7 @@ import { RouterView } from 'vue-router'
 import { useRoute } from 'vue-router'
 import { Notifications } from '@mantine-vue/notifications'
 import { ModalsProviderDemo } from './components/ModalsProviderDemo/ModalsProviderDemo'
+import { HotKeysHandler } from './components/HotKeysHandler'
 import { Search } from './components/Search'
 import Shell from './components/Shell/Shell.vue'
 
@@ -13,6 +14,7 @@ const withoutShell = computed(() => route.path === '/app-shell')
 
 <template>
   <Notifications />
+  <HotKeysHandler />
   <Search />
   <ModalsProviderDemo>
     <RouterView v-if="withoutShell" />
