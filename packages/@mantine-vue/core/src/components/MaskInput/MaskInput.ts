@@ -71,7 +71,7 @@ export const MaskInput = defineComponent({
     },
     resetRef: { type: [Object, Function] as PropType<any>, default: undefined },
   },
-  setup(props, { attrs }) {
+  setup(props, { attrs, slots }) {
     const input = ref<HTMLInputElement | null>(null)
     const processed = ref('')
     const rawValue = ref('')
@@ -324,19 +324,23 @@ export const MaskInput = defineComponent({
       delete forwarded.value
       delete forwarded.defaultValue
 
-      return h(InputBase, {
-        ...forwarded,
-        component: 'input',
-        type: forwarded.type ?? 'text',
-        __staticSelector: 'MaskInput',
-        __stylesApiProps: attrs,
-        rootRef: attach,
-        onInput: handleInput,
-        onFocus: handleFocus,
-        onBlur: handleBlur,
-        onKeydown: handleKeydown,
-        onPaste: handlePaste,
-      })
+      return h(
+        InputBase,
+        {
+          ...forwarded,
+          component: 'input',
+          type: forwarded.type ?? 'text',
+          __staticSelector: 'MaskInput',
+          __stylesApiProps: attrs,
+          rootRef: attach,
+          onInput: handleInput,
+          onFocus: handleFocus,
+          onBlur: handleBlur,
+          onKeydown: handleKeydown,
+          onPaste: handlePaste,
+        },
+        slots,
+      )
     }
   },
 })

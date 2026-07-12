@@ -1,4 +1,4 @@
-import { defineComponent, h, type PropType } from 'vue'
+import { defineComponent, h, type PropType, type SlotsType, type VNodeChild } from 'vue'
 import { useId, assignRef } from '@mantine-vue/hooks'
 import {
   withBoxProps,
@@ -9,6 +9,8 @@ import {
   getRadius,
   getSize,
   getThemeColor,
+  resolveNode,
+  type MantineNode,
   useStyles,
 } from '../../core'
 import { InlineInput, InlineInputClasses } from '../../utils'
@@ -19,6 +21,19 @@ import { CheckboxIndicator } from './CheckboxIndicator/CheckboxIndicator'
 import classes from './Checkbox.module.css'
 
 export type CheckboxVariant = 'filled' | 'outline'
+
+export interface CheckboxIconSlotProps {
+  indeterminate?: boolean
+  class?: any
+  style?: any
+}
+
+export interface CheckboxSlots {
+  label?: () => VNodeChild
+  description?: () => VNodeChild
+  error?: () => VNodeChild
+  icon?: (props: CheckboxIconSlotProps) => VNodeChild
+}
 export type CheckboxStylesNames =
   | 'icon'
   | 'inner'
@@ -58,17 +73,18 @@ function callHandler(handler: any, event: Event) {
 const CheckboxBase = defineComponent({
   name: 'Checkbox',
   inheritAttrs: false,
+  slots: Object as SlotsType<CheckboxSlots>,
   props: {
     id: { type: String, default: undefined },
-    label: { type: [String, Number, Object, Function] as PropType<any>, default: undefined },
+    label: { type: null as unknown as PropType<MantineNode>, default: undefined },
     color: { type: String, default: undefined },
     size: { type: [String, Number] as PropType<string | number>, default: 'sm' },
     radius: { type: [String, Number] as PropType<string | number>, default: 'sm' },
     wrapperProps: { type: Object as PropType<Record<string, any>>, default: undefined },
     labelPosition: { type: String as PropType<'left' | 'right'>, default: 'right' },
-    description: { type: [String, Number, Object, Function] as PropType<any>, default: undefined },
+    description: { type: null as unknown as PropType<MantineNode>, default: undefined },
     error: {
-      type: [String, Number, Object, Function, Boolean] as PropType<any>,
+      type: null as unknown as PropType<MantineNode | boolean>,
       default: undefined,
     },
     indeterminate: { type: Boolean, default: false },
@@ -87,7 +103,7 @@ const CheckboxBase = defineComponent({
     vars: { type: [Object, Function], default: undefined },
     unstyled: { type: Boolean, default: false },
   },
-  setup(props, { attrs }) {
+  setup(props, { attrs, slots }) {
     const uuid = useId(props.id)
     const groupContext = useCheckboxGroupContext()
     const getStyles = useStyles({
@@ -105,10 +121,15 @@ const CheckboxBase = defineComponent({
 
     return () => {
       const id = uuid.value || props.id || ''
-      const descriptionId = props.description ? `${id}-description` : undefined
-      const errorId = props.error && typeof props.error !== 'boolean' ? `${id}-error` : undefined
+      const label = resolveNode(props.label, slots.label)
+      const description = resolveNode(props.description, slots.description)
+      const error = resolveNode(props.error, slots.error)
+      const descriptionId = description ? `${id}-description` : undefined
+      const errorId = error && typeof error !== 'boolean' ? `${id}-error` : undefined
       const describedBy =
         [descriptionId, errorId, attrs['aria-describedby']].filter(Boolean).join(' ') || undefined
+      const iconStyles = getStyles('icon')
+      const iconSlotProps = { indeterminate: props.indeterminate, ...iconStyles }
       const Icon = props.icon || CheckboxIcon
       const value = String(attrs.value ?? '')
       const checked = groupContext ? groupContext.value.includes(value) : props.checked
@@ -125,9 +146,9 @@ const CheckboxBase = defineComponent({
           id,
           size,
           labelPosition: props.labelPosition,
-          label: props.label,
-          description: props.description,
-          error: props.error,
+          label,
+          description,
+          error,
           disabled,
           classNames: props.classNames,
           styles: props.styles,
@@ -150,7 +171,7 @@ const CheckboxBase = defineComponent({
               type: 'checkbox',
               'aria-describedby': describedBy,
               'data-indeterminate': props.indeterminate || undefined,
-              mod: { error: Boolean(props.error), withErrorStyles: props.withErrorStyles },
+              mod: { error: Boolean(error), withErrorStyles: props.withErrorStyles },
               variant: props.variant,
               onClick: (event: MouseEvent) => {
                 callHandler(attrs.onClick, event)
@@ -163,7 +184,9 @@ const CheckboxBase = defineComponent({
                 groupContext?.onChange(event)
               },
             }),
-            h(Icon, { indeterminate: props.indeterminate, ...getStyles('icon') }),
+            slots.icon
+              ? slots.icon(iconSlotProps)
+              : h(Icon, { indeterminate: props.indeterminate, ...iconStyles }),
           ]),
       )
     }

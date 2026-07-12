@@ -1,9 +1,12 @@
-import { defineComponent, h, type PropType } from 'vue'
+import { defineComponent, h, type PropType, type SlotsType, type VNodeChild } from 'vue'
 import {
   withBoxProps,
   Box,
   getRadius,
   getThemeColor,
+  hasNode,
+  resolveNode,
+  type MantineNode,
   useMantineTheme,
   useProps,
 } from '../../../core'
@@ -17,18 +20,25 @@ export type TimelineItemStylesNames =
   | 'item'
   | 'itemTitle'
 
+export interface TimelineItemSlots {
+  default?: () => VNodeChild
+  title?: () => VNodeChild
+  bullet?: () => VNodeChild
+}
+
 export const TimelineItem = withBoxProps(
   defineComponent({
     name: 'TimelineItem',
     inheritAttrs: false,
+    slots: Object as SlotsType<TimelineItemSlots>,
     props: {
       __active: { type: Boolean, default: false },
       __lineActive: { type: Boolean, default: false },
       __align: { type: String as PropType<'right' | 'left'>, default: undefined },
       active: { type: Boolean, default: undefined },
       lineActive: { type: Boolean, default: undefined },
-      title: { type: [String, Number, Object, Function] as PropType<any>, default: undefined },
-      bullet: { type: [String, Number, Object, Function] as PropType<any>, default: undefined },
+      title: { type: null as unknown as PropType<MantineNode>, default: undefined },
+      bullet: { type: null as unknown as PropType<MantineNode>, default: undefined },
       radius: { type: [String, Number] as PropType<string | number>, default: undefined },
       color: { type: String, default: undefined },
       lineVariant: { type: String as PropType<'solid' | 'dashed' | 'dotted'>, default: undefined },
@@ -43,11 +53,11 @@ export const TimelineItem = withBoxProps(
       const ctx = useTimelineContext()
       const theme = useMantineTheme()
 
-      const renderContent = (value: any) => (typeof value === 'function' ? value() : value)
-
       return () => {
         const active = props.active ?? props.__active
         const lineActive = props.lineActive ?? props.__lineActive
+        const bullet = resolveNode(props.bullet, slots.bullet)
+        const title = resolveNode(props.title, slots.title)
         const stylesApiProps = { className: props.className ?? attrs.class, props }
 
         return h(
@@ -71,15 +81,13 @@ export const TimelineItem = withBoxProps(
               Box,
               {
                 ...ctx.getStyles('itemBullet', { props }),
-                mod: { withChild: Boolean(props.bullet), align: props.__align, active },
+                mod: { withChild: hasNode(bullet), align: props.__align, active },
               },
-              () => renderContent(props.bullet),
+              () => bullet,
             ),
             h('div', ctx.getStyles('itemBody', { props }), [
-              props.title
-                ? h('div', ctx.getStyles('itemTitle', { props }), renderContent(props.title))
-                : null,
-              h('div', ctx.getStyles('itemContent', { props }), slots.default?.()),
+              hasNode(title) ? h('div', ctx.getStyles('itemTitle', { props }), title as any) : null,
+              h('div', ctx.getStyles('itemContent', { props }), slots.default?.() as any),
             ]),
           ],
         )

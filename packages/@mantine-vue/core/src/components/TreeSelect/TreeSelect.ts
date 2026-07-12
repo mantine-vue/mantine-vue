@@ -1,4 +1,12 @@
-import { computed, defineComponent, h, ref, type PropType, type VNodeChild } from 'vue'
+import {
+  computed,
+  defineComponent,
+  h,
+  ref,
+  type PropType,
+  type SlotsType,
+  type VNodeChild,
+} from 'vue'
 import { AccordionChevron } from '../Accordion/AccordionChevron'
 import { CheckboxIndicator } from '../Checkbox/CheckboxIndicator/CheckboxIndicator'
 import { CheckIcon } from '../Checkbox/CheckIcon'
@@ -295,9 +303,20 @@ export const TreeSelectOption = defineComponent({
   },
 })
 
+export interface TreeSelectSlots {
+  label?: () => VNodeChild
+  description?: () => VNodeChild
+  error?: () => VNodeChild
+  leftSection?: () => VNodeChild
+  rightSection?: () => VNodeChild
+  renderNode?: (payload: TreeSelectRenderNodePayload) => VNodeChild
+  nothingFound?: () => VNodeChild
+}
+
 export const TreeSelect = defineComponent({
   name: 'TreeSelect',
   inheritAttrs: false,
+  slots: Object as SlotsType<TreeSelectSlots>,
   props: {
     data: { type: Array as PropType<TreeNodeData[]>, required: true },
     mode: { type: String as PropType<TreeSelectMode>, default: 'single' },
@@ -344,7 +363,7 @@ export const TreeSelect = defineComponent({
     chevronAriaLabels: Object as PropType<TreeSelectChevronAriaLabels>,
   },
   emits: ['update:modelValue', 'update:searchValue'],
-  setup(props, { attrs, emit }) {
+  setup(props, { attrs, emit, slots }) {
     const isMulti = () => props.mode !== 'single'
 
     const initial = props.defaultValue !== undefined ? props.defaultValue : isMulti() ? [] : null
@@ -502,6 +521,11 @@ export const TreeSelect = defineComponent({
       const multiValues = selectedArray()
       const hasValue = isMulti() ? multiValues.length > 0 : current() != null
       const canClear = props.clearable && hasValue && !disabled && !readOnly
+      const nothingFound =
+        props.nothingFoundMessage ?? (slots.nothingFound ? slots.nothingFound() : undefined)
+      const renderNode =
+        props.renderNode ??
+        (slots.renderNode ? (payload: any) => slots.renderNode!(payload) : undefined)
 
       const clear = (event: MouseEvent) => {
         event.stopPropagation()
@@ -512,8 +536,12 @@ export const TreeSelect = defineComponent({
 
       const rightSection = canClear
         ? h(Combobox.ClearButton, { ...(attrs as any).clearButtonProps, onClick: clear })
-        : ((attrs as any).rightSection ??
-          h(Combobox.Chevron, { size: (attrs as any).size ?? 'sm', error: (attrs as any).error }))
+        : (attrs as any).rightSection !== undefined || slots.rightSection
+          ? (attrs as any).rightSection
+          : h(Combobox.Chevron, {
+              size: (attrs as any).size ?? 'sm',
+              error: (attrs as any).error,
+            })
 
       const forwarded: any = { ...attrs }
       ;['name', 'form', 'rightSection', 'clearButtonProps', 'placeholder'].forEach(
@@ -587,28 +615,33 @@ export const TreeSelect = defineComponent({
                 ]
               }),
           )
-        : h(InputBase, {
-            ...forwarded,
-            __staticSelector: 'TreeSelect',
-            component: 'input',
-            disabled,
-            readonly: !props.searchable || readOnly,
-            pointer: !props.searchable,
-            value: search(),
-            placeholder: (attrs as any).placeholder,
-            rightSection,
-            rightSectionPointerEvents: canClear ? 'all' : 'none',
-            onInput: (event: Event) => {
-              setSearch((event.target as HTMLInputElement).value)
-              combobox.openDropdown()
+        : h(
+            InputBase,
+            {
+              ...forwarded,
+              __staticSelector: 'TreeSelect',
+              component: 'input',
+              disabled,
+              readonly: !props.searchable || readOnly,
+              pointer: !props.searchable,
+              value: search(),
+              placeholder: (attrs as any).placeholder,
+              rightSection,
+              rightSectionPointerEvents: canClear ? 'all' : 'none',
+              onInput: (event: Event) => {
+                setSearch((event.target as HTMLInputElement).value)
+                combobox.openDropdown()
+              },
+              onFocus: () => props.openOnFocus && props.searchable && combobox.openDropdown(),
+              onClick: () =>
+                props.searchable ? combobox.openDropdown() : combobox.toggleDropdown(),
+              onBlur: () => {
+                combobox.closeDropdown()
+                setSearch(current() ? String(nodes.value[current()]?.label ?? '') : '')
+              },
             },
-            onFocus: () => props.openOnFocus && props.searchable && combobox.openDropdown(),
-            onClick: () => (props.searchable ? combobox.openDropdown() : combobox.toggleDropdown()),
-            onBlur: () => {
-              combobox.closeDropdown()
-              setSearch(current() ? String(nodes.value[current()]?.label ?? '') : '')
-            },
-          })
+            slots,
+          )
 
       const treeOptions = flat.value.map((flatNode) => {
         const {
@@ -653,7 +686,7 @@ export const TreeSelect = defineComponent({
           lineGuides,
           withLines: props.withLines,
           onToggleExpand: toggleExpand,
-          renderNode: props.renderNode,
+          renderNode,
           chevronAriaLabels: props.chevronAriaLabels,
         })
       })
@@ -678,8 +711,8 @@ export const TreeSelect = defineComponent({
               },
               treeOptions,
             )
-          : props.nothingFoundMessage != null
-            ? h(Combobox.Empty, null, () => props.nothingFoundMessage)
+          : nothingFound != null
+            ? h(Combobox.Empty, null, () => nothingFound)
             : null
 
       const control = h(

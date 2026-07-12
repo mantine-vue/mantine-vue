@@ -1,4 +1,14 @@
-import { computed, defineComponent, h, nextTick, ref, watch, type PropType } from 'vue'
+import {
+  computed,
+  defineComponent,
+  h,
+  nextTick,
+  ref,
+  watch,
+  type PropType,
+  type SlotsType,
+  type VNodeChild,
+} from 'vue'
 import { useId } from '@mantine-vue/hooks'
 import {
   Combobox,
@@ -39,9 +49,20 @@ export interface AutocompleteProps {
   openOnFocus?: boolean
   [key: string]: any
 }
+export interface AutocompleteSlots {
+  label?: () => VNodeChild
+  description?: () => VNodeChild
+  error?: () => VNodeChild
+  leftSection?: () => VNodeChild
+  rightSection?: () => VNodeChild
+  renderOption?: (input: { option: any; checked?: boolean }) => VNodeChild
+  nothingFound?: () => VNodeChild
+}
+
 export const Autocomplete = defineComponent({
   name: 'Autocomplete',
   inheritAttrs: false,
+  slots: Object as SlotsType<AutocompleteSlots>,
   props: {
     modelValue: { type: String, default: undefined },
     value: { type: String, default: undefined },
@@ -70,7 +91,7 @@ export const Autocomplete = defineComponent({
   emits: {
     'update:modelValue': (value: string) => typeof value === 'string',
   },
-  setup(props, { attrs, emit }) {
+  setup(props, { attrs, emit, slots }) {
     const internal = ref(props.defaultValue)
     const current = () => props.modelValue ?? props.value ?? internal.value
     const controlled = () => props.modelValue !== undefined || props.value !== undefined
@@ -136,49 +157,60 @@ export const Autocomplete = defineComponent({
             Combobox.Target,
             { withExpandedAttribute: true, autoComplete: (attrs as any).autoComplete },
             () =>
-              h(InputBase, {
-                ...forwarded,
-                id: id.value,
-                __staticSelector: 'Autocomplete',
-                component: 'input',
-                disabled,
-                readOnly,
-                value: current(),
-                rightSection,
-                rightSectionPointerEvents: showClear ? 'all' : undefined,
-                onInput: (event: Event) => {
-                  change((event.currentTarget as HTMLInputElement).value)
-                  combobox.openDropdown()
-                  if (props.selectFirstOptionOnChange) nextTick(combobox.selectFirstOption)
+              h(
+                InputBase,
+                {
+                  ...forwarded,
+                  id: id.value,
+                  __staticSelector: 'Autocomplete',
+                  component: 'input',
+                  disabled,
+                  readOnly,
+                  value: current(),
+                  rightSection,
+                  rightSectionPointerEvents: showClear ? 'all' : undefined,
+                  onInput: (event: Event) => {
+                    change((event.currentTarget as HTMLInputElement).value)
+                    combobox.openDropdown()
+                    if (props.selectFirstOptionOnChange) nextTick(combobox.selectFirstOption)
+                  },
+                  onFocus: (event: FocusEvent) => {
+                    if (props.openOnFocus) combobox.openDropdown()
+                    ;(attrs as any).onFocus?.(event)
+                  },
+                  onBlur: (event: FocusEvent) => {
+                    if (props.autoSelectOnBlur) combobox.clickSelectedOption()
+                    combobox.closeDropdown()
+                    ;(attrs as any).onBlur?.(event)
+                  },
+                  onClick: (event: MouseEvent) => {
+                    combobox.openDropdown()
+                    ;(attrs as any).onClick?.(event)
+                  },
                 },
-                onFocus: (event: FocusEvent) => {
-                  if (props.openOnFocus) combobox.openDropdown()
-                  ;(attrs as any).onFocus?.(event)
-                },
-                onBlur: (event: FocusEvent) => {
-                  if (props.autoSelectOnBlur) combobox.clickSelectedOption()
-                  combobox.closeDropdown()
-                  ;(attrs as any).onBlur?.(event)
-                },
-                onClick: (event: MouseEvent) => {
-                  combobox.openDropdown()
-                  ;(attrs as any).onClick?.(event)
-                },
-              }),
+                slots,
+              ),
           ),
-          h(OptionsDropdown, {
-            data: parsed.value as any,
-            hidden: readOnly || disabled,
-            filter: props.filter,
-            search: current(),
-            limit: props.limit,
-            hiddenWhenEmpty: true,
-            withScrollArea: props.withScrollArea,
-            maxDropdownHeight: props.maxDropdownHeight,
-            labelId: (attrs as any).label ? `${id.value}-label` : undefined,
-            renderOption: props.renderOption,
-            scrollAreaProps: props.scrollAreaProps,
-          }),
+          h(
+            OptionsDropdown,
+            {
+              data: parsed.value as any,
+              hidden: readOnly || disabled,
+              filter: props.filter,
+              search: current(),
+              limit: props.limit,
+              hiddenWhenEmpty: !slots.nothingFound,
+              withScrollArea: props.withScrollArea,
+              maxDropdownHeight: props.maxDropdownHeight,
+              labelId: (attrs as any).label ? `${id.value}-label` : undefined,
+              renderOption: props.renderOption,
+              scrollAreaProps: props.scrollAreaProps,
+            },
+            {
+              renderOption: slots.renderOption,
+              nothingFound: slots.nothingFound,
+            },
+          ),
         ],
       )
     }

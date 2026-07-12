@@ -1,5 +1,15 @@
-import { defineComponent, h, inject, provide, type InjectionKey, type PropType } from 'vue'
+import {
+  defineComponent,
+  h,
+  inject,
+  provide,
+  type InjectionKey,
+  type PropType,
+  type SlotsType,
+  type VNodeChild,
+} from 'vue'
 import { useUncontrolled } from '@mantine-vue/hooks'
+import { resolveNode, type MantineNode } from '../../../core'
 import { InputWrapper } from '../../Input'
 import { InputsGroupFieldset } from '../../../utils'
 
@@ -8,6 +18,13 @@ export interface SwitchGroupContextValue {
   onChange: (event: Event) => void
   size?: string | number
   isDisabled?: (value: string) => boolean
+}
+
+export interface SwitchGroupSlots {
+  default?: () => VNodeChild
+  label?: () => VNodeChild
+  description?: () => VNodeChild
+  error?: () => VNodeChild
 }
 
 const SwitchGroupContextKey: InjectionKey<SwitchGroupContextValue> = Symbol('SwitchGroupContext')
@@ -19,6 +36,7 @@ export function useSwitchGroupContext() {
 export const SwitchGroup = defineComponent({
   name: 'SwitchGroup',
   inheritAttrs: false,
+  slots: Object as SlotsType<SwitchGroupSlots>,
   props: {
     value: { type: Array as PropType<string[] | undefined>, default: undefined },
     defaultValue: { type: Array as PropType<string[] | undefined>, default: undefined },
@@ -31,10 +49,10 @@ export const SwitchGroup = defineComponent({
     hiddenInputValuesSeparator: { type: String, default: ',' },
     maxSelectedValues: { type: Number, default: undefined },
     disabled: { type: Boolean, default: false },
-    label: { type: [String, Number, Object, Function] as PropType<any>, default: undefined },
-    description: { type: [String, Number, Object, Function] as PropType<any>, default: undefined },
+    label: { type: null as unknown as PropType<MantineNode>, default: undefined },
+    description: { type: null as unknown as PropType<MantineNode>, default: undefined },
     error: {
-      type: [String, Number, Object, Function, Boolean] as PropType<any>,
+      type: null as unknown as PropType<MantineNode | boolean>,
       default: undefined,
     },
     classNames: { type: [Object, Function], default: undefined },
@@ -105,9 +123,9 @@ export const SwitchGroup = defineComponent({
           size: props.size,
           ...props.wrapperProps,
           ...attrs,
-          label: props.label,
-          description: props.description,
-          error: props.error,
+          label: resolveNode(props.label, slots.label),
+          description: resolveNode(props.description, slots.description),
+          error: resolveNode(props.error, slots.error),
           classNames: props.classNames,
           styles: props.styles,
           vars: props.vars,

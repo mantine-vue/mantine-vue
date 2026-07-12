@@ -1,4 +1,4 @@
-import { defineComponent, h, type PropType } from 'vue'
+import { defineComponent, h, type PropType, type SlotsType, type VNodeChild } from 'vue'
 import {
   PaginationFirstIcon,
   PaginationLastIcon,
@@ -8,6 +8,10 @@ import {
 import { usePaginationContext } from '../Pagination.context'
 import { PaginationControl } from '../PaginationControl/PaginationControl'
 import { withBoxProps } from '../../../core'
+
+export interface PaginationEdgeSlots {
+  icon?: () => VNodeChild
+}
 
 function createEdge(
   name: string,
@@ -19,11 +23,12 @@ function createEdge(
   return defineComponent({
     name,
     inheritAttrs: false,
+    slots: Object as SlotsType<PaginationEdgeSlots>,
     props: {
       icon: { type: [Object, Function] as PropType<any>, default: undefined },
       disabled: { type: Boolean, default: false },
     },
-    setup(props, { attrs }) {
+    setup(props, { attrs, slots }) {
       const ctx = usePaginationContext()
 
       return () => {
@@ -39,7 +44,7 @@ function createEdge(
             'aria-label': attrs['aria-label'] ?? label,
             onClick: disabled ? undefined : getAction(ctx),
           },
-          () => h(Icon, { class: 'mantine-rotate-rtl' }),
+          () => (slots.icon ? slots.icon() : h(Icon, { class: 'mantine-rotate-rtl' })),
         )
       }
     },

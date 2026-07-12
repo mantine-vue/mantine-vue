@@ -1,10 +1,13 @@
-import { defineComponent, h, type PropType } from 'vue'
+import { defineComponent, h, type PropType, type SlotsType, type VNodeChild } from 'vue'
 import {
   withBoxProps,
   Box,
   createVarsResolver,
   getThemeColor,
+  hasNode,
   rem,
+  resolveNode,
+  type MantineNode,
   useProps,
   useStyles,
 } from '../../core'
@@ -16,6 +19,10 @@ export type SemiCircleProgressStylesNames =
   | 'emptySegment'
   | 'filledSegment'
   | 'label'
+
+export interface SemiCircleProgressSlots {
+  label?: () => VNodeChild
+}
 
 const defaultProps = {
   size: 200,
@@ -73,6 +80,7 @@ export const SemiCircleProgress = withBoxProps(
   defineComponent({
     name: 'SemiCircleProgress',
     inheritAttrs: false,
+    slots: Object as SlotsType<SemiCircleProgressSlots>,
     props: {
       value: { type: Number, required: true },
       size: { type: Number, default: undefined },
@@ -85,7 +93,7 @@ export const SemiCircleProgress = withBoxProps(
       filledSegmentColor: { type: String, default: undefined },
       emptySegmentColor: { type: String, default: undefined },
       transitionDuration: { type: Number, default: undefined },
-      label: { type: [String, Number, Object, Function] as PropType<any>, default: undefined },
+      label: { type: null as unknown as PropType<MantineNode>, default: undefined },
       labelPosition: { type: String as PropType<'center' | 'bottom'>, default: undefined },
       classNames: { type: [Object, Function], default: undefined },
       styles: { type: [Object, Function], default: undefined },
@@ -107,8 +115,6 @@ export const SemiCircleProgress = withBoxProps(
         varsResolver,
       })
 
-      const renderContent = (value: any) => (typeof value === 'function' ? value() : value)
-
       return () => {
         const size = props.size ?? defaultProps.size
         const thickness = props.thickness ?? defaultProps.thickness
@@ -116,7 +122,7 @@ export const SemiCircleProgress = withBoxProps(
         const radius = (size - 2 * thickness) / 2
         const circumference = Math.PI * radius
         const semiCirclePercentage = clamp(props.value, 0, 100) * (circumference / 100)
-        const label = props.label ?? slots.label?.()
+        const label = resolveNode(props.label, slots.label)
 
         return h(
           Box,
@@ -126,7 +132,7 @@ export const SemiCircleProgress = withBoxProps(
             ...getStyles('root', { className: attrs.class, style: attrs.style as any }),
           },
           () => [
-            label
+            hasNode(label)
               ? h(
                   'div',
                   {
@@ -134,7 +140,7 @@ export const SemiCircleProgress = withBoxProps(
                     'data-position': props.labelPosition,
                     'data-orientation': props.orientation,
                   },
-                  renderContent(label),
+                  label as any,
                 )
               : null,
             h(

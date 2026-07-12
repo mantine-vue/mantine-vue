@@ -1,8 +1,17 @@
-import { defineComponent, h, type PropType } from 'vue'
-import { useProps } from '../../core'
+import { defineComponent, h, type PropType, type SlotsType, type VNodeChild } from 'vue'
+import { useProps, type MantineNode } from '../../core'
 import { InputBase } from '../InputBase'
 import { getParsedNativeSelectData, type NativeSelectData } from './get-parsed-data/get-parsed-data'
 import { NativeSelectOption } from './NativeSelectOption'
+
+export interface NativeSelectSlots {
+  default?: () => VNodeChild
+  label?: () => VNodeChild
+  description?: () => VNodeChild
+  error?: () => VNodeChild
+  leftSection?: () => VNodeChild
+  rightSection?: () => VNodeChild
+}
 
 export interface NativeSelectProps {
   data?: NativeSelectData<any>
@@ -59,20 +68,21 @@ function NativeSelectChevron() {
 export const NativeSelect = defineComponent({
   name: 'NativeSelect',
   inheritAttrs: false,
+  slots: Object as SlotsType<NativeSelectSlots>,
   props: {
     data: { type: Array as PropType<NativeSelectData<any>>, default: undefined },
     size: { type: [String, Number] as PropType<string | number>, default: undefined },
     error: {
-      type: [String, Number, Object, Function, Boolean] as PropType<any>,
+      type: null as unknown as PropType<MantineNode | boolean>,
       default: undefined,
     },
     rightSection: {
-      type: [String, Number, Object, Function, null] as PropType<any>,
+      type: null as unknown as PropType<MantineNode>,
       default: undefined,
     },
     rightSectionPointerEvents: { type: String, default: undefined },
-    label: { type: [String, Number, Object, Function] as PropType<any>, default: undefined },
-    description: { type: [String, Number, Object, Function] as PropType<any>, default: undefined },
+    label: { type: null as unknown as PropType<MantineNode>, default: undefined },
+    description: { type: null as unknown as PropType<MantineNode>, default: undefined },
     required: { type: Boolean, default: false },
     disabled: { type: Boolean, default: false },
     id: { type: String, default: undefined },
@@ -106,7 +116,10 @@ export const NativeSelect = defineComponent({
           pointer: true,
           error: props.error,
           unstyled: props.unstyled,
-          rightSection: props.rightSection ?? NativeSelectChevron,
+          rightSection:
+            props.rightSection !== undefined || slots.rightSection
+              ? props.rightSection
+              : NativeSelectChevron,
           rightSectionPointerEvents: props.rightSectionPointerEvents,
           label: props.label,
           description: props.description,
@@ -124,7 +137,14 @@ export const NativeSelect = defineComponent({
           styles: props.styles,
           vars: props.vars,
         } as any,
-        () => slots.default?.() ?? parsedOptions,
+        {
+          default: () => slots.default?.() ?? parsedOptions,
+          label: slots.label,
+          description: slots.description,
+          error: slots.error,
+          leftSection: slots.leftSection,
+          rightSection: slots.rightSection,
+        },
       )
     }
   },

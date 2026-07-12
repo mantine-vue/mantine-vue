@@ -1,4 +1,4 @@
-import { reactive, defineComponent, h, type PropType } from 'vue'
+import { reactive, defineComponent, h, type PropType, type SlotsType, type VNodeChild } from 'vue'
 import { assignRef } from '@mantine-vue/hooks'
 import {
   withBoxProps,
@@ -8,6 +8,9 @@ import {
   getRadius,
   getSize,
   rem,
+  resolveNode,
+  type MantineNode,
+  type SectionSlots,
   useStyles,
 } from '../../core'
 import { Loader } from '../Loader'
@@ -42,6 +45,10 @@ export interface InputStylesCtx {
   offsetBottom?: boolean
 }
 
+export interface InputSlots extends SectionSlots {
+  default?: () => VNodeChild
+}
+
 const varsResolver = createVarsResolver<any>((_, props, ctx: InputStylesCtx) => ({
   wrapper: {
     '--input-margin-top': ctx.offsetTop ? 'calc(var(--mantine-spacing-xs) / 2)' : undefined,
@@ -66,16 +73,17 @@ function renderContent(content: any) {
 const InputBase = defineComponent({
   name: 'Input',
   inheritAttrs: false,
+  slots: Object as SlotsType<InputSlots>,
   props: {
     component: { type: [String, Object, Function] as PropType<any>, default: 'input' },
     __staticSelector: { type: String, default: undefined },
     __stylesApiProps: { type: Object as PropType<Record<string, any>>, default: undefined },
-    leftSection: { type: [String, Number, Object, Function] as PropType<any>, default: undefined },
+    leftSection: { type: null as unknown as PropType<MantineNode>, default: undefined },
     leftSectionWidth: { type: [String, Number] as PropType<string | number>, default: undefined },
     leftSectionProps: { type: Object as PropType<Record<string, any>>, default: undefined },
     leftSectionPointerEvents: { type: String, default: 'none' },
     rightSection: {
-      type: [String, Number, Object, Function, null] as PropType<any>,
+      type: null as unknown as PropType<MantineNode>,
       default: undefined,
     },
     rightSectionWidth: { type: [String, Number] as PropType<string | number>, default: undefined },
@@ -153,15 +161,17 @@ const InputBase = defineComponent({
                 : 'calc(var(--input-right-section-size) / 2)',
           })
         : null
+      const resolvedLeftSection = resolveNode(props.leftSection, slots.leftSection)
+      const resolvedRightSection = resolveNode(props.rightSection, slots.rightSection)
       const leftSection =
-        props.loading && props.loadingPosition === 'left' ? loadingIndicator : props.leftSection
+        props.loading && props.loadingPosition === 'left' ? loadingIndicator : resolvedLeftSection
       const rightSection = InputClearSection({
         __clearable: props.__clearable,
         __clearSection: props.__clearSection,
         rightSection:
           props.loading && props.loadingPosition === 'right'
             ? loadingIndicator
-            : props.rightSection,
+            : resolvedRightSection,
         __defaultRightSection: props.__defaultRightSection,
         size: props.size,
         __clearSectionMode: props.__clearSectionMode,

@@ -1,13 +1,15 @@
-import { defineComponent, h, type PropType } from 'vue'
-import { withBoxProps, Box } from '../../../core'
+import { defineComponent, h, type PropType, type SlotsType, type VNodeChild } from 'vue'
+import { withBoxProps, Box, hasNode, resolveNode, type MantineNode } from '../../../core'
 import { UnstyledButton } from '../../UnstyledButton'
 import { useAccordionContext } from '../Accordion.context'
 import { useAccordionItemContext } from '../AccordionItem.context'
 
 export type AccordionControlStylesNames = 'control' | 'chevron' | 'label' | 'itemTitle' | 'icon'
 
-function renderContent(content: any) {
-  return typeof content === 'function' ? content() : content
+export interface AccordionControlSlots {
+  default?: () => VNodeChild
+  chevron?: () => VNodeChild
+  icon?: () => VNodeChild
 }
 
 function createAccordionKeydownHandler(loop?: boolean, onKeydown?: (event: KeyboardEvent) => void) {
@@ -56,13 +58,14 @@ export const AccordionControl = withBoxProps(
   defineComponent({
     name: 'AccordionControl',
     inheritAttrs: false,
+    slots: Object as SlotsType<AccordionControlSlots>,
     props: {
       disabled: { type: Boolean, default: false },
       chevron: {
-        type: [String, Number, Object, Function, null] as PropType<any>,
+        type: null as unknown as PropType<MantineNode>,
         default: undefined,
       },
-      icon: { type: [String, Number, Object, Function] as PropType<any>, default: undefined },
+      icon: { type: null as unknown as PropType<MantineNode>, default: undefined },
       onClick: { type: Function as PropType<(event: MouseEvent) => void>, default: undefined },
       onKeydown: { type: Function as PropType<(event: KeyboardEvent) => void>, default: undefined },
       onKeyDown: { type: Function as PropType<(event: KeyboardEvent) => void>, default: undefined },
@@ -76,6 +79,13 @@ export const AccordionControl = withBoxProps(
 
       const renderControl = () => {
         const isActive = ctx.isItemActive(value)
+        const chevron =
+          props.chevron !== undefined || slots.chevron
+            ? resolveNode(props.chevron, slots.chevron)
+            : typeof ctx.chevron === 'function'
+              ? ctx.chevron()
+              : ctx.chevron
+        const icon = resolveNode(props.icon, slots.icon)
 
         return h(
           UnstyledButton,
@@ -124,7 +134,7 @@ export const AccordionControl = withBoxProps(
                   props,
                 }),
               },
-              () => renderContent(props.chevron === undefined ? ctx.chevron : props.chevron),
+              () => chevron,
             ),
             h(
               'span',
@@ -133,9 +143,9 @@ export const AccordionControl = withBoxProps(
                 styles: props.styles,
                 props,
               }),
-              slots.default?.(),
+              slots.default?.() as any,
             ),
-            props.icon
+            hasNode(icon)
               ? h(
                   Box,
                   {
@@ -147,7 +157,7 @@ export const AccordionControl = withBoxProps(
                       props,
                     }),
                   },
-                  () => renderContent(props.icon),
+                  () => icon,
                 )
               : null,
           ],

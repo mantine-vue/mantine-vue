@@ -1,5 +1,14 @@
-import { defineComponent, h, type PropType, type VNodeChild } from 'vue'
-import { createSafeContext, createVarsResolver, getSize, rem, useStyles } from '../../core'
+import { defineComponent, h, type PropType, type SlotsType, type VNodeChild } from 'vue'
+import {
+  createSafeContext,
+  createVarsResolver,
+  getSize,
+  hasNode,
+  rem,
+  resolveNode,
+  type MantineNode,
+  useStyles,
+} from '../../core'
 import {
   ModalBase,
   ModalBaseBody,
@@ -29,6 +38,12 @@ export interface ModalProps extends ModalBaseProps {
   styles?: any
   vars?: any
 }
+
+export interface ModalSlots {
+  default?: () => VNodeChild
+  title?: () => VNodeChild
+}
+
 const [provideModalContext, useModalContext] = createSafeContext<{
   getStyles: any
   fullScreen: boolean
@@ -145,10 +160,11 @@ export const ModalContent = compound('ModalContent', ModalBaseContent, 'content'
 const ModalBaseComponent = defineComponent({
   name: 'Modal',
   inheritAttrs: false,
+  slots: Object as SlotsType<ModalSlots>,
   props: {
     opened: { type: Boolean, required: true },
     onClose: { type: Function as PropType<() => void>, required: true },
-    title: { type: [String, Object, Function] as PropType<any>, default: undefined },
+    title: { type: null as unknown as PropType<MantineNode>, default: undefined },
     withOverlay: { type: Boolean, default: true },
     overlayProps: Object,
     withCloseButton: { type: Boolean, default: true },
@@ -156,8 +172,8 @@ const ModalBaseComponent = defineComponent({
   },
   setup(props, { attrs, slots }) {
     return () => {
-      const title = typeof props.title === 'function' ? props.title() : props.title
-      const header = title != null || props.withCloseButton
+      const title = resolveNode(props.title, slots.title)
+      const header = hasNode(title) || props.withCloseButton
       return h(
         ModalRoot,
         { ...attrs, opened: props.opened, onClose: props.onClose },
@@ -169,11 +185,11 @@ const ModalBaseComponent = defineComponent({
                 header &&
                   h(ModalHeader, null, {
                     default: () => [
-                      title != null && h(ModalTitle, null, { default: () => title as any }),
+                      hasNode(title) && h(ModalTitle, null, { default: () => title as any }),
                       props.withCloseButton && h(ModalCloseButton, props.closeButtonProps),
                     ],
                   }),
-                h(ModalBody, null, slots),
+                h(ModalBody, null, { default: () => slots.default?.() }),
               ],
             }),
           ],

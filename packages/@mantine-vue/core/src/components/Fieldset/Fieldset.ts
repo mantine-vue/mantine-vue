@@ -1,9 +1,24 @@
-import { defineComponent, h, type PropType } from 'vue'
-import { withBoxProps, Box, createVarsResolver, getRadius, useProps, useStyles } from '../../core'
+import { defineComponent, h, type PropType, type SlotsType, type VNodeChild } from 'vue'
+import {
+  withBoxProps,
+  Box,
+  createVarsResolver,
+  getRadius,
+  hasNode,
+  resolveNode,
+  type MantineNode,
+  useProps,
+  useStyles,
+} from '../../core'
 import classes from './Fieldset.module.css'
 
 export type FieldsetStylesNames = 'root' | 'legend'
 export type FieldsetVariant = 'default' | 'filled' | 'unstyled'
+
+export interface FieldsetSlots {
+  default?: () => VNodeChild
+  legend?: () => VNodeChild
+}
 
 const defaultProps = {
   variant: 'default',
@@ -19,8 +34,9 @@ export const Fieldset = withBoxProps(
   defineComponent({
     name: 'Fieldset',
     inheritAttrs: false,
+    slots: Object as SlotsType<FieldsetSlots>,
     props: {
-      legend: { type: [String, Number, Object, Function] as PropType<any>, default: undefined },
+      legend: { type: null as unknown as PropType<MantineNode>, default: undefined },
       radius: { type: [String, Number] as PropType<string | number>, default: undefined },
       variant: { type: String as PropType<FieldsetVariant>, default: undefined },
       classNames: { type: [Object, Function], default: undefined },
@@ -42,10 +58,10 @@ export const Fieldset = withBoxProps(
         vars: props.vars as any,
         varsResolver,
       })
-      const renderContent = (value: any) => (typeof value === 'function' ? value() : value)
+      return () => {
+        const legend = resolveNode(props.legend, slots.legend)
 
-      return () =>
-        h(
+        return h(
           Box,
           {
             ...attrs,
@@ -54,10 +70,11 @@ export const Fieldset = withBoxProps(
             ...getStyles('root', { className: attrs.class, style: attrs.style as any }),
           },
           () => [
-            props.legend ? h('legend', getStyles('legend'), renderContent(props.legend)) : null,
+            hasNode(legend) ? h('legend', getStyles('legend'), legend as any) : null,
             slots.default?.(),
           ],
         )
+      }
     },
   }),
 )

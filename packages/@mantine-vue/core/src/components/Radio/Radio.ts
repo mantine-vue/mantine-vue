@@ -1,4 +1,4 @@
-import { defineComponent, h, type PropType } from 'vue'
+import { defineComponent, h, type PropType, type SlotsType, type VNodeChild } from 'vue'
 import { useId, assignRef } from '@mantine-vue/hooks'
 import {
   withBoxProps,
@@ -9,6 +9,8 @@ import {
   getRadius,
   getSize,
   getThemeColor,
+  resolveNode,
+  type MantineNode,
   useStyles,
 } from '../../core'
 import { InlineInput, InlineInputClasses } from '../../utils'
@@ -19,6 +21,13 @@ import { RadioIndicator } from './RadioIndicator/RadioIndicator'
 import classes from './Radio.module.css'
 
 export type RadioVariant = 'filled' | 'outline'
+
+export interface RadioSlots {
+  label?: () => VNodeChild
+  description?: () => VNodeChild
+  error?: () => VNodeChild
+  icon?: (props: { class?: any; style?: any }) => VNodeChild
+}
 export type RadioStylesNames =
   | 'root'
   | 'body'
@@ -59,17 +68,18 @@ function callHandler(handler: any, event: Event) {
 const RadioBase = defineComponent({
   name: 'Radio',
   inheritAttrs: false,
+  slots: Object as SlotsType<RadioSlots>,
   props: {
     id: { type: String, default: undefined },
-    label: { type: [String, Number, Object, Function] as PropType<any>, default: undefined },
+    label: { type: null as unknown as PropType<MantineNode>, default: undefined },
     color: { type: String, default: undefined },
     size: { type: [String, Number] as PropType<string | number>, default: 'sm' },
     icon: { type: [Object, Function] as PropType<any>, default: undefined },
     wrapperProps: { type: Object as PropType<Record<string, any>>, default: undefined },
     labelPosition: { type: String as PropType<'left' | 'right'>, default: 'right' },
-    description: { type: [String, Number, Object, Function] as PropType<any>, default: undefined },
+    description: { type: null as unknown as PropType<MantineNode>, default: undefined },
     error: {
-      type: [String, Number, Object, Function, Boolean] as PropType<any>,
+      type: null as unknown as PropType<MantineNode | boolean>,
       default: undefined,
     },
     radius: { type: [String, Number] as PropType<string | number>, default: 'xl' },
@@ -86,7 +96,7 @@ const RadioBase = defineComponent({
     vars: { type: [Object, Function], default: undefined },
     unstyled: { type: Boolean, default: false },
   },
-  setup(props, { attrs }) {
+  setup(props, { attrs, slots }) {
     const uuid = useId(props.id)
     const groupContext = useRadioGroupContext()
     const getStyles = useStyles({
@@ -104,10 +114,14 @@ const RadioBase = defineComponent({
 
     return () => {
       const id = uuid.value || props.id || ''
-      const descriptionId = props.description ? `${id}-description` : undefined
-      const errorId = props.error && typeof props.error !== 'boolean' ? `${id}-error` : undefined
+      const label = resolveNode(props.label, slots.label)
+      const description = resolveNode(props.description, slots.description)
+      const error = resolveNode(props.error, slots.error)
+      const descriptionId = description ? `${id}-description` : undefined
+      const errorId = error && typeof error !== 'boolean' ? `${id}-error` : undefined
       const describedBy =
         [descriptionId, errorId, attrs['aria-describedby']].filter(Boolean).join(' ') || undefined
+      const iconStyles = getStyles('icon')
       const Icon = props.icon || RadioIcon
       const value = String(attrs.value ?? '')
       const checked = groupContext ? groupContext.value === value : props.checked
@@ -125,9 +139,9 @@ const RadioBase = defineComponent({
           id,
           size,
           labelPosition: props.labelPosition,
-          label: props.label,
-          description: props.description,
-          error: props.error,
+          label,
+          description,
+          error,
           disabled,
           classNames: props.classNames,
           styles: props.styles,
@@ -149,14 +163,14 @@ const RadioBase = defineComponent({
               name,
               type: 'radio',
               'aria-describedby': describedBy,
-              mod: { error: Boolean(props.error), withErrorStyles: props.withErrorStyles },
+              mod: { error: Boolean(error), withErrorStyles: props.withErrorStyles },
               variant: props.variant,
               onChange: (event: Event) => {
                 callHandler(attrs.onChange, event)
                 groupContext?.onChange(event)
               },
             }),
-            h(Icon, getStyles('icon')),
+            slots.icon ? slots.icon(iconStyles) : h(Icon, iconStyles),
           ]),
       )
     }

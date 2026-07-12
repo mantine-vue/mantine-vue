@@ -8,6 +8,7 @@ import {
   ref,
   type InjectionKey,
   type PropType,
+  type SlotsType,
   type VNodeChild,
   watch,
 } from 'vue'
@@ -16,7 +17,10 @@ import {
   createVarsResolver,
   getDefaultZIndex,
   getSize,
+  hasNode,
   rem,
+  resolveNode,
+  type MantineNode,
   useDirection,
   useStyles,
 } from '../../core'
@@ -33,6 +37,10 @@ import {
 import classes from './Drawer.module.css'
 
 export type DrawerPosition = 'top' | 'bottom' | 'left' | 'right'
+export interface DrawerSlots {
+  default?: () => VNodeChild
+  title?: () => VNodeChild
+}
 export interface DrawerProps extends ModalBaseProps {
   title?: VNodeChild | (() => VNodeChild)
   withOverlay?: boolean
@@ -289,10 +297,11 @@ export const DrawerContent = compound('DrawerContent', ModalBaseContent, 'conten
 const DrawerBaseComponent = defineComponent({
   name: 'Drawer',
   inheritAttrs: false,
+  slots: Object as SlotsType<DrawerSlots>,
   props: {
     opened: { type: Boolean, required: true },
     onClose: { type: Function as PropType<() => void>, required: true },
-    title: { type: [String, Object, Function] as PropType<any>, default: undefined },
+    title: { type: null as unknown as PropType<MantineNode>, default: undefined },
     withOverlay: { type: Boolean, default: true },
     overlayProps: Object,
     withCloseButton: { type: Boolean, default: true },
@@ -349,8 +358,8 @@ const DrawerBaseComponent = defineComponent({
     })
 
     return () => {
-      const title = typeof props.title === 'function' ? props.title() : props.title
-      const header = title != null || props.withCloseButton
+      const title = resolveNode(props.title, slots.title)
+      const header = hasNode(title) || props.withCloseButton
 
       return h(
         DrawerRoot,
@@ -377,11 +386,11 @@ const DrawerBaseComponent = defineComponent({
                   header &&
                     h(DrawerHeader, null, {
                       default: () => [
-                        title != null && h(DrawerTitle, null, { default: () => title as any }),
+                        hasNode(title) && h(DrawerTitle, null, { default: () => title as any }),
                         props.withCloseButton && h(DrawerCloseButton, props.closeButtonProps),
                       ],
                     }),
-                  h(DrawerBody, null, slots),
+                  h(DrawerBody, null, { default: () => slots.default?.() }),
                 ],
               },
             ),

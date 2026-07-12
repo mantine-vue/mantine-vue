@@ -1,8 +1,16 @@
-import { defineComponent, h, type PropType } from 'vue'
-import { Box, Highlight, UnstyledButton, useProps } from '@mantine-vue/core'
+import { defineComponent, h, type PropType, type SlotsType, type VNodeChild } from 'vue'
+import {
+  Box,
+  Highlight,
+  UnstyledButton,
+  hasNode,
+  resolveNode,
+  type MantineNode,
+  type SectionSlots,
+  useProps,
+} from '@mantine-vue/core'
 import { useSpotlightContext } from './Spotlight.context'
 import { spotlightActions } from './spotlight.store'
-import { renderContent } from './style-api'
 import classes from './Spotlight.module.css'
 
 export type SpotlightActionStylesNames =
@@ -15,8 +23,8 @@ export type SpotlightActionStylesNames =
 export interface SpotlightActionProps {
   label?: string
   description?: string
-  leftSection?: any
-  rightSection?: any
+  leftSection?: MantineNode
+  rightSection?: MantineNode
   dimmedSections?: boolean
   highlightQuery?: boolean
   highlightColor?: string
@@ -36,11 +44,12 @@ const defaultProps = {
 export const SpotlightAction = defineComponent({
   name: 'SpotlightAction',
   inheritAttrs: false,
+  slots: Object as SlotsType<SectionSlots & { default?: () => VNodeChild }>,
   props: {
     label: { type: String, default: undefined },
     description: { type: String, default: undefined },
-    leftSection: { type: [String, Number, Object, Function] as PropType<any>, default: undefined },
-    rightSection: { type: [String, Number, Object, Function] as PropType<any>, default: undefined },
+    leftSection: { type: null as unknown as PropType<MantineNode>, default: undefined },
+    rightSection: { type: null as unknown as PropType<MantineNode>, default: undefined },
     dimmedSections: { type: Boolean, default: undefined },
     highlightQuery: { type: Boolean, default: undefined },
     highlightColor: { type: String, default: undefined },
@@ -56,6 +65,8 @@ export const SpotlightAction = defineComponent({
 
     return () => {
       const stylesApi = { classNames: props.classNames, styles: props.styles }
+      const leftSection = resolveNode(props.leftSection, slots.leftSection)
+      const rightSection = resolveNode(props.rightSection, slots.rightSection)
       const labelNode =
         props.highlightQuery && typeof props.label === 'string'
           ? h(
@@ -95,7 +106,7 @@ export const SpotlightAction = defineComponent({
         },
         () =>
           slots.default?.() ?? [
-            props.leftSection
+            hasNode(leftSection)
               ? h(
                   Box,
                   {
@@ -103,14 +114,14 @@ export const SpotlightAction = defineComponent({
                     mod: { position: 'left', dimmed: props.dimmedSections },
                     ...ctx.getStyles('actionSection', stylesApi),
                   },
-                  () => renderContent(props.leftSection),
+                  () => leftSection,
                 )
               : null,
             h('span', ctx.getStyles('actionBody', stylesApi), [
               labelNode,
               h('span', ctx.getStyles('actionDescription', stylesApi), props.description),
             ]),
-            props.rightSection
+            hasNode(rightSection)
               ? h(
                   Box,
                   {
@@ -118,7 +129,7 @@ export const SpotlightAction = defineComponent({
                     mod: { position: 'right', dimmed: props.dimmedSections },
                     ...ctx.getStyles('actionSection', stylesApi),
                   },
-                  () => renderContent(props.rightSection),
+                  () => rightSection,
                 )
               : null,
           ],

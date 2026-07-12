@@ -6,10 +6,26 @@ import {
   h,
   Text,
   type PropType,
+  type SlotsType,
   type VNode,
+  type VNodeChild,
 } from 'vue'
-import { withBoxProps, Box, createVarsResolver, getSpacing, useProps, useStyles } from '../../core'
+import {
+  withBoxProps,
+  Box,
+  createVarsResolver,
+  getSpacing,
+  resolveNode,
+  type MantineNode,
+  useProps,
+  useStyles,
+} from '../../core'
 import classes from './Breadcrumbs.module.css'
+
+export interface BreadcrumbsSlots {
+  default?: () => VNodeChild
+  separator?: () => VNodeChild
+}
 
 const defaultProps = {
   separator: '/',
@@ -20,10 +36,6 @@ const varsResolver = createVarsResolver<any>((_, { separatorMargin }) => ({
     '--bc-separator-margin': getSpacing(separatorMargin),
   },
 }))
-
-function renderContent(content: any) {
-  return typeof content === 'function' ? content() : content
-}
 
 function flattenChildren(children: VNode[]): VNode[] {
   return children.flatMap((child) =>
@@ -39,8 +51,9 @@ export const Breadcrumbs = withBoxProps(
   defineComponent({
     name: 'Breadcrumbs',
     inheritAttrs: false,
+    slots: Object as SlotsType<BreadcrumbsSlots>,
     props: {
-      separator: { type: [String, Number, Object, Function], default: undefined },
+      separator: { type: null as unknown as PropType<MantineNode>, default: undefined },
       separatorMargin: [String, Number] as PropType<string | number>,
       classNames: { type: [Object, Function], default: undefined },
       styles: { type: [Object, Function], default: undefined },
@@ -63,7 +76,7 @@ export const Breadcrumbs = withBoxProps(
       })
 
       return () => {
-        const children = flattenChildren(slots.default?.() ?? [])
+        const children = flattenChildren((slots.default?.() ?? []) as VNode[])
         const items = children.reduce<VNode[]>((acc, child, index) => {
           const item =
             child.type === Text
@@ -83,7 +96,7 @@ export const Breadcrumbs = withBoxProps(
                   ...getStyles('separator'),
                   key: `separator-${index}`,
                 },
-                () => renderContent(props.separator),
+                () => resolveNode(props.separator, slots.separator),
               ),
             )
           }

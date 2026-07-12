@@ -1,5 +1,15 @@
-import { defineComponent, h, inject, provide, type InjectionKey, type PropType } from 'vue'
+import {
+  defineComponent,
+  h,
+  inject,
+  provide,
+  type InjectionKey,
+  type PropType,
+  type SlotsType,
+  type VNodeChild,
+} from 'vue'
 import { useId, useUncontrolled } from '@mantine-vue/hooks'
+import { resolveNode, type MantineNode } from '../../../core'
 import { InputWrapper } from '../../Input'
 import { InputsGroupFieldset } from '../../../utils'
 
@@ -11,6 +21,13 @@ export interface RadioGroupContextValue {
   disabled?: boolean
 }
 
+export interface RadioGroupSlots {
+  default?: () => VNodeChild
+  label?: () => VNodeChild
+  description?: () => VNodeChild
+  error?: () => VNodeChild
+}
+
 const RadioGroupContextKey: InjectionKey<RadioGroupContextValue> = Symbol('RadioGroupContext')
 
 export function useRadioGroupContext() {
@@ -20,6 +37,7 @@ export function useRadioGroupContext() {
 export const RadioGroup = defineComponent({
   name: 'RadioGroup',
   inheritAttrs: false,
+  slots: Object as SlotsType<RadioGroupSlots>,
   props: {
     value: { type: String as PropType<string | null | undefined>, default: undefined },
     defaultValue: { type: String as PropType<string | null | undefined>, default: undefined },
@@ -29,10 +47,10 @@ export const RadioGroup = defineComponent({
     name: { type: String, default: undefined },
     readOnly: { type: Boolean, default: false },
     disabled: { type: Boolean, default: false },
-    label: { type: [String, Number, Object, Function] as PropType<any>, default: undefined },
-    description: { type: [String, Number, Object, Function] as PropType<any>, default: undefined },
+    label: { type: null as unknown as PropType<MantineNode>, default: undefined },
+    description: { type: null as unknown as PropType<MantineNode>, default: undefined },
     error: {
-      type: [String, Number, Object, Function, Boolean] as PropType<any>,
+      type: null as unknown as PropType<MantineNode | boolean>,
       default: undefined,
     },
     classNames: { type: [Object, Function], default: undefined },
@@ -84,9 +102,9 @@ export const RadioGroup = defineComponent({
           size: props.size,
           ...props.wrapperProps,
           ...attrs,
-          label: props.label,
-          description: props.description,
-          error: props.error,
+          label: resolveNode(props.label, slots.label),
+          description: resolveNode(props.description, slots.description),
+          error: resolveNode(props.error, slots.error),
           classNames: props.classNames,
           styles: props.styles,
           vars: props.vars,

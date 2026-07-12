@@ -1,11 +1,19 @@
-import { defineComponent, h, ref, type PropType } from 'vue'
+import { defineComponent, h, ref, type PropType, type SlotsType, type VNodeChild } from 'vue'
 import { useId, useUncontrolled } from '@mantine-vue/hooks'
-import { createVarsResolver, getSize, useStyles } from '../../core'
+import { createVarsResolver, getSize, type MantineNode, useStyles } from '../../core'
 import { ActionIcon } from '../ActionIcon'
 import { Input } from '../Input'
 import inputClasses from '../Input/Input.module.css'
 import { PasswordToggleIcon } from './PasswordToggleIcon'
 import classes from './PasswordInput.module.css'
+
+export interface PasswordInputSlots {
+  label?: () => VNodeChild
+  description?: () => VNodeChild
+  error?: () => VNodeChild
+  leftSection?: () => VNodeChild
+  rightSection?: () => VNodeChild
+}
 
 export type PasswordInputStylesNames =
   | 'root'
@@ -32,6 +40,7 @@ const mergedClasses = { ...inputClasses, ...classes }
 export const PasswordInput = defineComponent({
   name: 'PasswordInput',
   inheritAttrs: false,
+  slots: Object as SlotsType<PasswordInputSlots>,
   props: {
     visibilityToggleIcon: { type: [Object, Function] as PropType<any>, default: undefined },
     visibilityToggleButtonProps: {
@@ -44,10 +53,10 @@ export const PasswordInput = defineComponent({
       type: Function as PropType<(visible: boolean) => void>,
       default: undefined,
     },
-    label: { type: [String, Number, Object, Function] as PropType<any>, default: undefined },
-    description: { type: [String, Number, Object, Function] as PropType<any>, default: undefined },
+    label: { type: null as unknown as PropType<MantineNode>, default: undefined },
+    description: { type: null as unknown as PropType<MantineNode>, default: undefined },
     error: {
-      type: [String, Number, Object, Function, Boolean] as PropType<any>,
+      type: null as unknown as PropType<MantineNode | boolean>,
       default: undefined,
     },
     required: { type: Boolean, default: false },
@@ -66,12 +75,12 @@ export const PasswordInput = defineComponent({
     variant: { type: String as PropType<'default' | 'filled' | 'unstyled'>, default: 'default' },
     radius: { type: [String, Number] as PropType<string | number>, default: undefined },
     disabled: { type: Boolean, default: false },
-    leftSection: { type: [String, Number, Object, Function] as PropType<any>, default: undefined },
+    leftSection: { type: null as unknown as PropType<MantineNode>, default: undefined },
     leftSectionWidth: { type: [String, Number] as PropType<string | number>, default: undefined },
     leftSectionProps: { type: Object as PropType<Record<string, any>>, default: undefined },
     leftSectionPointerEvents: { type: String, default: undefined },
     rightSection: {
-      type: [String, Number, Object, Function, null] as PropType<any>,
+      type: null as unknown as PropType<MantineNode>,
       default: undefined,
     },
     rightSectionWidth: { type: [String, Number] as PropType<string | number>, default: undefined },
@@ -83,7 +92,7 @@ export const PasswordInput = defineComponent({
     vars: { type: [Object, Function], default: undefined },
     unstyled: { type: Boolean, default: false },
   },
-  setup(props, { attrs }) {
+  setup(props, { attrs, slots }) {
     const uuid = useId(props.id)
     const fallbackId = ref(`password-input-${Math.random().toString(36).slice(2)}`)
     const [visible, setVisible] = useUncontrolled<boolean>({
@@ -111,8 +120,12 @@ export const PasswordInput = defineComponent({
       const id = uuid.value || fallbackId.value
       const errorId = props.errorProps?.id || `${id}-error`
       const descriptionId = props.descriptionProps?.id || `${id}-description`
-      const hasError = Boolean(props.error) && typeof props.error !== 'boolean'
-      const hasDescription = Boolean(props.description)
+      const hasError =
+        props.error !== undefined
+          ? Boolean(props.error) && typeof props.error !== 'boolean'
+          : Boolean(slots.error)
+      const hasDescription =
+        props.description !== undefined ? props.description !== null : Boolean(slots.description)
       const describedBy =
         `${hasError ? errorId : ''} ${hasDescription ? descriptionId : ''}`.trim() || undefined
       const VisibilityToggleIcon = props.visibilityToggleIcon || PasswordToggleIcon
@@ -174,49 +187,62 @@ export const PasswordInput = defineComponent({
           unstyled: props.unstyled,
           ...getStyles('root', { className: attrs.class, style: attrs.style as any }),
         },
-        () =>
-          h(
-            Input,
-            {
-              component: 'div',
-              error: props.error,
-              leftSection: props.leftSection,
-              size: props.size,
-              classNames: {
-                ...(props.classNames as any),
-                input: [classes.input, (props.classNames as any)?.input],
-              },
-              styles: props.styles,
-              radius: props.radius,
-              disabled: props.disabled,
-              __staticSelector: 'PasswordInput',
-              __stylesApiProps: props,
-              rightSectionWidth: props.rightSectionWidth,
-              rightSection: props.rightSection ?? visibilityToggleButton,
-              variant: props.variant,
-              unstyled: props.unstyled,
-              leftSectionWidth: props.leftSectionWidth,
-              rightSectionPointerEvents: props.rightSectionPointerEvents || 'all',
-              rightSectionProps: props.rightSectionProps,
-              leftSectionProps: props.leftSectionProps,
-              leftSectionPointerEvents: props.leftSectionPointerEvents,
-              withAria: false,
-              withErrorStyles: props.withErrorStyles,
-            },
-            () =>
-              h('input', {
-                ...attrs,
-                ...getStyles('innerInput'),
-                required: props.required,
-                'data-invalid': props.error ? true : undefined,
-                'data-with-left-section': props.leftSection ? true : undefined,
+        {
+          label: slots.label,
+          description: slots.description,
+          error: slots.error,
+          default: () =>
+            h(
+              Input,
+              {
+                component: 'div',
+                error: props.error ?? (slots.error ? true : undefined),
+                leftSection: props.leftSection,
+                size: props.size,
+                classNames: {
+                  ...(props.classNames as any),
+                  input: [classes.input, (props.classNames as any)?.input],
+                },
+                styles: props.styles,
+                radius: props.radius,
                 disabled: props.disabled,
-                id,
-                'aria-describedby': describedBy,
-                autocomplete: (attrs.autocomplete as any) || 'off',
-                type: visible.value ? 'text' : 'password',
-              }),
-          ),
+                __staticSelector: 'PasswordInput',
+                __stylesApiProps: props,
+                rightSectionWidth: props.rightSectionWidth,
+                rightSection:
+                  props.rightSection !== undefined || slots.rightSection
+                    ? props.rightSection
+                    : visibilityToggleButton,
+                variant: props.variant,
+                unstyled: props.unstyled,
+                leftSectionWidth: props.leftSectionWidth,
+                rightSectionPointerEvents: props.rightSectionPointerEvents || 'all',
+                rightSectionProps: props.rightSectionProps,
+                leftSectionProps: props.leftSectionProps,
+                leftSectionPointerEvents: props.leftSectionPointerEvents,
+                withAria: false,
+                withErrorStyles: props.withErrorStyles,
+              },
+              {
+                default: () =>
+                  h('input', {
+                    ...attrs,
+                    ...getStyles('innerInput'),
+                    required: props.required,
+                    'data-invalid': props.error || slots.error ? true : undefined,
+                    'data-with-left-section':
+                      props.leftSection !== undefined || slots.leftSection ? true : undefined,
+                    disabled: props.disabled,
+                    id,
+                    'aria-describedby': describedBy,
+                    autocomplete: (attrs.autocomplete as any) || 'off',
+                    type: visible.value ? 'text' : 'password',
+                  }),
+                leftSection: slots.leftSection,
+                rightSection: slots.rightSection,
+              },
+            ),
+        },
       )
     }
   },

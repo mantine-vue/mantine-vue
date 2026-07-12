@@ -4,14 +4,18 @@ import { InputBase } from '../InputBase'
 export const TextInput = defineComponent({
   name: 'TextInput',
   inheritAttrs: false,
-  setup(_, { attrs }) {
+  setup(_, { attrs, slots }) {
     return () =>
-      h(InputBase, {
-        ...attrs,
-        component: 'input',
-        __staticSelector: 'TextInput',
-        __stylesApiProps: attrs,
-      })
+      h(
+        InputBase,
+        {
+          ...attrs,
+          component: 'input',
+          __staticSelector: 'TextInput',
+          __stylesApiProps: attrs,
+        },
+        slots,
+      )
   },
 })
 

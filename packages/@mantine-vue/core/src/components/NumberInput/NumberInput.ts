@@ -1,7 +1,24 @@
-import { computed, defineComponent, h, onBeforeUnmount, ref, type PropType } from 'vue'
+import {
+  computed,
+  defineComponent,
+  h,
+  onBeforeUnmount,
+  ref,
+  type PropType,
+  type SlotsType,
+  type VNodeChild,
+} from 'vue'
 import { assignRef, useUncontrolled } from '@mantine-vue/hooks'
-import { Box, createVarsResolver, getSize, useStyles } from '../../core'
+import { Box, createVarsResolver, getSize, type MantineNode, useStyles } from '../../core'
 import { InputBase } from '../InputBase'
+
+export interface NumberInputSlots {
+  label?: () => VNodeChild
+  description?: () => VNodeChild
+  error?: () => VNodeChild
+  leftSection?: () => VNodeChild
+  rightSection?: () => VNodeChild
+}
 import { UnstyledButton } from '../UnstyledButton'
 import {
   formatNumber,
@@ -271,6 +288,7 @@ function getDecimalPlaces(value: number | string) {
 export const NumberInput = defineComponent({
   name: 'NumberInput',
   inheritAttrs: false,
+  slots: Object as SlotsType<NumberInputSlots>,
   props: {
     value: {
       type: [String, Number, BigInt] as PropType<NumberInputValue | undefined>,
@@ -328,15 +346,15 @@ export const NumberInput = defineComponent({
     disabled: { type: Boolean, default: false },
     readOnly: { type: Boolean, default: false },
     rightSection: {
-      type: [String, Number, Object, Function, null] as PropType<any>,
+      type: null as unknown as PropType<MantineNode>,
       default: undefined,
     },
     rightSectionWidth: { type: [String, Number] as PropType<string | number>, default: undefined },
     rightSectionPointerEvents: { type: String, default: undefined },
-    label: { type: [String, Number, Object, Function] as PropType<any>, default: undefined },
-    description: { type: [String, Number, Object, Function] as PropType<any>, default: undefined },
+    label: { type: null as unknown as PropType<MantineNode>, default: undefined },
+    description: { type: null as unknown as PropType<MantineNode>, default: undefined },
     error: {
-      type: [String, Number, Object, Function, Boolean] as PropType<any>,
+      type: null as unknown as PropType<MantineNode | boolean>,
       default: undefined,
     },
     required: { type: Boolean, default: false },
@@ -347,7 +365,7 @@ export const NumberInput = defineComponent({
     vars: { type: [Object, Function], default: undefined },
     unstyled: { type: Boolean, default: false },
   },
-  setup(props, { attrs }) {
+  setup(props, { attrs, slots }) {
     const inputRef = ref<HTMLInputElement | null>(null)
     const isEditing = ref(false)
     const isBigIntMode = computed(
@@ -610,144 +628,150 @@ export const NumberInput = defineComponent({
       ])
 
     return () =>
-      h(InputBase, {
-        ...attrs,
-        component: 'input',
-        __staticSelector: 'NumberInput',
-        __stylesApiProps: props,
-        inputMode: isBigIntMode.value ? 'numeric' : 'decimal',
-        type: 'text',
-        value: displayValue.value,
-        readOnly: props.readOnly,
-        disabled: props.disabled,
-        size: props.size,
-        label: props.label,
-        description: props.description,
-        error: props.error,
-        required: props.required,
-        withAsterisk: props.withAsterisk,
-        wrapperProps: props.wrapperProps,
-        classNames: props.classNames,
-        styles: props.styles,
-        vars: props.vars,
-        unstyled: props.unstyled,
-        rightSection:
-          props.hideControls || props.readOnly
-            ? props.rightSection
-            : props.rightSection || controls,
-        rightSectionPointerEvents:
-          props.rightSectionPointerEvents ?? (props.disabled ? 'none' : undefined),
-        rightSectionWidth:
-          props.rightSectionWidth ?? `var(--ni-right-section-width-${props.size || 'sm'})`,
-        class: [classes.root, attrs.class],
-        onInput: (event: Event) => {
-          isEditing.value = true
-          const input = event.currentTarget as HTMLInputElement
-          const rawValue = stripFormatting(input.value, formatterOptions.value)
-          const decimalSeparator = props.decimalSeparator || '.'
-          const separatorsToReplace = props.allowedDecimalSeparators.filter(
-            (separator) => separator !== decimalSeparator,
-          )
-          const raw = separatorsToReplace.reduce(
-            (acc, separator) => acc.split(separator).join('.'),
-            rawValue.replace(decimalSeparator, '.'),
-          )
-          const sanitized = sanitizeNumberInputString(
-            raw,
-            props.allowDecimal,
-            props.allowNegative,
-            props.decimalScale,
-          )
-          const nextValue = isBigIntMode.value
-            ? parseBigIntInputValue(sanitized, props.allowNegative, props.allowLeadingZeros)
-            : parseNumberInputValue(
-                sanitized,
-                props.allowDecimal,
-                props.allowNegative,
-                props.allowLeadingZeros,
-                props.decimalScale,
-                props.fixedDecimalScale,
-              )
-
-          if (
-            props.clampBehavior === 'strict' &&
-            !isBigIntMode.value &&
-            !isStrictAllowed(
-              nextValue,
-              typeof props.min === 'number' ? props.min : undefined,
-              typeof props.max === 'number' ? props.max : undefined,
+      h(
+        InputBase,
+        {
+          ...attrs,
+          component: 'input',
+          __staticSelector: 'NumberInput',
+          __stylesApiProps: props,
+          inputMode: isBigIntMode.value ? 'numeric' : 'decimal',
+          type: 'text',
+          value: displayValue.value,
+          readOnly: props.readOnly,
+          disabled: props.disabled,
+          size: props.size,
+          label: props.label,
+          description: props.description,
+          error: props.error,
+          required: props.required,
+          withAsterisk: props.withAsterisk,
+          wrapperProps: props.wrapperProps,
+          classNames: props.classNames,
+          styles: props.styles,
+          vars: props.vars,
+          unstyled: props.unstyled,
+          rightSection:
+            props.hideControls || props.readOnly
+              ? props.rightSection
+              : props.rightSection !== undefined || slots.rightSection
+                ? props.rightSection
+                : controls,
+          rightSectionPointerEvents:
+            props.rightSectionPointerEvents ?? (props.disabled ? 'none' : undefined),
+          rightSectionWidth:
+            props.rightSectionWidth ?? `var(--ni-right-section-width-${props.size || 'sm'})`,
+          class: [classes.root, attrs.class],
+          onInput: (event: Event) => {
+            isEditing.value = true
+            const input = event.currentTarget as HTMLInputElement
+            const rawValue = stripFormatting(input.value, formatterOptions.value)
+            const decimalSeparator = props.decimalSeparator || '.'
+            const separatorsToReplace = props.allowedDecimalSeparators.filter(
+              (separator) => separator !== decimalSeparator,
             )
-          ) {
-            restoreInputValue(input, displayValue.value)
-            return
-          }
+            const raw = separatorsToReplace.reduce(
+              (acc, separator) => acc.split(separator).join('.'),
+              rawValue.replace(decimalSeparator, '.'),
+            )
+            const sanitized = sanitizeNumberInputString(
+              raw,
+              props.allowDecimal,
+              props.allowNegative,
+              props.decimalScale,
+            )
+            const nextValue = isBigIntMode.value
+              ? parseBigIntInputValue(sanitized, props.allowNegative, props.allowLeadingZeros)
+              : parseNumberInputValue(
+                  sanitized,
+                  props.allowDecimal,
+                  props.allowNegative,
+                  props.allowLeadingZeros,
+                  props.decimalScale,
+                  props.fixedDecimalScale,
+                )
 
-          const formattedNextValue =
-            nextValue === '' || nextValue === '-'
-              ? String(nextValue)
-              : formatNumber(nextValue, getFormatterOptions(nextValue))
+            if (
+              props.clampBehavior === 'strict' &&
+              !isBigIntMode.value &&
+              !isStrictAllowed(
+                nextValue,
+                typeof props.min === 'number' ? props.min : undefined,
+                typeof props.max === 'number' ? props.max : undefined,
+              )
+            ) {
+              restoreInputValue(input, displayValue.value)
+              return
+            }
 
-          if (input.value !== formattedNextValue) {
-            restoreInputValue(input, formattedNextValue)
-          }
+            const formattedNextValue =
+              nextValue === '' || nextValue === '-'
+                ? String(nextValue)
+                : formatNumber(nextValue, getFormatterOptions(nextValue))
 
-          scheduleCaretClamp(input)
-          commitValue(nextValue)
-        },
-        onKeydown: (event: KeyboardEvent) => {
-          if (!props.readOnly && props.withKeyboardEvents && event.key === 'ArrowUp') {
-            event.preventDefault()
-            stepValue(1)
-          }
+            if (input.value !== formattedNextValue) {
+              restoreInputValue(input, formattedNextValue)
+            }
 
-          if (!props.readOnly && props.withKeyboardEvents && event.key === 'ArrowDown') {
-            event.preventDefault()
-            stepValue(-1)
-          }
+            scheduleCaretClamp(input)
+            commitValue(nextValue)
+          },
+          onKeydown: (event: KeyboardEvent) => {
+            if (!props.readOnly && props.withKeyboardEvents && event.key === 'ArrowUp') {
+              event.preventDefault()
+              stepValue(1)
+            }
 
-          scheduleCaretClamp(event.currentTarget as HTMLInputElement)
-        },
-        onKeyup: (event: KeyboardEvent) => {
-          scheduleCaretClamp(event.currentTarget as HTMLInputElement)
-        },
-        onClick: (event: MouseEvent) => {
-          scheduleCaretClamp(event.currentTarget as HTMLInputElement)
-        },
-        onFocus: (event: FocusEvent) => {
-          isEditing.value = true
+            if (!props.readOnly && props.withKeyboardEvents && event.key === 'ArrowDown') {
+              event.preventDefault()
+              stepValue(-1)
+            }
 
-          if (props.selectAllOnFocus) {
-            setTimeout(() => (event.currentTarget as HTMLInputElement).select(), 0)
-          } else {
             scheduleCaretClamp(event.currentTarget as HTMLInputElement)
-          }
-        },
-        onBlur: () => {
-          isEditing.value = false
-          let sanitizedValue = value.value
-          const min = typeof props.min === 'number' ? props.min : undefined
-          const max = typeof props.max === 'number' ? props.max : undefined
+          },
+          onKeyup: (event: KeyboardEvent) => {
+            scheduleCaretClamp(event.currentTarget as HTMLInputElement)
+          },
+          onClick: (event: MouseEvent) => {
+            scheduleCaretClamp(event.currentTarget as HTMLInputElement)
+          },
+          onFocus: (event: FocusEvent) => {
+            isEditing.value = true
 
-          if (props.clampBehavior === 'blur' && typeof sanitizedValue === 'number') {
-            sanitizedValue = clamp(sanitizedValue, min, max)
-          }
+            if (props.selectAllOnFocus) {
+              setTimeout(() => (event.currentTarget as HTMLInputElement).select(), 0)
+            } else {
+              scheduleCaretClamp(event.currentTarget as HTMLInputElement)
+            }
+          },
+          onBlur: () => {
+            isEditing.value = false
+            let sanitizedValue = value.value
+            const min = typeof props.min === 'number' ? props.min : undefined
+            const max = typeof props.max === 'number' ? props.max : undefined
 
-          if (
-            props.trimLeadingZeroesOnBlur &&
-            typeof sanitizedValue === 'string' &&
-            getDecimalPlaces(sanitizedValue) < 15
-          ) {
-            sanitizedValue = clampAndSanitizeInput(sanitizedValue, max, min)
-          }
+            if (props.clampBehavior === 'blur' && typeof sanitizedValue === 'number') {
+              sanitizedValue = clamp(sanitizedValue, min, max)
+            }
 
-          if (sanitizedValue !== value.value) {
-            commitValue(sanitizedValue, 'blur')
-          }
+            if (
+              props.trimLeadingZeroesOnBlur &&
+              typeof sanitizedValue === 'string' &&
+              getDecimalPlaces(sanitizedValue) < 15
+            ) {
+              sanitizedValue = clampAndSanitizeInput(sanitizedValue, max, min)
+            }
+
+            if (sanitizedValue !== value.value) {
+              commitValue(sanitizedValue, 'blur')
+            }
+          },
+          rootRef: (node: any) => {
+            inputRef.value = node?.querySelector?.('input') ?? node
+          },
         },
-        rootRef: (node: any) => {
-          inputRef.value = node?.querySelector?.('input') ?? node
-        },
-      })
+        slots,
+      )
   },
 })
 

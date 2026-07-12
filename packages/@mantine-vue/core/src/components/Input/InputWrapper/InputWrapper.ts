@@ -1,6 +1,14 @@
-import { computed, defineComponent, h, type PropType } from 'vue'
+import { computed, defineComponent, h, type PropType, type SlotsType, type VNodeChild } from 'vue'
 import { useId } from '@mantine-vue/hooks'
-import { Box, createVarsResolver, getFontSize, rem, useStyles } from '../../../core'
+import {
+  Box,
+  createVarsResolver,
+  getFontSize,
+  rem,
+  resolveNode,
+  type MantineNode,
+  useStyles,
+} from '../../../core'
 import { InputDescription } from '../InputDescription/InputDescription'
 import { InputError } from '../InputError/InputError'
 import { InputLabel } from '../InputLabel/InputLabel'
@@ -10,7 +18,27 @@ import classes from '../Input.module.css'
 
 export type InputWrapperStylesNames = 'root' | 'label' | 'required' | 'description' | 'error'
 
+export interface InputWrapperSlots {
+  default?: () => VNodeChild
+  label?: () => VNodeChild
+  description?: () => VNodeChild
+  error?: () => VNodeChild
+}
+
 const defaultOrder: InputWrapperOrderPart[] = ['label', 'description', 'input', 'error']
+
+/**
+ * Determines whether renderable content is present, honouring prop-over-slot precedence.
+ * Uses truthiness for the prop (matching the original `Boolean(...)` checks) so that an
+ * empty string or `false` is treated as "no content".
+ */
+function nodePresent(prop: MantineNode | boolean | undefined, slot?: () => VNodeChild): boolean {
+  if (prop !== undefined) {
+    return Boolean(prop)
+  }
+
+  return Boolean(slot)
+}
 
 const varsResolver = createVarsResolver<any>((_, { size }) => ({
   label: {
@@ -26,18 +54,15 @@ const varsResolver = createVarsResolver<any>((_, { size }) => ({
   },
 }))
 
-function renderContent(content: any) {
-  return typeof content === 'function' ? content() : content
-}
-
 export const InputWrapper = defineComponent({
   name: 'InputWrapper',
   inheritAttrs: false,
+  slots: Object as SlotsType<InputWrapperSlots>,
   props: {
-    label: { type: [String, Number, Object, Function] as PropType<any>, default: undefined },
-    description: { type: [String, Number, Object, Function] as PropType<any>, default: undefined },
+    label: { type: null as unknown as PropType<MantineNode>, default: undefined },
+    description: { type: null as unknown as PropType<MantineNode>, default: undefined },
     error: {
-      type: [String, Number, Object, Function, Boolean] as PropType<any>,
+      type: null as unknown as PropType<MantineNode | boolean>,
       default: undefined,
     },
     required: { type: Boolean, default: false },
@@ -75,8 +100,11 @@ export const InputWrapper = defineComponent({
     const ids = computed(() => {
       const errorId = props.errorProps?.id || `${idBase.value}-error`
       const descriptionId = props.descriptionProps?.id || `${idBase.value}-description`
-      const hasError = Boolean(props.error) && typeof props.error !== 'boolean'
-      const hasDescription = Boolean(props.description)
+      const hasError =
+        props.error !== undefined
+          ? Boolean(props.error) && typeof props.error !== 'boolean'
+          : Boolean(slots.error)
+      const hasDescription = nodePresent(props.description, slots.description)
       const describedBy = `${hasError ? errorId : ''} ${hasDescription ? descriptionId : ''}`.trim()
 
       return {
@@ -124,7 +152,11 @@ export const InputWrapper = defineComponent({
         variant: props.variant,
       }
 
-      const label = props.label
+      const labelContent = resolveNode(props.label, slots.label)
+      const descriptionContent = resolveNode(props.description, slots.description)
+      const errorContent = resolveNode(props.error, slots.error)
+
+      const label = labelContent
         ? h(
             InputLabel,
             {
@@ -136,7 +168,7 @@ export const InputWrapper = defineComponent({
               ...sharedProps,
               ...props.labelProps,
             },
-            () => renderContent(props.label),
+            () => labelContent,
           )
         : null
 
@@ -150,7 +182,7 @@ export const InputWrapper = defineComponent({
               size: props.descriptionProps?.size || props.size,
               id: props.descriptionProps?.id || ids.value.descriptionId,
             },
-            () => renderContent(props.description),
+            () => descriptionContent,
           )
         : null
 
@@ -168,7 +200,7 @@ export const InputWrapper = defineComponent({
               size: props.errorProps?.size || props.size,
               id: props.errorProps?.id || ids.value.errorId,
             },
-            () => renderContent(props.error),
+            () => errorContent,
           )
         : null
 
@@ -191,7 +223,7 @@ export const InputWrapper = defineComponent({
           ...attrs,
           variant: props.variant,
           'data-size': props.size,
-          mod: [{ error: Boolean(props.error) }, props.mod],
+          mod: [{ error: nodePresent(props.error, slots.error) }, props.mod],
           id: props.labelElement === 'label' ? undefined : props.id,
           ...getStyles('root', { className: attrs.class, style: attrs.style as any }),
         },

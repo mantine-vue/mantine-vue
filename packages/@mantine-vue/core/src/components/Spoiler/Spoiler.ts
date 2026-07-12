@@ -1,10 +1,26 @@
-import { computed, defineComponent, h, type PropType } from 'vue'
+import { computed, defineComponent, h, type PropType, type SlotsType, type VNodeChild } from 'vue'
 import { useElementSize, useId, useUncontrolled } from '@mantine-vue/hooks'
-import { withBoxProps, Box, createVarsResolver, rem, useProps, useStyles } from '../../core'
+import {
+  withBoxProps,
+  Box,
+  createVarsResolver,
+  hasNode,
+  rem,
+  resolveNode,
+  type MantineNode,
+  useProps,
+  useStyles,
+} from '../../core'
 import { Anchor } from '../Anchor'
 import classes from './Spoiler.module.css'
 
 export type SpoilerStylesNames = 'root' | 'control' | 'content'
+
+export interface SpoilerSlots {
+  default?: () => VNodeChild
+  showLabel?: () => VNodeChild
+  hideLabel?: () => VNodeChild
+}
 
 const defaultProps = {
   maxHeight: 100,
@@ -22,10 +38,11 @@ export const Spoiler = withBoxProps(
   defineComponent({
     name: 'Spoiler',
     inheritAttrs: false,
+    slots: Object as SlotsType<SpoilerSlots>,
     props: {
       maxHeight: { type: Number, default: undefined },
-      showLabel: { type: [String, Number, Object, Function] as PropType<any>, required: true },
-      hideLabel: { type: [String, Number, Object, Function] as PropType<any>, required: true },
+      showLabel: { type: null as unknown as PropType<MantineNode>, default: undefined },
+      hideLabel: { type: null as unknown as PropType<MantineNode>, default: undefined },
       defaultExpanded: { type: Boolean, default: undefined },
       expanded: { type: Boolean, default: undefined },
       onExpandedChange: {
@@ -64,13 +81,13 @@ export const Spoiler = withBoxProps(
       })
       const { ref: contentRef, height } = useElementSize<HTMLDivElement>()
 
-      const renderContent = (value: any) => (typeof value === 'function' ? value() : value)
-
       return () => {
         const regionId = `${id.value}-region`
-        const currentLabel = show.value ? props.hideLabel : props.showLabel
+        const currentLabel = show.value
+          ? resolveNode(props.hideLabel, slots.hideLabel)
+          : resolveNode(props.showLabel, slots.showLabel)
         const maxHeight = props.maxHeight ?? defaultProps.maxHeight
-        const hasSpoiler = currentLabel !== null && maxHeight < height.value
+        const hasSpoiler = hasNode(currentLabel) && maxHeight < height.value
         const ariaLabel = show.value ? props.hideAriaLabel : props.showAriaLabel
 
         return h(
@@ -94,7 +111,7 @@ export const Spoiler = withBoxProps(
                     'aria-label': ariaLabel,
                     ...getStyles('control'),
                   },
-                  () => renderContent(currentLabel),
+                  () => currentLabel,
                 )
               : null,
             h(
@@ -113,7 +130,7 @@ export const Spoiler = withBoxProps(
                 role: 'region',
                 id: regionId,
               },
-              [h('div', { ref: contentRef }, slots.default?.())],
+              [h('div', { ref: contentRef }, slots.default?.() as any)],
             ),
           ],
         )

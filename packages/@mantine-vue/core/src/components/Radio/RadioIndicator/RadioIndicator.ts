@@ -1,4 +1,4 @@
-import { defineComponent, h, type PropType } from 'vue'
+import { defineComponent, h, type PropType, type SlotsType, type VNodeChild } from 'vue'
 import {
   withBoxProps,
   Box,
@@ -15,6 +15,10 @@ import { useRadioCardContext } from '../RadioCard/RadioCard'
 import classes from './RadioIndicator.module.css'
 
 export type RadioIndicatorVariant = 'filled' | 'outline'
+
+export interface RadioIndicatorSlots {
+  icon?: (props: { class?: any; style?: any }) => VNodeChild
+}
 
 const varsResolver = createVarsResolver<any>(
   (theme, { radius, color, size, iconColor, autoContrast }) => ({
@@ -39,6 +43,7 @@ export const RadioIndicator = withBoxProps(
   defineComponent({
     name: 'RadioIndicator',
     inheritAttrs: false,
+    slots: Object as SlotsType<RadioIndicatorSlots>,
     props: {
       color: { type: String, default: undefined },
       size: { type: [String, Number] as PropType<string | number>, default: 'sm' },
@@ -55,7 +60,7 @@ export const RadioIndicator = withBoxProps(
       vars: { type: [Object, Function], default: undefined },
       unstyled: { type: Boolean, default: false },
     },
-    setup(props, { attrs }) {
+    setup(props, { attrs, slots }) {
       const cardContext = useRadioCardContext()
       const getStyles = useStyles({
         name: 'RadioIndicator',
@@ -71,6 +76,7 @@ export const RadioIndicator = withBoxProps(
       })
 
       return () => {
+        const iconStyles = getStyles('icon')
         const Icon = props.icon || RadioIcon
         const checked =
           typeof props.checked === 'boolean' ? props.checked : cardContext?.checked || false
@@ -83,7 +89,7 @@ export const RadioIndicator = withBoxProps(
             variant: props.variant,
             mod: [{ checked, disabled: props.disabled }, props.mod],
           },
-          () => h(Icon, getStyles('icon')),
+          () => (slots.icon ? slots.icon(iconStyles) : h(Icon, iconStyles)),
         )
       }
     },

@@ -22,6 +22,8 @@ import {
   useStyles,
   MantineRadius,
   type MantineVariant,
+  hasNode,
+  resolveNode,
 } from '../../core'
 import { Loader } from '../Loader'
 import { Transition, type MantineTransition } from '../Transition'
@@ -184,7 +186,7 @@ const ButtonBase = defineComponent({
     })
 
     const renderSection = (content: any, position: 'left' | 'right') =>
-      content
+      hasNode(content)
         ? h(
             Box,
             {
@@ -197,8 +199,14 @@ const ButtonBase = defineComponent({
         : null
 
     return () => {
-      const leftSection = props.leftSection ?? slots.leftSection?.()
-      const rightSection = props.rightSection ?? slots.rightSection?.()
+      const leftSection = resolveNode(
+        props.leftSection as ButtonProps['leftSection'],
+        slots.leftSection,
+      )
+      const rightSection = resolveNode(
+        props.rightSection as ButtonProps['rightSection'],
+        slots.rightSection,
+      )
       const disabled = props.disabled || props.loading
       const dataDisabled =
         disabled || props['data-disabled'] || props.dataDisabled || attrs['data-disabled']
@@ -219,8 +227,8 @@ const ButtonBase = defineComponent({
               disabled: dataDisabled,
               loading: props.loading,
               block: props.fullWidth,
-              withLeftSection: Boolean(leftSection),
-              withRightSection: Boolean(rightSection),
+              withLeftSection: hasNode(leftSection),
+              withRightSection: hasNode(rightSection),
             },
             props.mod,
           ],

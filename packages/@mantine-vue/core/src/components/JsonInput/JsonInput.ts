@@ -33,7 +33,7 @@ export const JsonInput = defineComponent({
       default: undefined,
     },
   },
-  setup(props, { attrs }) {
+  setup(props, { attrs, slots }) {
     const [value, setValue] = useUncontrolled<string>({
       value: () => props.value,
       defaultValue: props.defaultValue,
@@ -43,34 +43,38 @@ export const JsonInput = defineComponent({
     const valid = ref(validateJson(value.value, props.deserialize))
 
     return () =>
-      h(Textarea, {
-        ...attrs,
-        value: value.value,
-        readOnly: props.readOnly,
-        autoComplete: 'off',
-        __staticSelector: 'JsonInput',
-        error: valid.value ? props.error : props.validationError || true,
-        'data-monospace': true,
-        onInput: (event: Event) => {
-          callHandler((attrs as any).onInput, event)
-          setValue((event.currentTarget as HTMLTextAreaElement).value)
-        },
-        onFocus: (event: FocusEvent) => {
-          callHandler((attrs as any).onFocus, event)
-          valid.value = true
-        },
-        onBlur: (event: FocusEvent) => {
-          callHandler((attrs as any).onBlur, event)
-          const target = event.currentTarget as HTMLTextAreaElement
-          const isValid = validateJson(target.value, props.deserialize)
+      h(
+        Textarea,
+        {
+          ...attrs,
+          value: value.value,
+          readOnly: props.readOnly,
+          autoComplete: 'off',
+          __staticSelector: 'JsonInput',
+          error: valid.value ? props.error : props.validationError || true,
+          'data-monospace': true,
+          onInput: (event: Event) => {
+            callHandler((attrs as any).onInput, event)
+            setValue((event.currentTarget as HTMLTextAreaElement).value)
+          },
+          onFocus: (event: FocusEvent) => {
+            callHandler((attrs as any).onFocus, event)
+            valid.value = true
+          },
+          onBlur: (event: FocusEvent) => {
+            callHandler((attrs as any).onBlur, event)
+            const target = event.currentTarget as HTMLTextAreaElement
+            const isValid = validateJson(target.value, props.deserialize)
 
-          if (props.formatOnBlur && !props.readOnly && isValid && target.value.trim() !== '') {
-            setValue(props.serialize(props.deserialize(target.value), null, props.indentSpaces))
-          }
+            if (props.formatOnBlur && !props.readOnly && isValid && target.value.trim() !== '') {
+              setValue(props.serialize(props.deserialize(target.value), null, props.indentSpaces))
+            }
 
-          valid.value = isValid
+            valid.value = isValid
+          },
         },
-      })
+        slots,
+      )
   },
 })
 
