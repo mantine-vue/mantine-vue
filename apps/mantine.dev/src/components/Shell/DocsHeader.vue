@@ -25,7 +25,10 @@ const activeCategory = computed(() => getActiveCategory(route.path))
 const mainLinksData = [
   // { link: 'https://ui.mantine.dev', label: 'Mantine UI' },
   // { link: 'https://help.mantine.dev', label: 'FAQ' },
-  { link: '/colors-generator', label: 'Colors generator' },
+  { link: '/colors-generator', label: 'Colors generator', reload: false },
+  // `reload: true` forces a full page navigation because the showcase is a
+  // separate SPA served at /showcase, not a route inside the docs router.
+  { link: '/showcase', label: 'Showcase', reload: true },
 ]
 
 const navigationLinksData = computed(() =>
@@ -60,13 +63,15 @@ function isExternal(link: string) {
             </RouterLink>
             <div class="mainLinks">
               <component
-                :is="isExternal(link.link) ? 'a' : 'RouterLink'"
+                :is="link.reload || isExternal(link.link) ? 'a' : 'RouterLink'"
                 v-for="link in mainLinksData"
                 :key="link.label"
                 v-bind="
-                  isExternal(link.link)
-                    ? { href: link.link, target: '_blank', rel: 'noreferrer' }
-                    : { to: link.link }
+                  link.reload
+                    ? { href: link.link }
+                    : isExternal(link.link)
+                      ? { href: link.link, target: '_blank', rel: 'noreferrer' }
+                      : { to: link.link }
                 "
                 class="mainLink"
               >

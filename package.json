@@ -17,6 +17,8 @@
     "docs": "yarn workspace @mantine-vue/docs dev",
     "docs:build": "yarn workspace @mantine-vue/docs build",
     "docs:typecheck": "yarn workspace @mantine-vue/docs typecheck",
+    "showcase": "yarn workspace @mantine-vue/showcase dev",
+    "showcase:build": "yarn workspace @mantine-vue/showcase build",
     "test": "vitest run",
     "vitest": "vitest run",
     "vitest:update": "vitest run --update",

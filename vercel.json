@@ -1,7 +1,11 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "installCommand": "corepack enable && corepack prepare yarn@4.16.0 --activate && corepack yarn install --immutable",
-  "buildCommand": "corepack yarn docs:build",
+  "buildCommand": "corepack yarn docs:build && corepack yarn showcase:build",
   "outputDirectory": "apps/mantine.dev/dist",
-  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
+  "rewrites": [
+    { "source": "/showcase", "destination": "/showcase/index.html" },
+    { "source": "/showcase/(.*)", "destination": "/showcase/index.html" },
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
 }
