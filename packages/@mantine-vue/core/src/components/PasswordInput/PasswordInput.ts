@@ -196,6 +196,7 @@ export const PasswordInput = defineComponent({
               Input,
               {
                 component: 'div',
+                dir: attrs.dir as any,
                 error: props.error ?? (slots.error ? true : undefined),
                 leftSection: props.leftSection,
                 size: props.size,
