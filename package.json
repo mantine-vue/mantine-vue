@@ -67,6 +67,7 @@
     "ncu": "run-s ncu:root ncu:packages ncu:apps"
   },
   "dependencies": {
+    "@vercel/speed-insights": "^2.0.0",
     "type-fest": "^5.6.0"
   },
   "devDependencies": {
