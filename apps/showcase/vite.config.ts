@@ -31,7 +31,6 @@ export default defineConfig(({ command }) => ({
       '@mantine-vue/modals': alias('../../packages/@mantine-vue/modals/src/index.ts'),
       '@mantine-vue/notifications': alias('../../packages/@mantine-vue/notifications/src/index.ts'),
       '@mantine-vue/nprogress': alias('../../packages/@mantine-vue/nprogress/src/index.ts'),
-      '@mantine-vue/schedule/styles.css': alias('../../packages/@mantine-vue/schedule/styles.css'),
       '@mantine-vue/schedule': alias('../../packages/@mantine-vue/schedule/src/index.ts'),
       '@mantine-vue/spotlight': alias('../../packages/@mantine-vue/spotlight/src/index.ts'),
       '@mantine-vue/tiptap': alias('../../packages/@mantine-vue/tiptap/src/index.ts'),
