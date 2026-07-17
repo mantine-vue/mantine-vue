@@ -16,6 +16,7 @@ import {
   useMantineColorScheme,
 } from '@mantine-vue/core'
 import { Notifications } from '@mantine-vue/notifications'
+import { SpeedInsights } from '@vercel/speed-insights/vue'
 import { PhCube, PhGithubLogo, PhMoon, PhSun } from '@phosphor-icons/vue'
 import { sections } from './sections'
 
@@ -122,6 +123,7 @@ function toggleColorScheme() {
   </AppShell>
 
   <Notifications position="top-right" />
+  <SpeedInsights />
 </template>
 
 <style>

@@ -4,6 +4,7 @@ import { RouterView } from 'vue-router'
 import { useRoute } from 'vue-router'
 import { Analytics } from '@vercel/analytics/vue'
 import { Notifications } from '@mantine-vue/notifications'
+import { SpeedInsights } from '@vercel/speed-insights/vue'
 import { ModalsProviderDemo } from './components/ModalsProviderDemo/ModalsProviderDemo'
 import { HotKeysHandler } from './components/HotKeysHandler'
 import { Search } from './components/Search'
@@ -15,6 +16,7 @@ const withoutShell = computed(() => route.path === '/app-shell')
 
 <template>
   <Analytics />
+  <SpeedInsights />
   <Notifications />
   <HotKeysHandler />
   <Search />

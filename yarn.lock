@@ -693,6 +693,7 @@ __metadata:
     "@types/chroma-js": "npm:^3.1.2"
     "@types/node": "npm:^25.0.0"
     "@vercel/analytics": "npm:^2.0.1"
+    "@vercel/speed-insights": "npm:^2.0.0"
     "@vitejs/plugin-vue": "npm:^6.0.0"
     chroma-js: "npm:^3.2.0"
     dayjs: "npm:^1.11.21"
@@ -871,6 +872,7 @@ __metadata:
     "@tiptap/starter-kit": "npm:>=3.3.0"
     "@tiptap/vue-3": "npm:>=3.3.0"
     "@types/node": "npm:^25.0.0"
+    "@vercel/speed-insights": "npm:^2.0.0"
     "@vitejs/plugin-vue": "npm:^6.0.0"
     dayjs: "npm:^1.11.21"
     echarts: "npm:^6.0.0"
@@ -884,6 +886,7 @@ __metadata:
     vite: "npm:^8.0.0"
     vue: "npm:^3.5.0"
     vue-echarts: "npm:^8.0.1"
+    vue-router: "npm:^4.4.0"
     vue-tsc: "npm:^3.1.0"
   languageName: unknown
   linkType: soft
@@ -2219,6 +2222,10 @@ __metadata:
   resolution: "@vercel/analytics@npm:2.0.1"
   peerDependencies:
     "@remix-run/react": ^2
+"@vercel/speed-insights@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "@vercel/speed-insights@npm:2.0.0"
+  peerDependencies:
     "@sveltejs/kit": ^1 || ^2
     next: ">= 13"
     nuxt: ">= 3"
@@ -4363,6 +4370,7 @@ __metadata:
   dependencies:
     "@types/node": "npm:^25.0.0"
     "@vercel/analytics": "npm:^2.0.1"
+    "@vercel/speed-insights": "npm:^2.0.0"
     "@vitejs/plugin-vue": "npm:^6.0.0"
     "@vue/compiler-dom": "npm:^3.5.0"
     "@vue/eslint-config-typescript": "npm:^14.8.0"

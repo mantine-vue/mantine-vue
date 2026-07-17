@@ -38,13 +38,15 @@
     "@tiptap/pm": ">=3.3.0",
     "@tiptap/starter-kit": ">=3.3.0",
     "@tiptap/vue-3": ">=3.3.0",
+    "@vercel/speed-insights": "^2.0.0",
     "dayjs": "^1.11.21",
     "echarts": "^6.0.0",
     "embla-carousel": "^8.6.0",
     "embla-carousel-autoplay": "^8.6.0",
     "embla-carousel-vue": "^8.6.0",
     "vue": "^3.5.0",
-    "vue-echarts": "^8.0.1"
+    "vue-echarts": "^8.0.1",
+    "vue-router": "^4.4.0"
   },
   "devDependencies": {
     "@types/node": "^25.0.0",
