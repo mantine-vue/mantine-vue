@@ -1,6 +1,7 @@
 import { inject, provide, type InjectionKey } from 'vue'
 
 export * from '@mantine-vue/utils'
+export * from './create-scoped-keydown-handler'
 
 export function createSafeInjectionContext<T>(errorMessage: string) {
   const key = Symbol(errorMessage) as InjectionKey<T>

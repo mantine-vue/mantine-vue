@@ -3,6 +3,7 @@ import {
   PhArrowRight,
   PhArrowsLeftRight,
   PhCalendar,
+  PhCalendarDots,
   PhChartScatter,
   PhChatCircle,
   PhFileText,
@@ -25,6 +26,7 @@ import LayoutSection from './sections/LayoutSection.vue'
 import NavigationSection from './sections/NavigationSection.vue'
 import OverlaysSection from './sections/OverlaysSection.vue'
 import RichContentSection from './sections/RichContentSection.vue'
+import ScheduleSection from './sections/ScheduleSection.vue'
 import TypographySection from './sections/TypographySection.vue'
 import UtilitiesSection from './sections/UtilitiesSection.vue'
 
@@ -118,6 +120,15 @@ export const sections: ShowcaseSection[] = [
     icon: PhCalendar,
     component: DatesSection,
     count: 9,
+  },
+  {
+    id: 'schedule',
+    label: 'Schedule',
+    description:
+      'Calendar and scheduling with Day, Week, Month and Year views — drag & drop, resizing, recurring events, background events and custom rendering.',
+    icon: PhCalendarDots,
+    component: ScheduleSection,
+    count: 5,
   },
   {
     id: 'charts',
