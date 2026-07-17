@@ -120,6 +120,14 @@ export { CarouselDemos } from './x/Carousel'
 export { TipTapDemos } from './x/TipTap'
 export { CodeHighlightDemos } from './x/CodeHighlight'
 export { ChartsDemos } from './charts'
+export {
+  DayViewDemos,
+  MobileMonthViewDemos,
+  MonthViewDemos,
+  ScheduleDemos,
+  WeekViewDemos,
+  YearViewDemos,
+} from './schedule'
 
 export * as DatesProviderDemos from './dates/DatesProvider'
 export * as CalendarDemos from './dates/Calendar'

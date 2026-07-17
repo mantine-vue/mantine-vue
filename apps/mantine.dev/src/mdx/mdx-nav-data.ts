@@ -313,6 +313,18 @@ const CHARTS_PAGES: MdxNavItem[] = [
   { label: 'Treemap', link: '/charts/treemap' },
 ]
 
+const SCHEDULE_PAGES: MdxNavItem[] = [
+  { label: 'Getting started', link: '/schedule/getting-started' },
+  { label: 'Schedule', link: '/schedule/schedule' },
+  { label: 'DayView', link: '/schedule/day-view' },
+  { label: 'WeekView', link: '/schedule/week-view' },
+  { label: 'MonthView', link: '/schedule/month-view' },
+  { label: 'YearView', link: '/schedule/year-view' },
+  { label: 'MobileMonthView', link: '/schedule/mobile-month-view' },
+  { label: 'Recurring events', link: '/schedule/recurring-events' },
+  { label: 'Events data', link: '/schedule/events-data' },
+]
+
 export const MDX_NAV_DATA: MdxNavCategory[] = [
   {
     category: 'Getting started',
@@ -382,6 +394,10 @@ export const MDX_NAV_DATA: MdxNavCategory[] = [
   {
     category: 'Charts',
     groups: [{ title: 'Charts', pages: CHARTS_PAGES }],
+  },
+  {
+    category: 'Schedule',
+    groups: [{ title: 'Schedule', pages: SCHEDULE_PAGES }],
   },
   {
     category: 'Form',

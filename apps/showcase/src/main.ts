@@ -6,6 +6,7 @@ import { theme } from './theme'
 
 import '@mantine-vue/core/styles.css'
 import '@mantine-vue/charts/styles.css'
+import '@mantine-vue/schedule/styles.css'
 import './styles.css'
 
 const app = createApp({

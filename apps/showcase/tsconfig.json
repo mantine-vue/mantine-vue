@@ -22,6 +22,7 @@
       "@mantine-vue/store": ["../../packages/@mantine-vue/store/src"],
       "@mantine-vue/notifications": ["../../packages/@mantine-vue/notifications/src"],
       "@mantine-vue/nprogress": ["../../packages/@mantine-vue/nprogress/src"],
+      "@mantine-vue/schedule": ["../../packages/@mantine-vue/schedule/src"],
       "@mantine-vue/spotlight": ["../../packages/@mantine-vue/spotlight/src"],
       "@mantine-vue/tiptap": ["../../packages/@mantine-vue/tiptap/src"],
       "@mantine-vue/modals": ["../../packages/@mantine-vue/modals/src"],

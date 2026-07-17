@@ -724,6 +724,52 @@ const routes: RouteRecordRaw[] = [
     name: 'x-code-highlight',
     component: mdxRoute(() => import('./pages/x/code-highlight.mdx')),
   },
+  { path: '/schedule', redirect: '/schedule/getting-started' },
+  {
+    path: '/schedule/getting-started',
+    name: 'schedule-getting-started',
+    component: mdxRoute(() => import('./pages/schedule/getting-started.mdx')),
+  },
+  {
+    path: '/schedule/schedule',
+    name: 'schedule-schedule',
+    component: mdxRoute(() => import('./pages/schedule/schedule.mdx')),
+  },
+  {
+    path: '/schedule/day-view',
+    name: 'schedule-day-view',
+    component: mdxRoute(() => import('./pages/schedule/day-view.mdx')),
+  },
+  {
+    path: '/schedule/week-view',
+    name: 'schedule-week-view',
+    component: mdxRoute(() => import('./pages/schedule/week-view.mdx')),
+  },
+  {
+    path: '/schedule/month-view',
+    name: 'schedule-month-view',
+    component: mdxRoute(() => import('./pages/schedule/month-view.mdx')),
+  },
+  {
+    path: '/schedule/year-view',
+    name: 'schedule-year-view',
+    component: mdxRoute(() => import('./pages/schedule/year-view.mdx')),
+  },
+  {
+    path: '/schedule/mobile-month-view',
+    name: 'schedule-mobile-month-view',
+    component: mdxRoute(() => import('./pages/schedule/mobile-month-view.mdx')),
+  },
+  {
+    path: '/schedule/recurring-events',
+    name: 'schedule-recurring-events',
+    component: mdxRoute(() => import('./pages/schedule/recurring-events.mdx')),
+  },
+  {
+    path: '/schedule/events-data',
+    name: 'schedule-events-data',
+    component: mdxRoute(() => import('./pages/schedule/events-data.mdx')),
+  },
   {
     path: '/charts/getting-started',
     name: 'charts-getting-started',

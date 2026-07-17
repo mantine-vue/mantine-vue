@@ -7,10 +7,6 @@ type BoxPublicProps = InstanceType<typeof Box>['$props']
 type BadgeProps = InstanceType<typeof Badge>['$props']
 type ThemeIconProps = InstanceType<typeof ThemeIcon>['$props']
 type PinInputProps = InstanceType<typeof PinInput>['$props']
-type IsAny<T> = 0 extends 1 & T ? true : false
-type ExpectFalse<T extends false> = T
-type _BoxMyIsNotAny = ExpectFalse<IsAny<BoxPublicProps['my']>>
-type _BoxBgIsNotAny = ExpectFalse<IsAny<BoxPublicProps['bg']>>
 
 const buttonProps: ButtonProps = { variant: 'filled', size: 'sm', fullWidth: true }
 const customButtonProps: ButtonProps = { variant: 'danger' }

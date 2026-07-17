@@ -51,17 +51,17 @@
     "typescript/no-namespace": "off",
     "typescript/no-unsafe-function-type": "off",
     "typescript/no-deprecated": "warn",
-    // "no-unused-vars": [
-    //   "error",
-    //   {
-    //     "args": "all",
-    //     "argsIgnorePattern": "^_",
-    //     "caughtErrors": "none",
-    //     "caughtErrorsIgnorePattern": "^_",
-    //     "destructuredArrayIgnorePattern": "^_",
-    //     "ignoreRestSiblings": true
-    //   }
-    // ],
+    "no-unused-vars": [
+      "error",
+      {
+        "args": "all",
+        "argsIgnorePattern": "^_",
+        "caughtErrors": "none",
+        "caughtErrorsIgnorePattern": "^_",
+        "destructuredArrayIgnorePattern": "^_",
+        "ignoreRestSiblings": true
+      }
+    ],
 
     "vue/component-definition-name-casing": "error",
     "vue/define-emits-declaration": "error",
