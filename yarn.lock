@@ -692,6 +692,7 @@ __metadata:
     "@tiptap/vue-3": "npm:>=3.3.0"
     "@types/chroma-js": "npm:^3.1.2"
     "@types/node": "npm:^25.0.0"
+    "@vercel/analytics": "npm:^2.0.1"
     "@vitejs/plugin-vue": "npm:^6.0.0"
     chroma-js: "npm:^3.2.0"
     dayjs: "npm:^1.11.21"
@@ -2210,6 +2211,39 @@ __metadata:
   version: 1.3.1
   resolution: "@ungap/structured-clone@npm:1.3.1"
   checksum: 10c0/7e75faf93cf12ff07c3d15a9e4d326b68f57d13f7246d9f4df2c1ed1a5cde581f899d397816ba5d5d703a0d7f6219e4408f385160156cf20b4e082721817cc37
+  languageName: node
+  linkType: hard
+
+"@vercel/analytics@npm:^2.0.1":
+  version: 2.0.1
+  resolution: "@vercel/analytics@npm:2.0.1"
+  peerDependencies:
+    "@remix-run/react": ^2
+    "@sveltejs/kit": ^1 || ^2
+    next: ">= 13"
+    nuxt: ">= 3"
+    react: ^18 || ^19 || ^19.0.0-rc
+    svelte: ">= 4"
+    vue: ^3
+    vue-router: ^4
+  peerDependenciesMeta:
+    "@remix-run/react":
+      optional: true
+    "@sveltejs/kit":
+      optional: true
+    next:
+      optional: true
+    nuxt:
+      optional: true
+    react:
+      optional: true
+    svelte:
+      optional: true
+    vue:
+      optional: true
+    vue-router:
+      optional: true
+  checksum: 10c0/c788c03d0f072f6f2be52d3f6f4f0680d2343f0d8765a759a044204223b14a6e14b285d0c5d5d05c0b66d4419746c5b245656ebdc48398328d85d96f1ede982b
   languageName: node
   linkType: hard
 
@@ -4328,6 +4362,7 @@ __metadata:
   resolution: "mantine-vue@workspace:."
   dependencies:
     "@types/node": "npm:^25.0.0"
+    "@vercel/analytics": "npm:^2.0.1"
     "@vitejs/plugin-vue": "npm:^6.0.0"
     "@vue/compiler-dom": "npm:^3.5.0"
     "@vue/eslint-config-typescript": "npm:^14.8.0"

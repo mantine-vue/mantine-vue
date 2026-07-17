@@ -46,6 +46,7 @@
     "@tiptap/pm": ">=3.3.0",
     "@tiptap/starter-kit": ">=3.3.0",
     "@tiptap/vue-3": ">=3.3.0",
+    "@vercel/analytics": "^2.0.1",
     "chroma-js": "^3.2.0",
     "dayjs": "^1.11.21",
     "echarts": "^6.0.0",

@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import { RouterView } from 'vue-router'
 import { useRoute } from 'vue-router'
+import { Analytics } from '@vercel/analytics/vue'
 import { Notifications } from '@mantine-vue/notifications'
 import { ModalsProviderDemo } from './components/ModalsProviderDemo/ModalsProviderDemo'
 import { HotKeysHandler } from './components/HotKeysHandler'
@@ -13,6 +14,7 @@ const withoutShell = computed(() => route.path === '/app-shell')
 </script>
 
 <template>
+  <Analytics />
   <Notifications />
   <HotKeysHandler />
   <Search />
