@@ -130,7 +130,7 @@ export function createScheduleDemo(
         (options.events || baseEvents).map((event) => ({ ...event })),
       )
       const updateEvent = (data: EventDropData) => {
-        events.value = events.value.map((event) =>
+        events.value = events.value.map((event: ScheduleEventData) =>
           event.id === data.eventId ? { ...event, start: data.newStart, end: data.newEnd } : event,
         )
       }
