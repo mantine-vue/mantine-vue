@@ -6,9 +6,12 @@ import {
   Avatar,
   BackgroundImage,
   Badge,
+  Button,
   Card,
   Center,
   ColorSwatch,
+  DataList,
+  EmptyState,
   Group,
   Image,
   Indicator,
@@ -32,6 +35,7 @@ import {
   PhGitCommit,
   PhGitPullRequest,
   PhHeartbeat,
+  PhMagnifyingGlass,
   PhStar,
 } from '@phosphor-icons/vue'
 import DemoCard from '../components/DemoCard.vue'
@@ -266,6 +270,43 @@ const counter = ref(1287)
           </button>
         </Group>
       </Stack>
+    </DemoCard>
+
+    <DemoCard
+      name="DataList"
+      description="Label-value pairs rendered as a semantic description list."
+    >
+      <DataList>
+        <DataList.Item>
+          <DataList.ItemLabel>Name</DataList.ItemLabel>
+          <DataList.ItemValue>John Doe</DataList.ItemValue>
+        </DataList.Item>
+        <DataList.Item>
+          <DataList.ItemLabel>Email</DataList.ItemLabel>
+          <DataList.ItemValue>john@example.com</DataList.ItemValue>
+        </DataList.Item>
+        <DataList.Item>
+          <DataList.ItemLabel>Role</DataList.ItemLabel>
+          <DataList.ItemValue>Software Engineer</DataList.ItemValue>
+        </DataList.Item>
+      </DataList>
+    </DemoCard>
+
+    <DemoCard
+      name="EmptyState"
+      description="Placeholder for no-data situations with an optional call to action."
+    >
+      <EmptyState
+        title="No results found"
+        description="Try adjusting your search or filters to find what you are looking for."
+      >
+        <template #icon>
+          <PhMagnifyingGlass />
+        </template>
+        <EmptyState.Actions>
+          <Button variant="default">Reset filters</Button>
+        </EmptyState.Actions>
+      </EmptyState>
     </DemoCard>
   </Stack>
 </template>

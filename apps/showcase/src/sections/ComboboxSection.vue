@@ -1,6 +1,14 @@
 <script setup lang="ts">
 import { computed, h, ref } from 'vue'
-import { Combobox, InputBase, Stack, Text, useCombobox } from '@mantine-vue/core'
+import {
+  Button,
+  Combobox,
+  ComboboxPopover,
+  InputBase,
+  Stack,
+  Text,
+  useCombobox,
+} from '@mantine-vue/core'
 import DemoCard from '../components/DemoCard.vue'
 
 const groceries = [
@@ -31,6 +39,8 @@ function handleSubmit(val: string) {
   search.value = val
   combobox.closeDropdown()
 }
+
+const popoverValue = ref<string | null>(null)
 </script>
 
 <template>
@@ -76,6 +86,27 @@ function handleSubmit(val: string) {
         </Combobox>
 
         <Text size="sm" c="dimmed">Selected: {{ value ?? 'none' }}</Text>
+      </Stack>
+    </DemoCard>
+
+    <DemoCard
+      name="ComboboxPopover"
+      description="Attach a searchable, selectable dropdown to any button target without rendering an input."
+    >
+      <Stack gap="xs" style="max-width: 340px">
+        <ComboboxPopover
+          :data="['React', 'Angular', 'Vue', 'Svelte']"
+          :value="popoverValue"
+          searchable
+          nothing-found-message="Nothing found..."
+          @change="popoverValue = $event"
+        >
+          <ComboboxPopover.Target>
+            <Button variant="default" :miw="200">{{ popoverValue || 'Select framework' }}</Button>
+          </ComboboxPopover.Target>
+        </ComboboxPopover>
+
+        <Text size="sm" c="dimmed">Selected: {{ popoverValue ?? 'none' }}</Text>
       </Stack>
     </DemoCard>
   </Stack>

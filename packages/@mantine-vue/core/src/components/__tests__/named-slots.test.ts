@@ -3,8 +3,11 @@ import { h } from 'vue'
 import { mount } from '@vue/test-utils'
 import {
   Alert,
+  Button,
   Checkbox,
+  ComboboxPopover,
   Divider,
+  EmptyState,
   MantineProvider,
   Radio,
   TextInput,
@@ -149,5 +152,81 @@ describe('@mantine-vue/core named slots', () => {
     })
     expect(wrapper.find('.prop-icon').exists()).toBe(true)
     expect(wrapper.find('.prop-title').exists()).toBe(true)
+  })
+
+  it('EmptyState: renders icon/title/description from named slots and props take precedence', () => {
+    const fromSlots = withProvider(
+      EmptyState,
+      {},
+      {
+        icon: () => h('span', { class: 'slot-icon' }, 'I'),
+        title: () => h('span', { class: 'slot-title' }, 'Slot title'),
+        description: () => h('span', { class: 'slot-description' }, 'Slot description'),
+      },
+    )
+    expect(fromSlots.find('.slot-icon').exists()).toBe(true)
+    expect(fromSlots.find('.slot-title').exists()).toBe(true)
+    expect(fromSlots.find('.slot-description').exists()).toBe(true)
+
+    const both = withProvider(
+      EmptyState,
+      { title: 'Prop title' },
+      { title: () => h('span', { class: 'slot-title' }, 'Slot loses') },
+    )
+    expect(both.text()).toContain('Prop title')
+    expect(both.find('.slot-title').exists()).toBe(false)
+  })
+
+  it('EmptyState: preserves existing prop-based API (VNode and h render functions)', () => {
+    const wrapper = withProvider(EmptyState, {
+      icon: h('span', { class: 'prop-icon' }, 'I'),
+      title: () => h('span', { class: 'prop-title' }, 'T'),
+      description: 'Prop description',
+    })
+    expect(wrapper.find('.prop-icon').exists()).toBe(true)
+    expect(wrapper.find('.prop-title').exists()).toBe(true)
+    expect(wrapper.text()).toContain('Prop description')
+  })
+
+  it('ComboboxPopover: renders custom option content from the #option slot', () => {
+    const wrapper = withProvider(
+      ComboboxPopover,
+      { data: ['React', 'Vue'], dropdownOpened: true, comboboxProps: { withinPortal: false } },
+      {
+        default: () => h(ComboboxPopover.Target, null, () => h(Button, null, () => 'Open')),
+        option: ({ option }: { option: { value: string; label: string } }) =>
+          h('span', { class: 'custom-option' }, `★ ${option.label}`),
+      },
+    )
+    expect(wrapper.findAll('.custom-option').length).toBeGreaterThan(0)
+    expect(wrapper.text()).toContain('★ React')
+  })
+
+  it('ComboboxPopover: renders #nothingFound slot and nothingFoundMessage prop wins', () => {
+    const fromSlot = withProvider(
+      ComboboxPopover,
+      { data: [], dropdownOpened: true, comboboxProps: { withinPortal: false } },
+      {
+        default: () => h(ComboboxPopover.Target, null, () => h(Button, null, () => 'Open')),
+        nothingFound: () => h('span', { class: 'slot-nf' }, 'No data'),
+      },
+    )
+    expect(fromSlot.find('.slot-nf').exists()).toBe(true)
+
+    const both = withProvider(
+      ComboboxPopover,
+      {
+        data: [],
+        dropdownOpened: true,
+        nothingFoundMessage: 'Prop message',
+        comboboxProps: { withinPortal: false },
+      },
+      {
+        default: () => h(ComboboxPopover.Target, null, () => h(Button, null, () => 'Open')),
+        nothingFound: () => h('span', { class: 'slot-nf' }, 'Slot loses'),
+      },
+    )
+    expect(both.text()).toContain('Prop message')
+    expect(both.find('.slot-nf').exists()).toBe(false)
   })
 })
