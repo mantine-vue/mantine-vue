@@ -1,4 +1,5 @@
 import { cloneVNode, defineComponent, h, type VNode } from 'vue'
+import { mergeRefs } from '@mantine-vue/hooks'
 import { PopoverTarget } from '../../Popover'
 import { useHoverCardContext } from '../HoverCard.context'
 
@@ -16,20 +17,25 @@ export const HoverCardTarget = defineComponent({
   props: { refProp: { type: String, default: 'ref' }, eventPropsWrapperName: String },
   setup(props, { attrs, slots }) {
     const ctx = useHoverCardContext()
+    const assignTargetRef = (el: any) => {
+      ctx.assignTarget((el?.$el ?? el ?? null) as HTMLElement | null)
+    }
     return () => {
       const child = one(slots)
       const events = { onMouseenter: ctx.openDropdown, onMouseleave: ctx.closeDropdown }
+      const targetRef = mergeRefs(assignTargetRef, (child as any).ref)
       const cloned = cloneVNode(
         child,
         props.eventPropsWrapperName
           ? {
+              ref: targetRef,
               [props.eventPropsWrapperName]: {
                 ...(child.props as any)?.[props.eventPropsWrapperName],
                 ...events,
               },
             }
-          : events,
-        true,
+          : { ref: targetRef, ...events },
+        false,
       )
       return h(PopoverTarget, { ...attrs, refProp: props.refProp }, () => cloned)
     }

@@ -2165,9 +2165,15 @@ export const SpinInput = defineComponent({
 
     const handleKeydown = (event: KeyboardEvent) => {
       if (props.readOnly) return
-      if (event.key === '0' && props.value === 0) {
-        event.preventDefault()
-        props.onNextInput?.()
+      if (event.key === '0' || event.key === 'Num0') {
+        const target = event.currentTarget as HTMLInputElement
+        const { selectionStart, selectionEnd, value: inputValue } = target
+        const isEntireValueSelected =
+          inputValue.length > 0 && selectionStart === 0 && selectionEnd === inputValue.length
+        if (props.value === 0 && !isEntireValueSelected) {
+          event.preventDefault()
+          props.onNextInput?.()
+        }
       }
       if (event.key === 'Home') {
         event.preventDefault()
@@ -2322,6 +2328,7 @@ export const TimePicker = defineComponent({
     readOnly: Boolean,
     size: { type: [String, Number], default: 'sm' },
     presets: Array as PropType<Array<{ value: string; label: string }>>,
+    closeDropdownOnPresetSelect: Boolean,
     // A ref object supplied by the parent (e.g. DateTimePicker) that gets
     // populated with the actual hours <input> DOM node, so the parent can
     // call .focus() on it directly to auto-focus the time input after a
@@ -2452,6 +2459,13 @@ export const TimePicker = defineComponent({
 
     const opened = ref(false)
 
+    const handlePresetSelect = (timeString: string) => {
+      setValue(timeString)
+      if (props.closeDropdownOnPresetSelect) {
+        opened.value = false
+      }
+    }
+
     return () =>
       h(
         Popover,
@@ -2565,7 +2579,11 @@ export const TimePicker = defineComponent({
                     props.presets?.map((preset) =>
                       h(
                         Button,
-                        { size: 'xs', variant: 'light', onClick: () => setValue(preset.value) },
+                        {
+                          size: 'xs',
+                          variant: 'light',
+                          onClick: () => handlePresetSelect(preset.value),
+                        },
                         () => preset.label,
                       ),
                     ),

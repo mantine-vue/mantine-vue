@@ -34,6 +34,7 @@ const HoverCardBase = defineComponent({
     provideHoverCardContext({
       openDropdown: state.openDropdown,
       closeDropdown: state.closeDropdown,
+      assignTarget: state.assignTarget,
     })
     return () =>
       h(Popover, { ...attrs, opened: state.opened.value, __staticSelector: 'HoverCard' }, slots)

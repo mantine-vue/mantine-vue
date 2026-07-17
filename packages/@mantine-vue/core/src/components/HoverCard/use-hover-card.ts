@@ -1,4 +1,4 @@
-import { inject, onBeforeUnmount, ref } from 'vue'
+import { inject, onBeforeUnmount, ref, watch } from 'vue'
 import { HoverCardGroupKey } from './HoverCardGroup/HoverCardGroup'
 
 export function useHoverCard(settings: {
@@ -10,6 +10,10 @@ export function useHoverCard(settings: {
 }) {
   const group = inject(HoverCardGroupKey, { withinGroup: false, openDelay: 0, closeDelay: 0 })
   const opened = ref(!!settings.defaultOpened)
+  const targetRef = ref<HTMLElement | null>(null)
+  const assignTarget = (node: HTMLElement | null) => {
+    targetRef.value = node
+  }
   let openTimer: ReturnType<typeof setTimeout> | undefined
   let closeTimer: ReturnType<typeof setTimeout> | undefined
   const clear = () => {
@@ -34,6 +38,35 @@ export function useHoverCard(settings: {
     if (delay) closeTimer = setTimeout(() => change(false), delay)
     else change(false)
   }
-  onBeforeUnmount(clear)
-  return { opened, openDropdown, closeDropdown }
+  // When the hovercard is open, watch the target element: if it becomes
+  // disconnected from the DOM or is hidden (no client rects), close the
+  // dropdown so it does not linger without a visible anchor.
+  let observer: IntersectionObserver | undefined
+  const stopObserver = () => {
+    observer?.disconnect()
+    observer = undefined
+  }
+  watch(
+    [opened, targetRef],
+    ([isOpened, node]) => {
+      stopObserver()
+      if (!isOpened || group.withinGroup || typeof IntersectionObserver === 'undefined' || !node) {
+        return
+      }
+      observer = new IntersectionObserver(() => {
+        if (!node.isConnected || node.getClientRects().length === 0) {
+          clear()
+          change(false)
+        }
+      })
+      observer.observe(node)
+    },
+    { flush: 'post' },
+  )
+
+  onBeforeUnmount(() => {
+    clear()
+    stopObserver()
+  })
+  return { opened, openDropdown, closeDropdown, assignTarget }
 }

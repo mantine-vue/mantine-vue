@@ -175,11 +175,14 @@ const CheckboxBase = defineComponent({
               variant: props.variant,
               onClick: (event: MouseEvent) => {
                 callHandler(attrs.onClick, event)
-                if (props.readOnly && props.checked === undefined) {
+                if (props.readOnly && checked === undefined) {
                   event.preventDefault()
                 }
               },
               onChange: (event: Event) => {
+                if (props.readOnly) {
+                  return
+                }
                 callHandler(attrs.onChange, event)
                 groupContext?.onChange(event)
               },
