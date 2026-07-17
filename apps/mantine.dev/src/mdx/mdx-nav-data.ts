@@ -57,6 +57,7 @@ const INPUTS_PAGES: MdxNavItem[] = [
 const COMBOBOX_PAGES: MdxNavItem[] = [
   { label: 'Autocomplete', link: '/core/autocomplete' },
   { label: 'Combobox', link: '/core/combobox' },
+  { label: 'ComboboxPopover', link: '/core/combobox-popover' },
   { label: 'MultiSelect', link: '/core/multi-select' },
   { label: 'Pill', link: '/core/pill' },
   { label: 'PillsInput', link: '/core/pills-input' },
@@ -118,6 +119,8 @@ const DATA_DISPLAY_PAGES: MdxNavItem[] = [
   { label: 'Badge', link: '/core/badge' },
   { label: 'Card', link: '/core/card' },
   { label: 'ColorSwatch', link: '/core/color-swatch' },
+  { label: 'DataList', link: '/core/data-list' },
+  { label: 'EmptyState', link: '/core/empty-state' },
   { label: 'Image', link: '/core/image' },
   { label: 'Indicator', link: '/core/indicator' },
   { label: 'Kbd', link: '/core/kbd' },

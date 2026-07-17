@@ -150,6 +150,21 @@ const routes: RouteRecordRaw[] = [
     component: mdxRoute(() => import('./pages/core/combobox.mdx')),
   },
   {
+    path: '/core/combobox-popover',
+    name: 'core-combobox-popover',
+    component: mdxRoute(() => import('./pages/core/combobox-popover.mdx')),
+  },
+  {
+    path: '/core/data-list',
+    name: 'core-data-list',
+    component: mdxRoute(() => import('./pages/core/data-list.mdx')),
+  },
+  {
+    path: '/core/empty-state',
+    name: 'core-empty-state',
+    component: mdxRoute(() => import('./pages/core/empty-state.mdx')),
+  },
+  {
     path: '/core/multi-select',
     name: 'core-multi-select',
     component: mdxRoute(() => import('./pages/core/multi-select.mdx')),

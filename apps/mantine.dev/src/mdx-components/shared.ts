@@ -1,5 +1,6 @@
 import { defineComponent, h, type PropType, type VNodeChild } from 'vue'
 import { RouterLink } from 'vue-router'
+import { MdxCodeHighlight } from './MdxPre'
 
 // Shared content blocks reused across many component pages. Each renders a
 // titled section so the table of contents picks up the heading id.
@@ -23,7 +24,7 @@ function Ul(children: VNodeChild[]): VNodeChild {
   return h('ul', { class: 'mdx-ul' }, children)
 }
 function CodeBlock(code: string, language = 'tsx'): VNodeChild {
-  return h('pre', { class: 'mdx-pre' }, [h('code', { class: `language-${language}` }, code.trim())])
+  return h(MdxCodeHighlight, { code: code.trim(), language })
 }
 
 export const MdxGradient = defineComponent({

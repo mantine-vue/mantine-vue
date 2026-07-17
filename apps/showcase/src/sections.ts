@@ -71,7 +71,7 @@ export const sections: ShowcaseSection[] = [
     description: 'Present structured information — cards, tables, badges, avatars and lists.',
     icon: PhImage,
     component: DataDisplaySection,
-    count: 17,
+    count: 19,
   },
   {
     id: 'feedback',
@@ -111,7 +111,7 @@ export const sections: ShowcaseSection[] = [
     description: 'Low-level building blocks for custom select, autocomplete and dropdown widgets.',
     icon: PhMagnifyingGlass,
     component: ComboboxSection,
-    count: 1,
+    count: 2,
   },
   {
     id: 'dates',
