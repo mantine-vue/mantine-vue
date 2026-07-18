@@ -4,10 +4,13 @@ import { Badge, Code, Group, Stack, Text } from '@mantine-vue/core'
 import {
   DayView,
   MonthView,
+  ResourcesSchedule,
   Schedule,
   WeekView,
   YearView,
+  type ResourcesScheduleViewLevel,
   type ScheduleEventData,
+  type ScheduleResourceData,
   type ScheduleViewLevel,
 } from '@mantine-vue/schedule'
 import DemoCard from '../components/DemoCard.vue'
@@ -91,6 +94,97 @@ const frenchLabels = {
   year: 'Année',
   allDay: 'Journée',
 }
+
+interface ResourceDropData extends EventDropData {
+  resourceId?: string | number
+}
+
+const resources: ScheduleResourceData[] = [
+  { id: 'tokyo', label: 'Meeting room: Tokyo', color: 'blue' },
+  { id: 'paris', label: 'Meeting room: Paris', color: 'grape' },
+  { id: 'new-york', label: 'Meeting room: New York', color: 'teal' },
+  { id: 'london', label: 'Meeting room: London', color: 'orange' },
+]
+
+const resourceDate = ref(SCHEDULE_DATE)
+const resourceView = ref<ResourcesScheduleViewLevel>('day')
+const resourceEvents = ref<ScheduleEventData[]>([
+  {
+    id: 'r1',
+    title: 'Team standup',
+    start: '2026-07-15 09:00:00',
+    end: '2026-07-15 09:30:00',
+    color: 'blue',
+    resourceId: 'tokyo',
+  },
+  {
+    id: 'r2',
+    title: 'Sprint planning',
+    start: '2026-07-15 10:00:00',
+    end: '2026-07-15 11:30:00',
+    color: 'green',
+    resourceId: 'tokyo',
+  },
+  {
+    id: 'r3',
+    title: 'Client call',
+    start: '2026-07-15 09:30:00',
+    end: '2026-07-15 10:30:00',
+    color: 'violet',
+    resourceId: 'paris',
+  },
+  {
+    id: 'r4',
+    title: 'Design review',
+    start: '2026-07-16 13:00:00',
+    end: '2026-07-16 14:00:00',
+    color: 'orange',
+    resourceId: 'paris',
+  },
+  {
+    id: 'r5',
+    title: '1:1 meeting',
+    start: '2026-07-15 11:00:00',
+    end: '2026-07-15 11:30:00',
+    color: 'cyan',
+    resourceId: 'new-york',
+  },
+  {
+    id: 'r6',
+    title: 'Architecture review',
+    start: '2026-07-15 10:00:00',
+    end: '2026-07-15 11:00:00',
+    color: 'red',
+    resourceId: 'london',
+  },
+  {
+    id: 'r7',
+    title: 'Retrospective',
+    start: '2026-07-16 15:00:00',
+    end: '2026-07-16 16:00:00',
+    color: 'grape',
+    resourceId: 'london',
+  },
+])
+
+function resourceMove(verb: string) {
+  return (data: ResourceDropData) => {
+    resourceEvents.value = resourceEvents.value.map((event) =>
+      event.id === data.eventId
+        ? {
+            ...event,
+            start: data.newStart,
+            end: data.newEnd,
+            resourceId: data.resourceId ?? event.resourceId,
+          }
+        : event,
+    )
+    lastAction.value = `${verb} “${data.event.title}” → ${data.newStart} – ${data.newEnd}`
+  }
+}
+
+const resourceDrop = resourceMove('Moved')
+const resourceResize = resourceMove('Resized')
 </script>
 
 <template>
@@ -119,6 +213,33 @@ const frenchLabels = {
         />
         <Group gap="xs">
           <Badge variant="light" radius="sm">{{ unifiedView }} view</Badge>
+          <Text size="sm" c="dimmed">{{ lastAction }}</Text>
+        </Group>
+      </Stack>
+    </DemoCard>
+
+    <DemoCard
+      name="ResourcesSchedule"
+      description="Resource rows (meeting rooms) with Day / Week / Month switching in one component. Drag events between rooms and time slots, or resize their edges."
+      pkg="schedule"
+    >
+      <Stack gap="sm">
+        <ResourcesSchedule
+          :date="resourceDate"
+          :view="resourceView"
+          :resources="resources"
+          :events="resourceEvents"
+          with-events-drag-and-drop
+          with-event-resize
+          :day-view-props="timeRange"
+          :week-view-props="timeRange"
+          :on-date-change="(value: string) => (resourceDate = value)"
+          :on-view-change="(value: ResourcesScheduleViewLevel) => (resourceView = value)"
+          :on-event-drop="resourceDrop"
+          :on-event-resize="resourceResize"
+        />
+        <Group gap="xs">
+          <Badge variant="light" radius="sm">{{ resourceView }} view</Badge>
           <Text size="sm" c="dimmed">{{ lastAction }}</Text>
         </Group>
       </Stack>

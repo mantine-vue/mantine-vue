@@ -1,0 +1,63 @@
+import { ResourcesScheduleDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.ResourcesSchedule)
+
+## Usage
+
+`ResourcesSchedule` is a wrapper component that combines `ResourcesDayView`, `ResourcesWeekView` and `ResourcesMonthView` into a single component with view switching. It manages the current view and date state, passing common props to all three views automatically.
+
+<Demo data={ResourcesScheduleDemos.usage} />
+
+## Controlled state
+
+You can control the current date and view level with the `date`/`onDateChange` and `view`/`onViewChange` props.
+
+<Demo data={ResourcesScheduleDemos.controlled} />
+
+## Drag and drop
+
+Enable drag and drop across all views with the `withEventsDragAndDrop` prop. `onEventDrop` receives the target `resourceId`.
+
+<Demo data={ResourcesScheduleDemos.dragDrop} />
+
+## Week view
+
+Set `defaultView="week"` to open the schedule in week view by default.
+
+<Demo data={ResourcesScheduleDemos.weekView} />
+
+## View-specific props
+
+Use `dayViewProps`, `weekViewProps` and `monthViewProps` to pass props specific to each view.
+
+<Demo data={ResourcesScheduleDemos.viewProps} />
+
+## Event form
+
+Click time slots, day cells or existing events to create events. The interaction works across day, week and month views with automatic view switching. Every callback includes the target `resourceId`.
+
+<Demo data={ResourcesScheduleDemos.eventForm} />
+
+## External drag and drop
+
+You can drag external items onto the schedule using the `onExternalEventDrop` prop. The callback receives the `resourceId` of the target resource.
+
+<Demo data={ResourcesScheduleDemos.externalDragDrop} />
+
+## Event resize
+
+Enable event resizing with the `withEventResize` prop. Resizing is available in day and week views where events can be resized by dragging their edges. In week view, resizing is constrained to the event's own day.
+
+<Demo data={ResourcesScheduleDemos.eventResize} />
+
+## Static mode
+
+Set `mode="static"` to disable all interactions across all three views.
+
+<Demo data={ResourcesScheduleDemos.staticMode} />
+
+## Named slots
+
+Renderable sections support named slots that are forwarded to the active view, including `resourceLabel`, `groupLabel`, `corner`, `eventBody` and `event`. They are scoped alternatives to the `renderResourceLabel` and `renderEventBody` props.

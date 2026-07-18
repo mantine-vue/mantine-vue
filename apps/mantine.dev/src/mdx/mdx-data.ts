@@ -3008,6 +3008,18 @@ export const MDX_DATA: Record<string, Frontmatter> = {
     docs: 'schedule/resources-month-view.mdx',
     searchTags: 'calendar, resources, month, timeline, scheduler',
   },
+  ResourcesSchedule: {
+    title: 'ResourcesSchedule',
+    package: '@mantine-vue/schedule',
+    slug: '/schedule/resources-schedule',
+    componentPrefix: 'ResourcesSchedule',
+    props: ['ResourcesSchedule'],
+    styles: ['ResourcesSchedule'],
+    description: 'Resource schedule with day, week and month view switching',
+    source: '@mantine-vue/schedule/src/components/ResourcesSchedule/ResourcesSchedule.ts',
+    docs: 'schedule/resources-schedule.mdx',
+    searchTags: 'calendar, resources, rooms, people, day, week, month, timeline, scheduler',
+  },
   RecurringEventsSchedule: {
     title: 'Recurring events',
     package: '@mantine-vue/schedule',
