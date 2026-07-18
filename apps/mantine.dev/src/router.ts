@@ -781,6 +781,11 @@ const routes: RouteRecordRaw[] = [
     component: mdxRoute(() => import('./pages/schedule/resources-month-view.mdx')),
   },
   {
+    path: '/schedule/resources-schedule',
+    name: 'schedule-resources-schedule',
+    component: mdxRoute(() => import('./pages/schedule/resources-schedule.mdx')),
+  },
+  {
     path: '/schedule/month-view',
     name: 'schedule-month-view',
     component: mdxRoute(() => import('./pages/schedule/month-view.mdx')),

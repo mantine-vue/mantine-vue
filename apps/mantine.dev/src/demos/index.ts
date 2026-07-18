@@ -130,6 +130,7 @@ export {
   MonthViewDemos,
   ResourcesDayViewDemos,
   ResourcesMonthViewDemos,
+  ResourcesScheduleDemos,
   ResourcesWeekViewDemos,
   ScheduleDemos,
   WeekViewDemos,
