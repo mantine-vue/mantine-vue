@@ -9,12 +9,20 @@ import {
   MobileMonthView,
   MonthYearSelect,
   MonthView,
+  ResourcesDayView,
+  ResourcesMonthView,
+  ResourcesWeekView,
   Schedule,
   ScheduleEvent,
   WeekView,
   YearView,
 } from '..'
 import type { ScheduleEventData } from '../types'
+
+const resources = [
+  { id: 'room-a', label: 'Room A' },
+  { id: 'room-b', label: 'Room B' },
+]
 
 const events: ScheduleEventData[] = [
   {
@@ -67,8 +75,9 @@ function dispatchDragEvent(
   type: string,
   dataTransfer: DataTransfer,
   clientY = 0,
+  clientX = 0,
 ) {
-  const event = new MouseEvent(type, { bubbles: true, cancelable: true, clientY })
+  const event = new MouseEvent(type, { bubbles: true, cancelable: true, clientY, clientX })
   Object.defineProperty(event, 'dataTransfer', { value: dataTransfer })
   element.dispatchEvent(event)
 }
@@ -604,6 +613,245 @@ describe('@mantine-vue/schedule', () => {
     expect(day.findComponent(CurrentTimeIndicator).find('div').exists()).toBe(true)
     expect(week.findAllComponents(CurrentTimeIndicator)).toHaveLength(1)
     expect(week.findComponent(CurrentTimeIndicator).find('div').exists()).toBe(true)
+  })
+
+  it('renders resource rows and only places events in their assigned resource', () => {
+    const resourceEvents: ScheduleEventData[] = [
+      {
+        ...events[0],
+        resourceId: 'room-b',
+      },
+    ]
+    const wrapper = mountWithProvider(ResourcesDayView, {
+      date: '2026-07-15',
+      resources,
+      events: resourceEvents,
+      startTime: '08:00:00',
+      endTime: '10:00:00',
+    })
+    const rows = wrapper.findAll('[class*="resourcesDayViewRowSlots"]')
+
+    expect(rows).toHaveLength(2)
+    expect(rows[0].text()).not.toContain('Planning')
+    expect(rows[1].text()).toContain('Planning')
+    expect(wrapper.findAll('button[class*="resourcesDayViewRowSlot"]')).toHaveLength(4)
+  })
+
+  it('includes resource and date-time data in resource slot callbacks', async () => {
+    const onTimeSlotClick = vi.fn()
+    const wrapper = mountWithProvider(ResourcesWeekView, {
+      date: '2026-07-15',
+      resources,
+      startTime: '08:00:00',
+      endTime: '09:00:00',
+      onTimeSlotClick,
+    })
+
+    await wrapper.find('button[class*="resourcesWeekViewRowSlot"]').trigger('click')
+
+    expect(onTimeSlotClick).toHaveBeenCalledWith(
+      expect.objectContaining({
+        resourceId: 'room-a',
+        slotStart: '2026-07-13 08:00:00',
+        slotEnd: '2026-07-13 09:00:00',
+      }),
+    )
+  })
+
+  it('supports VNode resource labels and named section slots', () => {
+    const wrapper = mount(
+      defineComponent({
+        setup: () => () =>
+          h(MantineProvider, null, () =>
+            h(
+              ResourcesDayView,
+              {
+                date: '2026-07-15',
+                resources: [{ id: 'room-a', label: h('strong', 'VNode room') }],
+                startTime: '08:00:00',
+                endTime: '09:00:00',
+              },
+              {
+                resourceLabel: ({ resource }) => h('em', `Slot: ${String(resource.id)}`),
+                timeSlot: ({ startTime }) => h('span', `Custom ${startTime}`),
+              },
+            ),
+          ),
+      }),
+    )
+
+    expect(wrapper.find('em').text()).toBe('Slot: room-a')
+    expect(wrapper.text()).toContain('Custom 08:00:00')
+    expect(wrapper.text()).not.toContain('VNode room')
+  })
+
+  it('keeps resource views non-interactive in static mode', async () => {
+    const onTimeSlotClick = vi.fn()
+    const onEventClick = vi.fn()
+    const wrapper = mountWithProvider(ResourcesDayView, {
+      date: '2026-07-15',
+      resources,
+      events: [{ ...events[0], resourceId: 'room-a' }],
+      mode: 'static',
+      startTime: '08:00:00',
+      endTime: '10:00:00',
+      onTimeSlotClick,
+      onEventClick,
+    })
+
+    await wrapper.find('button[class*="resourcesDayViewRowSlot"]').trigger('click')
+    await wrapper.find('[data-event-id="1"]').trigger('click')
+
+    expect(onTimeSlotClick).not.toHaveBeenCalled()
+    expect(onEventClick).not.toHaveBeenCalled()
+  })
+
+  it('moves events between resource rows with row-level drop handling', () => {
+    const onEventDrop = vi.fn()
+    const wrapper = mountWithProviderAttached(ResourcesDayView, {
+      date: '2026-07-15',
+      resources,
+      events: [{ ...events[0], resourceId: 'room-a' }],
+      startTime: '08:00:00',
+      endTime: '10:00:00',
+      withEventsDragAndDrop: true,
+      onEventDrop,
+    })
+    const rows = wrapper.findAll('[class*="resourcesDayViewRowSlots"]')
+    Object.defineProperty(rows[1].element, 'getBoundingClientRect', {
+      value: () => ({ left: 0, right: 200, top: 0, bottom: 64, width: 200, height: 64 }),
+    })
+    const transfer = createDataTransfer()
+
+    dispatchDragEvent(wrapper.get('[data-event-id="1"]').element, 'dragstart', transfer, 0, 50)
+    dispatchDragEvent(rows[1].element, 'dragover', transfer, 0, 50)
+    dispatchDragEvent(rows[1].element, 'drop', transfer, 0, 50)
+
+    expect(onEventDrop).toHaveBeenCalledWith(
+      expect.objectContaining({
+        eventId: 1,
+        resourceId: 'room-b',
+        newStart: '2026-07-15 08:00:00',
+      }),
+    )
+    wrapper.unmount()
+  })
+
+  it('moves week events between resources with one row-level drop target', () => {
+    const onEventDrop = vi.fn()
+    const wrapper = mountWithProviderAttached(ResourcesWeekView, {
+      date: '2026-07-15',
+      resources,
+      events: [{ ...events[0], resourceId: 'room-a' }],
+      startTime: '08:00:00',
+      endTime: '10:00:00',
+      withEventsDragAndDrop: true,
+      onEventDrop,
+    })
+    const rows = wrapper.findAll('[class*="resourcesWeekViewRowSlots"]')
+    Object.defineProperty(rows[1].element, 'getBoundingClientRect', {
+      value: () => ({ left: 0, right: 1400, top: 0, bottom: 64, width: 1400, height: 64 }),
+    })
+    const transfer = createDataTransfer()
+
+    dispatchDragEvent(wrapper.get('[data-event-id="1"]').element, 'dragstart', transfer, 0, 550)
+    dispatchDragEvent(rows[1].element, 'dragover', transfer, 0, 550)
+    dispatchDragEvent(rows[1].element, 'drop', transfer, 0, 550)
+
+    expect(onEventDrop).toHaveBeenCalledWith(
+      expect.objectContaining({
+        eventId: 1,
+        resourceId: 'room-b',
+        newStart: '2026-07-15 09:00:00',
+      }),
+    )
+    wrapper.unmount()
+  })
+
+  it('updates resource event width while resizing and emits the resized range', async () => {
+    const onEventResize = vi.fn()
+    const wrapper = mountWithProviderAttached(ResourcesDayView, {
+      date: '2026-07-15',
+      resources: [resources[0]],
+      events: [{ ...events[0], resourceId: 'room-a' }],
+      startTime: '08:00:00',
+      endTime: '18:00:00',
+      withEventResize: true,
+      onEventResize,
+    })
+    const row = wrapper.get('[class*="resourcesDayViewRowSlots"]')
+    Object.defineProperty(row.element, 'getBoundingClientRect', {
+      value: () => ({ left: 0, right: 1000, top: 0, bottom: 64, width: 1000, height: 64 }),
+    })
+    const eventWrapper = wrapper.get('[class*="resourcesDayViewEventWrapper"]')
+    const endHandle = wrapper.get('[aria-label="Resize event end Planning"]')
+
+    endHandle.element.dispatchEvent(
+      new MouseEvent('pointerdown', { bubbles: true, cancelable: true, clientX: 200 }),
+    )
+    document.dispatchEvent(
+      new MouseEvent('pointermove', { bubbles: true, cancelable: true, clientX: 300 }),
+    )
+    await nextTick()
+
+    expect(eventWrapper.attributes('style')).toContain('width: calc(20% - 2px)')
+    expect(onEventResize).not.toHaveBeenCalled()
+
+    document.dispatchEvent(
+      new MouseEvent('pointerup', { bubbles: true, cancelable: true, clientX: 300 }),
+    )
+    await nextTick()
+
+    expect(onEventResize).toHaveBeenCalledWith(
+      expect.objectContaining({
+        eventId: 1,
+        newStart: '2026-07-15 09:00:00',
+        newEnd: '2026-07-15 11:00:00',
+      }),
+    )
+    wrapper.unmount()
+  })
+
+  it('renders resource resize handles and business-hour slot modifiers', () => {
+    const wrapper = mountWithProvider(ResourcesDayView, {
+      date: '2026-07-15',
+      resources,
+      events: [{ ...events[0], resourceId: 'room-a' }],
+      startTime: '08:00:00',
+      endTime: '18:00:00',
+      withEventResize: true,
+      highlightBusinessHours: true,
+    })
+
+    expect(wrapper.findAll('[class*="resourcesDayViewResizeHandle"]')).toHaveLength(2)
+    expect(wrapper.findAll('button[data-business-hours="true"]')).toHaveLength(16)
+    expect(wrapper.findAll('button[data-non-business-hours="true"]')).toHaveLength(4)
+  })
+
+  it('renders ResourcesMonthView rows, assigned events, and named cell slots', () => {
+    const wrapper = mount(
+      defineComponent({
+        setup: () => () =>
+          h(MantineProvider, null, () =>
+            h(
+              ResourcesMonthView,
+              {
+                date: '2026-07-15',
+                resources,
+                events: [{ ...events[0], resourceId: 'room-b' }],
+              },
+              { dayCell: ({ date }) => h('span', { class: 'custom-month-cell' }, date) },
+            ),
+          ),
+      }),
+    )
+    const rows = wrapper.findAll('[class*="resourcesMonthViewRowSlots"]')
+
+    expect(rows).toHaveLength(2)
+    expect(rows[0].text()).not.toContain('Planning')
+    expect(rows[1].text()).toContain('Planning')
+    expect(wrapper.findAll('button[class*="resourcesMonthViewCell"]')).toHaveLength(62)
+    expect(wrapper.findAll('.custom-month-cell')).toHaveLength(62)
   })
 
   it('supports forcing the week indicator onto the matching weekday', () => {

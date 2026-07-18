@@ -1,13 +1,19 @@
 /* oxlint-disable no-console */
 
+import dayjs from 'dayjs'
 import { defineComponent, h, ref, type Component } from 'vue'
 import type { MantineDemo } from '@/demo'
-import type { ScheduleEventData } from '@mantine-vue/schedule'
+import type {
+  ScheduleEventData,
+  ScheduleResourceData,
+  ScheduleResourceGroup,
+} from '@mantine-vue/schedule'
 
 interface EventDropData {
   eventId: string | number
   newStart: string
   newEnd: string
+  resourceId?: string | number
 }
 
 export const demoDate = '2026-07-15'
@@ -88,6 +94,10 @@ export interface ScheduleDemoOptions {
   maxWidth?: number | string
   centered?: boolean
   selectedDate?: string | null
+  resources?: ScheduleResourceData[]
+  groups?: ScheduleResourceGroup[]
+  interactiveForm?: boolean
+  externalDrag?: boolean
 }
 
 function vueCode(componentName: string, options: ScheduleDemoOptions) {
@@ -99,19 +109,76 @@ function vueCode(componentName: string, options: ScheduleDemoOptions) {
   const selectedDateProps = withSelectedDate
     ? '\n    :selected-date="selectedDate"\n    :on-selected-date-change="(value) => (selectedDate = value)"'
     : ''
+  const resourcesState = options.resources
+    ? `\nconst resources: ScheduleResourceData[] = ${JSON.stringify(options.resources, null, 2)}`
+    : ''
+  const resourcesProps = options.resources ? '\n    :resources="resources"' : ''
+  const formFunction = options.interactiveForm
+    ? `
+function createEvent(data: { date?: string; slotStart?: string; slotEnd?: string; rangeStart?: string; rangeEnd?: string; resourceId?: string | number }) {
+  const start = data.slotStart || data.rangeStart || (data.date ? data.date + ' 09:00:00' : undefined)
+  const end = data.slotEnd || data.rangeEnd || (data.date ? data.date + ' 10:00:00' : undefined)
+  if (start && end) {
+    events.value.push({ id: Date.now(), title: 'New event', start, end, color: 'cyan', resourceId: data.resourceId })
+  }
+}
+`
+    : ''
+  const formProps = options.interactiveForm
+    ? '\n    :on-time-slot-click="createEvent"\n    :on-day-click="createEvent"\n    :on-slot-drag-end="createEvent"'
+    : ''
+  const externalImport = options.externalDrag ? "\nimport dayjs from 'dayjs'" : ''
+  const externalFunctions = options.externalDrag
+    ? `
+function startExternalDrag(event: DragEvent) {
+  event.dataTransfer?.setData('text/plain', 'external-task')
+}
+
+function dropExternal(data: { dropDateTime: string; resourceId?: string | number }) {
+  events.value.push({
+    id: Date.now(),
+    title: 'External task',
+    start: data.dropDateTime,
+    end: dayjs(data.dropDateTime).add(1, 'hour').format('YYYY-MM-DD HH:mm:ss'),
+    color: 'lime',
+    resourceId: data.resourceId,
+  })
+}
+`
+    : ''
+  const externalMarkup = options.externalDrag
+    ? `  <div draggable="true" class="external-task" @dragstart="startExternalDrag">
+    Drag this task onto a resource
+  </div>
+`
+    : ''
+  const externalProps = options.externalDrag ? '\n    :on-external-event-drop="dropExternal"' : ''
   return `<script setup lang="ts">
 import { ref } from 'vue'
-import { ${componentName}, type ScheduleEventData } from '@mantine-vue/schedule'
+${externalImport}
+import { ${componentName}, type ScheduleEventData, type ScheduleResourceData } from '@mantine-vue/schedule'
 
 const date = ref('${options.date || demoDate}')${selectedDateState}
-const events = ref<ScheduleEventData[]>(${JSON.stringify(options.events || baseEvents, null, 2)})
+const events = ref<ScheduleEventData[]>(${JSON.stringify(options.events || baseEvents, null, 2)})${resourcesState}
+
+function updateEvent(data: { eventId: string | number; newStart: string; newEnd: string; resourceId?: string | number }) {
+  events.value = events.value.map((event) =>
+    event.id === data.eventId
+      ? { ...event, start: data.newStart, end: data.newEnd, resourceId: data.resourceId ?? event.resourceId }
+      : event
+  )
+}
+${formFunction}${externalFunctions}
 </script>
 
 <template>
+${externalMarkup}
   <${componentName}
     :date="date"
-    :events="events"${selectedDateProps}${attributes}
+    :events="events"${resourcesProps}${selectedDateProps}${attributes}
     :on-date-change="(value) => (date = value)"
+    :on-event-drop="updateEvent"
+    :on-event-resize="updateEvent"${formProps}${externalProps}
   />
 </template>`
 }
@@ -129,10 +196,63 @@ export function createScheduleDemo(
       const events = ref<ScheduleEventData[]>(
         (options.events || baseEvents).map((event) => ({ ...event })),
       )
+      const status = ref('')
       const updateEvent = (data: EventDropData) => {
         events.value = events.value.map((event: ScheduleEventData) =>
-          event.id === data.eventId ? { ...event, start: data.newStart, end: data.newEnd } : event,
+          event.id === data.eventId
+            ? {
+                ...event,
+                start: data.newStart,
+                end: data.newEnd,
+                resourceId: data.resourceId ?? event.resourceId,
+              }
+            : event,
         )
+      }
+      const createEvent = (data: unknown) => {
+        if (!options.interactiveForm || typeof data !== 'object' || data === null) return
+        const value = data as {
+          slotStart?: string
+          slotEnd?: string
+          rangeStart?: string
+          rangeEnd?: string
+          date?: string
+          resourceId?: string | number
+        }
+        const start =
+          value.slotStart || value.rangeStart || (value.date ? `${value.date} 09:00:00` : undefined)
+        const end =
+          value.slotEnd || value.rangeEnd || (value.date ? `${value.date} 10:00:00` : undefined)
+        if (!start || !end) return
+        events.value = [
+          ...events.value,
+          {
+            id: `created-${events.value.length}`,
+            title: 'New event',
+            start,
+            end,
+            color: 'cyan',
+            resourceId: value.resourceId,
+          },
+        ]
+        status.value = `Created event: ${start} â€“ ${end}`
+      }
+      const dropExternal = (data: unknown) => {
+        if (!options.externalDrag || typeof data !== 'object' || data === null) return
+        const value = data as { dropDateTime?: string; resourceId?: string | number }
+        if (!value.dropDateTime) return
+        events.value = [
+          ...events.value,
+          {
+            id: `external-${events.value.length}`,
+            title: 'External task',
+            start: value.dropDateTime,
+            end: dayjs(value.dropDateTime).add(1, 'hour').format('YYYY-MM-DD HH:mm:ss'),
+            color: 'lime',
+            resourceId: value.resourceId,
+          },
+        ]
+        status.value = `Dropped external task on ${value.resourceId ?? 'schedule'}`
       }
 
       return () =>
@@ -144,9 +264,35 @@ export function createScheduleDemo(
                 options.description,
               )
             : null,
+          options.externalDrag
+            ? h(
+                'div',
+                {
+                  draggable: true,
+                  style: {
+                    display: 'inline-flex',
+                    padding: '6px 10px',
+                    marginBottom: '10px',
+                    borderRadius: 'var(--mantine-radius-sm)',
+                    background: 'var(--mantine-color-lime-light)',
+                    color: 'var(--mantine-color-lime-light-color)',
+                    cursor: 'grab',
+                  },
+                  onDragstart: (event: DragEvent) => {
+                    event.dataTransfer?.setData('text/plain', 'external-task')
+                  },
+                },
+                'Drag this task onto a resource',
+              )
+            : null,
+          status.value
+            ? h('p', { style: { color: 'var(--mantine-primary-color-filled)' } }, status.value)
+            : null,
           h(component, {
             date: date.value,
             events: events.value,
+            ...(options.resources ? { resources: options.resources } : {}),
+            ...(options.groups ? { groups: options.groups } : {}),
             ...(Object.hasOwn(options, 'selectedDate')
               ? {
                   selectedDate: selectedDate.value,
@@ -162,11 +308,11 @@ export function createScheduleDemo(
             },
             onEventDrop: updateEvent,
             onEventResize: updateEvent,
-            onTimeSlotClick: (value: unknown) => console.log('time slot click', value),
-            onDayClick: (value: unknown) => console.log('day click', value),
+            onTimeSlotClick: createEvent,
+            onDayClick: createEvent,
             onEventClick: (value: unknown) => console.log('event click', value),
-            onSlotDragEnd: (start: string, end: string) =>
-              console.log('selected range', start, end),
+            onSlotDragEnd: createEvent,
+            onExternalEventDrop: dropExternal,
             ...options.props,
           }),
         ])
@@ -222,10 +368,14 @@ export const sharedVariants: Record<string, ScheduleDemoOptions> = {
   dragDrop: { props: { withEventsDragAndDrop: true }, codeProps: 'with-events-drag-and-drop' },
   bidirectionalDragDrop: {
     props: { withEventsDragAndDrop: true },
+    externalDrag: true,
     codeProps: 'with-events-drag-and-drop',
     description: 'Events can be moved between slots; external items can use onExternalEventDrop.',
   },
-  externalDragDrop: { description: 'Drop external draggable data onto a day or time slot.' },
+  externalDragDrop: {
+    externalDrag: true,
+    description: 'Drag the external task onto a day or time slot.',
+  },
   eventResize: {
     props: { withEventResize: true },
     codeProps: 'with-event-resize',
@@ -243,6 +393,7 @@ export const sharedVariants: Record<string, ScheduleDemoOptions> = {
   },
   eventForm: {
     props: { withDragSlotSelect: true },
+    interactiveForm: true,
     codeProps: 'with-drag-slot-select',
     description: 'Click or drag across slots to create an event range.',
   },

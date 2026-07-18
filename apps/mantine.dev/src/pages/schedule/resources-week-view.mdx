@@ -1,0 +1,78 @@
+import { ResourcesWeekViewDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.ResourcesWeekView)
+
+## Usage
+
+ResourcesWeekView displays resources as rows and a full week of time slots as columns. Events are assigned with `resourceId`.
+
+<Demo data={ResourcesWeekViewDemos.usage} />
+
+## All-day events
+
+All-day events span the correct day columns within their assigned resource row.
+
+<Demo data={ResourcesWeekViewDemos.allDayEvents} />
+
+## Drag and drop and event form
+
+Events can move across resources, times and days. Drop payloads include the target `resourceId`.
+
+<Demo data={ResourcesWeekViewDemos.dragDrop} />
+<Demo data={ResourcesWeekViewDemos.eventForm} />
+
+## Time range and intervals
+
+<Demo data={ResourcesWeekViewDemos.timeRange} />
+<Demo data={ResourcesWeekViewDemos.multiHourIntervals} />
+
+## Current time indicator
+
+<Demo data={ResourcesWeekViewDemos.currentTimeIndicator} />
+<Demo data={ResourcesWeekViewDemos.timezone} />
+
+## First day of week and week label
+
+<Demo data={ResourcesWeekViewDemos.firstDayOfWeek} />
+<Demo data={ResourcesWeekViewDemos.renderWeekLabel} />
+
+## Business hours and weekend days
+
+<Demo data={ResourcesWeekViewDemos.businessHours} />
+<Demo data={ResourcesWeekViewDemos.withoutWeekendDays} />
+
+## Custom resource labels and groups
+
+Use render props with VNodes or the `resourceLabel` and `groupLabel` named slots. Named slots cover every renderable section, including the header, day/time labels, time slots, event variants, more-events control, and current-time indicator.
+
+<Demo data={ResourcesWeekViewDemos.renderResourceLabel} />
+<Demo data={ResourcesWeekViewDemos.resourceGroups} />
+
+## Custom and recurring events
+
+<Demo data={ResourcesWeekViewDemos.renderEvent} />
+<Demo data={ResourcesWeekViewDemos.recurringEvents} />
+<Demo data={ResourcesWeekViewDemos.maxEventsPerTimeSlot} />
+
+## Localization and radius
+
+<Demo data={ResourcesWeekViewDemos.localization} />
+<Demo data={ResourcesWeekViewDemos.radius} />
+
+## Scroll position and scroll area
+
+<Demo data={ResourcesWeekViewDemos.startScrollDateTime} />
+<Demo data={ResourcesWeekViewDemos.scrollAreaProps} />
+
+## Event resize and static mode
+
+Resize is constrained to the event's day, matching Mantine React.
+
+<Demo data={ResourcesWeekViewDemos.eventResize} />
+<Demo data={ResourcesWeekViewDemos.staticMode} />
+
+## Keyboard navigation
+
+Arrow keys move horizontally through time and days, and vertically between resources. Static mode disables keyboard interaction.

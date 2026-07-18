@@ -1,0 +1,64 @@
+import { ResourcesMonthViewDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.ResourcesMonthView)
+
+## Usage
+
+ResourcesMonthView displays resources as rows and every day of the selected month as columns. Events use `resourceId` to select their row.
+
+<Demo data={ResourcesMonthViewDemos.usage} />
+
+## Static mode
+
+<Demo data={ResourcesMonthViewDemos.staticMode} />
+
+## Drag and drop
+
+Events can move between days and resources. `onEventDrop` receives the target `resourceId`.
+
+<Demo data={ResourcesMonthViewDemos.dragDrop} />
+
+## Event form
+
+Use `onDayClick`, `withDragSlotSelect` and `onSlotDragEnd` to create events for a resource.
+
+<Demo data={ResourcesMonthViewDemos.eventForm} />
+
+## Custom rendering and named slots
+
+Renderable sections support VNode render props and named slots, including header, corner, day labels, cells, resource/group labels, events, event bodies and more-events controls.
+
+<Demo data={ResourcesMonthViewDemos.renderEvent} />
+<Demo data={ResourcesMonthViewDemos.renderResourceLabel} />
+
+## Resource groups
+
+<Demo data={ResourcesMonthViewDemos.resourceGroups} />
+
+## Localization and recurring events
+
+<Demo data={ResourcesMonthViewDemos.localization} />
+<Demo data={ResourcesMonthViewDemos.recurringEvents} />
+
+## Event limits
+
+<Demo data={ResourcesMonthViewDemos.maxEventsPerTimeSlot} />
+<Demo data={ResourcesMonthViewDemos.moreEvents} />
+<Demo data={ResourcesMonthViewDemos.moreEventsProps} />
+
+## Dimensions and initial scroll
+
+<Demo data={ResourcesMonthViewDemos.dayWidth} />
+<Demo data={ResourcesMonthViewDemos.startScrollDate} />
+
+## Without weekend days
+
+<Demo data={ResourcesMonthViewDemos.withoutWeekendDays} />
+
+## Header, radius and scroll area
+
+<Demo data={ResourcesMonthViewDemos.customHeader} />
+<Demo data={ResourcesMonthViewDemos.radius} />
+<Demo data={ResourcesMonthViewDemos.scrollAreaProps} />
