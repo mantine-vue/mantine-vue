@@ -87,7 +87,7 @@ export const sections: ShowcaseSection[] = [
     description: 'Floating surfaces rendered above the page — modals, drawers, menus and tooltips.',
     icon: PhChatCircle,
     component: OverlaysSection,
-    count: 12,
+    count: 13,
   },
   {
     id: 'layout',

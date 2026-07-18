@@ -2,6 +2,7 @@
 // e.g. `import { ButtonDemos } from '@/demos'`.
 export { ButtonDemos } from './core/Button'
 export { ComboboxDemos } from './core/Combobox'
+export { MenubarDemos } from './core/Menubar'
 export { ComboboxPopoverDemos } from './core/ComboboxPopover'
 export { DataListDemos } from './core/DataList'
 export { EmptyStateDemos } from './core/EmptyState'

@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { h, ref } from 'vue'
-import { mount } from '@vue/test-utils'
+import { h, nextTick, ref } from 'vue'
+import { flushPromises, mount } from '@vue/test-utils'
 import { MantineProvider, Menu } from '../../index'
 
 const mounted: Array<ReturnType<typeof mount>> = []
@@ -269,5 +269,59 @@ describe('@mantine-vue/core Menu', () => {
     expect(wrapper.findAll('[role="menu"]')).toHaveLength(2)
     expect(wrapper.findAll('[role="menu"]')[1].attributes('data-position')).toBe('right-start')
     expect(wrapper.find('.sub-target svg').exists()).toBe(true)
+  })
+
+  it('opens a submenu on ArrowRight from its parent item', async () => {
+    const wrapper = render({ defaultOpened: true }, () => [
+      h(Menu.Item, null, () => 'Regular'),
+      h(Menu.Sub, { withinPortal: false, openDelay: 0 }, () => [
+        h(Menu.Sub.Target, null, () => h(Menu.Sub.Item, { class: 'sub-target' }, () => 'More')),
+        h(Menu.Sub.Dropdown, null, () => h(Menu.Item, null, () => 'Nested action')),
+      ]),
+    ])
+
+    expect(wrapper.text()).not.toContain('Nested action')
+    await wrapper.find('.sub-target').trigger('keydown', { key: 'ArrowRight' })
+    await flushPromises()
+    await nextTick()
+    expect(wrapper.text()).toContain('Nested action')
+    expect(wrapper.findAll('[role="menu"]')).toHaveLength(2)
+  })
+
+  it('does not open a submenu on ArrowDown from its parent item', async () => {
+    const wrapper = render({ defaultOpened: true }, () => [
+      h(Menu.Item, null, () => 'Regular'),
+      h(Menu.Sub, { withinPortal: false, openDelay: 0 }, () => [
+        h(Menu.Sub.Target, null, () => h(Menu.Sub.Item, { class: 'sub-target' }, () => 'More')),
+        h(Menu.Sub.Dropdown, null, () => h(Menu.Item, null, () => 'Nested action')),
+      ]),
+    ])
+
+    await wrapper.find('.sub-target').trigger('keydown', { key: 'ArrowDown' })
+    await flushPromises()
+    await nextTick()
+    expect(wrapper.text()).not.toContain('Nested action')
+    expect(wrapper.findAll('[role="menu"]')).toHaveLength(1)
+  })
+
+  it('closes a submenu on ArrowLeft from an item inside it', async () => {
+    const wrapper = render({ defaultOpened: true }, () => [
+      h(Menu.Sub, { withinPortal: false, openDelay: 0 }, () => [
+        h(Menu.Sub.Target, null, () => h(Menu.Sub.Item, { class: 'sub-target' }, () => 'More')),
+        h(Menu.Sub.Dropdown, null, () => h(Menu.Item, { class: 'nested' }, () => 'Nested action')),
+      ]),
+    ])
+
+    await wrapper.find('.sub-target').trigger('mouseenter')
+    await flushPromises()
+    await nextTick()
+    expect(wrapper.text()).toContain('Nested action')
+    expect(wrapper.findAll('[role="menu"]')).toHaveLength(2)
+
+    await wrapper.find('.nested').trigger('keydown', { key: 'ArrowLeft' })
+    await flushPromises()
+    await nextTick()
+    expect(wrapper.text()).not.toContain('Nested action')
+    expect(wrapper.findAll('[role="menu"]')).toHaveLength(1)
   })
 })

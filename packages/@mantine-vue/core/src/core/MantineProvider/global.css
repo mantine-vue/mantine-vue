@@ -21,15 +21,15 @@
 
 .mantine-focus-auto {
   &:focus-visible {
-    outline: 2px solid var(--mantine-primary-color-filled);
-    outline-offset: 2px;
+    outline: rem(2px) solid var(--mantine-primary-color-filled);
+    outline-offset: rem(2px);
   }
 }
 
 .mantine-focus-always {
   &:focus {
-    outline: 2px solid var(--mantine-primary-color-filled);
-    outline-offset: 2px;
+    outline: rem(2px) solid var(--mantine-primary-color-filled);
+    outline-offset: rem(2px);
   }
 }
 
