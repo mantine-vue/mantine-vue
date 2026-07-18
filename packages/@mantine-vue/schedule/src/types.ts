@@ -1,5 +1,20 @@
 import dayjs from 'dayjs'
+import type { VNodeChild } from 'vue'
 import type { MantineColor } from '@mantine-vue/core'
+
+/** Resource data object passed to resource view components */
+export interface ScheduleResourceData {
+  id: string | number
+  label: VNodeChild
+  color?: MantineColor
+  payload?: Record<PropertyKey, unknown>
+}
+
+/** Group definition for resource views */
+export interface ScheduleResourceGroup {
+  label: VNodeChild
+  resourceIds: Array<string | number>
+}
 
 /** Date value type used by internal package utils */
 export type AnyDateValue = DateStringValue | Date | dayjs.Dayjs
@@ -77,6 +92,9 @@ interface ScheduleEventBase<Payload extends EventPayload = EventPayload> {
 
   /** Additional event data, defined by the user, not used internally by the library */
   payload?: Payload
+
+  /** Resource ID that this event belongs to, used by resource view components */
+  resourceId?: string | number
 }
 
 /** One-off event without recurrence */

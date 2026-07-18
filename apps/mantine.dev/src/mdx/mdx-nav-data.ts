@@ -325,6 +325,9 @@ const SCHEDULE_PAGES: MdxNavItem[] = [
   { label: 'MonthView', link: '/schedule/month-view' },
   { label: 'YearView', link: '/schedule/year-view' },
   { label: 'MobileMonthView', link: '/schedule/mobile-month-view' },
+  { label: 'ResourcesDayView', link: '/schedule/resources-day-view' },
+  { label: 'ResourcesWeekView', link: '/schedule/resources-week-view' },
+  { label: 'ResourcesMonthView', link: '/schedule/resources-month-view' },
   { label: 'Recurring events', link: '/schedule/recurring-events' },
   { label: 'Events data', link: '/schedule/events-data' },
 ]

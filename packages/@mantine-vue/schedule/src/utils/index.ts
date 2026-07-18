@@ -51,3 +51,15 @@ export type {
   BusinessHoursValue,
   GetBusinessHoursModInput,
 } from './get-business-hours-mod/get-business-hours-mod'
+export { getOrderedResources } from './get-ordered-resources/get-ordered-resources'
+export type {
+  GroupRange,
+  OrderedResourcesResult,
+  ResourceGroupInfo,
+} from './get-ordered-resources/get-ordered-resources'
+export { getGroupToResourceIdMap } from './get-group-to-resource-id-map/get-group-to-resource-id-map'
+export { handleResourcesGridKeyDown } from './handle-resources-grid-key-down/handle-resources-grid-key-down'
+export type {
+  HandleResourcesGridKeyDownInput,
+  ResourcesGridControls,
+} from './handle-resources-grid-key-down/handle-resources-grid-key-down'

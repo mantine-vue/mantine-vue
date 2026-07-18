@@ -1,0 +1,94 @@
+import { ResourcesDayViewDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.ResourcesDayView)
+
+## Usage
+
+ResourcesDayView displays resources as rows and time slots as columns. Assign an event to a row with its `resourceId` property.
+
+<Demo data={ResourcesDayViewDemos.usage} />
+
+## All-day events
+
+Foreground all-day events are pinned to the top of their resource row. Background all-day events tint the row.
+
+<Demo data={ResourcesDayViewDemos.allDayEvents} />
+
+## Time range and intervals
+
+Use `startTime`, `endTime` and `intervalMinutes` to control the visible time range and granularity.
+
+<Demo data={ResourcesDayViewDemos.timeRange} />
+<Demo data={ResourcesDayViewDemos.multiHourIntervals} />
+
+## Start scroll time
+
+<Demo data={ResourcesDayViewDemos.startScrollTime} />
+
+## Slot width and row height
+
+<Demo data={ResourcesDayViewDemos.slotWidth} />
+
+## Custom resource label
+
+Use `renderResourceLabel` with a VNode, or the `resourceLabel` named slot. Named slots are also available for the header, corner, time labels, time slots, groups, events, all-day and background events, more-events control, and current-time indicator.
+
+<Demo data={ResourcesDayViewDemos.renderResourceLabel} />
+
+## Resource groups
+
+<Demo data={ResourcesDayViewDemos.resourceGroups} />
+
+## Custom event rendering
+
+<Demo data={ResourcesDayViewDemos.renderEvent} />
+
+## Drag and drop
+
+The `onEventDrop` payload includes the target `resourceId`, so events can move between resources.
+
+<Demo data={ResourcesDayViewDemos.dragDrop} />
+
+## External and bidirectional drag and drop
+
+<Demo data={ResourcesDayViewDemos.externalDragDrop} />
+<Demo data={ResourcesDayViewDemos.bidirectionalDragDrop} />
+
+## Event resize and event form
+
+<Demo data={ResourcesDayViewDemos.eventResize} />
+<Demo data={ResourcesDayViewDemos.eventForm} />
+
+## Business hours
+
+<Demo data={ResourcesDayViewDemos.businessHours} />
+
+## Current time indicator
+
+<Demo data={ResourcesDayViewDemos.currentTimeIndicator} />
+<Demo data={ResourcesDayViewDemos.timezone} />
+
+## Event permissions
+
+<Demo data={ResourcesDayViewDemos.permissions} />
+
+## Recurring and overlapping events
+
+<Demo data={ResourcesDayViewDemos.recurringEvents} />
+<Demo data={ResourcesDayViewDemos.maxEventsPerTimeSlot} />
+
+## Radius and scroll area props
+
+<Demo data={ResourcesDayViewDemos.radius} />
+<Demo data={ResourcesDayViewDemos.scrollAreaProps} />
+
+## Localization and static mode
+
+<Demo data={ResourcesDayViewDemos.localization} />
+<Demo data={ResourcesDayViewDemos.staticMode} />
+
+## Keyboard navigation
+
+When a time slot is focused, arrow keys move between times and resource rows. Static mode removes all slots and events from keyboard interaction.
