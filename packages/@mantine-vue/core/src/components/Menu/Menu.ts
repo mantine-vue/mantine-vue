@@ -737,8 +737,109 @@ const MenuSubBase = defineComponent({
       )
   },
 })
-export const MenuSubTarget = MenuTarget
-export const MenuSubDropdown = MenuDropdown
+function focusFirstSubItem(button: HTMLElement) {
+  const find = () => {
+    const controls = button.getAttribute('aria-controls')
+    const dropdown = controls ? document.getElementById(controls) : null
+    const item = dropdown?.querySelector<HTMLElement>('[data-menu-item]:not([data-disabled])')
+    if (item) {
+      item.focus({ preventScroll: true })
+      return true
+    }
+    return false
+  }
+  nextTick(() => {
+    if (!find()) {
+      setTimeout(find, 20)
+    }
+  })
+}
+
+export const MenuSubTarget = defineComponent({
+  name: 'MenuSubTarget',
+  inheritAttrs: false,
+  props: { refProp: { type: String, default: 'ref' } },
+  setup(props, { attrs, slots }) {
+    const ctx = useMenuContext()
+    return () =>
+      h(
+        PopoverTarget,
+        { ...attrs, refProp: props.refProp },
+        {
+          default: () => {
+            const children = slots.default?.() ?? []
+            if (children.length !== 1) {
+              return children
+            }
+            const child = children[0]
+            const childProps = (child.props ?? {}) as Record<string, any>
+            return cloneVNode(
+              child,
+              {
+                onClick: (event: MouseEvent) => {
+                  call(childProps.onClick, event)
+                  ctx.toggleDropdown()
+                },
+                onMouseenter: ctx.openDropdown,
+                onMouseleave: ctx.closeDropdown,
+                onKeydown: (event: KeyboardEvent) => {
+                  call(childProps.onKeydown ?? childProps.onKeyDown, event)
+                  if (event.defaultPrevented) {
+                    return
+                  }
+                  if (event.key === 'ArrowRight') {
+                    event.preventDefault()
+                    if (!ctx.opened) {
+                      ctx.toggleDropdown()
+                    }
+                    focusFirstSubItem(event.currentTarget as HTMLElement)
+                  }
+                },
+              },
+              true,
+            )
+          },
+        },
+      )
+  },
+})
+
+export const MenuSubDropdown = defineComponent({
+  name: 'MenuSubDropdown',
+  inheritAttrs: false,
+  setup(_, { attrs, slots }) {
+    const ctx = useMenuContext()
+    return () =>
+      h(
+        MenuDropdown,
+        {
+          ...attrs,
+          onKeydown: (event: KeyboardEvent) => {
+            call((attrs as any).onKeydown, event)
+            if (event.defaultPrevented) {
+              return
+            }
+            const currentDropdown = event.currentTarget as HTMLElement
+            const focused = event.target as HTMLElement
+
+            if (
+              event.key === 'ArrowLeft' &&
+              focused.closest('[data-menu-dropdown]') === currentDropdown
+            ) {
+              event.preventDefault()
+              const id = currentDropdown.id
+              const parentTarget = id
+                ? document.querySelector<HTMLElement>(`[aria-controls="${id}"]`)
+                : null
+              ctx.closeDropdownImmediately()
+              nextTick(() => parentTarget?.focus({ preventScroll: true }))
+            }
+          },
+        },
+        slots,
+      )
+  },
+})
 export const MenuSubItem = defineComponent({
   name: 'MenuSubItem',
   inheritAttrs: false,

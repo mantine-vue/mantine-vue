@@ -1427,6 +1427,18 @@ export const MDX_DATA: Record<string, Frontmatter> = {
     docs: 'core/data-list.mdx',
     searchTags: 'data list, description list, dl, dt, dd, key value, label value, details',
   },
+  Menubar: {
+    title: 'Menubar',
+    package: '@mantine-vue/core',
+    slug: '/core/menubar',
+    componentPrefix: 'Menubar',
+    props: ['Menubar', 'MenubarMenu', 'MenubarTarget', 'MenubarDropdown'],
+    styles: ['Menubar'],
+    description: 'Desktop-application style horizontal menu bar built on top of Menu',
+    source: '@mantine-vue/core/src/components/Menubar/Menubar.ts',
+    docs: 'core/menubar.mdx',
+    searchTags: 'menubar, menu bar, application menu, desktop menu, toolbar, file edit view',
+  },
   ComboboxPopover: {
     title: 'ComboboxPopover',
     package: '@mantine-vue/core',

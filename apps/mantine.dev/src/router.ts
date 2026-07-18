@@ -245,6 +245,11 @@ const routes: RouteRecordRaw[] = [
     component: mdxRoute(() => import('./pages/core/menu.mdx')),
   },
   {
+    path: '/core/menubar',
+    name: 'core-menubar',
+    component: mdxRoute(() => import('./pages/core/menubar.mdx')),
+  },
+  {
     path: '/core/affix',
     name: 'core-affix',
     component: mdxRoute(() => import('./pages/core/affix.mdx')),

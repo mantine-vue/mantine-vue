@@ -106,6 +106,7 @@ const OVERLAYS_PAGES: MdxNavItem[] = [
   { label: 'HoverCard', link: '/core/hover-card' },
   { label: 'LoadingOverlay', link: '/core/loading-overlay' },
   { label: 'Menu', link: '/core/menu' },
+  { label: 'Menubar', link: '/core/menubar' },
   { label: 'Modal', link: '/core/modal' },
   { label: 'Overlay', link: '/core/overlay' },
   { label: 'Popover', link: '/core/popover' },

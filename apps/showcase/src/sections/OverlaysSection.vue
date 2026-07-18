@@ -9,6 +9,7 @@ import {
   Group,
   HoverCard,
   Menu,
+  Menubar,
   Modal,
   Overlay,
   Popover,
@@ -259,6 +260,43 @@ const spotlightActions: SpotlightActionData[] = [
         highlightQuery
         :searchProps="{ leftSection: h(PhMagnifyingGlass, { size: 20 }), placeholder: 'Search…' }"
       />
+    </DemoCard>
+
+    <DemoCard
+      name="Menubar"
+      description="Desktop-application style menu bar — one open menu at a time, arrow-key navigation."
+    >
+      <Menubar>
+        <Menubar.Menu :width="200">
+          <Menubar.Target>File</Menubar.Target>
+          <Menubar.Dropdown>
+            <Menu.Item>New file</Menu.Item>
+            <Menu.Item>New window</Menu.Item>
+            <Menu.Divider />
+            <Menu.Item>Save</Menu.Item>
+          </Menubar.Dropdown>
+        </Menubar.Menu>
+
+        <Menubar.Menu :width="200">
+          <Menubar.Target>Edit</Menubar.Target>
+          <Menubar.Dropdown>
+            <Menu.Item>Undo</Menu.Item>
+            <Menu.Item>Redo</Menu.Item>
+            <Menu.Divider />
+            <Menu.Item>Cut</Menu.Item>
+            <Menu.Item>Copy</Menu.Item>
+            <Menu.Item>Paste</Menu.Item>
+          </Menubar.Dropdown>
+        </Menubar.Menu>
+
+        <Menubar.Menu :width="200">
+          <Menubar.Target>View</Menubar.Target>
+          <Menubar.Dropdown>
+            <Menu.CheckboxItem defaultChecked>Show sidebar</Menu.CheckboxItem>
+            <Menu.CheckboxItem>Show status bar</Menu.CheckboxItem>
+          </Menubar.Dropdown>
+        </Menubar.Menu>
+      </Menubar>
     </DemoCard>
   </Stack>
 </template>
