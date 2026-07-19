@@ -1,6 +1,6 @@
 {
   "name": "@mantine-vue/modals",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "Vue modals management system equivalent to @mantine/modals",
   "license": "MIT",
   "files": [
@@ -35,8 +35,8 @@
     "vue": "^3.5.0"
   },
   "peerDependencies": {
-    "@mantine-vue/core": "2.1.0",
-    "@mantine-vue/store": "2.1.0",
+    "@mantine-vue/core": "2.2.0",
+    "@mantine-vue/store": "2.2.0",
     "vue": "^3.5.0"
   }
 }

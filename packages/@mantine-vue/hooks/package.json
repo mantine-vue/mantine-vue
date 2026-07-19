@@ -1,6 +1,6 @@
 {
   "name": "@mantine-vue/hooks",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "Vue composables equivalent to @mantine/hooks",
   "license": "MIT",
   "files": [
