@@ -68,6 +68,67 @@ export async function bundlePackage(pkg: PackageInfo) {
 
     normalizeGeneratedCss(pkg, outDir)
   }
+
+  await bundleLocaleEntries(pkg, viteBin)
+}
+
+/** Builds optional package locale entry points used by `./locales/*` exports. */
+async function bundleLocaleEntries(pkg: PackageInfo, viteBin: string) {
+  const localesDir = join(pkg.path, 'src', 'locales')
+
+  if (!existsSync(localesDir)) {
+    return
+  }
+
+  const entries = Object.fromEntries(
+    readdirSync(localesDir)
+      .filter((file) => file.endsWith('.ts'))
+      .map((file) => [file.slice(0, -3), join(localesDir, file)]),
+  )
+
+  for (const format of ['es', 'cjs'] as const) {
+    const outDir = join(pkg.path, 'locales')
+    const extension = format === 'es' ? 'mjs' : 'cjs'
+    const configDir = mkdtempSync(join(process.cwd(), '.mantine-vue-vite-config-'))
+    const configPath = join(configDir, 'vite.config.mjs')
+    const contents = `
+import { defineConfig } from 'vite'
+
+export default defineConfig({
+  root: ${JSON.stringify(pkg.path)},
+  configFile: false,
+  logLevel: 'warn',
+  build: {
+    outDir: ${JSON.stringify(outDir)},
+    emptyOutDir: ${format === 'es'},
+    minify: false,
+    lib: {
+      entry: ${JSON.stringify(entries)},
+      formats: [${JSON.stringify(format)}],
+      fileName: (_format, entryName) => \`\${entryName}.${extension}\`,
+    },
+    rollupOptions: {
+      external: (id) => !id.startsWith('.') && !id.startsWith('/'),
+    },
+  },
+})
+`
+
+    writeFileSync(configPath, contents)
+
+    try {
+      const result = spawnSync(process.execPath, [viteBin, 'build', '--config', configPath], {
+        cwd: pkg.path,
+        stdio: 'inherit',
+      })
+
+      if (result.status !== 0) {
+        throw new Error(`Vite locale build failed for ${pkg.name} (${format})`)
+      }
+    } finally {
+      rmSync(configDir, { recursive: true, force: true })
+    }
+  }
 }
 
 function writeTempConfig(options: {

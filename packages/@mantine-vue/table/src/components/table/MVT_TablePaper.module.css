@@ -1,0 +1,62 @@
+:root {
+  /* default background color for everything */
+  --mvt-base-background-color: var(--mantine-color-body);
+
+  @mixin light-root {
+    --mvt-striped-row-background-color: darken(var(--mvt-base-background-color), 0.05);
+  }
+  @mixin dark-root {
+    --mvt-striped-row-background-color: lighten(var(--mvt-base-background-color), 0.04);
+  }
+
+  /* row hover */
+  @mixin light-root {
+    --mvt-row-hover-background-color: darken(var(--mvt-base-background-color), 0.08);
+    --mvt-striped-row-hover-background-color: darken(var(--mvt-striped-row-background-color), 0.12);
+  }
+  @mixin dark-root {
+    --mvt-row-hover-background-color: lighten(var(--mvt-base-background-color), 0.08);
+    --mvt-striped-row-hover-background-color: lighten(
+      var(--mvt-striped-row-background-color),
+      0.08
+    );
+  }
+
+  /* row selection */
+  --mvt-selected-row-background-color: alpha(var(--mantine-primary-color-light), 0.8);
+  @mixin light-root {
+    --mvt-selected-row-hover-background-color: darken(
+      var(--mantine-primary-color-light-hover),
+      0.05
+    );
+  }
+  @mixin dark-root {
+    --mvt-selected-row-hover-background-color: lighten(
+      var(--mantine-primary-color-light-hover),
+      0.05
+    );
+  }
+
+  /* row pinning */
+  --mvt-pinned-row-background-color: var(--mvt-selected-row-background-color);
+  --mvt-pinned-row-hover-background-color: var(--mvt-selected-row-hover-background-color);
+
+  /* column pinning */
+  @mixin light-root {
+    --mvt-pinned-column-background-color: darken(var(--mvt-base-background-color), 0.01);
+  }
+  @mixin dark-root {
+    --mvt-pinned-column-background-color: darken(var(--mvt-base-background-color), 0.05);
+  }
+
+  /* cell borders */
+  --mvt-dragging-hovered-border-color: var(--mantine-primary-color-filled);
+  --mvt-dragging-drag-border-color: var(--mantine-color-gray-7);
+  --mvt-resize-column-border-color: var(--mantine-primary-color-filled);
+}
+
+.root {
+  background-color: var(--mvt-base-background-color);
+  overflow: hidden;
+  transition: all 150ms ease-in-out;
+}

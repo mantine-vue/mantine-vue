@@ -1,0 +1,161 @@
+import { DataTableDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.DataTable)
+
+## Installation
+
+<InstallScript packages="@mantine-vue/table" />
+
+`@mantine-vue/table` builds on Mantine Vue and TanStack Table, which are peer dependencies. Install
+them alongside the package:
+
+```bash
+npm i @mantine-vue/table @mantine-vue/core @mantine-vue/hooks @mantine-vue/dates \
+  @tanstack/vue-table @tanstack/vue-virtual @tanstack/match-sorter-utils \
+  @tabler/icons-vue clsx dayjs
+```
+
+After installation import package styles at the root of your application:
+
+```ts
+import '@mantine-vue/core/styles.css'
+// ‼️ import table styles after core package styles
+import '@mantine-vue/table/styles.css'
+```
+
+Your app must also be wrapped in a [MantineProvider](/theming/mantine-provider).
+
+## Usage
+
+`@mantine-vue/table` is a Vue 3 port of [Mantine React Table](https://www.mantine-react-table.com/),
+built on [TanStack Table v8](https://tanstack.com/table/v8). Build a table instance with the
+`useMantineVueTable` composable and pass it to the `MantineVueTable` component. Sorting, filtering,
+and pagination are enabled by default.
+
+<Demo data={DataTableDemos.usage} />
+
+Pass `data` and `columns` as getters (`get data() { return data.value }`) so the table stays
+reactive — `useMantineVueTable` reads its options once, so plain values would be captured as a
+snapshot.
+
+## Row selection
+
+Set `enableRowSelection` to render selection checkboxes. Add `enableBatchRowSelection` to allow
+selecting a range of rows by holding <kbd>Shift</kbd> while clicking. Read the current selection at
+any time with `table.getSelectedRowModel().rows`.
+
+<Demo data={DataTableDemos.rowSelection} />
+
+## Column ordering, pinning, resizing & row ordering
+
+Each feature is an independent `enable*` option. Use the `*Ordering` flags to drag-and-drop columns
+or rows. For row ordering the table tracks the drag state (`draggingRow` / `hoveredRow`) but you own
+the data, so apply the reorder yourself in `mantineRowDragHandleProps.onDragEnd`.
+
+<Demo data={DataTableDemos.columnOrdering} />
+
+> Use the `*Ordering` flags (`enableColumnOrdering` / `enableRowOrdering`) to reorder. The `*Dragging`
+> flags only render a drag handle for custom use and do not track the drop target.
+
+## Editing
+
+`enableEditing` turns on inline editing. Choose how the editor is presented with `editDisplayMode`
+(`'cell'`, `'row'`, `'table'`, or `'modal'`) and persist changes in the matching `onEditing*Save`
+callback.
+
+<Demo data={DataTableDemos.editing} />
+
+## Named slots
+
+Every renderable section can be customized **either** with a Vue named slot on `MantineVueTable`
+**or** the equivalent `renderX` option. A named slot takes precedence, and both receive the same
+scoped argument. A `#detailPanel` slot also enables the expand column automatically.
+
+<Demo data={DataTableDemos.detailPanel} />
+
+| Named slot                   | Equivalent option                  |
+| ---------------------------- | ---------------------------------- |
+| `detailPanel`                | `renderDetailPanel`                |
+| `rowActions`                 | `renderRowActions`                 |
+| `rowActionMenuItems`         | `renderRowActionMenuItems`         |
+| `columnActionsMenuItems`     | `renderColumnActionsMenuItems`     |
+| `topToolbarCustomActions`    | `renderTopToolbarCustomActions`    |
+| `bottomToolbarCustomActions` | `renderBottomToolbarCustomActions` |
+| `toolbarInternalActions`     | `renderToolbarInternalActions`     |
+| `emptyRowsFallback`          | `renderEmptyRowsFallback`          |
+
+Column-level renderers (`Cell`, `Header`, `Footer`, `Edit`) stay on the column definition.
+
+## Virtualization
+
+For large datasets, set `enableRowVirtualization` (and/or `enableColumnVirtualization`) so only the
+visible rows are rendered. Give the scroll container a fixed height via `mantineTableContainerProps`
+so the virtualizer can measure the viewport. The demo below renders 10,000 rows.
+
+<Demo data={DataTableDemos.virtualized} />
+
+## Server-side data
+
+Set `manualFiltering`, `manualPagination`, and `manualSorting` to tell the table the server owns
+those operations, provide `rowCount`, and control the relevant state with getters plus the matching
+`onXChange` handlers. Use the `isLoading` / `showAlertBanner` state for loading and error UI.
+
+```ts
+useMantineVueTable<User>({
+  get columns() {
+    return columns
+  },
+  get data() {
+    return data.value
+  },
+  manualFiltering: true,
+  manualPagination: true,
+  manualSorting: true,
+  get rowCount() {
+    return rowCount.value
+  },
+  state: {
+    get isLoading() {
+      return isLoading.value
+    },
+    get pagination() {
+      return pagination.value
+    },
+    get sorting() {
+      return sorting.value
+    },
+  },
+  onPaginationChange: (updater) => {
+    pagination.value = typeof updater === 'function' ? updater(pagination.value) : updater
+  },
+  onSortingChange: (updater) => {
+    sorting.value = typeof updater === 'function' ? updater(sorting.value) : updater
+  },
+})
+```
+
+## Localization
+
+The English locale ships by default. Pass a custom `localization` (a partial object is merged over
+English):
+
+```ts
+import { MVT_Localization_EN } from '@mantine-vue/table/locales/en'
+
+useMantineVueTable<Person>({
+  get columns() {
+    return columns
+  },
+  get data() {
+    return data.value
+  },
+  localization: { ...MVT_Localization_EN, actions: 'Options' },
+})
+```
+
+## Credits
+
+Ported from [Mantine React Table](https://www.mantine-react-table.com/) by Kevin Vandy, built on
+[TanStack Table](https://tanstack.com/table/v8) and [TanStack Virtual](https://tanstack.com/virtual).
