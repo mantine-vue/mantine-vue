@@ -12,7 +12,6 @@ import { docsShikiAdapter } from './code-highlight-adapter'
 // package-level styles.css import is needed here in dev.
 import '@mantine-vue/core/styles.css'
 import '@mantine-vue/charts/styles.css'
-import '@mantine-vue/table/styles.css'
 import './styles.css'
 
 const app = createApp({
