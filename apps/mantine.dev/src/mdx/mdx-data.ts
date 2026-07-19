@@ -1613,6 +1613,16 @@ export const MDX_DATA: Record<string, Frontmatter> = {
     docs: 'x/dropzone.mdx',
     searchTags: 'dropzone, file upload, drag and drop, drop files, file picker, attachments',
   },
+  DataTable: {
+    title: 'Table',
+    package: '@mantine-vue/table',
+    slug: '/x/table',
+    description: 'A fully featured data table built on TanStack Table',
+    source: '@mantine-vue/table/src/components/MantineVueTable.ts',
+    docs: 'x/table.mdx',
+    searchTags:
+      'table, data table, data grid, datagrid, tanstack table, mantine react table, sorting, filtering, pagination, row selection, virtualization, editing',
+  },
   Carousel: {
     title: 'Carousel',
     package: '@mantine-vue/carousel',

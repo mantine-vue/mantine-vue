@@ -735,6 +735,11 @@ const routes: RouteRecordRaw[] = [
     component: mdxRoute(() => import('./pages/x/carousel.mdx')),
   },
   {
+    path: '/x/table',
+    name: 'x-table',
+    component: mdxRoute(() => import('./pages/x/table.mdx')),
+  },
+  {
     path: '/x/tiptap',
     name: 'x-tiptap',
     component: mdxRoute(() => import('./pages/x/tiptap.mdx')),

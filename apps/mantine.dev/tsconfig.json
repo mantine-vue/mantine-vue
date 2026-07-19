@@ -31,6 +31,7 @@
       "@mantine-vue/modals": ["../../packages/@mantine-vue/modals/src"],
       "@mantine-vue/dropzone": ["../../packages/@mantine-vue/dropzone/src"],
       "@mantine-vue/carousel": ["../../packages/@mantine-vue/carousel/src"],
+      "@mantine-vue/table": ["../../packages/@mantine-vue/table/src/index.ts"],
       "@mantine-vue/charts": ["../../packages/@mantine-vue/charts/src"],
       "@mantine-vue/mantine-header": ["../../packages/@mantine-vue/mantine-header/src"]
     }

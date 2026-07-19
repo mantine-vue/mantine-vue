@@ -669,6 +669,7 @@ __metadata:
     "@mantine-vue/nprogress": "workspace:*"
     "@mantine-vue/schedule": "workspace:*"
     "@mantine-vue/spotlight": "workspace:*"
+    "@mantine-vue/table": "workspace:*"
     "@mantine-vue/tiptap": "workspace:*"
     "@mdx-js/rollup": "npm:^3.1.0"
     "@phosphor-icons/vue": "npm:^2.2"
@@ -859,6 +860,7 @@ __metadata:
     "@mantine-vue/nprogress": "workspace:*"
     "@mantine-vue/schedule": "workspace:*"
     "@mantine-vue/spotlight": "workspace:*"
+    "@mantine-vue/table": "workspace:*"
     "@mantine-vue/tiptap": "workspace:*"
     "@phosphor-icons/vue": "npm:^2.2"
     "@tiptap/core": "npm:>=3.3.0"
@@ -915,6 +917,36 @@ __metadata:
   dependencies:
     vue: "npm:^3.5.0"
   peerDependencies:
+    vue: ^3.5.0
+  languageName: unknown
+  linkType: soft
+
+"@mantine-vue/table@workspace:*, @mantine-vue/table@workspace:packages/@mantine-vue/table":
+  version: 0.0.0-use.local
+  resolution: "@mantine-vue/table@workspace:packages/@mantine-vue/table"
+  dependencies:
+    "@mantine-vue/core": "workspace:*"
+    "@mantine-vue/dates": "workspace:*"
+    "@mantine-vue/hooks": "workspace:*"
+    "@tabler/icons-vue": "npm:^3.19.0"
+    "@tanstack/match-sorter-utils": "npm:8.19.4"
+    "@tanstack/vue-table": "npm:8.20.5"
+    "@tanstack/vue-virtual": "npm:3.11.2"
+    "@vue/compiler-dom": "npm:^3.5.0"
+    "@vue/test-utils": "npm:^2.4.6"
+    clsx: "npm:^2.1.1"
+    dayjs: "npm:^1.11.21"
+    vue: "npm:^3.5.0"
+  peerDependencies:
+    "@mantine-vue/core": 2.1.0
+    "@mantine-vue/dates": 2.1.0
+    "@mantine-vue/hooks": 2.1.0
+    "@tabler/icons-vue": ">=3.0.0"
+    "@tanstack/match-sorter-utils": ">=8.7"
+    "@tanstack/vue-table": ">=8.20"
+    "@tanstack/vue-virtual": ">=3.0"
+    clsx: ">=2"
+    dayjs: ">=1.11"
     vue: ^3.5.0
   languageName: unknown
   linkType: soft
@@ -1539,6 +1571,69 @@ __metadata:
   version: 1.1.0
   resolution: "@standard-schema/spec@npm:1.1.0"
   checksum: 10c0/d90f55acde4b2deb983529c87e8025fa693de1a5e8b49ecc6eb84d1fd96328add0e03d7d551442156c7432fd78165b2c26ff561b970a9a881f046abb78d6a526
+  languageName: node
+  linkType: hard
+
+"@tabler/icons-vue@npm:^3.19.0":
+  version: 3.45.0
+  resolution: "@tabler/icons-vue@npm:3.45.0"
+  dependencies:
+    "@tabler/icons": "npm:3.45.0"
+  peerDependencies:
+    vue: ">=3.0.1"
+  checksum: 10c0/1a25bdbe34920b0e75d9296b7e7fe61bcc9be26a9bfc00f5373cfd478373b2145d45bb0fb4512b16afd2b4f3a311ac9444a715dc3bf0cb3757316bea75e322b0
+  languageName: node
+  linkType: hard
+
+"@tabler/icons@npm:3.45.0":
+  version: 3.45.0
+  resolution: "@tabler/icons@npm:3.45.0"
+  checksum: 10c0/efd31c992267538a2390d697ce18cc472e85cbd644494df6a472c0233f3509469cc0eb5bf8091078da6503dfd53451a0f53f13af4f2e96a2c17fcb9af09a95f4
+  languageName: node
+  linkType: hard
+
+"@tanstack/match-sorter-utils@npm:8.19.4":
+  version: 8.19.4
+  resolution: "@tanstack/match-sorter-utils@npm:8.19.4"
+  dependencies:
+    remove-accents: "npm:0.5.0"
+  checksum: 10c0/935022e3d639f19472131d289f3e1202253ff34301717c337e9bac0eeae6a0bd56450ed8ae2f7eb7ac9dfefa7ceaa7d126d8c5441021968b4a9eabc3ac4f8ba1
+  languageName: node
+  linkType: hard
+
+"@tanstack/table-core@npm:8.20.5":
+  version: 8.20.5
+  resolution: "@tanstack/table-core@npm:8.20.5"
+  checksum: 10c0/3c27b5debd61b6bd9bfbb40bfc7c5d5af90873ae1a566b20e3bf2d2f4f2e9a78061c081aacc5259a00e256f8df506ec250eb5472f5c01ff04baf9918b554982b
+  languageName: node
+  linkType: hard
+
+"@tanstack/virtual-core@npm:3.11.2":
+  version: 3.11.2
+  resolution: "@tanstack/virtual-core@npm:3.11.2"
+  checksum: 10c0/38f1047127c6b1d07fe95becb7a12e66fb7c59d37ec0359e4ab339f837c6b906e1adff026ebd12849ba851d3f118d491014205c6b3c6ed8568cc232a798aeaaf
+  languageName: node
+  linkType: hard
+
+"@tanstack/vue-table@npm:8.20.5":
+  version: 8.20.5
+  resolution: "@tanstack/vue-table@npm:8.20.5"
+  dependencies:
+    "@tanstack/table-core": "npm:8.20.5"
+  peerDependencies:
+    vue: ">=3.2"
+  checksum: 10c0/17f787355778e70de28010641cb6165e251c2edc77a1e57acf1ca48354df1a788e0a1b18f2adde785299f2d65c4d10e27c0d8e511be5379e585ab7f1c4f15e13
+  languageName: node
+  linkType: hard
+
+"@tanstack/vue-virtual@npm:3.11.2":
+  version: 3.11.2
+  resolution: "@tanstack/vue-virtual@npm:3.11.2"
+  dependencies:
+    "@tanstack/virtual-core": "npm:3.11.2"
+  peerDependencies:
+    vue: ^2.7.0 || ^3.0.0
+  checksum: 10c0/7bd661263d315e1b7667abdeafaf8ad45ad583b3d3f6c70a4a1f574d2d49498e19324205061b6f636b0776d4d09aee400ca885a2db5e008c44c98128dd2d4986
   languageName: node
   linkType: hard
 
@@ -2811,6 +2906,13 @@ __metadata:
   version: 3.2.0
   resolution: "chroma-js@npm:3.2.0"
   checksum: 10c0/6ff6213d234e096ad3536291b1e1f11a506ea0fccfe163dd8eff69afa5f4f8a905b31a4a7ebc22b7eb722590887fed77073805ce89485f6d563edd1ea2d0a1db
+  languageName: node
+  linkType: hard
+
+"clsx@npm:^2.1.1":
+  version: 2.1.1
+  resolution: "clsx@npm:2.1.1"
+  checksum: 10c0/c4c8eb865f8c82baab07e71bfa8897c73454881c4f99d6bc81585aecd7c441746c1399d08363dc096c550cceaf97bd4ce1e8854e1771e9998d9f94c4fe075839
   languageName: node
   linkType: hard
 
@@ -5836,6 +5938,13 @@ __metadata:
     unified: "npm:^11.0.0"
     vfile: "npm:^6.0.0"
   checksum: 10c0/f9eccacfb596d9605581dc05bfad28635d6ded5dd0a18e88af5fd4df0d3fcf9612e1501d4513bc2164d833cfe9636dab20400080b09e53f155c6e1442a1231fb
+  languageName: node
+  linkType: hard
+
+"remove-accents@npm:0.5.0":
+  version: 0.5.0
+  resolution: "remove-accents@npm:0.5.0"
+  checksum: 10c0/a75321aa1b53d9abe82637115a492770bfe42bb38ed258be748bf6795871202bc8b4badff22013494a7029f5a241057ad8d3f72adf67884dbe15a9e37e87adc4
   languageName: node
   linkType: hard
 

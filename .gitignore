@@ -46,6 +46,7 @@ storybook-static
 .next
 packages/*/*/styles.css
 packages/*/*/styles.layer.css
+packages/*/*/locales/
 packages/@mantine/core/styles
 packages/*/*/LICENSE
 .stylelintcache

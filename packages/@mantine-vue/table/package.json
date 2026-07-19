@@ -1,0 +1,79 @@
+{
+  "name": "@mantine-vue/table",
+  "version": "2.1.0",
+  "description": "A fully featured Vue 3 implementation of TanStack Vue Table",
+  "keywords": [
+    "data grid",
+    "data table",
+    "mantine",
+    "mantine-vue",
+    "tanstack table",
+    "vue-table"
+  ],
+  "license": "MIT",
+  "files": [
+    "cjs",
+    "esm",
+    "lib",
+    "locales",
+    "styles.css",
+    "styles.layer.css",
+    "styles"
+  ],
+  "sideEffects": [
+    "*.css"
+  ],
+  "main": "./cjs/index.cjs",
+  "module": "./esm/index.mjs",
+  "types": "./lib/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./lib/index.d.mts",
+        "default": "./esm/index.mjs"
+      },
+      "require": {
+        "types": "./lib/index.d.ts",
+        "default": "./cjs/index.cjs"
+      }
+    },
+    "./locales/*": {
+      "import": {
+        "types": "./lib/locales/*.d.ts",
+        "default": "./locales/*.mjs"
+      },
+      "require": {
+        "types": "./lib/locales/*.d.ts",
+        "default": "./locales/*.cjs"
+      }
+    },
+    "./styles.css": "./styles.css",
+    "./styles.layer.css": "./styles.layer.css"
+  },
+  "devDependencies": {
+    "@mantine-vue/core": "workspace:*",
+    "@mantine-vue/dates": "workspace:*",
+    "@mantine-vue/hooks": "workspace:*",
+    "@tabler/icons-vue": "^3.19.0",
+    "@tanstack/match-sorter-utils": "8.19.4",
+    "@tanstack/vue-table": "8.20.5",
+    "@tanstack/vue-virtual": "3.11.2",
+    "@vue/compiler-dom": "^3.5.0",
+    "@vue/test-utils": "^2.4.6",
+    "clsx": "^2.1.1",
+    "dayjs": "^1.11.21",
+    "vue": "^3.5.0"
+  },
+  "peerDependencies": {
+    "@mantine-vue/core": "2.1.0",
+    "@mantine-vue/dates": "2.1.0",
+    "@mantine-vue/hooks": "2.1.0",
+    "@tabler/icons-vue": ">=3.0.0",
+    "@tanstack/match-sorter-utils": ">=8.7",
+    "@tanstack/vue-table": ">=8.20",
+    "@tanstack/vue-virtual": ">=3.0",
+    "clsx": ">=2",
+    "dayjs": ">=1.11",
+    "vue": "^3.5.0"
+  }
+}

@@ -196,6 +196,7 @@ const OTHER_EXTENSIONS_PAGES: MdxNavItem[] = [
   { label: 'Notifications system', link: '/x/notifications' },
   { label: 'Spotlight', link: '/x/spotlight' },
   { label: 'Carousel', link: '/x/carousel' },
+  { label: 'Table', link: '/x/table' },
   { label: 'Dropzone', link: '/x/dropzone' },
   { label: 'NavigationProgress', link: '/x/nprogress' },
   { label: 'Modals manager', link: '/x/modals' },

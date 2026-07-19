@@ -26,6 +26,7 @@
     "@mantine-vue/nprogress": "workspace:*",
     "@mantine-vue/schedule": "workspace:*",
     "@mantine-vue/spotlight": "workspace:*",
+    "@mantine-vue/table": "workspace:*",
     "@mantine-vue/tiptap": "workspace:*",
     "@phosphor-icons/vue": "^2.2",
     "@tiptap/core": ">=3.3.0",
