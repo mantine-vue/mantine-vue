@@ -183,6 +183,11 @@ export default defineConfig({
  * Vite emits a single css asset per lib build (e.g. `style.css`) when cssCodeSplit is disabled.
  * Mantine's package `exports` map expects that stylesheet at the package root as `styles.css`
  * (plus a `@layer`-wrapped `styles.layer.css` twin), not inside esm/ or cjs/.
+ *
+ * The package root `styles.css`/`styles.layer.css` are build artifacts, never hand-authored:
+ * every stylesheet that ships is reachable from `src/index.ts` (component `*.module.css`
+ * imports, plus the baseline/global/token sheets imported by MantineProvider). They are always
+ * rewritten from the fresh bundle so that styles for newly added components are picked up.
  */
 function normalizeGeneratedCss(pkg: PackageInfo, outDir: string) {
   if (!existsSync(outDir)) {
@@ -198,15 +203,10 @@ function normalizeGeneratedCss(pkg: PackageInfo, outDir: string) {
   const generatedPath = join(outDir, cssFile)
   const stylesPath = join(pkg.path, 'styles.css')
 
-  if (!existsSync(stylesPath)) {
-    renameSync(generatedPath, stylesPath)
+  rmSync(stylesPath, { force: true })
+  renameSync(generatedPath, stylesPath)
 
-    const layerPath = join(pkg.path, 'styles.layer.css')
-    const css = readFileSync(stylesPath, 'utf8')
-    writeFileSync(layerPath, `@layer mantine {\n${css}\n}\n`)
-  } else {
-    // A hand-authored styles.css already ships with this package (e.g. core's design tokens);
-    // keep it, and discard the per-build-only artifact instead of overwriting curated output.
-    rmSync(generatedPath, { force: true })
-  }
+  const layerPath = join(pkg.path, 'styles.layer.css')
+  const css = readFileSync(stylesPath, 'utf8')
+  writeFileSync(layerPath, `@layer mantine {\n${css}\n}\n`)
 }
