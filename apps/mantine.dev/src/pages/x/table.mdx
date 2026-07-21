@@ -98,43 +98,21 @@ so the virtualizer can measure the viewport. The demo below renders 10,000 rows.
 
 ## Server-side data
 
-Set `manualFiltering`, `manualPagination`, and `manualSorting` to tell the table the server owns
-those operations, provide `rowCount`, and control the relevant state with getters plus the matching
-`onXChange` handlers. Use the `isLoading` / `showAlertBanner` state for loading and error UI.
+For large datasets you typically let the server handle filtering, sorting, and pagination and send
+back only the current page. Set `manualFiltering`, `manualPagination`, and `manualSorting` so the
+table stops doing those in the browser, provide `rowCount` (the server's real total, used to render
+the page count), and control the relevant state with getters plus the matching `onXChange` handlers.
+Use the `isLoading` / `showAlertBanner` state for loading and error UI.
 
-```ts
-useMantineVueTable<User>({
-  get columns() {
-    return columns
-  },
-  get data() {
-    return data.value
-  },
-  manualFiltering: true,
-  manualPagination: true,
-  manualSorting: true,
-  get rowCount() {
-    return rowCount.value
-  },
-  state: {
-    get isLoading() {
-      return isLoading.value
-    },
-    get pagination() {
-      return pagination.value
-    },
-    get sorting() {
-      return sorting.value
-    },
-  },
-  onPaginationChange: (updater) => {
-    pagination.value = typeof updater === 'function' ? updater(pagination.value) : updater
-  },
-  onSortingChange: (updater) => {
-    sorting.value = typeof updater === 'function' ? updater(sorting.value) : updater
-  },
-})
-```
+The demo below simulates a paginated, sortable, searchable API over a local dataset with a 600 ms
+delay — change pages, sort a column, or type in the search box and watch it "re-fetch." Swap
+`fakeApi` for a real `fetch('/api/users?...')` call and it works unchanged.
+
+<Demo data={DataTableDemos.serverSide} />
+
+> Pass `data`, `rowCount`, and each controlled `state` slice as **getters** — the table reads its
+> options once, so getters are what keep server-driven values (like the `rowCount` total and the
+> current page) reactive.
 
 ## Localization
 

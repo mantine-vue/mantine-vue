@@ -131,16 +131,29 @@ export const useMVT_TableInstance = <TData extends MVT_RowData>(
   const showGlobalFilter = ref<boolean>(initialState?.showGlobalFilter ?? false)
   const showToolbarDropZone = ref<boolean>(initialState?.showToolbarDropZone ?? false)
 
-  //build the injected state object: user-provided state keys stay static
-  //while all other MVT-managed slices are reactive getters over the refs above.
-  const userState = definedTableOptions.state ?? {}
-  const state = { ...userState } as MVT_TableState<TData>
+  //User-provided state slices stay reactive via
+  //getters over the live source (controlled pagination/sorting/filters update instead of freezing at their initial value);
+  const stateDescriptor = Object.getOwnPropertyDescriptor(definedTableOptions, 'state')
+  const readUserState = (): Partial<MVT_TableState<TData>> =>
+    ((stateDescriptor?.get
+      ? stateDescriptor.get.call(definedTableOptions)
+      : stateDescriptor?.value) as Partial<MVT_TableState<TData>> | undefined) ?? {}
+  const userStateKeys = new Set(Object.keys(readUserState()))
+
+  const state = {} as MVT_TableState<TData>
+  userStateKeys.forEach((key) => {
+    Object.defineProperty(state, key, {
+      configurable: true,
+      enumerable: true,
+      get: () => (readUserState() as Record<string, unknown>)[key],
+    })
+  })
   const defineState = <K extends keyof MVT_TableState<TData>>(
     key: K,
     getter: () => MVT_TableState<TData>[K],
   ) => {
-    if (!(key in userState)) {
-      Object.defineProperty(state, key, { enumerable: true, get: getter })
+    if (!userStateKeys.has(key as string)) {
+      Object.defineProperty(state, key, { configurable: true, enumerable: true, get: getter })
     }
   }
   defineState('columnFilterFns', () => columnFilterFns.value)
@@ -163,7 +176,12 @@ export const useMVT_TableInstance = <TData extends MVT_RowData>(
   defineState('showGlobalFilter', () => showGlobalFilter.value)
   defineState('showToolbarDropZone', () => showToolbarDropZone.value)
 
-  definedTableOptions.state = state
+  Object.defineProperty(definedTableOptions, 'state', {
+    configurable: true,
+    enumerable: true,
+    writable: true,
+    value: state,
+  })
 
   //The table options now include all state needed to help determine column
   //visibility and order logic
@@ -221,7 +239,12 @@ export const useMVT_TableInstance = <TData extends MVT_RowData>(
       : definedTableOptions.data
   })
 
-  const { columns: _columns, data: _data, ...restOptions } = statefulTableOptions
+  const {
+    columns: _columns,
+    data: _data,
+    rowCount: _rowCount,
+    ...restOptions
+  } = statefulTableOptions
 
   const table = useVueTable<TData>({
     onColumnOrderChange: (updater: MVT_Updater<MVT_ColumnOrderState>) =>
@@ -237,6 +260,9 @@ export const useMVT_TableInstance = <TData extends MVT_RowData>(
     },
     get data() {
       return data.value
+    },
+    get rowCount() {
+      return definedTableOptions.rowCount
     },
     globalFilterFn: statefulTableOptions.filterFns?.[globalFilterFn.value ?? 'fuzzy'],
   } as any) as unknown as MVT_TableInstance<TData>
