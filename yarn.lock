@@ -562,8 +562,8 @@ __metadata:
     embla-carousel-vue: "npm:^8.6.0"
     vue: "npm:^3.5.0"
   peerDependencies:
-    "@mantine-vue/core": 2.2.1
-    "@mantine-vue/hooks": 2.2.1
+    "@mantine-vue/core": 2.2.2
+    "@mantine-vue/hooks": 2.2.2
     embla-carousel: ">=8.0.0"
     embla-carousel-vue: ">=8.0.0"
     vue: ^3.5.0
@@ -579,7 +579,7 @@ __metadata:
     vue: "npm:^3.5.0"
     vue-echarts: "npm:^8.0.1"
   peerDependencies:
-    "@mantine-vue/core": 2.2.1
+    "@mantine-vue/core": 2.2.2
     echarts: ">=6.0.0"
     vue: ^3.5.0
     vue-echarts: ">=8.0.0"
@@ -596,8 +596,8 @@ __metadata:
     "@vue/test-utils": "npm:^2.4.6"
     vue: "npm:^3.5.0"
   peerDependencies:
-    "@mantine-vue/core": 2.2.1
-    "@mantine-vue/hooks": 2.2.1
+    "@mantine-vue/core": 2.2.2
+    "@mantine-vue/hooks": 2.2.2
     vue: ^3.5.0
   languageName: unknown
   linkType: soft
@@ -625,8 +625,8 @@ __metadata:
     "@vue/test-utils": "npm:^2.4.6"
     vue: "npm:^3.5.0"
   peerDependencies:
-    "@mantine-vue/hooks": 2.2.1
-    "@mantine-vue/utils": 2.2.1
+    "@mantine-vue/hooks": 2.2.2
+    "@mantine-vue/utils": 2.2.2
     vue: ^3.5.0
   languageName: unknown
   linkType: soft
@@ -642,8 +642,8 @@ __metadata:
     dayjs: "npm:^1.11.21"
     vue: "npm:^3.5.0"
   peerDependencies:
-    "@mantine-vue/core": 2.2.1
-    "@mantine-vue/hooks": 2.2.1
+    "@mantine-vue/core": 2.2.2
+    "@mantine-vue/hooks": 2.2.2
     dayjs: ">=1.0.0"
     vue: ^3.5.0
   languageName: unknown
@@ -729,8 +729,8 @@ __metadata:
     "@vue/test-utils": "npm:^2.4.6"
     vue: "npm:^3.5.0"
   peerDependencies:
-    "@mantine-vue/core": 2.2.1
-    "@mantine-vue/hooks": 2.2.1
+    "@mantine-vue/core": 2.2.2
+    "@mantine-vue/hooks": 2.2.2
     vue: ^3.5.0
   languageName: unknown
   linkType: soft
@@ -765,7 +765,7 @@ __metadata:
     "@phosphor-icons/vue": "npm:^2.2"
     vue: "npm:^3.5.0"
   peerDependencies:
-    "@mantine-vue/core": 2.2.1
+    "@mantine-vue/core": 2.2.2
     "@phosphor-icons/vue": ^2.2
     vue: ^3.5.0
   languageName: unknown
@@ -781,8 +781,8 @@ __metadata:
     "@vue/test-utils": "npm:^2.4.6"
     vue: "npm:^3.5.0"
   peerDependencies:
-    "@mantine-vue/core": 2.2.1
-    "@mantine-vue/store": 2.2.1
+    "@mantine-vue/core": 2.2.2
+    "@mantine-vue/store": 2.2.2
     vue: ^3.5.0
   languageName: unknown
   linkType: soft
@@ -798,9 +798,9 @@ __metadata:
     "@vue/test-utils": "npm:^2.4.6"
     vue: "npm:^3.5.0"
   peerDependencies:
-    "@mantine-vue/core": 2.2.1
-    "@mantine-vue/hooks": 2.2.1
-    "@mantine-vue/store": 2.2.1
+    "@mantine-vue/core": 2.2.2
+    "@mantine-vue/hooks": 2.2.2
+    "@mantine-vue/store": 2.2.2
     vue: ^3.5.0
   languageName: unknown
   linkType: soft
@@ -815,8 +815,8 @@ __metadata:
     "@vue/test-utils": "npm:^2.4.6"
     vue: "npm:^3.5.0"
   peerDependencies:
-    "@mantine-vue/core": 2.2.1
-    "@mantine-vue/store": 2.2.1
+    "@mantine-vue/core": 2.2.2
+    "@mantine-vue/store": 2.2.2
     vue: ^3.5.0
   languageName: unknown
   linkType: soft
@@ -834,9 +834,9 @@ __metadata:
     rrule: "npm:^2.8.1"
     vue: "npm:^3.5.0"
   peerDependencies:
-    "@mantine-vue/core": 2.2.1
-    "@mantine-vue/dates": 2.2.1
-    "@mantine-vue/hooks": 2.2.1
+    "@mantine-vue/core": 2.2.2
+    "@mantine-vue/dates": 2.2.2
+    "@mantine-vue/hooks": 2.2.2
     dayjs: ">=1.0.0"
     vue: ^3.5.0
   languageName: unknown
@@ -904,9 +904,9 @@ __metadata:
     "@vue/test-utils": "npm:^2.4.6"
     vue: "npm:^3.5.0"
   peerDependencies:
-    "@mantine-vue/core": 2.2.1
-    "@mantine-vue/hooks": 2.2.1
-    "@mantine-vue/store": 2.2.1
+    "@mantine-vue/core": 2.2.2
+    "@mantine-vue/hooks": 2.2.2
+    "@mantine-vue/store": 2.2.2
     vue: ^3.5.0
   languageName: unknown
   linkType: soft
@@ -938,9 +938,9 @@ __metadata:
     dayjs: "npm:^1.11.21"
     vue: "npm:^3.5.0"
   peerDependencies:
-    "@mantine-vue/core": 2.2.1
-    "@mantine-vue/dates": 2.2.1
-    "@mantine-vue/hooks": 2.2.1
+    "@mantine-vue/core": 2.2.2
+    "@mantine-vue/dates": 2.2.2
+    "@mantine-vue/hooks": 2.2.2
     "@tabler/icons-vue": ">=3.0.0"
     "@tanstack/match-sorter-utils": ">=8.7"
     "@tanstack/vue-table": ">=8.20"
@@ -967,8 +967,8 @@ __metadata:
     vue: "npm:^3.5.0"
   peerDependencies:
     "@floating-ui/dom": ^1.0.0
-    "@mantine-vue/core": 2.2.1
-    "@mantine-vue/hooks": 2.2.1
+    "@mantine-vue/core": 2.2.2
+    "@mantine-vue/hooks": 2.2.2
     "@tiptap/core": ">=3.3.0"
     "@tiptap/extension-link": ">=3.3.0"
     "@tiptap/pm": ">=3.3.0"

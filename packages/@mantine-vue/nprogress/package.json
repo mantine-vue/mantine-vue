@@ -1,6 +1,6 @@
 {
   "name": "@mantine-vue/nprogress",
-  "version": "2.2.1",
+  "version": "2.2.2",
   "description": "Vue navigation progress bar equivalent to @mantine/nprogress",
   "license": "MIT",
   "files": [
@@ -37,8 +37,8 @@
     "vue": "^3.5.0"
   },
   "peerDependencies": {
-    "@mantine-vue/core": "2.2.1",
-    "@mantine-vue/store": "2.2.1",
+    "@mantine-vue/core": "2.2.2",
+    "@mantine-vue/store": "2.2.2",
     "vue": "^3.5.0"
   }
 }
