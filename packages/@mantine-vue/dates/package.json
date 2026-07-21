@@ -1,6 +1,6 @@
 {
   "name": "@mantine-vue/dates",
-  "version": "2.2.1",
+  "version": "2.2.2",
   "description": "Vue date and time picker components equivalent to @mantine/dates",
   "license": "MIT",
   "files": [
@@ -40,8 +40,8 @@
     "vue": "^3.5.0"
   },
   "peerDependencies": {
-    "@mantine-vue/core": "2.2.1",
-    "@mantine-vue/hooks": "2.2.1",
+    "@mantine-vue/core": "2.2.2",
+    "@mantine-vue/hooks": "2.2.2",
     "dayjs": ">=1.0.0",
     "vue": "^3.5.0"
   }
