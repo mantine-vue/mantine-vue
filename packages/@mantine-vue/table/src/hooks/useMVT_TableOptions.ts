@@ -246,6 +246,16 @@ export const useMVT_TableOptions: <TData extends MVT_RowData>(
     enumerable: true,
     get: () => rawOptions.columns,
   })
+  Object.defineProperty(definedOptions, 'state', {
+    configurable: true,
+    enumerable: true,
+    get: () => rawOptions.state,
+  })
+  Object.defineProperty(definedOptions, 'rowCount', {
+    configurable: true,
+    enumerable: true,
+    get: () => rawOptions.rowCount,
+  })
 
   return definedOptions
 }
