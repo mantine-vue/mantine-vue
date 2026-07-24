@@ -1,12 +1,22 @@
 import { defineComponent, h, type PropType } from 'vue'
-import { withBoxProps, Box, createVarsResolver, getSpacing, useProps, useStyles } from '../../core'
+import {
+  withBoxProps,
+  Box,
+  createVarsResolver,
+  getSpacing,
+  useProps,
+  useStyles,
+  type AlignItems,
+  type JustifyContent,
+  type MantineSpacing,
+} from '../../core'
 import classes from './Stack.module.css'
 
 const defaultProps = {
   gap: 'md',
   align: 'stretch',
   justify: 'flex-start',
-}
+} as const
 
 const varsResolver = createVarsResolver<any>((_, { gap, align, justify }) => ({
   root: {
@@ -21,9 +31,9 @@ export const Stack = withBoxProps(
     name: 'Stack',
     inheritAttrs: false,
     props: {
-      gap: [String, Number] as PropType<string | number>,
-      align: { type: String, default: undefined },
-      justify: { type: String, default: undefined },
+      gap: [String, Number] as PropType<MantineSpacing>,
+      align: { type: String as PropType<AlignItems>, default: undefined },
+      justify: { type: String as PropType<JustifyContent>, default: undefined },
       classNames: { type: [Object, Function], default: undefined },
       styles: { type: [Object, Function], default: undefined },
       vars: { type: [Object, Function], default: undefined },

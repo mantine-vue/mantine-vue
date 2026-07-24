@@ -7,6 +7,10 @@ import {
   getSize,
   useProps,
   useStyles,
+  type MantineColor,
+  type MantineGradient,
+  type MantineRadius,
+  type MantineSize,
 } from '../../core'
 import { AvatarGroup } from './AvatarGroup/AvatarGroup'
 import { useAvatarGroupContext } from './AvatarGroup/AvatarGroup'
@@ -59,11 +63,11 @@ const AvatarBase = defineComponent({
   inheritAttrs: false,
   props: {
     component: { type: String, default: 'div' },
-    size: [String, Number] as PropType<string | number>,
-    radius: [String, Number] as PropType<string | number>,
-    color: { type: String as PropType<string | 'initials'>, default: undefined },
+    size: [String, Number] as PropType<MantineSize | (string & {}) | number>,
+    radius: [String, Number] as PropType<MantineRadius>,
+    color: { type: String as PropType<MantineColor | 'initials'>, default: undefined },
     gradient: {
-      type: Object as PropType<{ from: string; to: string; deg?: number }>,
+      type: Object as PropType<MantineGradient>,
       default: undefined,
     },
     src: { type: String as PropType<string | null>, default: undefined },
@@ -71,7 +75,7 @@ const AvatarBase = defineComponent({
     imageProps: { type: Object as PropType<Record<string, any>>, default: undefined },
     autoContrast: { type: Boolean, default: undefined },
     name: { type: String, default: undefined },
-    allowedInitialsColors: { type: Array as PropType<string[]>, default: undefined },
+    allowedInitialsColors: { type: Array as PropType<MantineColor[]>, default: undefined },
     variant: { type: String as PropType<AvatarVariant>, default: undefined },
     mod: { type: [Object, Array] as PropType<any>, default: undefined },
     classNames: { type: [Object, Function], default: undefined },

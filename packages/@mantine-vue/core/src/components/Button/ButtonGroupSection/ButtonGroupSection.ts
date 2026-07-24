@@ -8,9 +8,12 @@ import {
   getSize,
   useProps,
   useStyles,
+  type MantineColor,
+  type MantineGradient,
+  type MantineRadius,
 } from '../../../core'
 import classes from '../Button.module.css'
-import type { ButtonVariant } from '../Button'
+import type { ButtonSize, ButtonVariant } from '../Button'
 
 const varsResolver = createVarsResolver<any>(
   (theme, { radius, color, gradient, variant, autoContrast, size }) => {
@@ -44,11 +47,11 @@ export const ButtonGroupSection = withBoxProps(
     name: 'ButtonGroupSection',
     inheritAttrs: false,
     props: {
-      size: [String, Number] as PropType<string | number>,
-      color: { type: String, default: undefined },
-      radius: [String, Number] as PropType<string | number>,
+      size: [String, Number] as PropType<ButtonSize>,
+      color: { type: String as PropType<MantineColor>, default: undefined },
+      radius: [String, Number] as PropType<MantineRadius>,
       gradient: {
-        type: Object as PropType<{ from: string; to: string; deg?: number }>,
+        type: Object as PropType<MantineGradient>,
         default: undefined,
       },
       autoContrast: { type: Boolean, default: undefined },

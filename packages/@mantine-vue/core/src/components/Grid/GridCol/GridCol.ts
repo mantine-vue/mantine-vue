@@ -1,9 +1,14 @@
 import { defineComponent, h, type PropType } from 'vue'
-import { withBoxProps, Box, useProps, useRandomClassName } from '../../../core'
+import {
+  withBoxProps,
+  Box,
+  useProps,
+  useRandomClassName,
+  type AlignItems,
+  type StyleProp,
+} from '../../../core'
 import { useGridContext } from '../Grid.context'
 import { GridColVariables, type ColSpan } from './GridColVariables'
-
-type StyleProp<T> = T | Partial<Record<string, T>>
 
 const defaultProps = {
   span: 12,
@@ -17,7 +22,7 @@ export const GridCol = withBoxProps(
       span: { type: [Number, String, Object] as PropType<StyleProp<ColSpan>>, default: undefined },
       order: { type: [Number, Object] as PropType<StyleProp<number>>, default: undefined },
       offset: { type: [Number, Object] as PropType<StyleProp<number>>, default: undefined },
-      align: { type: [String, Object] as PropType<StyleProp<string>>, default: undefined },
+      align: { type: [String, Object] as PropType<StyleProp<AlignItems>>, default: undefined },
       classNames: { type: [Object, Function], default: undefined },
       styles: { type: [Object, Function], default: undefined },
       vars: { type: [Object, Function], default: undefined },

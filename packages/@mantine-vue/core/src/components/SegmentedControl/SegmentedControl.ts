@@ -10,6 +10,9 @@ import {
   getThemeColor,
   useMantineTheme,
   useStyles,
+  type MantineColor,
+  type MantineRadius,
+  type MantineSize,
 } from '../../core'
 import { isPrimitive } from '@mantine-vue/utils'
 import { FloatingIndicator } from '../FloatingIndicator'
@@ -63,9 +66,9 @@ export const SegmentedControl = defineComponent({
     disabled: { type: Boolean, default: false },
     name: { type: String, default: undefined },
     fullWidth: { type: Boolean, default: false },
-    color: { type: String, default: undefined },
-    size: { type: [String, Number] as PropType<string | number>, default: 'sm' },
-    radius: { type: [String, Number] as PropType<string | number>, default: undefined },
+    color: { type: String as PropType<MantineColor>, default: undefined },
+    size: { type: String as PropType<MantineSize | (string & {})>, default: 'sm' },
+    radius: { type: [String, Number] as PropType<MantineRadius>, default: undefined },
     transitionDuration: { type: Number, default: undefined },
     transitionTimingFunction: { type: String, default: undefined },
     orientation: { type: String as PropType<'vertical' | 'horizontal'>, default: 'horizontal' },

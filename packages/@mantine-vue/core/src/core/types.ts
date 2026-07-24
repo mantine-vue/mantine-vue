@@ -2,6 +2,13 @@ import type { CSSProperties, Component, Ref } from 'vue'
 import type { MantineTheme, MantineThemeOverride } from './MantineProvider'
 
 export type MantineStyle = CSSProperties
+export type AlignItems = CSSProperties['alignItems']
+export type JustifyContent = CSSProperties['justifyContent']
+export type FlexWrap = CSSProperties['flexWrap']
+export type FlexDirection = CSSProperties['flexDirection']
+export type Overflow = CSSProperties['overflow']
+export type ObjectFit = CSSProperties['objectFit']
+export type PointerEvents = CSSProperties['pointerEvents']
 export type MantineClassNames = Record<string, string>
 export type MantineStyles = Record<string, MantineStyle>
 export type MantineVars = Record<string, Record<string, string | undefined>>

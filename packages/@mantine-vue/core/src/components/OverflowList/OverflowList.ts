@@ -10,7 +10,15 @@ import {
   type PropType,
   type VNode,
 } from 'vue'
-import { withBoxProps, Box, createVarsResolver, getSpacing, useProps, useStyles } from '../../core'
+import {
+  withBoxProps,
+  Box,
+  createVarsResolver,
+  getSpacing,
+  useProps,
+  useStyles,
+  type MantineSpacing,
+} from '../../core'
 import { getRowPositionsData } from './get-row-position-data'
 import { useDimensions } from './use-dimensions'
 import classes from './OverflowList.module.css'
@@ -49,7 +57,7 @@ export const OverflowList = withBoxProps(
       renderOverflow: { type: Function as PropType<(items: any[]) => any>, required: true },
       maxRows: { type: Number, default: undefined },
       maxVisibleItems: { type: Number, default: undefined },
-      gap: { type: [String, Number] as PropType<string | number>, default: undefined },
+      gap: { type: [String, Number] as PropType<MantineSpacing>, default: undefined },
       collapseFrom: { type: String as PropType<'start' | 'end'>, default: 'end' },
       getItemKey: {
         type: Function as PropType<(item: any, index: number) => PropertyKey>,

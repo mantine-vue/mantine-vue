@@ -1,5 +1,25 @@
-import { Autocomplete, Badge, Box, Button, PinInput, ThemeIcon } from '@mantine-vue/core'
-import type { BadgeVariant, ButtonVariant, ThemeIconVariant } from '@mantine-vue/core'
+import {
+  Autocomplete,
+  Avatar,
+  Badge,
+  Box,
+  Button,
+  Group,
+  PinInput,
+  Stack,
+  ThemeIcon,
+} from '@mantine-vue/core'
+import type {
+  AlignItems,
+  BadgeVariant,
+  ButtonVariant,
+  FlexWrap,
+  JustifyContent,
+  MantineColor,
+  MantineRadius,
+  MantineSpacing,
+  ThemeIconVariant,
+} from '@mantine-vue/core'
 
 type ButtonProps = InstanceType<typeof Button>['$props']
 type AutocompleteProps = InstanceType<typeof Autocomplete>['$props']
@@ -7,6 +27,9 @@ type BoxPublicProps = InstanceType<typeof Box>['$props']
 type BadgeProps = InstanceType<typeof Badge>['$props']
 type ThemeIconProps = InstanceType<typeof ThemeIcon>['$props']
 type PinInputProps = InstanceType<typeof PinInput>['$props']
+type AvatarProps = InstanceType<typeof Avatar>['$props']
+type GroupProps = InstanceType<typeof Group>['$props']
+type StackProps = InstanceType<typeof Stack>['$props']
 
 const buttonProps: ButtonProps = { variant: 'filled', size: 'sm', fullWidth: true }
 const customButtonProps: ButtonProps = { variant: 'danger' }
@@ -22,6 +45,34 @@ const boxProps: BoxPublicProps = {
   mx: { base: 'xs', md: 24 },
   pos: 'relative',
 }
+const badgeThemeProps: BadgeProps = {
+  size: 'xl',
+  radius: 'md',
+  color: 'blue.6',
+}
+const avatarThemeProps: AvatarProps = {
+  size: 42,
+  radius: 'xl',
+  color: 'initials',
+  allowedInitialsColors: ['blue', 'red.6'],
+}
+const groupStyleProps: GroupProps = {
+  align: 'baseline',
+  gap: 'lg',
+  justify: 'space-between',
+  wrap: 'nowrap',
+}
+const stackStyleProps: StackProps = {
+  align: 'center',
+  gap: 12,
+  justify: 'flex-end',
+}
+const alignItems: AlignItems = 'stretch'
+const justifyContent: JustifyContent = 'space-around'
+const flexWrap: FlexWrap = 'wrap-reverse'
+const color: MantineColor = 'violet.7'
+const radius: MantineRadius = 'md'
+const spacing: MantineSpacing = 'xl'
 
 void buttonProps
 void customButtonProps
@@ -29,6 +80,16 @@ void customBadgeProps
 void customThemeIconProps
 void autocompleteProps
 void boxProps
+void badgeThemeProps
+void avatarThemeProps
+void groupStyleProps
+void stackStyleProps
+void alignItems
+void justifyContent
+void flexWrap
+void color
+void radius
+void spacing
 
 // @ts-expect-error Box spacing props do not accept booleans.
 const invalidBoxProps: BoxPublicProps = { my: true }
@@ -48,3 +109,10 @@ void invalidThemeIconVariant
 // @ts-expect-error PinInput inputMode matches the HTML inputmode attribute.
 const invalidPinInputProps: PinInputProps = { inputMode: 'not-an-input-mode' }
 void invalidPinInputProps
+
+// @ts-expect-error Badge size follows React Mantine and does not accept numbers.
+const invalidBadgeSize: BadgeProps = { size: 12 }
+// @ts-expect-error FlexWrap only accepts valid CSS flex-wrap values.
+const invalidGroupWrap: FlexWrap = 'reverse'
+void invalidBadgeSize
+void invalidGroupWrap

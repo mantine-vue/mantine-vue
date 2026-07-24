@@ -9,6 +9,9 @@ import {
   getSize,
   getThemeColor,
   useStyles,
+  type MantineColor,
+  type MantineRadius,
+  type MantineSize,
 } from '../../../core'
 import { CheckboxIcon } from '../CheckIcon'
 import { useCheckboxCardContext } from '../CheckboxCard/CheckboxCard'
@@ -41,9 +44,12 @@ export const CheckboxIndicator = withBoxProps(
     inheritAttrs: false,
     slots: Object as SlotsType<CheckboxIndicatorSlots>,
     props: {
-      color: { type: String, default: undefined },
-      size: { type: [String, Number] as PropType<string | number>, default: 'sm' },
-      radius: { type: [String, Number] as PropType<string | number>, default: 'sm' },
+      color: { type: String as PropType<MantineColor>, default: undefined },
+      size: {
+        type: [String, Number] as PropType<MantineSize | (string & {}) | number>,
+        default: 'sm',
+      },
+      radius: { type: [String, Number] as PropType<MantineRadius>, default: 'sm' },
       iconColor: { type: String, default: undefined },
       autoContrast: { type: Boolean, default: undefined },
       indeterminate: { type: Boolean, default: false },

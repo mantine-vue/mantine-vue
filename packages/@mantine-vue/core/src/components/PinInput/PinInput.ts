@@ -1,6 +1,15 @@
 import { computed, defineComponent, h, ref, type PropType } from 'vue'
 import { assignRef, useId, useUncontrolled, type VueRefTarget } from '@mantine-vue/hooks'
-import { withBoxProps, createVarsResolver, getSize, useProps, useStyles } from '../../core'
+import {
+  withBoxProps,
+  createVarsResolver,
+  getSize,
+  useProps,
+  useStyles,
+  type MantineRadius,
+  type MantineSize,
+  type MantineSpacing,
+} from '../../core'
 import { Group } from '../Group'
 import { Input } from '../Input'
 import { InputBase } from '../InputBase'
@@ -125,9 +134,9 @@ export const PinInput = withBoxProps(
     props: {
       name: { type: String, default: undefined },
       form: { type: String, default: undefined },
-      gap: { type: [String, Number] as PropType<string | number>, default: undefined },
-      radius: { type: [String, Number] as PropType<string | number>, default: undefined },
-      size: { type: [String, Number] as PropType<string | number>, default: undefined },
+      gap: { type: [String, Number] as PropType<MantineSpacing>, default: undefined },
+      radius: { type: [String, Number] as PropType<MantineRadius>, default: undefined },
+      size: { type: String as PropType<MantineSize>, default: undefined },
       autoFocus: { type: Boolean, default: false },
       value: { type: String, default: undefined },
       defaultValue: { type: String, default: undefined },

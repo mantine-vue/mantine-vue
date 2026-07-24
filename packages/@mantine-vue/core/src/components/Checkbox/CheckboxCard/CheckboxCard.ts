@@ -1,6 +1,12 @@
 import { defineComponent, h, inject, provide, type InjectionKey, type PropType } from 'vue'
 import { useUncontrolled } from '@mantine-vue/hooks'
-import { withBoxProps, createVarsResolver, getRadius, useStyles } from '../../../core'
+import {
+  withBoxProps,
+  createVarsResolver,
+  getRadius,
+  useStyles,
+  type MantineRadius,
+} from '../../../core'
 import { UnstyledButton } from '../../UnstyledButton'
 import { useCheckboxGroupContext } from '../CheckboxGroup/CheckboxGroup'
 import classes from './CheckboxCard.module.css'
@@ -30,7 +36,7 @@ export const CheckboxCard = withBoxProps(
       defaultChecked: { type: Boolean, default: undefined },
       onChange: { type: Function as PropType<(value: boolean) => void>, default: undefined },
       withBorder: { type: Boolean, default: true },
-      radius: { type: [String, Number] as PropType<string | number>, default: undefined },
+      radius: { type: [String, Number] as PropType<MantineRadius>, default: undefined },
       value: { type: String, default: undefined },
       mod: { type: [Object, Array] as PropType<any>, default: undefined },
       classNames: { type: [Object, Function], default: undefined },

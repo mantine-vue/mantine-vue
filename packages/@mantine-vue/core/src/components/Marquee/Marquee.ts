@@ -1,5 +1,13 @@
 import { defineComponent, h, type PropType } from 'vue'
-import { withBoxProps, Box, createVarsResolver, getSpacing, useProps, useStyles } from '../../core'
+import {
+  withBoxProps,
+  Box,
+  createVarsResolver,
+  getSpacing,
+  useProps,
+  useStyles,
+  type MantineSpacing,
+} from '../../core'
 import classes from './Marquee.module.css'
 
 export type MarqueeStylesNames = 'root' | 'content' | 'group'
@@ -33,7 +41,7 @@ export const Marquee = withBoxProps(
       orientation: { type: String as PropType<'horizontal' | 'vertical'>, default: undefined },
       repeat: { type: Number, default: undefined },
       duration: { type: Number, default: undefined },
-      gap: { type: [String, Number] as PropType<string | number>, default: undefined },
+      gap: { type: [String, Number] as PropType<MantineSpacing>, default: undefined },
       fadeEdges: { type: Boolean, default: undefined },
       fadeEdgeColor: { type: String, default: undefined },
       fadeEdgeSize: { type: String, default: undefined },

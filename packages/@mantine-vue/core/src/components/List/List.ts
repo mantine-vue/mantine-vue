@@ -9,6 +9,8 @@ import {
   hasNode,
   resolveNode,
   type MantineNode,
+  type MantineSize,
+  type MantineSpacing,
   useProps,
   useStyles,
 } from '../../core'
@@ -40,9 +42,9 @@ const ListBase = defineComponent({
   props: {
     type: { type: String as PropType<'ordered' | 'unordered'>, default: undefined },
     withPadding: { type: Boolean, default: false },
-    size: { type: String, default: undefined },
+    size: { type: String as PropType<MantineSize>, default: undefined },
     icon: { type: null as unknown as PropType<MantineNode>, default: undefined },
-    spacing: [String, Number] as PropType<string | number>,
+    spacing: [String, Number] as PropType<MantineSpacing>,
     center: { type: Boolean, default: false },
     listStyleType: { type: String, default: undefined },
     start: { type: Number, default: undefined },

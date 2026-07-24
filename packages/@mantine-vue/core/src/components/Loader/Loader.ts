@@ -7,6 +7,8 @@ import {
   getThemeColor,
   useProps,
   useStyles,
+  type MantineColor,
+  type MantineSize,
 } from '../../core'
 import { Bars } from './loaders/Bars'
 import { Dots } from './loaders/Dots'
@@ -38,8 +40,8 @@ export const Loader = withBoxProps(
     name: 'Loader',
     inheritAttrs: false,
     props: {
-      size: [String, Number] as PropType<string | number>,
-      color: { type: String, default: undefined },
+      size: [String, Number] as PropType<MantineSize | (string & {}) | number>,
+      color: { type: String as PropType<MantineColor>, default: undefined },
       type: { type: String as PropType<MantineLoader>, default: undefined },
       loaders: { type: Object as PropType<MantineLoadersRecord>, default: undefined },
       classNames: { type: [Object, Function], default: undefined },

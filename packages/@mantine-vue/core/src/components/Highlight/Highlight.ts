@@ -1,12 +1,12 @@
 import { defineComponent, h, type PropType } from 'vue'
-import { useProps } from '../../core'
+import { useProps, type MantineColor } from '../../core'
 import { Mark } from '../Mark'
 import { Text } from '../Text'
 import { foldAccents, highlighter } from './highlighter/highlighter'
 
 export interface HighlightTerm {
   text: string
-  color?: string
+  color?: MantineColor
 }
 
 const defaultProps = {
@@ -38,7 +38,7 @@ export const Highlight = defineComponent({
       type: [String, Array] as PropType<string | string[] | HighlightTerm[]>,
       required: true,
     },
-    color: { type: String, default: undefined },
+    color: { type: String as PropType<MantineColor>, default: undefined },
     highlightStyles: {
       type: [Object, Function] as PropType<
         Record<string, any> | ((theme: any) => Record<string, any>)

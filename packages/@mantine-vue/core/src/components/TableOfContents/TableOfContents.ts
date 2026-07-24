@@ -15,6 +15,9 @@ import {
   rem,
   useProps,
   useStyles,
+  type MantineColor,
+  type MantineRadius,
+  type MantineSize,
 } from '../../core'
 import { UnstyledButton } from '../UnstyledButton'
 import classes from './TableOfContents.module.css'
@@ -57,8 +60,11 @@ export const TableOfContents = withBoxProps(
     name: 'TableOfContents',
     inheritAttrs: false,
     props: {
-      color: { type: String, default: undefined },
-      size: { type: [String, Number] as PropType<string | number>, default: undefined },
+      color: { type: String as PropType<MantineColor>, default: undefined },
+      size: {
+        type: [String, Number] as PropType<MantineSize | (string & {}) | number>,
+        default: undefined,
+      },
       autoContrast: { type: Boolean, default: undefined },
       scrollSpyOptions: { type: Object as PropType<UseScrollSpyOptions>, default: undefined },
       initialData: { type: Array as PropType<InitialTableOfContentsData[]>, default: undefined },
@@ -70,7 +76,7 @@ export const TableOfContents = withBoxProps(
       },
       minDepthToOffset: { type: Number, default: undefined },
       depthOffset: { type: [String, Number] as PropType<string | number>, default: undefined },
-      radius: { type: [String, Number] as PropType<string | number>, default: undefined },
+      radius: { type: [String, Number] as PropType<MantineRadius>, default: undefined },
       reinitializeRef: { type: Object as PropType<Ref<(() => void) | null>>, default: undefined },
       variant: { type: String as PropType<TableOfContentsVariant>, default: undefined },
       classNames: { type: [Object, Function], default: undefined },

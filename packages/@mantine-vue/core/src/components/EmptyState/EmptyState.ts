@@ -146,7 +146,7 @@ const EmptyStateBase = defineComponent({
       type: String as PropType<EmptyStateVariant | (string & {})>,
       default: undefined,
     },
-    color: { type: String, default: undefined },
+    color: { type: String as PropType<MantineColor>, default: undefined },
     title: { type: null as unknown as PropType<MantineNode>, default: undefined },
     description: { type: null as unknown as PropType<MantineNode>, default: undefined },
     icon: { type: null as unknown as PropType<MantineNode>, default: undefined },

@@ -8,6 +8,10 @@ import {
   getSize,
   useProps,
   useStyles,
+  type MantineColor,
+  type MantineGradient,
+  type MantineRadius,
+  type MantineSize,
 } from '../../../core'
 import classes from '../ActionIcon.module.css'
 import type { ActionIconVariant } from '../ActionIcon'
@@ -41,11 +45,11 @@ export const ActionIconGroupSection = withBoxProps(
     name: 'ActionIconGroupSection',
     inheritAttrs: false,
     props: {
-      size: [String, Number] as PropType<string | number>,
-      color: { type: String, default: undefined },
-      radius: [String, Number] as PropType<string | number>,
+      size: [String, Number] as PropType<MantineSize | (string & {}) | number>,
+      color: { type: String as PropType<MantineColor>, default: undefined },
+      radius: [String, Number] as PropType<MantineRadius>,
       gradient: {
-        type: Object as PropType<{ from: string; to: string; deg?: number }>,
+        type: Object as PropType<MantineGradient>,
         default: undefined,
       },
       autoContrast: { type: Boolean, default: undefined },

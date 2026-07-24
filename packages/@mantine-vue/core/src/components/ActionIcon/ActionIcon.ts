@@ -7,6 +7,10 @@ import {
   getSize,
   useProps,
   useStyles,
+  type MantineColor,
+  type MantineGradient,
+  type MantineRadius,
+  type MantineSize,
 } from '../../core'
 import { Loader } from '../Loader'
 import { Transition } from '../Transition'
@@ -56,11 +60,13 @@ const ActionIconBase = defineComponent({
     component: { type: String, default: 'button' },
     loading: { type: Boolean, default: false },
     loaderProps: { type: Object as PropType<Record<string, any>>, default: undefined },
-    size: [String, Number] as PropType<string | number>,
-    color: { type: String, default: undefined },
-    radius: [String, Number] as PropType<string | number>,
+    size: [String, Number] as PropType<
+      MantineSize | `input-${MantineSize}` | (string & {}) | number
+    >,
+    color: { type: String as PropType<MantineColor>, default: undefined },
+    radius: [String, Number] as PropType<MantineRadius>,
     gradient: {
-      type: Object as PropType<{ from: string; to: string; deg?: number }>,
+      type: Object as PropType<MantineGradient>,
       default: undefined,
     },
     disabled: { type: Boolean, default: false },

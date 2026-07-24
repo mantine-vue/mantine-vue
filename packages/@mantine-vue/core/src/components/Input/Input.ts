@@ -10,6 +10,8 @@ import {
   rem,
   resolveNode,
   type MantineNode,
+  type MantineRadius,
+  type MantineSize,
   type SectionSlots,
   useStyles,
 } from '../../core'
@@ -90,9 +92,12 @@ const InputBase = defineComponent({
     rightSectionProps: { type: Object as PropType<Record<string, any>>, default: undefined },
     rightSectionPointerEvents: { type: String, default: 'none' },
     required: { type: Boolean, default: false },
-    radius: { type: [String, Number] as PropType<string | number>, default: undefined },
+    radius: { type: [String, Number] as PropType<MantineRadius>, default: undefined },
     disabled: { type: Boolean, default: false },
-    size: { type: [String, Number] as PropType<string | number>, default: 'sm' },
+    size: {
+      type: [String, Number] as PropType<MantineSize | (string & {}) | number>,
+      default: 'sm',
+    },
     pointer: { type: Boolean, default: false },
     withErrorStyles: { type: Boolean, default: true },
     inputSize: { type: [String, Number] as PropType<string | number>, default: undefined },

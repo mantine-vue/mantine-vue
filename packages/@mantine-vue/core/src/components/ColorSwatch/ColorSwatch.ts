@@ -7,6 +7,7 @@ import {
   rem,
   useProps,
   useStyles,
+  type MantineRadius,
 } from '../../core'
 import classes from './ColorSwatch.module.css'
 
@@ -28,7 +29,7 @@ export const ColorSwatch = withBoxProps(
     props: {
       color: { type: String, required: true },
       size: [String, Number] as PropType<string | number>,
-      radius: [String, Number] as PropType<string | number>,
+      radius: [String, Number] as PropType<MantineRadius>,
       withShadow: { type: Boolean, default: undefined },
       classNames: { type: [Object, Function], default: undefined },
       styles: { type: [Object, Function], default: undefined },

@@ -9,6 +9,8 @@ import {
   useForwardedRef,
   useProps,
   useStyles,
+  type MantineFontSize,
+  type MantineLineHeight,
 } from '../../core'
 import classes from './Text.module.css'
 
@@ -50,7 +52,7 @@ export const Text = withBoxProps(
     props: {
       component: { type: String, default: undefined },
       __staticSelector: { type: String, default: undefined },
-      size: [String, Number] as PropType<string | number>,
+      size: [String, Number] as PropType<MantineFontSize | MantineLineHeight>,
       lineClamp: { type: Number, default: undefined },
       truncate: { type: [String, Boolean] as PropType<TextTruncate>, default: undefined },
       inline: { type: Boolean, default: false },

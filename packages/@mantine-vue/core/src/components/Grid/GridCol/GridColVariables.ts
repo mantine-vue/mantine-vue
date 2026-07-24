@@ -6,12 +6,12 @@ import {
   InlineStyles,
   keys,
   useMantineTheme,
+  type AlignItems,
+  type StyleProp,
 } from '../../../core'
 import { useGridContext } from '../Grid.context'
 
 export type ColSpan = number | 'auto' | 'content'
-type StyleProp<T> = T | Partial<Record<string, T>>
-
 function isObject(value: unknown): value is Record<string, any> {
   return typeof value === 'object' && value !== null && !Array.isArray(value)
 }
@@ -79,7 +79,7 @@ export const GridColVariables = defineComponent({
     span: { type: [Number, String, Object] as PropType<StyleProp<ColSpan>>, default: undefined },
     order: { type: [Number, Object] as PropType<StyleProp<number>>, default: undefined },
     offset: { type: [Number, Object] as PropType<StyleProp<number>>, default: undefined },
-    align: { type: [String, Object] as PropType<StyleProp<string>>, default: undefined },
+    align: { type: [String, Object] as PropType<StyleProp<AlignItems>>, default: undefined },
   },
   setup(props) {
     const theme = useMantineTheme()
@@ -120,8 +120,11 @@ export const GridColVariables = defineComponent({
             acc[breakpoint]['--col-offset'] = getColumnOffset(props.offset[breakpoint], ctx.columns)
           }
 
-          if (isObject(props.align) && props.align[breakpoint] !== undefined) {
-            acc[breakpoint]['--col-align-self'] = props.align[breakpoint]
+          const responsiveAlign = isObject(props.align)
+            ? (props.align as Record<string, AlignItems>)[breakpoint]
+            : undefined
+          if (responsiveAlign !== undefined) {
+            acc[breakpoint]['--col-align-self'] = responsiveAlign
           }
 
           return acc

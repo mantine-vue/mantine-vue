@@ -1,5 +1,5 @@
 import { defineComponent, h, type PropType } from 'vue'
-import { withBoxProps, Box } from '../../../core'
+import { withBoxProps, Box, type JustifyContent } from '../../../core'
 import { useTabsContext } from '../Tabs.context'
 
 export type TabsListStylesNames = 'list'
@@ -10,7 +10,7 @@ export const TabsList = withBoxProps(
     inheritAttrs: false,
     props: {
       grow: { type: Boolean, default: false },
-      justify: { type: String, default: undefined },
+      justify: { type: String as PropType<JustifyContent>, default: undefined },
       mod: { type: [Object, Array] as PropType<any>, default: undefined },
       classNames: { type: [Object, Function], default: undefined },
       styles: { type: [Object, Function], default: undefined },

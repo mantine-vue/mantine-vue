@@ -1,5 +1,12 @@
 import { defineComponent, h, type PropType } from 'vue'
-import { withBoxProps, Box, createVarsResolver, getFontSize, useStyles } from '../../../core'
+import {
+  withBoxProps,
+  Box,
+  createVarsResolver,
+  getFontSize,
+  useStyles,
+  type MantineFontSize,
+} from '../../../core'
 import { useInputWrapperContext } from '../InputWrapper.context'
 import classes from '../Input.module.css'
 
@@ -18,7 +25,7 @@ export const InputLabel = withBoxProps(
     inheritAttrs: false,
     props: {
       required: { type: Boolean, default: false },
-      size: { type: [String, Number] as PropType<string | number>, default: undefined },
+      size: { type: [String, Number] as PropType<MantineFontSize | number>, default: undefined },
       labelElement: { type: String as PropType<'label' | 'div'>, default: 'label' },
       htmlFor: { type: String, default: undefined },
       mod: { type: [Object, Array] as PropType<any>, default: undefined },

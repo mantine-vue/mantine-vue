@@ -9,6 +9,7 @@ import {
   rgba,
   useProps,
   useStyles,
+  type MantineRadius,
 } from '../../core'
 import classes from './Overlay.module.css'
 
@@ -42,7 +43,7 @@ export const Overlay = withBoxProps(
       blur: [String, Number] as PropType<string | number>,
       gradient: { type: String, default: undefined },
       zIndex: [String, Number] as PropType<string | number>,
-      radius: [String, Number] as PropType<string | number>,
+      radius: [String, Number] as PropType<MantineRadius>,
       center: { type: Boolean, default: false },
       fixed: { type: Boolean, default: false },
       classNames: { type: [Object, Function], default: undefined },

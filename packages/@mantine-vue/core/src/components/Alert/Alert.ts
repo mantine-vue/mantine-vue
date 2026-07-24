@@ -7,7 +7,9 @@ import {
   getRadius,
   hasNode,
   resolveNode,
+  type MantineColor,
   type MantineNode,
+  type MantineRadius,
   useProps,
   useStyles,
 } from '../../core'
@@ -47,8 +49,8 @@ export const Alert = withBoxProps(
     slots: Object as SlotsType<AlertSlots>,
     props: {
       id: { type: String, default: undefined },
-      radius: [String, Number] as PropType<string | number>,
-      color: { type: String, default: undefined },
+      radius: [String, Number] as PropType<MantineRadius>,
+      color: { type: String as PropType<MantineColor>, default: undefined },
       title: { type: null as unknown as PropType<MantineNode>, default: undefined },
       icon: { type: null as unknown as PropType<MantineNode>, default: undefined },
       withCloseButton: { type: Boolean, default: false },

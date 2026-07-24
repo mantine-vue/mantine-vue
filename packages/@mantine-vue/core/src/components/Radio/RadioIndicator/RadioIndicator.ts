@@ -9,6 +9,9 @@ import {
   getSize,
   getThemeColor,
   useStyles,
+  type MantineColor,
+  type MantineRadius,
+  type MantineSize,
 } from '../../../core'
 import { RadioIcon } from '../RadioIcon'
 import { useRadioCardContext } from '../RadioCard/RadioCard'
@@ -45,9 +48,12 @@ export const RadioIndicator = withBoxProps(
     inheritAttrs: false,
     slots: Object as SlotsType<RadioIndicatorSlots>,
     props: {
-      color: { type: String, default: undefined },
-      size: { type: [String, Number] as PropType<string | number>, default: 'sm' },
-      radius: { type: [String, Number] as PropType<string | number>, default: undefined },
+      color: { type: String as PropType<MantineColor>, default: undefined },
+      size: {
+        type: [String, Number] as PropType<MantineSize | (string & {}) | number>,
+        default: 'sm',
+      },
+      radius: { type: [String, Number] as PropType<MantineRadius>, default: undefined },
       iconColor: { type: String, default: undefined },
       autoContrast: { type: Boolean, default: undefined },
       icon: { type: [Object, Function] as PropType<any>, default: undefined },

@@ -1,5 +1,13 @@
 import { defineComponent, h, type PropType } from 'vue'
-import { withBoxProps, Box, createVarsResolver, getSize, useProps, useStyles } from '../../core'
+import {
+  withBoxProps,
+  Box,
+  createVarsResolver,
+  getSize,
+  useProps,
+  useStyles,
+  type MantineSize,
+} from '../../core'
 import classes from './Container.module.css'
 
 const defaultProps = {
@@ -17,7 +25,7 @@ export const Container = withBoxProps(
     name: 'Container',
     inheritAttrs: false,
     props: {
-      size: [String, Number] as PropType<string | number>,
+      size: [String, Number] as PropType<MantineSize | (string & {}) | number>,
       fluid: { type: Boolean, default: false },
       strategy: { type: String as PropType<'block' | 'grid'>, default: undefined },
       classNames: { type: [Object, Function], default: undefined },

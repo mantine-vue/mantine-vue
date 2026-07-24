@@ -8,6 +8,7 @@ import {
   useForwardedRef,
   useProps,
   useStyles,
+  type MantineRadius,
 } from '../../core'
 import classes from './Paper.module.css'
 
@@ -25,7 +26,7 @@ export const Paper = withBoxProps(
     props: {
       component: { type: String, default: 'div' },
       shadow: { type: String, default: undefined },
-      radius: [String, Number] as PropType<string | number>,
+      radius: [String, Number] as PropType<MantineRadius>,
       withBorder: { type: Boolean, default: false },
       classNames: { type: [Object, Function], default: undefined },
       styles: { type: [Object, Function], default: undefined },

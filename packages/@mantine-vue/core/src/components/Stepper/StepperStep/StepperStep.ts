@@ -2,6 +2,7 @@ import { defineComponent, h, isVNode, type PropType, type SlotsType, type VNodeC
 import {
   withBoxProps,
   getThemeColor,
+  type MantineColor,
   type MantineNode,
   useMantineTheme,
   useProps,
@@ -74,7 +75,7 @@ export const StepperStep = withBoxProps(
     props: {
       step: { type: Number, default: undefined },
       state: { type: String as PropType<StepperStepState>, default: undefined },
-      color: { type: String, default: undefined },
+      color: { type: String as PropType<MantineColor>, default: undefined },
       withIcon: { type: Boolean, default: undefined },
       icon: { type: [String, Number, Object, Function] as PropType<any>, default: undefined },
       completedIcon: {

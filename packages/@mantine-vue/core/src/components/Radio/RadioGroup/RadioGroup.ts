@@ -9,7 +9,7 @@ import {
   type VNodeChild,
 } from 'vue'
 import { useId, useUncontrolled } from '@mantine-vue/hooks'
-import { resolveNode, type MantineNode } from '../../../core'
+import { resolveNode, type MantineNode, type MantineSize } from '../../../core'
 import { InputWrapper } from '../../Input'
 import { InputsGroupFieldset } from '../../../utils'
 
@@ -42,7 +42,7 @@ export const RadioGroup = defineComponent({
     value: { type: String as PropType<string | null | undefined>, default: undefined },
     defaultValue: { type: String as PropType<string | null | undefined>, default: undefined },
     onChange: { type: Function as PropType<(value: string) => void>, default: undefined },
-    size: { type: [String, Number] as PropType<string | number>, default: undefined },
+    size: { type: String as PropType<MantineSize>, default: undefined },
     wrapperProps: { type: Object as PropType<Record<string, any>>, default: undefined },
     name: { type: String, default: undefined },
     readOnly: { type: Boolean, default: false },

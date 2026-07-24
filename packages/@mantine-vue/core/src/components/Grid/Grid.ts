@@ -6,13 +6,16 @@ import {
   useProps,
   useRandomClassName,
   useStyles,
+  type AlignItems,
+  type JustifyContent,
+  type MantineSpacing,
+  type Overflow,
+  type StyleProp,
 } from '../../core'
 import { GridCol } from './GridCol/GridCol'
 import { provideGridContext, type GridBreakpoints } from './Grid.context'
 import { GridVariables } from './GridVariables'
 import classes from './Grid.module.css'
-
-type StyleProp<T> = T | Partial<Record<string, T>>
 
 const defaultProps = {
   gap: 'md',
@@ -32,22 +35,22 @@ const GridBase = defineComponent({
   inheritAttrs: false,
   props: {
     gap: {
-      type: [String, Number, Object] as PropType<StyleProp<string | number>>,
+      type: [String, Number, Object] as PropType<StyleProp<MantineSpacing>>,
       default: undefined,
     },
     rowGap: {
-      type: [String, Number, Object] as PropType<StyleProp<string | number>>,
+      type: [String, Number, Object] as PropType<StyleProp<MantineSpacing>>,
       default: undefined,
     },
     columnGap: {
-      type: [String, Number, Object] as PropType<StyleProp<string | number>>,
+      type: [String, Number, Object] as PropType<StyleProp<MantineSpacing>>,
       default: undefined,
     },
     grow: { type: Boolean, default: false },
-    justify: { type: String, default: undefined },
-    align: { type: String, default: undefined },
+    justify: { type: String as PropType<JustifyContent>, default: undefined },
+    align: { type: String as PropType<AlignItems>, default: undefined },
     columns: { type: Number, default: undefined },
-    overflow: { type: String, default: undefined },
+    overflow: { type: String as PropType<Overflow>, default: undefined },
     type: { type: String as PropType<'media' | 'container'>, default: undefined },
     breakpoints: { type: Object as PropType<GridBreakpoints>, default: undefined },
     classNames: { type: [Object, Function], default: undefined },

@@ -1,5 +1,5 @@
 import { defineComponent, h, type PropType } from 'vue'
-import { Box, getThemeColor, useMantineTheme } from '../../../core'
+import { Box, getThemeColor, useMantineTheme, type MantineColor } from '../../../core'
 import { getCurveProps } from './get-curve-props'
 
 export const Curve = defineComponent({
@@ -13,7 +13,7 @@ export const Curve = defineComponent({
     thickness: { type: Number, required: true },
     lineRoundCaps: { type: Boolean, default: undefined },
     root: { type: Boolean, default: false },
-    color: { type: String, default: undefined },
+    color: { type: String as PropType<MantineColor>, default: undefined },
     getStyles: {
       type: Function as PropType<(selector: string, options?: any) => Record<string, any>>,
       required: true,

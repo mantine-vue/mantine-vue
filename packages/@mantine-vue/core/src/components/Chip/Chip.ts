@@ -9,6 +9,9 @@ import {
   getSize,
   useProps,
   useStyles,
+  type MantineColor,
+  type MantineRadius,
+  type MantineSize,
 } from '../../core'
 import { CheckIcon } from '../Checkbox'
 import { ChipGroup, useChipGroupContext } from './ChipGroup/ChipGroup'
@@ -57,13 +60,13 @@ const ChipBase = defineComponent({
   inheritAttrs: false,
   props: {
     id: { type: String, default: undefined },
-    radius: { type: [String, Number] as PropType<string | number>, default: undefined },
-    size: { type: [String, Number] as PropType<string | number>, default: 'sm' },
+    radius: { type: [String, Number] as PropType<MantineRadius>, default: undefined },
+    size: { type: String as PropType<MantineSize>, default: 'sm' },
     type: { type: String as PropType<'radio' | 'checkbox'>, default: 'checkbox' },
     checked: { type: Boolean, default: undefined },
     defaultChecked: { type: Boolean, default: undefined },
     onChange: { type: Function as PropType<(checked: boolean) => void>, default: undefined },
-    color: { type: String, default: undefined },
+    color: { type: String as PropType<MantineColor>, default: undefined },
     value: { type: String, default: undefined },
     disabled: { type: Boolean, default: false },
     wrapperProps: { type: Object as PropType<Record<string, any>>, default: undefined },

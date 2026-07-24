@@ -1,5 +1,13 @@
 import { cloneVNode, defineComponent, h, type PropType, type VNode } from 'vue'
-import { withBoxProps, createVarsResolver, getSpacing, useProps, useStyles } from '../../core'
+import {
+  withBoxProps,
+  createVarsResolver,
+  getSpacing,
+  useProps,
+  useStyles,
+  type MantineRadius,
+  type MantineSpacing,
+} from '../../core'
 import { Paper } from '../Paper'
 import { CardSection } from './CardSection/CardSection'
 import { provideCardContext } from './Card.context'
@@ -28,9 +36,9 @@ const CardBase = defineComponent({
   props: {
     component: { type: String, default: 'div' },
     shadow: { type: String, default: undefined },
-    radius: [String, Number] as PropType<string | number>,
+    radius: [String, Number] as PropType<MantineRadius>,
     withBorder: { type: Boolean, default: false },
-    padding: [String, Number] as PropType<string | number>,
+    padding: [String, Number] as PropType<MantineSpacing>,
     orientation: { type: String as PropType<'horizontal' | 'vertical'>, default: undefined },
     classNames: { type: [Object, Function], default: undefined },
     styles: { type: [Object, Function], default: undefined },

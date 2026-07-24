@@ -1,5 +1,11 @@
 import { defineComponent, h, inject, provide, type InjectionKey, type PropType } from 'vue'
-import { withBoxProps, createVarsResolver, getRadius, useStyles } from '../../../core'
+import {
+  withBoxProps,
+  createVarsResolver,
+  getRadius,
+  useStyles,
+  type MantineRadius,
+} from '../../../core'
 import { UnstyledButton } from '../../UnstyledButton'
 import { useRadioGroupContext } from '../RadioGroup/RadioGroup'
 import classes from './RadioCard.module.css'
@@ -35,7 +41,7 @@ export const RadioCard = withBoxProps(
     props: {
       checked: { type: Boolean, default: undefined },
       withBorder: { type: Boolean, default: true },
-      radius: { type: [String, Number] as PropType<string | number>, default: undefined },
+      radius: { type: [String, Number] as PropType<MantineRadius>, default: undefined },
       value: { type: String, default: undefined },
       name: { type: String, default: undefined },
       mod: { type: [Object, Array] as PropType<any>, default: undefined },

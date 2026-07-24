@@ -8,6 +8,8 @@ import {
   rem,
   useProps,
   useStyles,
+  type MantineColor,
+  type MantineSize,
 } from '../../core'
 import { UnstyledButton } from '../UnstyledButton'
 import classes from './Burger.module.css'
@@ -30,9 +32,9 @@ export const Burger = withBoxProps(
     name: 'Burger',
     inheritAttrs: false,
     props: {
-      size: [String, Number] as PropType<string | number>,
+      size: [String, Number] as PropType<MantineSize | (string & {}) | number>,
       lineSize: [String, Number] as PropType<string | number>,
-      color: { type: String, default: undefined },
+      color: { type: String as PropType<MantineColor>, default: undefined },
       opened: { type: Boolean, default: false },
       transitionDuration: { type: Number, default: undefined },
       transitionTimingFunction: { type: String, default: undefined },

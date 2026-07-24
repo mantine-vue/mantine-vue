@@ -1,7 +1,13 @@
 import type { CSSProperties } from 'vue'
-import type { MantineColor, MantineSpacing } from '../../MantineProvider'
+import type {
+  MantineBreakpoint,
+  MantineColor,
+  MantineFontSize,
+  MantineLineHeight,
+  MantineSpacing,
+} from '../../MantineProvider'
 
-export type StyleProp<Value> = Value | Partial<Record<string, Value>>
+export type StyleProp<Value> = Value | Partial<Record<MantineBreakpoint | (string & {}), Value>>
 
 type CssValue<Key extends keyof CSSProperties> = CSSProperties[Key]
 
@@ -63,7 +69,7 @@ export interface MantineStyleProps {
   /** FontFamily */
   ff?: StyleProp<'monospace' | 'mono' | 'text' | 'heading' | 'headings' | (string & {})>
   /** FontSize, theme key: theme.fontSizes */
-  fz?: StyleProp<string | number>
+  fz?: StyleProp<MantineFontSize | `h${1 | 2 | 3 | 4 | 5 | 6}` | number | (string & {})>
   /** FontWeight */
   fw?: StyleProp<CssValue<'fontWeight'>>
   /** LetterSpacing */
@@ -71,7 +77,7 @@ export interface MantineStyleProps {
   /** TextAlign */
   ta?: StyleProp<CssValue<'textAlign'>>
   /** LineHeight, theme key: theme.lineHeights */
-  lh?: StyleProp<string | number>
+  lh?: StyleProp<MantineLineHeight | `h${1 | 2 | 3 | 4 | 5 | 6}` | number | (string & {})>
   /** FontStyle */
   fs?: StyleProp<CssValue<'fontStyle'>>
   /** TextTransform */

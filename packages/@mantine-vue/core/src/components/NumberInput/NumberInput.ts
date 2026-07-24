@@ -9,7 +9,14 @@ import {
   type VNodeChild,
 } from 'vue'
 import { assignRef, useUncontrolled } from '@mantine-vue/hooks'
-import { Box, createVarsResolver, getSize, type MantineNode, useStyles } from '../../core'
+import {
+  Box,
+  createVarsResolver,
+  getSize,
+  type MantineNode,
+  type MantineSize,
+  useStyles,
+} from '../../core'
 import { InputBase } from '../InputBase'
 
 export interface NumberInputSlots {
@@ -342,7 +349,10 @@ export const NumberInput = defineComponent({
     selectAllOnFocus: { type: Boolean, default: false },
     onMinReached: { type: Function as PropType<() => void>, default: undefined },
     onMaxReached: { type: Function as PropType<() => void>, default: undefined },
-    size: { type: [String, Number] as PropType<string | number>, default: 'sm' },
+    size: {
+      type: [String, Number] as PropType<MantineSize | (string & {}) | number>,
+      default: 'sm',
+    },
     disabled: { type: Boolean, default: false },
     readOnly: { type: Boolean, default: false },
     rightSection: {

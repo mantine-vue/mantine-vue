@@ -18,6 +18,9 @@ import {
   useDirection,
   useProps,
   useStyles,
+  type MantineColor,
+  type MantineRadius,
+  type MantineSize,
 } from '../../../core'
 import { provideSliderContext } from '../Slider.context'
 import type { SliderMark } from '../SliderMark'
@@ -102,9 +105,12 @@ export const RangeSlider = defineComponent({
     inverted: { type: Boolean, default: false },
     orientation: { type: String as PropType<'horizontal' | 'vertical'>, default: undefined },
     scale: { type: Function as PropType<(value: number) => number>, default: undefined },
-    size: { type: [String, Number] as PropType<string | number>, default: undefined },
-    color: { type: String, default: undefined },
-    radius: { type: [String, Number] as PropType<string | number>, default: undefined },
+    size: {
+      type: [String, Number] as PropType<MantineSize | (string & {}) | number>,
+      default: undefined,
+    },
+    color: { type: String as PropType<MantineColor>, default: undefined },
+    radius: { type: [String, Number] as PropType<MantineRadius>, default: undefined },
     thumbSize: { type: [String, Number] as PropType<string | number>, default: undefined },
     hiddenInputProps: { type: Object as PropType<Record<string, any>>, default: undefined },
     classNames: { type: [Object, Function], default: undefined },

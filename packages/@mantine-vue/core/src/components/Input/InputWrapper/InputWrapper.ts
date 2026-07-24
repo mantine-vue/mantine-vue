@@ -6,6 +6,7 @@ import {
   getFontSize,
   rem,
   resolveNode,
+  type MantineFontSize,
   type MantineNode,
   useStyles,
 } from '../../../core'
@@ -73,7 +74,7 @@ export const InputWrapper = defineComponent({
     inputContainer: { type: Function as PropType<(children: any) => any>, default: undefined },
     inputWrapperOrder: { type: Array as PropType<InputWrapperOrderPart[]>, default: undefined },
     id: { type: String, default: undefined },
-    size: { type: [String, Number] as PropType<string | number>, default: undefined },
+    size: { type: [String, Number] as PropType<MantineFontSize | number>, default: undefined },
     labelElement: { type: String as PropType<'label' | 'div'>, default: 'label' },
     variant: { type: String, default: undefined },
     mod: { type: [Object, Array] as PropType<any>, default: undefined },
