@@ -1,4 +1,4 @@
-import { defineComponent, h, onMounted, type PropType, ref } from 'vue'
+import { defineComponent, h, type PropType } from 'vue'
 
 import { Box } from '@mantine-vue/core'
 
@@ -12,6 +12,7 @@ import { MVT_ToolbarAlertBanner } from './MVT_ToolbarAlertBanner'
 import { MVT_ToolbarDropZone } from './MVT_ToolbarDropZone'
 import commonClasses from './common.styles.module.css'
 import classes from './MVT_BottomToolbar.module.css'
+import { useMediaQuery } from '@mantine-vue/hooks'
 
 export const MVT_BottomToolbar = defineComponent({
   name: 'MVTBottomToolbar',
@@ -23,13 +24,7 @@ export const MVT_BottomToolbar = defineComponent({
     },
   },
   setup(props, { attrs }) {
-    const isMobile = ref(false)
-    onMounted(() => {
-      if (typeof window === 'undefined' || !window.matchMedia) return
-      const mql = window.matchMedia('(max-width: 720px)')
-      isMobile.value = mql.matches
-      mql.addEventListener('change', (e) => (isMobile.value = e.matches))
-    })
+    const isMobile = useMediaQuery('(max-width: 720px)')
 
     return () => {
       const { table } = props
