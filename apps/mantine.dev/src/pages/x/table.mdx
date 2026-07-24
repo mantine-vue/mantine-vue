@@ -62,10 +62,37 @@ the data, so apply the reorder yourself in `mantineRowDragHandleProps.onDragEnd`
 ## Editing
 
 `enableEditing` turns on inline editing. Choose how the editor is presented with `editDisplayMode`
-(`'cell'`, `'row'`, `'table'`, or `'modal'`) and persist changes in the matching `onEditing*Save`
-callback.
+(`'cell'`, `'row'`, `'table'`, or `'modal'`) and persist changes in the matching callback.
+
+### Modal editing mode
+
+`editDisplayMode: 'modal'` (the default) opens a dialog with every editable field and Save/Cancel
+buttons. Persist the whole row in `onEditingRowSave`, then call `exitEditingMode()`.
 
 <Demo data={DataTableDemos.editing} />
+
+### Cell editing mode
+
+`editDisplayMode: 'cell'` lets a user double-click a single cell to edit it in place. There's no
+row-level save callback — persist each change from the column's
+`mantineEditTextInputProps.onBlur`.
+
+<Demo data={DataTableDemos.cellEditing} />
+
+### Table editing mode
+
+`editDisplayMode: 'table'` renders every cell as an input at once, so the whole table is editable
+without entering an edit mode. Saving works the same way as cell mode (per-cell `onBlur`).
+
+<Demo data={DataTableDemos.tableEditing} />
+
+### Customizing the editing modal
+
+Use the `#editRowModalContent` slot (or `renderEditRowModalContent` option) to replace the modal
+body. It receives `internalEditComponents` — the default inputs — which you can lay out freely; drop
+in the exported `MVT_EditActionButtons` for wired-up Save/Cancel.
+
+<Demo data={DataTableDemos.editModal} />
 
 ## Named slots
 
@@ -87,6 +114,61 @@ scoped argument. A `#detailPanel` slot also enables the expand column automatica
 | `emptyRowsFallback`          | `renderEmptyRowsFallback`          |
 
 Column-level renderers (`Cell`, `Header`, `Footer`, `Edit`) stay on the column definition.
+
+## Row actions
+
+Set `enableRowActions` to add a dedicated actions column. Provide the buttons with the `#rowActions`
+slot (or `renderRowActions` option); use `positionActionsColumn` to place it first or last. For a
+built-in overflow menu instead, use the `#rowActionMenuItems` slot.
+
+<Demo data={DataTableDemos.rowActions} />
+
+## Click to copy
+
+Set `enableClickToCopy` on the table or a single column to turn its cells into a button that copies
+the cell value to the clipboard on click.
+
+<Demo data={DataTableDemos.clickToCopy} />
+
+## Column actions
+
+Every column gets a `⋮` actions menu (sorting, hiding, pinning, grouping, …) by default — disable it
+per column with `enableColumnActions: false`. Extend the menu with the `#columnActionsMenuItems`
+slot: render the built-in `internalColumnMenuItems`, then append your own.
+
+<Demo data={DataTableDemos.columnActions} />
+
+## Row numbers
+
+Set `enableRowNumbers` to prepend a numbers column. `rowNumberDisplayMode: 'static'` numbers rows in
+render order, while `'original'` uses each row's index in the original data (stable across sorting
+and filtering).
+
+<Demo data={DataTableDemos.rowNumbers} />
+
+## Expanding sub-rows
+
+Set `enableExpanding` and tell the table how to find children with `getSubRows`. Rows that have
+sub-rows render an expand toggle; a header toggle expands or collapses all.
+
+<Demo data={DataTableDemos.expanding} />
+
+## Aggregation & grouping
+
+Set `enableGrouping` to let users group by a column (drag it to the grouping zone, or set
+`initialState.grouping`). Give a column an `aggregationFn` (`mean`, `sum`, `max`, `count`, …) and an
+`AggregatedCell` to summarize each group; use `GroupedCell` to customize the grouped label.
+
+<Demo data={DataTableDemos.aggregation} />
+
+## Column filtering
+
+Column filters are on by default. Pick a filter UI per column with `filterVariant` — `text`,
+`select`, `multi-select`, `range`, `range-slider`, `date`, `checkbox`, and more — and enable
+`enableColumnFilterModes` to let users switch the match mode (contains, starts with, equals, …).
+`enableFacetedValues` auto-populates select options from the data.
+
+<Demo data={DataTableDemos.columnFiltering} />
 
 ## Virtualization
 

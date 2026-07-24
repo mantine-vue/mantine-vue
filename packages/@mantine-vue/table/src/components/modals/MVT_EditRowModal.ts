@@ -2,6 +2,7 @@ import { Flex, Modal, Stack } from '@mantine-vue/core'
 import { defineComponent, h, type PropType } from 'vue'
 import type { MVT_RowData, MVT_TableInstance } from '../../types'
 import { parseFromValuesOrFunc } from '../../utils/utils'
+import { useMVT_Slots } from '../MVT_TableSlots'
 import { MVT_EditActionButtons } from '../buttons/MVT_EditActionButtons'
 import { MVT_EditCellTextInput } from '../inputs/MVT_EditCellTextInput'
 
@@ -14,6 +15,8 @@ export const MVT_EditRowModal = defineComponent({
   },
   emits: { close: () => true },
   setup(props, { attrs, emit, slots }) {
+    const mvtSlots = useMVT_Slots()
+
     return () => {
       const { table } = props
       const state = table.getState()
@@ -44,8 +47,8 @@ export const MVT_EditRowModal = defineComponent({
         emit('close')
       }
       const slot = state.creatingRow
-        ? (slots.create ?? slots.default)
-        : (slots.edit ?? slots.default)
+        ? (slots.create ?? mvtSlots.createRowModalContent ?? slots.default)
+        : (slots.edit ?? mvtSlots.editRowModalContent ?? slots.default)
       const custom =
         slot?.({ internalEditComponents, row, table }) ??
         (state.creatingRow
