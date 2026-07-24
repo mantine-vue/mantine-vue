@@ -10,6 +10,7 @@ import {
   ThemeIcon,
 } from '@mantine-vue/core'
 import type {
+  ActionIconProps,
   AlignItems,
   BadgeVariant,
   ButtonVariant,
@@ -18,6 +19,10 @@ import type {
   MantineColor,
   MantineRadius,
   MantineSpacing,
+  PaperProps,
+  TableProps,
+  TableThProps,
+  TextInputProps,
   ThemeIconVariant,
 } from '@mantine-vue/core'
 
@@ -73,6 +78,11 @@ const flexWrap: FlexWrap = 'wrap-reverse'
 const color: MantineColor = 'violet.7'
 const radius: MantineRadius = 'md'
 const spacing: MantineSpacing = 'xl'
+const actionIconNamedProps: ActionIconProps = { color: 'blue.6', radius: 'md', size: 'sm' }
+const paperNamedProps: PaperProps = { radius: 'lg', shadow: 'sm', withBorder: true }
+const tableNamedProps: TableProps = { layout: 'fixed', striped: 'odd', withTableBorder: true }
+const tableThNamedProps: TableThProps = { className: 'header-cell' }
+const textInputNamedProps: TextInputProps = {}
 
 void buttonProps
 void customButtonProps
@@ -90,6 +100,11 @@ void flexWrap
 void color
 void radius
 void spacing
+void actionIconNamedProps
+void paperNamedProps
+void tableNamedProps
+void tableThNamedProps
+void textInputNamedProps
 
 // @ts-expect-error Box spacing props do not accept booleans.
 const invalidBoxProps: BoxPublicProps = { my: true }
