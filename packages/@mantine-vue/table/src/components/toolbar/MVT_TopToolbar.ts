@@ -1,4 +1,4 @@
-import { defineComponent, h, onMounted, type PropType, ref } from 'vue'
+import { defineComponent, h, type PropType } from 'vue'
 
 import { Box, Flex } from '@mantine-vue/core'
 
@@ -14,17 +14,7 @@ import { MVT_ToolbarDropZone } from './MVT_ToolbarDropZone'
 import { MVT_ToolbarInternalButtons } from './MVT_ToolbarInternalButtons'
 import commonClasses from './common.styles.module.css'
 import classes from './MVT_TopToolbar.module.css'
-
-const useMedia = (query: string) => {
-  const matches = ref(false)
-  onMounted(() => {
-    if (typeof window === 'undefined' || !window.matchMedia) return
-    const mql = window.matchMedia(query)
-    matches.value = mql.matches
-    mql.addEventListener('change', (e) => (matches.value = e.matches))
-  })
-  return matches
-}
+import { useMediaQuery } from '@mantine-vue/hooks'
 
 export const MVT_TopToolbar = defineComponent({
   name: 'MVTTopToolbar',
@@ -36,8 +26,8 @@ export const MVT_TopToolbar = defineComponent({
     },
   },
   setup(props, { attrs }) {
-    const isMobile = useMedia('(max-width: 720px)')
-    const isTablet = useMedia('(max-width: 1024px)')
+    const isMobile = useMediaQuery('(max-width: 720px)')
+    const isTablet = useMediaQuery('(max-width: 1024px)')
 
     return () => {
       const { table } = props
@@ -67,7 +57,10 @@ export const MVT_TopToolbar = defineComponent({
       const stackAlertBanner =
         isMobile.value || !!renderTopToolbarCustomActions || (showGlobalFilter && isTablet.value)
 
-      const globalFilterProps = { table }
+      const globalFilterProps = {
+        style: !isTablet.value ? { zIndex: 3 } : undefined,
+        table,
+      }
 
       return h(
         Box,
@@ -97,10 +90,10 @@ export const MVT_TopToolbar = defineComponent({
           h(
             Flex,
             {
-              class: clsx(
+              class: [
                 classes['actions-container'],
-                stackAlertBanner && classes['actions-container-stack-alert'],
-              ),
+                stackAlertBanner ? classes['actions-container-stack-alert'] : undefined,
+              ],
             } as any,
             () => [
               enableGlobalFilter &&
