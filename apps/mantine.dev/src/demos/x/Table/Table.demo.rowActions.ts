@@ -90,10 +90,10 @@ const Demo = defineComponent({
               h(Tooltip, { label: 'Edit' }, () =>
                 h(
                   ActionIcon,
-                  // eslint-disable-next-line no-alert
                   {
                     variant: 'subtle',
                     color: 'gray',
+                    // eslint-disable-next-line no-alert
                     onClick: () => window.alert(`Edit ${row.original.firstName}`),
                   },
                   () => h(PhPencilSimple, { size: 18 }),
@@ -102,10 +102,10 @@ const Demo = defineComponent({
               h(Tooltip, { label: 'Delete' }, () =>
                 h(
                   ActionIcon,
-                  // eslint-disable-next-line no-alert
                   {
                     variant: 'subtle',
                     color: 'red',
+                    // eslint-disable-next-line no-alert
                     onClick: () => window.alert(`Delete ${row.original.firstName}`),
                   },
                   () => h(PhTrash, { size: 18 }),
