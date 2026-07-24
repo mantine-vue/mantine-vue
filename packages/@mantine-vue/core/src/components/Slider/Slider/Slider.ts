@@ -20,6 +20,9 @@ import {
   useDirection,
   useProps,
   useStyles,
+  type MantineColor,
+  type MantineRadius,
+  type MantineSize,
 } from '../../../core'
 import { provideSliderContext, type SliderStylesNames } from '../Slider.context'
 import type { SliderMark } from '../SliderMark'
@@ -74,9 +77,12 @@ export const Slider = withBoxProps(
     inheritAttrs: false,
     slots: Object as SlotsType<SliderSlots>,
     props: {
-      color: { type: String, default: undefined },
-      radius: { type: [String, Number] as PropType<string | number>, default: undefined },
-      size: { type: [String, Number] as PropType<string | number>, default: undefined },
+      color: { type: String as PropType<MantineColor>, default: undefined },
+      radius: { type: [String, Number] as PropType<MantineRadius>, default: undefined },
+      size: {
+        type: [String, Number] as PropType<MantineSize | (string & {}) | number>,
+        default: undefined,
+      },
       min: { type: Number, default: undefined },
       max: { type: Number, default: undefined },
       domain: { type: Array as unknown as PropType<[number, number]>, default: undefined },

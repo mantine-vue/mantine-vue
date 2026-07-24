@@ -1,5 +1,13 @@
 import { defineComponent, h, type PropType } from 'vue'
-import { withBoxProps, Box, createVarsResolver, getRadius, useProps, useStyles } from '../../core'
+import {
+  withBoxProps,
+  Box,
+  createVarsResolver,
+  getRadius,
+  useProps,
+  useStyles,
+  type MantineRadius,
+} from '../../core'
 import classes from './BackgroundImage.module.css'
 
 const varsResolver = createVarsResolver<any>((_, { radius }) => ({
@@ -12,7 +20,7 @@ export const BackgroundImage = withBoxProps(
     inheritAttrs: false,
     props: {
       src: { type: String, required: true },
-      radius: [String, Number] as PropType<string | number>,
+      radius: [String, Number] as PropType<MantineRadius>,
       classNames: { type: [Object, Function], default: undefined },
       styles: { type: [Object, Function], default: undefined },
       vars: { type: [Object, Function], default: undefined },

@@ -7,7 +7,9 @@ import {
   getThemeColor,
   hasNode,
   resolveNode,
+  type MantineColor,
   type MantineNode,
+  type MantineSize,
   useProps,
   useStyles,
 } from '../../core'
@@ -40,8 +42,8 @@ export const Divider = withBoxProps(
     inheritAttrs: false,
     slots: Object as SlotsType<DividerSlots>,
     props: {
-      color: { type: String, default: undefined },
-      size: [String, Number] as PropType<string | number>,
+      color: { type: String as PropType<MantineColor>, default: undefined },
+      size: [String, Number] as PropType<MantineSize | number | (string & {})>,
       label: { type: null as unknown as PropType<MantineNode>, default: undefined },
       labelPosition: { type: String as PropType<'left' | 'center' | 'right'>, default: undefined },
       orientation: { type: String as PropType<'horizontal' | 'vertical'>, default: undefined },

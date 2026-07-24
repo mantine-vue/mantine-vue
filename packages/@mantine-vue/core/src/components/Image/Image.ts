@@ -1,5 +1,14 @@
 import { defineComponent, h, ref, watch, type PropType } from 'vue'
-import { withBoxProps, Box, createVarsResolver, getRadius, useProps, useStyles } from '../../core'
+import {
+  withBoxProps,
+  Box,
+  createVarsResolver,
+  getRadius,
+  useProps,
+  useStyles,
+  type MantineRadius,
+  type ObjectFit,
+} from '../../core'
 import classes from './Image.module.css'
 
 const varsResolver = createVarsResolver<any>((_, { radius, fit }) => ({
@@ -16,8 +25,8 @@ export const Image = withBoxProps(
     props: {
       src: { type: [String, Object] as PropType<any>, default: undefined },
       fallbackSrc: { type: String, default: undefined },
-      radius: [String, Number] as PropType<string | number>,
-      fit: { type: String, default: undefined },
+      radius: [String, Number] as PropType<MantineRadius>,
+      fit: { type: String as PropType<ObjectFit>, default: undefined },
       classNames: { type: [Object, Function], default: undefined },
       styles: { type: [Object, Function], default: undefined },
       vars: { type: [Object, Function], default: undefined },

@@ -7,6 +7,7 @@ import {
   hasNode,
   resolveNode,
   type MantineNode,
+  type MantineRadius,
   useProps,
   useStyles,
 } from '../../core'
@@ -37,7 +38,7 @@ export const Fieldset = withBoxProps(
     slots: Object as SlotsType<FieldsetSlots>,
     props: {
       legend: { type: null as unknown as PropType<MantineNode>, default: undefined },
-      radius: { type: [String, Number] as PropType<string | number>, default: undefined },
+      radius: { type: [String, Number] as PropType<MantineRadius>, default: undefined },
       variant: { type: String as PropType<FieldsetVariant>, default: undefined },
       classNames: { type: [Object, Function], default: undefined },
       styles: { type: [Object, Function], default: undefined },

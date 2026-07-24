@@ -1,5 +1,13 @@
 import { defineComponent, h, type PropType } from 'vue'
-import { withBoxProps, Box, createVarsResolver, getFontSize, rem, useStyles } from '../../../core'
+import {
+  withBoxProps,
+  Box,
+  createVarsResolver,
+  getFontSize,
+  rem,
+  useStyles,
+  type MantineFontSize,
+} from '../../../core'
 import { useInputWrapperContext } from '../InputWrapper.context'
 import classes from '../Input.module.css'
 
@@ -16,7 +24,7 @@ export const InputError = withBoxProps(
     name: 'InputError',
     inheritAttrs: false,
     props: {
-      size: { type: [String, Number] as PropType<string | number>, default: undefined },
+      size: { type: [String, Number] as PropType<MantineFontSize | number>, default: undefined },
       __inheritStyles: { type: Boolean, default: true },
       classNames: { type: [Object, Function], default: undefined },
       styles: { type: [Object, Function], default: undefined },

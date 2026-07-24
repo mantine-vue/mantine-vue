@@ -10,7 +10,9 @@ import {
   rem,
   resolveNode,
   rgba,
+  type MantineColor,
   type MantineNode,
+  type MantineRadius,
   useProps,
   useStyles,
 } from '../../core'
@@ -59,8 +61,8 @@ export const Blockquote = withBoxProps(
     props: {
       icon: { type: null as unknown as PropType<MantineNode>, default: undefined },
       iconSize: [String, Number] as PropType<string | number>,
-      color: { type: String, default: undefined },
-      radius: [String, Number] as PropType<string | number>,
+      color: { type: String as PropType<MantineColor>, default: undefined },
+      radius: [String, Number] as PropType<MantineRadius>,
       cite: { type: null as unknown as PropType<MantineNode>, default: undefined },
       textWrap: {
         type: String as PropType<'wrap' | 'nowrap' | 'balance' | 'pretty' | 'stable'>,

@@ -1,6 +1,14 @@
 import { defineComponent, h, ref, watch, type PropType } from 'vue'
 import { useUncontrolled } from '@mantine-vue/hooks'
-import { Box, createVarsResolver, getSize, getSpacing, useProps, useStyles } from '../../core'
+import {
+  Box,
+  createVarsResolver,
+  getSize,
+  getSpacing,
+  useProps,
+  useStyles,
+  type MantineSize,
+} from '../../core'
 import { ColorSwatch } from '../ColorSwatch'
 import { AlphaSlider } from './AlphaSlider/AlphaSlider'
 import { provideColorPickerContext } from './ColorPicker.context'
@@ -52,7 +60,7 @@ export const ColorPicker = defineComponent({
     withPicker: { type: Boolean, default: undefined },
     swatches: { type: Array as PropType<string[]>, default: undefined },
     swatchesPerRow: { type: Number, default: undefined },
-    size: { type: String, default: undefined },
+    size: { type: String as PropType<MantineSize | (string & {})>, default: undefined },
     fullWidth: { type: Boolean, default: false },
     focusable: { type: Boolean, default: undefined },
     saturationLabel: { type: String, default: undefined },

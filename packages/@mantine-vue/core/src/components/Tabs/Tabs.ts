@@ -9,6 +9,8 @@ import {
   getThemeColor,
   useProps,
   useStyles,
+  type MantineColor,
+  type MantineRadius,
 } from '../../core'
 import { provideTabsContext } from './Tabs.context'
 import { TabsList } from './TabsList/TabsList'
@@ -66,8 +68,8 @@ const TabsBase = defineComponent({
     activateTabWithKeyboard: { type: Boolean, default: undefined },
     allowTabDeactivation: { type: Boolean, default: false },
     variant: { type: String as PropType<TabsVariant>, default: undefined },
-    color: { type: String, default: undefined },
-    radius: { type: [String, Number] as PropType<string | number>, default: undefined },
+    color: { type: String as PropType<MantineColor>, default: undefined },
+    radius: { type: [String, Number] as PropType<MantineRadius>, default: undefined },
     inverted: { type: Boolean, default: false },
     keepMounted: { type: Boolean, default: undefined },
     keepMountedMode: { type: String as PropType<'activity' | 'display-none'>, default: undefined },

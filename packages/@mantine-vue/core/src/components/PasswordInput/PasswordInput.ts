@@ -1,6 +1,13 @@
 import { defineComponent, h, ref, type PropType, type SlotsType, type VNodeChild } from 'vue'
 import { useId, useUncontrolled } from '@mantine-vue/hooks'
-import { createVarsResolver, getSize, type MantineNode, useStyles } from '../../core'
+import {
+  createVarsResolver,
+  getSize,
+  type MantineNode,
+  type MantineRadius,
+  type MantineSize,
+  useStyles,
+} from '../../core'
 import { ActionIcon } from '../ActionIcon'
 import { Input } from '../Input'
 import inputClasses from '../Input/Input.module.css'
@@ -71,9 +78,12 @@ export const PasswordInput = defineComponent({
     },
     wrapperProps: { type: Object as PropType<Record<string, any>>, default: undefined },
     id: { type: String, default: undefined },
-    size: { type: [String, Number] as PropType<string | number>, default: 'sm' },
+    size: {
+      type: [String, Number] as PropType<MantineSize | (string & {}) | number>,
+      default: 'sm',
+    },
     variant: { type: String as PropType<'default' | 'filled' | 'unstyled'>, default: 'default' },
-    radius: { type: [String, Number] as PropType<string | number>, default: undefined },
+    radius: { type: [String, Number] as PropType<MantineRadius>, default: undefined },
     disabled: { type: Boolean, default: false },
     leftSection: { type: null as unknown as PropType<MantineNode>, default: undefined },
     leftSectionWidth: { type: [String, Number] as PropType<string | number>, default: undefined },

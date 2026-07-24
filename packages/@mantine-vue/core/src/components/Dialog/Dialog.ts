@@ -1,5 +1,14 @@
 import { defineComponent, h, type PropType } from 'vue'
-import { createVarsResolver, getSize, useMantineEnv, useProps, useStyles } from '../../core'
+import {
+  createVarsResolver,
+  getSize,
+  useMantineEnv,
+  useProps,
+  useStyles,
+  type MantineRadius,
+  type MantineSize,
+  type MantineSpacing,
+} from '../../core'
 import { Affix, type AffixPosition } from '../Affix'
 import { CloseButton } from '../CloseButton'
 import { Paper } from '../Paper'
@@ -38,15 +47,18 @@ export const Dialog = defineComponent({
       }>,
       default: undefined,
     },
-    size: { type: [String, Number] as PropType<string | number>, default: undefined },
+    size: {
+      type: [String, Number] as PropType<MantineSize | (string & {}) | number>,
+      default: undefined,
+    },
     zIndex: { type: [String, Number] as PropType<string | number>, default: undefined },
     withinPortal: { type: Boolean, default: undefined },
     portalProps: { type: Object as PropType<Record<string, any>>, default: undefined },
     position: { type: Object as PropType<AffixPosition>, default: undefined },
     shadow: { type: String, default: undefined },
-    radius: { type: [String, Number] as PropType<string | number>, default: undefined },
+    radius: { type: [String, Number] as PropType<MantineRadius>, default: undefined },
     withBorder: { type: Boolean, default: undefined },
-    p: { type: [String, Number] as PropType<string | number>, default: undefined },
+    p: { type: [String, Number] as PropType<MantineSpacing>, default: undefined },
     classNames: { type: [Object, Function], default: undefined },
     styles: { type: [Object, Function], default: undefined },
     vars: { type: [Object, Function], default: undefined },

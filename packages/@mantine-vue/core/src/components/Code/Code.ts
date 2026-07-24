@@ -1,4 +1,4 @@
-import { defineComponent, h } from 'vue'
+import { defineComponent, h, type PropType } from 'vue'
 import {
   withBoxProps,
   Box,
@@ -6,6 +6,7 @@ import {
   getThemeColor,
   useProps,
   useStyles,
+  type MantineColor,
 } from '../../core'
 import classes from './Code.module.css'
 
@@ -20,7 +21,7 @@ export const Code = withBoxProps(
     name: 'Code',
     inheritAttrs: false,
     props: {
-      color: { type: String, default: undefined },
+      color: { type: String as PropType<MantineColor>, default: undefined },
       block: { type: Boolean, default: false },
       classNames: { type: [Object, Function], default: undefined },
       styles: { type: [Object, Function], default: undefined },

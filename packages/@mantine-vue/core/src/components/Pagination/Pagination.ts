@@ -1,5 +1,11 @@
 import { defineComponent, h, type PropType } from 'vue'
-import { useProps } from '../../core'
+import {
+  useProps,
+  type MantineColor,
+  type MantineRadius,
+  type MantineSize,
+  type MantineSpacing,
+} from '../../core'
 import { Group } from '../Group'
 import {
   PaginationFirst,
@@ -38,10 +44,15 @@ const PaginationBase = defineComponent({
     withEdges: { type: Boolean, default: false },
     withPages: { type: Boolean, default: undefined },
     hideWithOnePage: { type: Boolean, default: false },
-    gap: { type: [String, Number] as PropType<string | number>, default: undefined },
-    color: { type: String, default: undefined },
-    radius: { type: [String, Number] as PropType<string | number>, default: undefined },
-    size: { type: [String, Number] as PropType<string | number>, default: undefined },
+    gap: { type: [String, Number] as PropType<MantineSpacing>, default: undefined },
+    color: { type: String as PropType<MantineColor>, default: undefined },
+    radius: { type: [String, Number] as PropType<MantineRadius>, default: undefined },
+    size: {
+      type: [String, Number] as PropType<
+        MantineSize | `input-${MantineSize}` | (string & {}) | number
+      >,
+      default: undefined,
+    },
     disabled: { type: Boolean, default: false },
     autoContrast: { type: Boolean, default: undefined },
     getItemProps: {

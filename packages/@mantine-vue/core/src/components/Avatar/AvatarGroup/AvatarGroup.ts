@@ -6,6 +6,7 @@ import {
   getSpacing,
   useProps,
   useStyles,
+  type MantineSpacing,
 } from '../../../core'
 import classes from '../Avatar.module.css'
 
@@ -32,7 +33,7 @@ export const AvatarGroup = withBoxProps(
     name: 'AvatarGroup',
     inheritAttrs: false,
     props: {
-      spacing: [String, Number] as PropType<string | number>,
+      spacing: [String, Number] as PropType<MantineSpacing>,
       classNames: { type: [Object, Function], default: undefined },
       styles: { type: [Object, Function], default: undefined },
       vars: { type: [Object, Function], default: undefined },

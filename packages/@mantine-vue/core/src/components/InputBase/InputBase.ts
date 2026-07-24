@@ -1,4 +1,4 @@
-import { withBoxProps } from '../../core'
+import { withBoxProps, type MantineRadius, type MantineSize } from '../../core'
 import { defineComponent, h, type PropType, type SlotsType, type VNodeChild } from 'vue'
 import { Input } from '../Input'
 import type { InputSlots } from '../Input/Input'
@@ -50,7 +50,10 @@ export const InputBase = withBoxProps(
         default: undefined,
       },
       id: { type: String, default: undefined },
-      size: { type: [String, Number] as PropType<string | number>, default: 'sm' },
+      size: {
+        type: [String, Number] as PropType<MantineSize | (string & {}) | number>,
+        default: 'sm',
+      },
       labelElement: { type: String as PropType<'label' | 'div'>, default: 'label' },
       variant: { type: String as PropType<'default' | 'filled' | 'unstyled'>, default: 'default' },
       wrapperProps: { type: Object as PropType<Record<string, any>>, default: undefined },
@@ -90,7 +93,7 @@ export const InputBase = withBoxProps(
         type: [String, Number, Object, Function] as PropType<any>,
         default: undefined,
       },
-      radius: { type: [String, Number] as PropType<string | number>, default: undefined },
+      radius: { type: [String, Number] as PropType<MantineRadius>, default: undefined },
       disabled: { type: Boolean, default: false },
       pointer: { type: Boolean, default: false },
       withErrorStyles: { type: Boolean, default: true },

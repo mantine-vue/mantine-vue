@@ -23,6 +23,9 @@ import {
   rem,
   useProps,
   useStyles,
+  type MantineColor,
+  type MantineRadius,
+  type MantineSize,
 } from '../../core'
 import { provideStepperContext } from './Stepper.context'
 import { StepperCompleted } from './StepperCompleted/StepperCompleted'
@@ -104,13 +107,13 @@ const StepperBase = defineComponent({
       default: undefined,
     },
     progressIcon: { type: [String, Number, Object, Function] as PropType<any>, default: undefined },
-    color: { type: String, default: undefined },
+    color: { type: String as PropType<MantineColor>, default: undefined },
     iconSize: { type: [String, Number] as PropType<string | number>, default: undefined },
     contentPadding: { type: [String, Number] as PropType<string | number>, default: undefined },
     orientation: { type: String as PropType<'vertical' | 'horizontal'>, default: undefined },
     iconPosition: { type: String as PropType<'right' | 'left'>, default: undefined },
-    size: { type: [String, Number] as PropType<string | number>, default: undefined },
-    radius: { type: [String, Number] as PropType<string | number>, default: undefined },
+    size: { type: String as PropType<MantineSize>, default: undefined },
+    radius: { type: [String, Number] as PropType<MantineRadius>, default: undefined },
     allowNextStepsSelect: { type: Boolean, default: undefined },
     wrap: { type: Boolean, default: undefined },
     autoContrast: { type: Boolean, default: undefined },

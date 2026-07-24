@@ -7,6 +7,8 @@ import {
   rem,
   resolveNode,
   type MantineNode,
+  type MantineRadius,
+  type MantineSize,
   useProps,
   useStyles,
 } from '../../core'
@@ -39,8 +41,8 @@ export const CloseButton = defineComponent({
   slots: Object as SlotsType<CloseButtonSlots>,
   props: {
     component: { type: String, default: 'button' },
-    size: [String, Number] as PropType<string | number>,
-    radius: [String, Number] as PropType<string | number>,
+    size: [String, Number] as PropType<MantineSize | (string & {}) | number>,
+    radius: [String, Number] as PropType<MantineRadius>,
     disabled: { type: Boolean, default: false },
     iconSize: [String, Number] as PropType<string | number>,
     icon: { type: null as unknown as PropType<MantineNode>, default: undefined },

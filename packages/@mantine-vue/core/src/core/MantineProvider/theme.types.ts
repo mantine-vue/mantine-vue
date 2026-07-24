@@ -18,8 +18,13 @@ type CustomThemeSize<Section extends string> =
     ? CustomSize
     : MantineSize
 
+export type MantineBreakpoint = CustomThemeSize<'breakpoints'> | (string & {})
+export type MantineFontSize = CustomThemeSize<'fontSizes'> | (string & {})
 export type MantineRadius = CustomThemeSize<'radius'> | (string & {}) | number
 export type MantineSpacing = CustomThemeSize<'spacing'> | (string & {}) | number
+export type MantineShadow = CustomThemeSize<'shadows'> | (string & {})
+export type MantineLineHeight = CustomThemeSize<'lineHeights'> | (string & {})
+export type MantineFontWeight = CustomThemeSize<'fontWeights'> | (string & {})
 export type MantineColorsTuple = readonly [
   string,
   string,

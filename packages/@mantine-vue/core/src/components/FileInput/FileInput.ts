@@ -9,7 +9,7 @@ import {
   type VNodeChild,
 } from 'vue'
 import { assignRef, useUncontrolled } from '@mantine-vue/hooks'
-import { hasNode, resolveNode, type MantineNode } from '../../core'
+import { hasNode, resolveNode, type MantineNode, type MantineSize } from '../../core'
 import { CloseButton } from '../CloseButton'
 import { FileButton } from '../FileButton'
 import { Input } from '../Input'
@@ -75,7 +75,10 @@ export const FileInput = defineComponent({
       type: null as unknown as PropType<MantineNode>,
       default: undefined,
     },
-    size: { type: [String, Number] as PropType<string | number>, default: 'sm' },
+    size: {
+      type: [String, Number] as PropType<MantineSize | (string & {}) | number>,
+      default: 'sm',
+    },
     label: { type: null as unknown as PropType<MantineNode>, default: undefined },
     description: { type: null as unknown as PropType<MantineNode>, default: undefined },
     error: {

@@ -1,6 +1,14 @@
 import { defineComponent, h, reactive, type PropType } from 'vue'
 import { useId, useUncontrolled } from '@mantine-vue/hooks'
-import { Box, createVarsResolver, getRadius, rem, useProps, useStyles } from '../../core'
+import {
+  Box,
+  createVarsResolver,
+  getRadius,
+  rem,
+  useProps,
+  useStyles,
+  type MantineRadius,
+} from '../../core'
 import {
   provideAccordionContext,
   type AccordionChevronPosition,
@@ -88,7 +96,7 @@ const AccordionBase = defineComponent({
       default: undefined,
     },
     variant: { type: String as PropType<AccordionVariant>, default: undefined },
-    radius: { type: [String, Number] as PropType<string | number>, default: undefined },
+    radius: { type: [String, Number] as PropType<MantineRadius>, default: undefined },
     keepMounted: { type: Boolean, default: undefined },
     classNames: { type: [Object, Function], default: undefined },
     styles: { type: [Object, Function], default: undefined },

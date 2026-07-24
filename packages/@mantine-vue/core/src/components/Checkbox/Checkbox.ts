@@ -10,7 +10,10 @@ import {
   getSize,
   getThemeColor,
   resolveNode,
+  type MantineColor,
   type MantineNode,
+  type MantineRadius,
+  type MantineSize,
   useStyles,
 } from '../../core'
 import { InlineInput, InlineInputClasses } from '../../utils'
@@ -77,9 +80,9 @@ const CheckboxBase = defineComponent({
   props: {
     id: { type: String, default: undefined },
     label: { type: null as unknown as PropType<MantineNode>, default: undefined },
-    color: { type: String, default: undefined },
-    size: { type: [String, Number] as PropType<string | number>, default: 'sm' },
-    radius: { type: [String, Number] as PropType<string | number>, default: 'sm' },
+    color: { type: String as PropType<MantineColor>, default: undefined },
+    size: { type: String as PropType<MantineSize | (string & {})>, default: 'sm' },
+    radius: { type: [String, Number] as PropType<MantineRadius>, default: 'sm' },
     wrapperProps: { type: Object as PropType<Record<string, any>>, default: undefined },
     labelPosition: { type: String as PropType<'left' | 'right'>, default: 'right' },
     description: { type: null as unknown as PropType<MantineNode>, default: undefined },

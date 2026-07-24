@@ -7,6 +7,8 @@ import {
   getSize,
   useProps,
   useStyles,
+  type MantineRadius,
+  type MantineSize,
 } from '../../../core'
 import { provideProgressContext } from '../Progress.context'
 import classes from '../Progress.module.css'
@@ -27,8 +29,11 @@ export const ProgressRoot = withBoxProps(
     name: 'ProgressRoot',
     inheritAttrs: false,
     props: {
-      size: { type: [String, Number] as PropType<string | number>, default: undefined },
-      radius: { type: [String, Number] as PropType<string | number>, default: undefined },
+      size: {
+        type: [String, Number] as PropType<MantineSize | (string & {}) | number>,
+        default: undefined,
+      },
+      radius: { type: [String, Number] as PropType<MantineRadius>, default: undefined },
       autoContrast: { type: Boolean, default: undefined },
       transitionDuration: { type: Number, default: undefined },
       orientation: { type: String as PropType<'horizontal' | 'vertical'>, default: undefined },

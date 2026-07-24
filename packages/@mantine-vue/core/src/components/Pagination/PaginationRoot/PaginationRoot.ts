@@ -11,6 +11,9 @@ import {
   getThemeColor,
   useProps,
   useStyles,
+  type MantineColor,
+  type MantineRadius,
+  type MantineSize,
 } from '../../../core'
 import { providePaginationContext } from '../Pagination.context'
 import classes from '../Pagination.module.css'
@@ -48,9 +51,14 @@ export const PaginationRoot = defineComponent({
     onChange: { type: Function as PropType<(page: number) => void>, default: undefined },
     siblings: { type: Number, default: undefined },
     boundaries: { type: Number, default: undefined },
-    color: { type: String, default: undefined },
-    radius: { type: [String, Number] as PropType<string | number>, default: undefined },
-    size: { type: [String, Number] as PropType<string | number>, default: undefined },
+    color: { type: String as PropType<MantineColor>, default: undefined },
+    radius: { type: [String, Number] as PropType<MantineRadius>, default: undefined },
+    size: {
+      type: [String, Number] as PropType<
+        MantineSize | `input-${MantineSize}` | (string & {}) | number
+      >,
+      default: undefined,
+    },
     disabled: { type: Boolean, default: false },
     autoContrast: { type: Boolean, default: undefined },
     getItemProps: {

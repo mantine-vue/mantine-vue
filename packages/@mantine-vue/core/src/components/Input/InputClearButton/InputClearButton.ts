@@ -1,4 +1,4 @@
-import { withBoxProps } from '../../../core'
+import { withBoxProps, type MantineSize } from '../../../core'
 import { defineComponent, h, type PropType } from 'vue'
 import { CloseButton } from '../../CloseButton'
 import { useInputContext } from '../Input.context'
@@ -8,7 +8,7 @@ export const InputClearButton = withBoxProps(
     name: 'InputClearButton',
     inheritAttrs: false,
     props: {
-      size: { type: [String, Number] as PropType<string | number>, default: undefined },
+      size: { type: String as PropType<MantineSize | (string & {})>, default: undefined },
       variant: { type: String, default: undefined },
       classNames: { type: [Object, Function], default: undefined },
       styles: { type: [Object, Function], default: undefined },

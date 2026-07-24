@@ -1,5 +1,12 @@
-import { defineComponent, h } from 'vue'
-import { withBoxProps, Box, createVarsResolver, useProps, useStyles } from '../../core'
+import { defineComponent, h, type PropType } from 'vue'
+import {
+  withBoxProps,
+  Box,
+  createVarsResolver,
+  useProps,
+  useStyles,
+  type MantineColor,
+} from '../../core'
 import { getMarkColor } from './get-mark-color'
 import classes from './Mark.module.css'
 
@@ -19,7 +26,7 @@ export const Mark = withBoxProps(
     name: 'Mark',
     inheritAttrs: false,
     props: {
-      color: { type: String, default: undefined },
+      color: { type: String as PropType<MantineColor>, default: undefined },
       classNames: { type: [Object, Function], default: undefined },
       styles: { type: [Object, Function], default: undefined },
       vars: { type: [Object, Function], default: undefined },

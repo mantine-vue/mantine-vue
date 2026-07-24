@@ -10,6 +10,8 @@ import {
   rem,
   useProps,
   useStyles,
+  type MantineColor,
+  type MantineRadius,
 } from '../../core'
 import { provideTimelineContext } from './Timeline.context'
 import { TimelineItem } from './TimelineItem/TimelineItem'
@@ -47,8 +49,8 @@ const TimelineBase = defineComponent({
   inheritAttrs: false,
   props: {
     active: { type: Number, default: undefined },
-    color: { type: String, default: undefined },
-    radius: { type: [String, Number] as PropType<string | number>, default: undefined },
+    color: { type: String as PropType<MantineColor>, default: undefined },
+    radius: { type: [String, Number] as PropType<MantineRadius>, default: undefined },
     bulletSize: { type: [String, Number] as PropType<string | number>, default: undefined },
     align: { type: String as PropType<'right' | 'left'>, default: undefined },
     lineWidth: { type: [String, Number] as PropType<string | number>, default: undefined },

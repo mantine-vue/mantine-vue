@@ -7,6 +7,7 @@ import {
   getThemeColor,
   useMantineTheme,
   useProps,
+  type MantineColor,
 } from '../../../core'
 import { useProgressContext } from '../Progress.context'
 import classes from '../Progress.module.css'
@@ -22,7 +23,7 @@ export const ProgressSection = withBoxProps(
     props: {
       value: { type: Number, required: true },
       withAria: { type: Boolean, default: undefined },
-      color: { type: String, default: undefined },
+      color: { type: String as PropType<MantineColor>, default: undefined },
       striped: { type: Boolean, default: false },
       animated: { type: Boolean, default: false },
       mod: { type: [Object, Array] as PropType<any>, default: undefined },

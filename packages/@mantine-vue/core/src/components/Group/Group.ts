@@ -1,5 +1,16 @@
 import { Comment, defineComponent, h, reactive, type PropType, type VNode } from 'vue'
-import { withBoxProps, Box, createVarsResolver, getSpacing, useProps, useStyles } from '../../core'
+import {
+  withBoxProps,
+  Box,
+  createVarsResolver,
+  getSpacing,
+  useProps,
+  useStyles,
+  type AlignItems,
+  type FlexWrap,
+  type JustifyContent,
+  type MantineSpacing,
+} from '../../core'
 import classes from './Group.module.css'
 
 const defaultProps = {
@@ -8,7 +19,7 @@ const defaultProps = {
   align: 'center',
   justify: 'flex-start',
   wrap: 'wrap',
-}
+} as const
 
 function filterFalsyChildren(children: VNode[]) {
   return children.filter((child) => child.type !== Comment)
@@ -31,10 +42,10 @@ export const Group = withBoxProps(
     name: 'Group',
     inheritAttrs: false,
     props: {
-      justify: { type: String, default: undefined },
-      align: { type: String, default: undefined },
-      wrap: { type: String, default: undefined },
-      gap: [String, Number] as PropType<string | number>,
+      justify: { type: String as PropType<JustifyContent>, default: undefined },
+      align: { type: String as PropType<AlignItems>, default: undefined },
+      wrap: { type: String as PropType<FlexWrap>, default: undefined },
+      gap: [String, Number] as PropType<MantineSpacing>,
       grow: { type: Boolean, default: false },
       preventGrowOverflow: { type: Boolean, default: undefined },
       classNames: { type: [Object, Function], default: undefined },

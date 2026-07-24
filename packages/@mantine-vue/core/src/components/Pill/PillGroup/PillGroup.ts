@@ -1,10 +1,18 @@
 import { defineComponent, h, inject, provide, type InjectionKey, type PropType } from 'vue'
-import { withBoxProps, Box, createVarsResolver, getSize, useProps, useStyles } from '../../../core'
+import {
+  withBoxProps,
+  Box,
+  createVarsResolver,
+  getSize,
+  useProps,
+  useStyles,
+  type MantineSize,
+} from '../../../core'
 import { usePillsInputContext } from '../../PillsInput/PillsInput.context'
 import classes from '../Pill.module.css'
 
 export interface PillGroupContextValue {
-  size?: string | number
+  size?: MantineSize | (string & {}) | number
   disabled?: boolean
 }
 
@@ -27,8 +35,11 @@ export const PillGroup = withBoxProps(
     name: 'PillGroup',
     inheritAttrs: false,
     props: {
-      gap: { type: [String, Number] as PropType<string | number>, default: undefined },
-      size: { type: [String, Number] as PropType<string | number>, default: undefined },
+      gap: {
+        type: [String, Number] as PropType<MantineSize | (string & {}) | number>,
+        default: undefined,
+      },
+      size: { type: String as PropType<MantineSize | (string & {})>, default: undefined },
       disabled: { type: Boolean, default: undefined },
       classNames: { type: [Object, Function], default: undefined },
       styles: { type: [Object, Function], default: undefined },

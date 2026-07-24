@@ -1,5 +1,5 @@
 import { defineComponent, h, type PropType, type SlotsType, type VNodeChild } from 'vue'
-import { useProps, type MantineNode } from '../../core'
+import { useProps, type MantineNode, type MantineRadius, type MantineSize } from '../../core'
 import { InputBase } from '../InputBase'
 import { getParsedNativeSelectData, type NativeSelectData } from './get-parsed-data/get-parsed-data'
 import { NativeSelectOption } from './NativeSelectOption'
@@ -71,7 +71,10 @@ export const NativeSelect = defineComponent({
   slots: Object as SlotsType<NativeSelectSlots>,
   props: {
     data: { type: Array as PropType<NativeSelectData<any>>, default: undefined },
-    size: { type: [String, Number] as PropType<string | number>, default: undefined },
+    size: {
+      type: [String, Number] as PropType<MantineSize | (string & {}) | number>,
+      default: undefined,
+    },
     error: {
       type: null as unknown as PropType<MantineNode | boolean>,
       default: undefined,
@@ -92,7 +95,7 @@ export const NativeSelect = defineComponent({
     defaultValue: { type: String, default: undefined },
     onChange: { type: Function as PropType<(event: Event) => void>, default: undefined },
     variant: { type: String as PropType<'default' | 'filled' | 'unstyled'>, default: undefined },
-    radius: { type: [String, Number] as PropType<string | number>, default: undefined },
+    radius: { type: [String, Number] as PropType<MantineRadius>, default: undefined },
     classNames: { type: [Object, Function], default: undefined },
     styles: { type: [Object, Function], default: undefined },
     vars: { type: [Object, Function], default: undefined },

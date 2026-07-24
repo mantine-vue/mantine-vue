@@ -10,7 +10,10 @@ import {
   getSize,
   getThemeColor,
   resolveNode,
+  type MantineColor,
   type MantineNode,
+  type MantineRadius,
+  type MantineSize,
   useStyles,
 } from '../../core'
 import { InlineInput, InlineInputClasses } from '../../utils'
@@ -72,8 +75,8 @@ const RadioBase = defineComponent({
   props: {
     id: { type: String, default: undefined },
     label: { type: null as unknown as PropType<MantineNode>, default: undefined },
-    color: { type: String, default: undefined },
-    size: { type: [String, Number] as PropType<string | number>, default: 'sm' },
+    color: { type: String as PropType<MantineColor>, default: undefined },
+    size: { type: String as PropType<MantineSize | (string & {})>, default: 'sm' },
     icon: { type: [Object, Function] as PropType<any>, default: undefined },
     wrapperProps: { type: Object as PropType<Record<string, any>>, default: undefined },
     labelPosition: { type: String as PropType<'left' | 'right'>, default: 'right' },
@@ -82,7 +85,7 @@ const RadioBase = defineComponent({
       type: null as unknown as PropType<MantineNode | boolean>,
       default: undefined,
     },
-    radius: { type: [String, Number] as PropType<string | number>, default: 'xl' },
+    radius: { type: [String, Number] as PropType<MantineRadius>, default: 'xl' },
     rootRef: { type: [Object, Function] as PropType<any>, default: undefined },
     iconColor: { type: String, default: undefined },
     autoContrast: { type: Boolean, default: undefined },

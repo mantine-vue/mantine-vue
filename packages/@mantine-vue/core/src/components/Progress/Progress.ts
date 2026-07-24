@@ -1,5 +1,5 @@
 import { defineComponent, h, type PropType } from 'vue'
-import { useProps } from '../../core'
+import { useProps, type MantineColor, type MantineRadius, type MantineSize } from '../../core'
 import { ProgressLabel } from './ProgressLabel/ProgressLabel'
 import { ProgressRoot } from './ProgressRoot/ProgressRoot'
 import { ProgressSection } from './ProgressSection/ProgressSection'
@@ -12,11 +12,14 @@ const ProgressBase = defineComponent({
   inheritAttrs: false,
   props: {
     value: { type: Number, required: true },
-    color: { type: String, default: undefined },
+    color: { type: String as PropType<MantineColor>, default: undefined },
     striped: { type: Boolean, default: false },
     animated: { type: Boolean, default: false },
-    size: { type: [String, Number] as PropType<string | number>, default: undefined },
-    radius: { type: [String, Number] as PropType<string | number>, default: undefined },
+    size: {
+      type: [String, Number] as PropType<MantineSize | (string & {}) | number>,
+      default: undefined,
+    },
+    radius: { type: [String, Number] as PropType<MantineRadius>, default: undefined },
     autoContrast: { type: Boolean, default: undefined },
     transitionDuration: { type: Number, default: undefined },
     orientation: { type: String as PropType<'horizontal' | 'vertical'>, default: undefined },

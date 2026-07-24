@@ -1,5 +1,5 @@
 import { defineComponent, h, ref, type PropType, type SlotsType, type VNodeChild } from 'vue'
-import { type MantineNode } from '../../core'
+import { type MantineNode, type MantineRadius, type MantineSize } from '../../core'
 import { InputBase } from '../InputBase'
 import { providePillsInputContext } from './PillsInput.context'
 import { PillsInputField } from './PillsInputField/PillsInputField'
@@ -18,7 +18,10 @@ const PillsInputBase = defineComponent({
   inheritAttrs: false,
   slots: Object as SlotsType<PillsInputSlots>,
   props: {
-    size: { type: [String, Number] as PropType<string | number>, default: 'sm' },
+    size: {
+      type: [String, Number] as PropType<MantineSize | (string & {}) | number>,
+      default: 'sm',
+    },
     disabled: { type: Boolean, default: false },
     error: {
       type: null as unknown as PropType<MantineNode | boolean>,
@@ -36,7 +39,7 @@ const PillsInputBase = defineComponent({
     styles: { type: [Object, Function], default: undefined },
     vars: { type: [Object, Function], default: undefined },
     unstyled: { type: Boolean, default: false },
-    radius: { type: [String, Number] as PropType<string | number>, default: undefined },
+    radius: { type: [String, Number] as PropType<MantineRadius>, default: undefined },
     mod: { type: [Object, Array] as PropType<any>, default: undefined },
   },
   setup(props, { attrs, slots }) {

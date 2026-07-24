@@ -1,5 +1,13 @@
 import { defineComponent, h, type PropType } from 'vue'
-import { withBoxProps, Box, createVarsResolver, getSize, useProps, useStyles } from '../../core'
+import {
+  withBoxProps,
+  Box,
+  createVarsResolver,
+  getSize,
+  useProps,
+  useStyles,
+  type MantineSize,
+} from '../../core'
 import classes from './Kbd.module.css'
 
 const varsResolver = createVarsResolver<any>((_, { size }) => ({
@@ -11,7 +19,7 @@ export const Kbd = withBoxProps(
     name: 'Kbd',
     inheritAttrs: false,
     props: {
-      size: [String, Number] as PropType<string | number>,
+      size: [String, Number] as PropType<MantineSize | number | (string & {})>,
       classNames: { type: [Object, Function], default: undefined },
       styles: { type: [Object, Function], default: undefined },
       vars: { type: [Object, Function], default: undefined },

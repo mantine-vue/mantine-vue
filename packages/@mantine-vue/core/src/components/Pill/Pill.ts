@@ -7,6 +7,8 @@ import {
   getSize,
   useProps,
   useStyles,
+  type MantineRadius,
+  type MantineSize,
 } from '../../core'
 import { CloseButton } from '../CloseButton'
 import { usePillsInputContext } from '../PillsInput/PillsInput.context'
@@ -36,11 +38,11 @@ const PillBase = defineComponent({
   name: 'Pill',
   inheritAttrs: false,
   props: {
-    size: { type: [String, Number] as PropType<string | number>, default: undefined },
+    size: { type: String as PropType<MantineSize>, default: undefined },
     withRemoveButton: { type: Boolean, default: false },
     onRemove: { type: Function as PropType<() => void>, default: undefined },
     removeButtonProps: { type: Object as PropType<Record<string, any>>, default: undefined },
-    radius: { type: [String, Number] as PropType<string | number>, default: undefined },
+    radius: { type: [String, Number] as PropType<MantineRadius>, default: undefined },
     disabled: { type: Boolean, default: false },
     variant: { type: String as PropType<PillVariant>, default: 'default' },
     mod: { type: [Object, Array] as PropType<any>, default: undefined },
