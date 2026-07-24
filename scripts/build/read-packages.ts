@@ -6,6 +6,7 @@ export interface PackageInfo {
   path: string
   dependencies: string[]
   private?: boolean
+  cssLayer?: string
 }
 
 export function readPackages(root = join(process.cwd(), 'packages')): PackageInfo[] {
@@ -29,6 +30,7 @@ export function readPackages(root = join(process.cwd(), 'packages')): PackageInf
             path: packagePath,
             dependencies: dependencyNames,
             private: packageJson.private,
+            cssLayer: packageJson.mantineVue?.cssLayer,
           }
         })
     })

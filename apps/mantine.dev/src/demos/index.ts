@@ -117,6 +117,7 @@ export { TreeDemos } from './core/Tree'
 
 export { NprogressDemos } from './x/Nprogress'
 export { NotificationsDemos } from './x/Notifications'
+export { ContextMenuDemos } from './x/ContextMenu'
 export { SpotlightDemos } from './x/Spotlight'
 export { ModalsDemos } from './x/Modals'
 export { DropzoneDemos } from './x/Dropzone'

@@ -1,6 +1,7 @@
 import { createApp, h } from 'vue'
 import { DirectionProvider, MantineProvider } from '@mantine-vue/core'
 import { CodeHighlightAdapterProvider } from '@mantine-vue/code-highlight'
+import { ContextMenuProvider } from '@mantine-vue/contextmenu'
 import App from './App.vue'
 import { router } from './router'
 import { theme } from './theme'
@@ -12,6 +13,7 @@ import { docsShikiAdapter } from './code-highlight-adapter'
 // package-level styles.css import is needed here in dev.
 import '@mantine-vue/core/styles.css'
 import '@mantine-vue/charts/styles.css'
+import '@mantine-vue/contextmenu/styles.css'
 import './styles.css'
 
 const app = createApp({
@@ -19,7 +21,9 @@ const app = createApp({
   render: () =>
     h(DirectionProvider, { initialDirection: 'ltr' }, () =>
       h(MantineProvider, { theme, defaultColorScheme: 'auto' }, () =>
-        h(CodeHighlightAdapterProvider, { adapter: docsShikiAdapter }, () => h(App)),
+        h(ContextMenuProvider, null, () =>
+          h(CodeHighlightAdapterProvider, { adapter: docsShikiAdapter }, () => h(App)),
+        ),
       ),
     ),
 })

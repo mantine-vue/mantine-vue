@@ -28,6 +28,10 @@ export default defineConfig({
       '@mantine-vue/code-highlight': alias(
         '../../packages/@mantine-vue/code-highlight/src/index.ts',
       ),
+      '@mantine-vue/contextmenu/styles.css': alias(
+        '../../packages/@mantine-vue/contextmenu/src/styles.css',
+      ),
+      '@mantine-vue/contextmenu': alias('../../packages/@mantine-vue/contextmenu/src/index.ts'),
       '@mantine-vue/dates': alias('../../packages/@mantine-vue/dates/src/index.ts'),
       '@mantine-vue/colors-generator': alias(
         '../../packages/@mantine-vue/colors-generator/src/index.ts',

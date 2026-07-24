@@ -1572,6 +1572,18 @@ export const MDX_DATA: Record<string, Frontmatter> = {
     docs: 'x/notifications.mdx',
     searchTags: 'toast, snackbar, alerts, messages, notify, popup notification',
   },
+  ContextMenu: {
+    title: 'ContextMenu',
+    package: '@mantine-vue/contextmenu',
+    slug: '/x/contextmenu',
+    componentPrefix: 'ContextMenu',
+    props: ['ContextMenuProvider'],
+    styles: ['ContextMenu'],
+    description: 'Desktop-grade context menus with nested submenu support',
+    source: '@mantine-vue/contextmenu/src/ContextMenuProvider.ts',
+    docs: 'x/contextmenu.mdx',
+    searchTags: 'context menu, right click, menu, submenu, actions, desktop, touch, long press',
+  },
   Spotlight: {
     title: 'Spotlight',
     package: '@mantine-vue/spotlight',

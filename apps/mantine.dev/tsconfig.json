@@ -19,6 +19,7 @@
       "@mantine-vue/utils": ["../../packages/@mantine-vue/utils/src"],
       "@mantine-vue/hooks": ["../../packages/@mantine-vue/hooks/src"],
       "@mantine-vue/code-highlight": ["../../packages/@mantine-vue/code-highlight/src"],
+      "@mantine-vue/contextmenu": ["../../packages/@mantine-vue/contextmenu/src"],
       "@mantine-vue/colors-generator": ["../../packages/@mantine-vue/colors-generator/src"],
       "@mantine-vue/dates": ["../../packages/@mantine-vue/dates/src"],
       "@mantine-vue/form": ["../../packages/@mantine-vue/form/src"],

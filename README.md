@@ -19,6 +19,7 @@ Mantine Vue uses a monorepo architecture, allowing you to install only the featu
 | `@mantine-vue/form`           | Powerful form management and validation library           | [View Docs](https://mantine-vue.dev/form/use-form)           |
 | `@mantine-vue/charts`         | Recharts-based charting and data visualization library    | [View Docs](https://mantine-vue.dev/charts/getting-started/) |
 | `@mantine-vue/notifications`  | Fully featured, customizable notifications system         | [View Docs](https://mantine-vue.dev/x/notifications)         |
+| `@mantine-vue/contextmenu`    | Desktop-grade context menus with nested submenu support   | [Package README](./packages/@mantine-vue/contextmenu/)       |
 | `@mantine-vue/spotlight`      | Command center (`Ctrl + K`) for your application          | [View Docs](https://mantine-vue.dev/x/spotlight)             |
 | `@mantine-vue/code-highlight` | Code highlighting component built with highlight.js       | [View Docs](https://mantine-vue.dev/x/code-highlight/)       |
 | `@mantine-vue/tiptap`         | Advanced rich text editor built on top of Tiptap          | [View Docs](https://mantine-vue.dev/x/tiptap)                |

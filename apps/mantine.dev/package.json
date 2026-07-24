@@ -15,6 +15,7 @@
     "@mantine-vue/charts": "workspace:*",
     "@mantine-vue/code-highlight": "workspace:*",
     "@mantine-vue/colors-generator": "workspace:*",
+    "@mantine-vue/contextmenu": "workspace:*",
     "@mantine-vue/core": "workspace:*",
     "@mantine-vue/dates": "workspace:*",
     "@mantine-vue/dropzone": "workspace:*",
