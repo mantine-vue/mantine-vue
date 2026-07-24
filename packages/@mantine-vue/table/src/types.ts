@@ -97,7 +97,8 @@ export type Xor<A, B> =
 export type HTMLPropsRef<T extends HTMLElement> = {
   ref?: Ref<null | T> | null
   style?: CSSProperties
-} & Omit<Partial<HTMLAttributes>, 'color' | 'label' | 'ref' | 'style' | 'title'>
+} & Omit<Partial<HTMLAttributes>, 'color' | 'label' | 'ref' | 'style' | 'title'> &
+  Record<string, any>
 
 export type MantineShade = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
 

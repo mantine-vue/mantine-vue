@@ -3,41 +3,64 @@
  *
  */
 import {
+  type ActionIconProps,
+  type AlertProps,
   type AutocompleteProps,
+  type BadgeProps,
   type BoxProps,
+  type CheckboxProps,
+  type HighlightProps,
+  type LoadingOverlayProps,
   type ModalProps,
   type MultiSelectProps,
+  type PaginationProps,
+  type PaperProps,
+  type ProgressProps,
+  type RadioProps,
+  type RangeSliderProps,
   type SelectProps,
+  type SkeletonProps,
+  type SwitchProps,
+  type TableProps,
+  type TableTbodyProps,
+  type TableTdProps,
+  type TableTfootProps,
+  type TableThProps,
+  type TableTheadProps,
+  type TableTrProps,
+  type TextInputProps,
+  type UnstyledButtonProps,
 } from '@mantine-vue/core'
 
-export type { AutocompleteProps, BoxProps, ModalProps, MultiSelectProps, SelectProps }
-
-/** Permissive stand-in for a Mantine Vue component's props (Box props + passthrough attributes). */
-type MantineComponentProps = BoxProps & Record<string, any>
-
-export type ActionIconProps = MantineComponentProps
-export type AlertProps = MantineComponentProps
-export type BadgeProps = MantineComponentProps
-export type CheckboxProps = MantineComponentProps
-export type HighlightProps = MantineComponentProps
-export type LoadingOverlayProps = MantineComponentProps
-export type PaginationProps = MantineComponentProps
-export type PaperProps = MantineComponentProps
-export type ProgressProps = MantineComponentProps
-export type RadioProps = MantineComponentProps
-export type RangeSliderProps = MantineComponentProps
-export type SkeletonProps = MantineComponentProps
-export type SwitchProps = MantineComponentProps
-export type TextInputProps = MantineComponentProps
-export type UnstyledButtonProps = MantineComponentProps
-
-export type TableProps = MantineComponentProps
-export type TableTbodyProps = MantineComponentProps
-export type TableTdProps = MantineComponentProps
-export type TableTfootProps = MantineComponentProps
-export type TableTheadProps = MantineComponentProps
-export type TableThProps = MantineComponentProps
-export type TableTrProps = MantineComponentProps
+export type {
+  ActionIconProps,
+  AlertProps,
+  AutocompleteProps,
+  BadgeProps,
+  BoxProps,
+  CheckboxProps,
+  HighlightProps,
+  LoadingOverlayProps,
+  ModalProps,
+  MultiSelectProps,
+  PaginationProps,
+  PaperProps,
+  ProgressProps,
+  RadioProps,
+  RangeSliderProps,
+  SelectProps,
+  SkeletonProps,
+  SwitchProps,
+  TableProps,
+  TableTbodyProps,
+  TableTdProps,
+  TableTfootProps,
+  TableThProps,
+  TableTheadProps,
+  TableTrProps,
+  TextInputProps,
+  UnstyledButtonProps,
+}
 
 /** From `@mantine-vue/dates` not yet exported as a named interface. */
-export type DateInputProps = MantineComponentProps
+export type DateInputProps = BoxProps & Record<string, any>
