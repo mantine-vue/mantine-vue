@@ -193,6 +193,7 @@ const FORM_PAGES: MdxNavItem[] = [
 
 const OTHER_EXTENSIONS_PAGES: MdxNavItem[] = [
   { label: 'CodeHighlight', link: '/x/code-highlight' },
+  { label: 'ContextMenu', link: '/x/contextmenu' },
   { label: 'Notifications system', link: '/x/notifications' },
   { label: 'Spotlight', link: '/x/spotlight' },
   { label: 'Carousel', link: '/x/carousel' },

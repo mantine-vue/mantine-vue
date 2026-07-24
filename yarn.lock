@@ -613,6 +613,22 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@mantine-vue/contextmenu@workspace:*, @mantine-vue/contextmenu@workspace:packages/@mantine-vue/contextmenu":
+  version: 0.0.0-use.local
+  resolution: "@mantine-vue/contextmenu@workspace:packages/@mantine-vue/contextmenu"
+  dependencies:
+    "@mantine-vue/core": "workspace:*"
+    "@mantine-vue/hooks": "workspace:*"
+    "@vue/compiler-dom": "npm:^3.5.0"
+    "@vue/test-utils": "npm:^2.4.6"
+    vue: "npm:^3.5.0"
+  peerDependencies:
+    "@mantine-vue/core": 2.2.2
+    "@mantine-vue/hooks": 2.2.2
+    vue: ^3.5.0
+  languageName: unknown
+  linkType: soft
+
 "@mantine-vue/core@workspace:*, @mantine-vue/core@workspace:packages/@mantine-vue/core":
   version: 0.0.0-use.local
   resolution: "@mantine-vue/core@workspace:packages/@mantine-vue/core"
@@ -658,6 +674,7 @@ __metadata:
     "@mantine-vue/charts": "workspace:*"
     "@mantine-vue/code-highlight": "workspace:*"
     "@mantine-vue/colors-generator": "workspace:*"
+    "@mantine-vue/contextmenu": "workspace:*"
     "@mantine-vue/core": "workspace:*"
     "@mantine-vue/dates": "workspace:*"
     "@mantine-vue/dropzone": "workspace:*"

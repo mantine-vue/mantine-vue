@@ -715,6 +715,11 @@ const routes: RouteRecordRaw[] = [
     component: mdxRoute(() => import('./pages/x/notifications.mdx')),
   },
   {
+    path: '/x/contextmenu',
+    name: 'x-contextmenu',
+    component: mdxRoute(() => import('./pages/x/contextmenu.mdx')),
+  },
+  {
     path: '/x/spotlight',
     name: 'x-spotlight',
     component: mdxRoute(() => import('./pages/x/spotlight.mdx')),

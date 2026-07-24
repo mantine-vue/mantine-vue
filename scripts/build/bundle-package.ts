@@ -208,5 +208,5 @@ function normalizeGeneratedCss(pkg: PackageInfo, outDir: string) {
 
   const layerPath = join(pkg.path, 'styles.layer.css')
   const css = readFileSync(stylesPath, 'utf8')
-  writeFileSync(layerPath, `@layer mantine {\n${css}\n}\n`)
+  writeFileSync(layerPath, `@layer ${pkg.cssLayer ?? 'mantine'} {\n${css}\n}\n`)
 }

@@ -1,0 +1,281 @@
+import { ContextMenuDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.ContextMenu)
+
+`@mantine-vue/contextmenu` adds desktop-grade context menus to Mantine Vue applications.
+It supports mouse and touch events, nested submenus, RTL layouts, custom content, theme colors,
+and the Mantine styles system.
+
+## Installation
+
+<InstallScript packages="@mantine-vue/contextmenu" />
+
+Import the package styles after the core styles at the root of your application:
+
+```ts
+import '@mantine-vue/core/styles.css'
+import '@mantine-vue/contextmenu/styles.css'
+```
+
+If your application uses CSS layers, import the layered styles and declare the layer order:
+
+```ts
+import '@mantine-vue/core/styles.layer.css'
+import '@mantine-vue/contextmenu/styles.layer.css'
+import './styles.css'
+```
+
+```css
+/* styles.css */
+@layer mantine, mantine-contextmenu;
+```
+
+## Add ContextMenuProvider
+
+Render `ContextMenuProvider` inside [MantineProvider](/theming/mantine-provider/).
+Components that call `useContextMenu` must be descendants of the provider.
+
+```vue
+<script setup lang="ts">
+import { MantineProvider } from '@mantine-vue/core'
+import { ContextMenuProvider } from '@mantine-vue/contextmenu'
+</script>
+
+<template>
+  <MantineProvider>
+    <ContextMenuProvider>
+      <RouterView />
+    </ContextMenuProvider>
+  </MantineProvider>
+</template>
+```
+
+Only one provider is usually needed. Nested providers are supported when part of the application
+requires different settings or direction.
+
+## Usage
+
+`useContextMenu` returns `showContextMenu`, `hideContextMenu`, and `isContextMenuVisible`.
+Call `showContextMenu` with an array of items to create an event handler, then bind that handler
+to Vue's `@contextmenu` event.
+
+<Demo data={ContextMenuDemos.usage} />
+
+The generated handler calls `preventDefault` and `stopPropagation` before opening the menu at the
+event coordinates.
+
+## Action items
+
+Every action requires a unique `key` and either an `onClick` handler or an `items` array.
+The following options are supported:
+
+- `key: string` – unique item or divider key
+- `title?: MantineNode` – item label; defaults to a humanized version of `key`
+- `icon?: MantineNode` – content rendered before the title
+- `iconRight?: MantineNode` – content rendered after the title; replaces the submenu arrow
+- `color?: MantineColor` – theme color or any valid custom CSS color
+- `disabled?: boolean` – disables the action
+- `hidden?: boolean` – prevents the item from rendering
+- `className?: string` – class applied to this item
+- `style?: ContextMenuStyle` – style object or theme callback applied to this item
+- `onClick: (event: MouseEvent) => void` – action handler; cannot be combined with `items`
+- `items: ContextMenuItemOptions[]` – nested submenu; cannot be combined with `onClick`
+
+<Demo data={ContextMenuDemos.actions} />
+
+### Generated titles
+
+When `title` is not provided, the item key is humanized:
+
+- `copy` → Copy
+- `copyToClipboard` → Copy to clipboard
+- `open-in-new-tab` → Open in new tab
+
+Provide `title` when you need custom text or renderable Vue content.
+
+### Dividers
+
+An entry with only a `key`, and no `onClick` or `items`, renders a divider:
+
+```ts
+const items: ContextMenuItemOptions[] = [
+  { key: 'copy', onClick: copy },
+  { key: 'download', onClick: download },
+  { key: 'divider' },
+  { key: 'delete', color: 'red', onClick: remove },
+]
+```
+
+Divider entries support `hidden`, `className`, and `style`.
+
+## Multiple targets
+
+The same `showContextMenu` function can generate handlers for any number of elements.
+Create the item array from the target data when actions depend on the selected record.
+
+<Demo data={ContextMenuDemos.multipleTargets} />
+
+## Submenus
+
+Set `items` on an entry to render a submenu. Submenus can be nested to any depth and open on hover
+when hover input is available. On touch or non-hover devices, tap the item to open it.
+
+<Demo data={ContextMenuDemos.submenus} />
+
+The submenu arrow is rendered automatically. Set `iconRight` to replace it with custom content.
+Use the provider's `submenuDelay` prop to control both the opening and closing delay.
+
+```vue
+<ContextMenuProvider :submenu-delay="250">
+  <App />
+</ContextMenuProvider>
+```
+
+## Custom content
+
+Pass a function instead of an item array to render completely custom menu content. The function
+receives a `close` callback. Custom controls must call it when the menu should close.
+
+<Demo data={ContextMenuDemos.customContent} />
+
+The custom content is still rendered inside the same positioned, themed `Paper` container.
+
+## Context menu options
+
+The second `showContextMenu` argument customizes one menu instance:
+
+```ts
+showContextMenu(items, {
+  zIndex: 3000,
+  className: 'my-context-menu',
+  style: { minWidth: '12rem' },
+  classNames: {
+    root: 'menu-root',
+    item: 'menu-item',
+    divider: 'menu-divider',
+  },
+  styles: (theme) => ({
+    root: { borderColor: theme.colors.blue[6] },
+    item: { fontWeight: 500 },
+  }),
+})
+```
+
+- `zIndex` – menu and overlay stacking index; defaults to the provider value
+- `className` – class applied to the root menu
+- `style` – root style object or theme callback
+- `classNames` – classes for `root`, `item`, and `divider`
+- `styles` – styles for `root`, `item`, and `divider`, or a theme callback
+
+Instance options override the provider's `zIndex`.
+
+## Provider configuration
+
+`ContextMenuProvider` controls settings shared by all descendant menus:
+
+- `zIndex` (`9999`) – default overlay and menu z-index
+- `shadow` (`'sm'`) – Mantine shadow token
+- `borderRadius` (`'xs'`) – Mantine radius token or custom number
+- `submenuDelay` (`500`) – submenu opening and closing delay in milliseconds
+- `repositionOnRepeat` (`false`) – reposition instead of closing on another context-menu event
+
+<Demo data={ContextMenuDemos.providerSettings} />
+
+When `repositionOnRepeat` is `false`, opening a second context menu while one is visible closes the
+current menu. When it is `true`, the event is forwarded to the element under the overlay and the
+appropriate menu is opened at the new position.
+
+## Imperative control
+
+`useContextMenu` returns the following values:
+
+```ts
+interface ContextMenuContextValue {
+  showContextMenu: ShowContextMenuFunction
+  hideContextMenu: () => void
+  isContextMenuVisible: Readonly<Ref<boolean>>
+}
+```
+
+Use `hideContextMenu` to close the active menu from buttons, keyboard shortcuts, timers, route
+changes, or other application events. `isContextMenuVisible` is a readonly Vue ref.
+
+<Demo data={ContextMenuDemos.imperative} />
+
+The provider automatically closes the menu on:
+
+- Overlay click
+- A repeated context-menu event when `repositionOnRepeat` is disabled
+- Window resize
+- Window scroll
+- The `Escape` key
+- Action selection
+
+## Styles
+
+Menus support styling at three levels:
+
+- `className` and `style` customize the root menu
+- `classNames` and `styles` customize all roots, items, and dividers
+- Item-level `className` and `style` customize an individual action or divider
+
+Both `style` and entries in `styles` accept a style object or a callback receiving the current
+Mantine theme.
+
+<Demo data={ContextMenuDemos.styling} />
+
+### Static class names
+
+- Menu root: `.mantine-contextmenu`
+- Mounted menu: `.mantine-contextmenu-mounted`
+- Item button: `.mantine-contextmenu-item-button`
+- Item title: `.mantine-contextmenu-item-button-title`
+- Divider: `.mantine-contextmenu-divider`
+- Overlay: `.mantine-contextmenu-overlay`
+
+## RTL support
+
+The provider reads direction from [DirectionProvider](/styles/rtl/). In RTL mode, menus are
+positioned to the left of the pointer and submenu direction is propagated recursively.
+
+<Demo data={ContextMenuDemos.rtl} />
+
+## Mouse and touch events
+
+The handler returned by `showContextMenu` accepts both `MouseEvent` and `TouchEvent`.
+Bind it to `@contextmenu` for standard mouse right-click and native long-press behavior.
+Applications with a custom touch gesture can invoke the same handler with that touch event.
+
+```ts
+type ContextMenuEvent = MouseEvent | TouchEvent
+
+type ShowContextMenuFunction = (
+  content: ContextMenuContent,
+  options?: ContextMenuOptions,
+) => (event: ContextMenuEvent) => void
+```
+
+## TypeScript
+
+All public types are exported from `@mantine-vue/contextmenu`:
+
+```ts
+import type {
+  ContextMenuContent,
+  ContextMenuContextValue,
+  ContextMenuEvent,
+  ContextMenuItemOptions,
+  ContextMenuOptions,
+  ContextMenuProviderProps,
+  ContextMenuSettings,
+  ContextMenuStyle,
+  ContextMenuStyles,
+  HideContextMenuFunction,
+  ShowContextMenuFunction,
+} from '@mantine-vue/contextmenu'
+```
+
+`ContextMenuItemOptions` is a discriminated union that prevents an entry from defining both
+`onClick` and `items`.
