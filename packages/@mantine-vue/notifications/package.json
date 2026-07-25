@@ -27,7 +27,9 @@
         "types": "./lib/index.d.ts",
         "default": "./cjs/index.cjs"
       }
-    }
+    },
+    "./styles.css": "./styles.css",
+    "./styles.layer.css": "./styles.layer.css"
   },
   "devDependencies": {
     "@mantine-vue/core": "workspace:*",
