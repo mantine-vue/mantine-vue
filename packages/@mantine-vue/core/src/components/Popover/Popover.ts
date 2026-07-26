@@ -3,12 +3,17 @@ import {
   autoUpdate,
   flip,
   hide,
+  inline,
   limitShift,
   offset,
   shift,
   size,
   useFloating,
+  type FlipOptions,
+  type InlineOptions,
   type Middleware,
+  type ShiftOptions,
+  type SizeOptions,
 } from '@floating-ui/vue'
 import {
   cloneVNode,
@@ -61,7 +66,7 @@ export interface PopoverProps {
   onOpen?: () => void
   onClose?: () => void
   onDismiss?: () => void
-  width?: string | number | 'target' | null
+  width?: PopoverWidth
   withArrow?: boolean
   arrowSize?: number
   arrowOffset?: number
@@ -79,7 +84,7 @@ export interface PopoverProps {
   transitionProps?: Record<string, any>
   zIndex?: string | number
   floatingStrategy?: FloatingStrategy
-  middlewares?: Record<string, any>
+  middlewares?: PopoverMiddlewares
   id?: string
   targetProps?: Record<string, any>
   withOverlay?: boolean
@@ -90,6 +95,14 @@ export interface PopoverProps {
   styles?: any
   vars?: any
   unstyled?: boolean
+}
+
+export type PopoverWidth = 'target' | string | number | null
+export interface PopoverMiddlewares {
+  shift?: boolean | ShiftOptions
+  flip?: boolean | FlipOptions
+  inline?: boolean | InlineOptions
+  size?: boolean | SizeOptions
 }
 
 const defaults = {
@@ -390,7 +403,13 @@ const PopoverBase = defineComponent({
             }
           }),
         )
-      result.push(arrow({ element: arrowElement }))
+      if (props.middlewares?.inline)
+        result.push(
+          inline(
+            typeof props.middlewares.inline === 'object' ? props.middlewares.inline : undefined,
+          ),
+        )
+      result.push(arrow({ element: arrowElement, padding: props.arrowOffset }))
       if (props.middlewares?.size || props.width === 'target')
         result.push(
           size({

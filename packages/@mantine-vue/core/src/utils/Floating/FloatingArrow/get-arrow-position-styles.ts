@@ -1,14 +1,18 @@
 import type { CSSProperties } from 'vue'
 import type { ArrowPosition, FloatingPlacement, FloatingPosition, FloatingSide } from '../types'
 
+function px(value: number | undefined) {
+  return value === undefined ? undefined : `${value}px`
+}
+
 function horizontalSide(
   placement: FloatingPlacement | 'center',
   arrowY: number | undefined,
   offset: number,
   position: ArrowPosition,
 ) {
-  if (placement === 'center' || position === 'center') return { top: arrowY }
-  return placement === 'end' ? { bottom: offset } : { top: offset }
+  if (placement === 'center' || position === 'center') return { top: px(arrowY) }
+  return placement === 'end' ? { bottom: px(offset) } : { top: px(offset) }
 }
 function verticalSide(
   placement: FloatingPlacement | 'center',
@@ -17,9 +21,9 @@ function verticalSide(
   position: ArrowPosition,
   dir: 'rtl' | 'ltr',
 ) {
-  if (placement === 'center' || position === 'center') return { left: arrowX }
-  if (placement === 'end') return { [dir === 'ltr' ? 'right' : 'left']: offset }
-  return { [dir === 'ltr' ? 'left' : 'right']: offset }
+  if (placement === 'center' || position === 'center') return { left: px(arrowX) }
+  if (placement === 'end') return { [dir === 'ltr' ? 'right' : 'left']: px(offset) }
+  return { [dir === 'ltr' ? 'left' : 'right']: px(offset) }
 }
 const radiusBySide: Record<FloatingSide, keyof CSSProperties> = {
   bottom: 'borderTopLeftRadius',
@@ -41,8 +45,8 @@ function mergeStyles(
     const startShape = (placement === 'start') !== (dir === 'rtl')
     return {
       ...base,
-      [side === 'bottom' ? 'top' : 'bottom']: -size,
-      [physical]: 0,
+      [side === 'bottom' ? 'top' : 'bottom']: px(-size),
+      [physical]: px(0),
       clipPath:
         side === 'bottom'
           ? startShape
@@ -55,8 +59,8 @@ function mergeStyles(
   }
   return {
     ...base,
-    [side === 'left' ? 'right' : 'left']: -size,
-    [placement === 'start' ? 'top' : 'bottom']: 0,
+    [side === 'left' ? 'right' : 'left']: px(-size),
+    [placement === 'start' ? 'top' : 'bottom']: px(0),
     clipPath:
       side === 'left'
         ? placement === 'start'
@@ -93,7 +97,7 @@ export function getArrowPositionStyles(input: {
     position: 'absolute',
     [radiusBySide[side]]: `${input.arrowRadius}px`,
   }
-  const edge = -input.arrowSize / 2
+  const edge = px(-input.arrowSize / 2)
   if (side === 'left')
     return {
       ...base,
