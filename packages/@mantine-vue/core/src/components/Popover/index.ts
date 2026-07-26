@@ -6,4 +6,6 @@ export type {
   PopoverTargetProps,
   PopoverDropdownProps,
   PopoverContextMenuProps,
+  PopoverMiddlewares,
+  PopoverWidth,
 } from './Popover'

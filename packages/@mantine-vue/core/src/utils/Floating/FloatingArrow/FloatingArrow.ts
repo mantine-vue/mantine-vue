@@ -21,6 +21,7 @@ export const FloatingArrow = defineComponent({
     return () =>
       props.visible
         ? h('div', {
+            role: 'presentation',
             ...attrs,
             style: [attrs.style, getArrowPositionStyles({ ...props, dir: dir.value })],
           })

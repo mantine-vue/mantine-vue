@@ -68,9 +68,19 @@ describe('@mantine-vue/core Popover', () => {
     expect(wrapper.find('[role="dialog"]').exists()).toBe(false)
   })
 
-  it('renders arrow and exposes compound components', () => {
+  it('does not render arrow by default', () => {
+    const wrapper = render({ defaultOpened: true })
+    expect(wrapper.find('.mantine-Popover-arrow').exists()).toBe(false)
+  })
+
+  it('renders and styles arrow when withArrow is set', () => {
     const wrapper = render({ defaultOpened: true, withArrow: true })
-    expect(wrapper.find('.mantine-Popover-arrow').exists()).toBe(true)
+    const arrow = wrapper.find('.mantine-Popover-arrow')
+    expect(arrow.exists()).toBe(true)
+    expect(arrow.attributes('role')).toBe('presentation')
+    expect(arrow.attributes('style')).toContain('width: 7px')
+    expect(arrow.attributes('style')).toContain('height: 7px')
+    expect(arrow.attributes('style')).toContain('top: -3.5px')
     expect(Popover.Target).toBe(PopoverTarget)
     expect(Popover.Dropdown).toBe(PopoverDropdown)
     expect(Popover.ContextMenu).toBe(PopoverContextMenu)

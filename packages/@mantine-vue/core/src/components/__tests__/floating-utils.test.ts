@@ -39,11 +39,41 @@ describe('@mantine-vue/core Floating utilities', () => {
       dir: 'ltr',
     })
     expect(centered.transform).toBe('rotate(45deg)')
-    expect(centered.bottom).toBe(-3.5)
+    expect(centered.bottom).toBe('-3.5px')
     expect(merged.clipPath).toBeDefined()
+    expect(merged.top).toBe('-7px')
+    expect(merged.left).toBe('0px')
     expect(getArrowMergeDropdownStyles({ position: 'bottom-start', dir: 'ltr' })).toEqual({
       borderTopLeftRadius: 0,
     })
+  })
+
+  it.each([
+    ['top', { bottom: '-3.5px', left: '10px' }],
+    ['top-start', { bottom: '-3.5px', left: '5px' }],
+    ['top-end', { bottom: '-3.5px', right: '5px' }],
+    ['bottom', { top: '-3.5px', left: '10px' }],
+    ['bottom-start', { top: '-3.5px', left: '5px' }],
+    ['bottom-end', { top: '-3.5px', right: '5px' }],
+    ['left', { right: '-3.5px', top: '10px' }],
+    ['left-start', { right: '-3.5px', top: '5px' }],
+    ['left-end', { right: '-3.5px', bottom: '5px' }],
+    ['right', { left: '-3.5px', top: '10px' }],
+    ['right-start', { left: '-3.5px', top: '5px' }],
+    ['right-end', { left: '-3.5px', bottom: '5px' }],
+  ] as const)('positions the arrow for %s placement', (position, expectedStyles) => {
+    const styles = getArrowPositionStyles({
+      position,
+      arrowSize: 7,
+      arrowOffset: 5,
+      arrowRadius: 0,
+      arrowPosition: 'side',
+      arrowX: 10,
+      arrowY: 10,
+      dir: 'ltr',
+    })
+
+    expect(styles).toMatchObject(expectedStyles)
   })
 
   it('opens context menus at a virtual cursor reference', async () => {
