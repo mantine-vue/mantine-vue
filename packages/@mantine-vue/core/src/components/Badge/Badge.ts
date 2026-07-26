@@ -107,7 +107,7 @@ export const Badge = withBoxProps(
                 ...getStyles('section'),
                 'data-position': position,
               },
-              () => section as any,
+              section as any,
             )
           : null
 
