@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { h } from 'vue'
+import { defineComponent, h } from 'vue'
 import { mount } from '@vue/test-utils'
 import { Badge, MantineProvider, ThemeIcon } from '../../index'
 
@@ -32,6 +32,8 @@ describe('@mantine-vue/core variant display components', () => {
     expect(root.attributes('style')).toContain('--badge-radius: var(--mantine-radius-sm)')
     expect(root.attributes('style')).toContain('--badge-color: var(--mantine-color-red-6)')
     expect(wrapper.find('.mantine-Badge-label').text()).toBe('Status')
+    expect(wrapper.find('[data-position="left"]').text()).toBe('L')
+    expect(wrapper.find('[data-position="right"]').text()).toBe('R')
   })
 
   it('renders dot and circle Badge modifiers', () => {
@@ -47,6 +49,28 @@ describe('@mantine-vue/core variant display components', () => {
     expect(root.attributes('data-circle')).toBe('true')
     expect(root.attributes('data-block')).toBe('true')
     expect(root.attributes('style')).toContain('--badge-dot-color: var(--mantine-color-blue-6)')
+  })
+
+  it('renders VNode and render function section props', () => {
+    const Icon = defineComponent({
+      name: 'TestIcon',
+      setup: () => () => h('svg', { class: 'test-icon' }),
+    })
+    const wrapper = withProvider(
+      Badge,
+      {
+        leftSection: h(Icon, { 'data-icon': 'left' }),
+        rightSection: () => h(Icon, { 'data-icon': 'right' }),
+      },
+      () => 'Status',
+    )
+
+    const sections = wrapper.findAll('.mantine-Badge-section')
+    expect(sections).toHaveLength(2)
+    expect(sections[0].attributes('data-position')).toBe('left')
+    expect(sections[0].find('.test-icon').attributes('data-icon')).toBe('left')
+    expect(sections[1].attributes('data-position')).toBe('right')
+    expect(sections[1].find('.test-icon').attributes('data-icon')).toBe('right')
   })
 
   it('renders ThemeIcon with variant resolver variables', () => {
