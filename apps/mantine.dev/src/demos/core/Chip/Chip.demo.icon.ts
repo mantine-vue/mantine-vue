@@ -11,6 +11,14 @@ import { PhX } from '@phosphor-icons/vue'
 </script>
 
 <template>
+  <Chip color="red" variant="filled" defaultChecked>
+    <template #icon>
+      <PhX :size="16" />
+    </template>
+
+    Forbidden
+  </Chip>
+
   <Chip :icon="h(PhX, { size: 16 })" color="red" variant="filled" defaultChecked>
     Forbidden
   </Chip>

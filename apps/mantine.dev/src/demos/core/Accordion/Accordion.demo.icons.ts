@@ -12,21 +12,30 @@ import { PhImage, PhPrinter, PhCamera } from '@phosphor-icons/vue'
 <template>
   <Accordion variant="filled" defaultValue="photos" :order="3">
     <Accordion.Item value="photos">
-      <Accordion.Control :icon="h(PhImage, { size: 22, color: 'var(--mantine-color-dimmed)' })">
+      <Accordion.Control>
+        <template #icon>
+          <PhImage :size="22" color="var(--mantine-color-dimmed)" />
+        </template>
         Recent photos
       </Accordion.Control>
       <Accordion.Panel>Content</Accordion.Panel>
     </Accordion.Item>
 
     <Accordion.Item value="print">
-      <Accordion.Control :icon="h(PhPrinter, { size: 22, color: 'var(--mantine-color-dimmed)' })">
+      <Accordion.Control>
+        <template #icon>
+          <PhPrinter :size="22" color="var(--mantine-color-dimmed)" />
+        </template>
         Print photos
       </Accordion.Control>
       <Accordion.Panel>Content</Accordion.Panel>
     </Accordion.Item>
 
     <Accordion.Item value="camera">
-      <Accordion.Control :icon="h(PhCamera, { size: 22, color: 'var(--mantine-color-dimmed)' })">
+      <Accordion.Control>
+        <template #icon>
+          <PhCamera :size="22" color="var(--mantine-color-dimmed)" />
+        </template>
         Camera settings
       </Accordion.Control>
       <Accordion.Panel>Content</Accordion.Panel>

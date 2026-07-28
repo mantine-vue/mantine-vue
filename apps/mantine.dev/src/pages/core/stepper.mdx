@@ -35,7 +35,11 @@ The `size` prop controls icon size, label and description font size.
 
 Replace the step icon by setting the `icon` prop on `Stepper.Step`.
 To change the completed check icon, set `completedIcon` on the `Stepper` component.
-Pass a render function `() => h(Icon, props)` as the icon value:
+Pass a render function `() => h(Icon, props)` as the icon value.
+
+The `#icon`, `#completedIcon` and `#progressIcon` named slots are supported as an alternative,
+both on `Stepper` (applies to every step) and on an individual `Stepper.Step` (takes precedence
+over the `Stepper` level value):
 
 <Demo data={StepperDemos.icons} />
 

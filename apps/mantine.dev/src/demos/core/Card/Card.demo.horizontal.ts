@@ -22,11 +22,14 @@ const stats = [
         :thickness="6"
         :size="150"
         :sections="[{ value: (completed / total) * 100, color: 'blue' }]"
-        :label="h('div', {}, [
-          h(Text, { ta: 'center', fz: 'lg' }, { default: () => ((completed / total) * 100).toFixed(0) + '%' }),
-          h(Text, { ta: 'center', fz: 'xs', c: 'dimmed' }, { default: () => 'Completed' }),
-        ])"
-      />
+      >
+        <template #label>
+          <div>
+            <Text ta="center" fz="lg">{{ ((completed / total) * 100).toFixed(0) }}%</Text>
+            <Text ta="center" fz="xs" c="dimmed">Completed</Text>
+          </div>
+        </template>
+      </RingProgress>
     </Card.Section>
 
     <Card.Section inheritPadding px="md">

@@ -10,6 +10,12 @@ import { PhXCircle } from '@phosphor-icons/vue'
 </script>
 
 <template>
+  <CloseButton>
+    <template #icon>
+      <PhXCircle :size="18" />
+    </template>
+  </CloseButton>
+
   <CloseButton :icon="h(PhXCircle, { size: 18 })" />
 </template>
 `

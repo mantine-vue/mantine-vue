@@ -17,6 +17,8 @@ to fit correctly within the outline of the page.
 ## Change chevron
 
 Use the `chevron` prop to change the chevron icon. To remove it, set `:chevron="null"`.
+You can also provide this content through the `#chevron` named slot on `Accordion`, which
+applies to every `Accordion.Control`, or on an individual `Accordion.Control`.
 
 To customize chevron styles, use the Styles API with the `data-rotate` attribute
 (set when the item is open, unless `disableChevronRotation` is set):
@@ -32,7 +34,8 @@ set `aria-label` to keep the control accessible for screen readers.
 
 ## With icons
 
-Use the `icon` prop to display any element in the left section of `Accordion.Control`:
+Use the `icon` prop to display any element in the left section of `Accordion.Control`.
+You can also provide this content through the `#icon` named slot:
 
 <Demo data={AccordionDemos.icons} />
 

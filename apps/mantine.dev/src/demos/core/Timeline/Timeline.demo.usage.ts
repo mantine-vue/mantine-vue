@@ -11,7 +11,10 @@ import { PhGitBranch, PhGitCommit, PhGitPullRequest, PhChatCircleDots } from '@p
 
 <template>
   <Timeline :active="1" :bulletSize="24" :lineWidth="2">
-    <Timeline.Item :bullet="h(PhGitBranch, { size: 12 })" title="New branch">
+    <Timeline.Item title="New branch">
+      <template #bullet>
+        <PhGitBranch :size="12" />
+      </template>
       <Text c="dimmed" size="sm">
         You've created new branch
         <Text c="blue" component="span" inherit>fix-notifications</Text>
@@ -20,7 +23,10 @@ import { PhGitBranch, PhGitCommit, PhGitPullRequest, PhChatCircleDots } from '@p
       <Text size="xs" :mt="4">2 hours ago</Text>
     </Timeline.Item>
 
-    <Timeline.Item :bullet="h(PhGitCommit, { size: 12 })" title="Commits">
+    <Timeline.Item title="Commits">
+      <template #bullet>
+        <PhGitCommit :size="12" />
+      </template>
       <Text c="dimmed" size="sm">
         You've pushed 23 commits to
         <Text c="blue" component="span" inherit>fix-notifications</Text>
@@ -29,7 +35,10 @@ import { PhGitBranch, PhGitCommit, PhGitPullRequest, PhChatCircleDots } from '@p
       <Text size="xs" :mt="4">52 minutes ago</Text>
     </Timeline.Item>
 
-    <Timeline.Item title="Pull request" :bullet="h(PhGitPullRequest, { size: 12 })" lineVariant="dashed">
+    <Timeline.Item title="Pull request" lineVariant="dashed">
+      <template #bullet>
+        <PhGitPullRequest :size="12" />
+      </template>
       <Text c="dimmed" size="sm">
         You've submitted a pull request
         <Text c="blue" component="span" inherit>Fix incorrect notification message (#187)</Text>
@@ -37,7 +46,10 @@ import { PhGitBranch, PhGitCommit, PhGitPullRequest, PhChatCircleDots } from '@p
       <Text size="xs" :mt="4">34 minutes ago</Text>
     </Timeline.Item>
 
-    <Timeline.Item title="Code review" :bullet="h(PhChatCircleDots, { size: 12 })">
+    <Timeline.Item title="Code review">
+      <template #bullet>
+        <PhChatCircleDots :size="12" />
+      </template>
       <Text c="dimmed" size="sm">
         <Text c="blue" component="span" inherit>Robert Gluesticker</Text>
         left a code review on your pull request

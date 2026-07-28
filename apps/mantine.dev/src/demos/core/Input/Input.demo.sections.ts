@@ -14,6 +14,11 @@ const value = ref('Clear me')
 
 <template>
   <div>
+    <Input placeholder="Your email">
+      <template #leftSection>
+        <PhAt :size="16" />
+      </template>
+    </Input>
     <Input placeholder="Your email" :leftSection="h(PhAt, { size: 16 })" />
     <Input
       placeholder="Clearable input"

@@ -1,4 +1,4 @@
-import { defineComponent, h, reactive, type PropType } from 'vue'
+import { defineComponent, h, reactive, type PropType, type SlotsType, type VNodeChild } from 'vue'
 import { useId, useUncontrolled } from '@mantine-vue/hooks'
 import {
   Box,
@@ -33,6 +33,12 @@ export type AccordionStylesNames =
   | 'control'
 
 export type AccordionVariant = 'default' | 'contained' | 'filled' | 'separated'
+
+export interface AccordionSlots {
+  default?: () => VNodeChild
+  /** Custom chevron used by all Accordion.Control components, alternative to the `chevron` prop */
+  chevron?: () => VNodeChild
+}
 
 const VALUE_ERROR = 'Accordion.Item component was rendered with invalid value or without value'
 
@@ -72,6 +78,7 @@ const varsResolver = createVarsResolver<any>((_, { transitionDuration, chevronSi
 const AccordionBase = defineComponent({
   name: 'Accordion',
   inheritAttrs: false,
+  slots: Object as SlotsType<AccordionSlots>,
   props: {
     multiple: { type: Boolean, default: undefined },
     value: { type: [String, Array] as PropType<string | string[] | null>, default: undefined },
@@ -161,9 +168,15 @@ const AccordionBase = defineComponent({
           return props.order
         },
         get chevron() {
-          return props.chevron === null
-            ? null
-            : (props.chevron ?? (() => h(AccordionChevron, { size: props.chevronIconSize })))
+          if (props.chevron === null) {
+            return null
+          }
+
+          return (
+            props.chevron ??
+            slots.chevron ??
+            (() => h(AccordionChevron, { size: props.chevronIconSize }))
+          )
         },
         onChange: handleItemChange,
         isItemActive,

@@ -14,9 +14,15 @@ const active = ref(0)
 
 <template>
   <Stepper :active="active" @step-click="active = $event">
-    <Stepper.Step :icon="() => h(PhUserCheck, { size: 18 })" />
-    <Stepper.Step :icon="() => h(PhEnvelopeOpen, { size: 18 })" />
-    <Stepper.Step :icon="() => h(PhShieldCheck, { size: 18 })" />
+    <Stepper.Step>
+      <template #icon><PhUserCheck :size="18" /></template>
+    </Stepper.Step>
+    <Stepper.Step>
+      <template #icon><PhEnvelopeOpen :size="18" /></template>
+    </Stepper.Step>
+    <Stepper.Step>
+      <template #icon><PhShieldCheck :size="18" /></template>
+    </Stepper.Step>
   </Stepper>
 </template>
 `

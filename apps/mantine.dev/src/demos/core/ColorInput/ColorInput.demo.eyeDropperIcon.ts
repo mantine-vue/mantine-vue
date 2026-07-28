@@ -10,10 +10,17 @@ import { ColorInput } from '@mantine-vue/core'
 </script>
 
 <template>
+  <ColorInput label="With custom eye dropper icon" placeholder="Pick color">
+    <template #eyeDropperIcon>
+      <PhCrosshair :size="18" />
+    </template>
+  </ColorInput>
+
   <ColorInput
     :eyeDropperIcon="h(PhCrosshair, { size: 18 })"
     label="With custom eye dropper icon"
     placeholder="Pick color"
+    mt="md"
   />
 </template>
 `

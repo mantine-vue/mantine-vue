@@ -10,19 +10,23 @@ import { List, ThemeIcon } from '@mantine-vue/core'
 </script>
 
 <template>
-  <List
-    spacing="xs"
-    size="sm"
-    center
-    :icon="() => h(ThemeIcon, { color: 'teal', size: 24, radius: 'xl' }, { default: () => h(PhCheckCircle, { size: 16 }) })"
-  >
+  <List spacing="xs" size="sm" center>
+    <template #icon>
+      <ThemeIcon color="teal" :size="24" radius="xl">
+        <PhCheckCircle :size="16" />
+      </ThemeIcon>
+    </template>
+
     <List.Item>Clone or download repository from GitHub</List.Item>
     <List.Item>Install dependencies with yarn</List.Item>
     <List.Item>To start development server run npm start command</List.Item>
     <List.Item>Run tests to make sure your changes do not break the build</List.Item>
-    <List.Item
-      :icon="() => h(ThemeIcon, { color: 'blue', size: 24, radius: 'xl' }, { default: () => h(PhCircleDashed, { size: 16 }) })"
-    >
+    <List.Item>
+      <template #icon>
+        <ThemeIcon color="blue" :size="24" radius="xl">
+          <PhCircleDashed :size="16" />
+        </ThemeIcon>
+      </template>
       Submit a pull request once you are done
     </List.Item>
   </List>

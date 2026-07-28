@@ -1,2 +1,2 @@
 export { InputBase } from './InputBase'
-export type { InputBaseStylesNames } from './InputBase'
+export type { InputBaseSlots, InputBaseStylesNames } from './InputBase'

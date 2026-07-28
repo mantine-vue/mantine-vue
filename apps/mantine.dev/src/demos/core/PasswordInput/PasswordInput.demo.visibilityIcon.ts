@@ -24,6 +24,20 @@ const VisibilityToggleIcon = defineComponent({
     label="Change visibility toggle icon"
     placeholder="Change visibility toggle icon"
     defaultValue="secret"
+  >
+    <template #visibilityToggleIcon="{ reveal }">
+      <PhEyeSlash v-if="reveal" :size="18" />
+      <PhEye v-else :size="18" />
+    </template>
+  </PasswordInput>
+
+  <PasswordInput
+    maw="320"
+    mx="auto"
+    mt="md"
+    label="Change visibility toggle icon"
+    placeholder="Change visibility toggle icon"
+    defaultValue="secret"
     :visibilityToggleIcon="VisibilityToggleIcon"
   />
 </template>

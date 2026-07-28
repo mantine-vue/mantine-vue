@@ -19,8 +19,11 @@ const value = ref('')
     :min-rows="4"
     :value="value"
     @change="(event) => (value = event.currentTarget.value.slice(0, maxLength))"
-    :bottom-section="h(Text, { size: 'xs', c: 'dimmed' }, () => \`\${value.length}/\${maxLength} characters\`)"
-  />
+  >
+    <template #bottomSection>
+      <Text size="xs" c="dimmed">{{ value.length }}/{{ maxLength }} characters</Text>
+    </template>
+  </Textarea>
 </template>
 `
 

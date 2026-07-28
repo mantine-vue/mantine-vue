@@ -1,5 +1,10 @@
 export { Splitter } from './Splitter'
-export type { SplitterProps, SplitterStylesNames, SplitterCssVariables } from './Splitter'
+export type {
+  SplitterProps,
+  SplitterSlots,
+  SplitterStylesNames,
+  SplitterCssVariables,
+} from './Splitter'
 export { SplitterPane } from './SplitterPane/SplitterPane'
 export type { SplitterPaneProps, SplitterPaneStylesNames } from './SplitterPane/SplitterPane'
 export { useSplitterContext } from './Splitter.context'

@@ -27,9 +27,18 @@ const images = [
             </ActionIcon>
           </Menu.Target>
           <Menu.Dropdown>
-            <Menu.Item :leftSection="h(PhFileZip, { size: 14 })">Download zip</Menu.Item>
-            <Menu.Item :leftSection="h(PhEye, { size: 14 })">Preview all</Menu.Item>
-            <Menu.Item :leftSection="h(PhTrash, { size: 14 })" color="red">Delete all</Menu.Item>
+            <Menu.Item>
+              <template #leftSection><PhFileZip :size="14" /></template>
+              Download zip
+            </Menu.Item>
+            <Menu.Item>
+              <template #leftSection><PhEye :size="14" /></template>
+              Preview all
+            </Menu.Item>
+            <Menu.Item color="red">
+              <template #leftSection><PhTrash :size="14" /></template>
+              Delete all
+            </Menu.Item>
           </Menu.Dropdown>
         </Menu>
       </Group>

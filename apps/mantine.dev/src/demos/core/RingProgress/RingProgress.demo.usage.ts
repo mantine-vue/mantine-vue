@@ -9,6 +9,18 @@ import { RingProgress, Text } from '@mantine-vue/core'
 
 <template>
   <RingProgress
+    :sections="[
+      { value: 40, color: 'cyan' },
+      { value: 15, color: 'orange' },
+      { value: 15, color: 'grape' },
+    ]"
+  >
+    <template #label>
+      <Text size="xs" ta="center">Application data usage</Text>
+    </template>
+  </RingProgress>
+
+  <RingProgress
     :label="h(Text, { size: 'xs', ta: 'center' }, { default: () => 'Application data usage' })"
     :sections="[
       { value: 40, color: 'cyan' },

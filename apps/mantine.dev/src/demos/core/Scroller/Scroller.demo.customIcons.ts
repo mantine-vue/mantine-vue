@@ -10,7 +10,14 @@ import { Badge, Group, Scroller } from '@mantine-vue/core'
 </script>
 
 <template>
-  <Scroller :startControlIcon="() => h(PhArrowLeft, { size: 16 })" :endControlIcon="() => h(PhArrowRight, { size: 16 })">
+  <Scroller>
+    <template #startControlIcon>
+      <PhArrowLeft :size="16" />
+    </template>
+    <template #endControlIcon>
+      <PhArrowRight :size="16" />
+    </template>
+
     <Group gap="xs" wrap="nowrap">
       <Badge
         v-for="index in 20"

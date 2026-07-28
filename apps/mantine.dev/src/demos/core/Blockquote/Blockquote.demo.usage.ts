@@ -10,7 +10,10 @@ import { PhInfo } from '@phosphor-icons/vue'
 </script>
 
 <template>
-  <Blockquote{{props}} cite="– Forrest Gump" :icon="h(PhInfo)" mt="xl">
+  <Blockquote{{props}} cite="– Forrest Gump" mt="xl">
+    <template #icon>
+      <PhInfo />
+    </template>
     Life is like an npm install – you never know what you are going to get.
   </Blockquote>
 </template>
