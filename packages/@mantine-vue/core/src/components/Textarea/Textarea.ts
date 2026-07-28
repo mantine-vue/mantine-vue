@@ -1,10 +1,17 @@
-import { defineComponent, h, type PropType } from 'vue'
-import { InputBase } from '../InputBase'
+import { defineComponent, h, type PropType, type SlotsType, type VNodeChild } from 'vue'
+import { resolveNode } from '../../core'
+import { InputBase, type InputBaseSlots } from '../InputBase'
 import { TextareaAutosize } from './Autosize'
+
+export interface TextareaSlots extends InputBaseSlots {
+  /** Content rendered below the textarea, alternative to the `bottomSection` prop */
+  bottomSection?: () => VNodeChild
+}
 
 export const Textarea = defineComponent({
   name: 'Textarea',
   inheritAttrs: false,
+  slots: Object as SlotsType<TextareaSlots>,
   props: {
     autosize: { type: Boolean, default: false },
     maxRows: { type: Number, default: undefined },
@@ -36,7 +43,7 @@ export const Textarea = defineComponent({
           multiline: true,
           // data-no-overflow suppresses overflow scrollbar when no maxRows cap
           'data-no-overflow': shouldAutosize && props.maxRows === undefined ? true : undefined,
-          __bottomSection: props.bottomSection,
+          __bottomSection: resolveNode(props.bottomSection, slots.bottomSection),
           __bottomSectionProps: props.bottomSectionProps,
           style: [{ '--input-resize': props.resize }, (attrs as any).style],
           ...autosizeProps,

@@ -20,6 +20,8 @@ export interface PasswordInputSlots {
   error?: () => VNodeChild
   leftSection?: () => VNodeChild
   rightSection?: () => VNodeChild
+  /** Custom visibility toggle icon, alternative to the `visibilityToggleIcon` prop */
+  visibilityToggleIcon?: (payload: { reveal: boolean }) => VNodeChild
 }
 
 export type PasswordInputStylesNames =
@@ -138,7 +140,17 @@ export const PasswordInput = defineComponent({
         props.description !== undefined ? props.description !== null : Boolean(slots.description)
       const describedBy =
         `${hasError ? errorId : ''} ${hasDescription ? descriptionId : ''}`.trim() || undefined
-      const VisibilityToggleIcon = props.visibilityToggleIcon || PasswordToggleIcon
+      const renderVisibilityToggleIcon = () => {
+        if (props.visibilityToggleIcon) {
+          return h(props.visibilityToggleIcon, { reveal: visible.value })
+        }
+
+        if (slots.visibilityToggleIcon) {
+          return slots.visibilityToggleIcon({ reveal: visible.value })
+        }
+
+        return h(PasswordToggleIcon, { reveal: visible.value })
+      }
       const visibilityToggleButton = h(
         ActionIcon,
         {
@@ -171,7 +183,7 @@ export const PasswordInput = defineComponent({
             }
           },
         },
-        () => h(VisibilityToggleIcon, { reveal: visible.value }),
+        renderVisibilityToggleIcon,
       )
 
       return h(

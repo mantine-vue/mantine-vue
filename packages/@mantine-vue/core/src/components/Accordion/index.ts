@@ -1,5 +1,5 @@
 export { Accordion } from './Accordion'
-export type { AccordionStylesNames, AccordionVariant } from './Accordion'
+export type { AccordionSlots, AccordionStylesNames, AccordionVariant } from './Accordion'
 export { AccordionChevron } from './AccordionChevron'
 export { AccordionControl } from './AccordionControl/AccordionControl'
 export type { AccordionControlStylesNames } from './AccordionControl/AccordionControl'

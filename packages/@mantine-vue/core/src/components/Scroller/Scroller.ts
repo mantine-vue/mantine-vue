@@ -1,4 +1,4 @@
-import { defineComponent, h, type PropType } from 'vue'
+import { defineComponent, h, type PropType, type SlotsType, type VNodeChild } from 'vue'
 import { useScroller } from '@mantine-vue/hooks'
 import {
   withBoxProps,
@@ -6,6 +6,7 @@ import {
   createVarsResolver,
   getThemeColor,
   rem,
+  resolveNode,
   useProps,
   useStyles,
 } from '../../core'
@@ -37,6 +38,14 @@ export interface ScrollerProps {
   unstyled?: boolean
 }
 
+export interface ScrollerSlots {
+  default?: () => VNodeChild
+  /** Custom start control icon, alternative to the `startControlIcon` prop */
+  startControlIcon?: () => VNodeChild
+  /** Custom end control icon, alternative to the `endControlIcon` prop */
+  endControlIcon?: () => VNodeChild
+}
+
 const defaultProps = {
   scrollAmount: 200,
   draggable: true,
@@ -51,14 +60,11 @@ const varsResolver = createVarsResolver<any>((theme, { controlSize, edgeGradient
   },
 }))
 
-function renderContent(content: any) {
-  return typeof content === 'function' ? content() : content
-}
-
 export const Scroller = withBoxProps(
   defineComponent({
     name: 'Scroller',
     inheritAttrs: false,
+    slots: Object as SlotsType<ScrollerSlots>,
     props: {
       scrollAmount: { type: Number, default: undefined },
       controlSize: { type: [String, Number] as PropType<string | number>, default: undefined },
@@ -120,7 +126,8 @@ export const Scroller = withBoxProps(
                 tabindex: showStart ? 0 : -1,
               },
               () =>
-                renderContent(props.startControlIcon) || h(AccordionChevron, getStyles('chevron')),
+                resolveNode(props.startControlIcon, slots.startControlIcon) ||
+                h(AccordionChevron, getStyles('chevron')),
             ),
             h(
               'div',
@@ -131,7 +138,7 @@ export const Scroller = withBoxProps(
                 'data-draggable': props.draggable || undefined,
                 ...scroller.dragHandlers,
               },
-              h('div', getStyles('content'), slots.default?.()),
+              h('div', getStyles('content'), slots.default?.() as any),
             ),
             h(
               UnstyledButton,
@@ -145,7 +152,8 @@ export const Scroller = withBoxProps(
                 tabindex: showEnd ? 0 : -1,
               },
               () =>
-                renderContent(props.endControlIcon) || h(AccordionChevron, getStyles('chevron')),
+                resolveNode(props.endControlIcon, slots.endControlIcon) ||
+                h(AccordionChevron, getStyles('chevron')),
             ),
           ],
         )

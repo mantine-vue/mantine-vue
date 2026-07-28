@@ -1,4 +1,14 @@
-import { computed, defineComponent, h, ref, watch, type PropType } from 'vue'
+import {
+  computed,
+  defineComponent,
+  h,
+  ref,
+  watch,
+  type PropType,
+  type SlotsType,
+  type VNodeChild,
+} from 'vue'
+import { resolveNode } from '../../core'
 import {
   ColorPicker,
   convertHsvaTo,
@@ -8,7 +18,7 @@ import {
 } from '../ColorPicker'
 import { ActionIcon } from '../ActionIcon'
 import { ColorSwatch } from '../ColorSwatch'
-import { InputBase } from '../InputBase'
+import { InputBase, type InputBaseSlots } from '../InputBase'
 import { Popover } from '../Popover'
 import { EyeDropperIcon } from './EyeDropperIcon'
 import classes from './ColorInput.module.css'
@@ -31,9 +41,15 @@ export interface ColorInputProps {
   [key: string]: any
 }
 
+export interface ColorInputSlots extends InputBaseSlots {
+  /** Custom eye dropper button icon, alternative to the `eyeDropperIcon` prop */
+  eyeDropperIcon?: () => VNodeChild
+}
+
 export const ColorInput = defineComponent({
   name: 'ColorInput',
   inheritAttrs: false,
+  slots: Object as SlotsType<ColorInputSlots>,
   props: {
     modelValue: String,
     value: String,
@@ -117,7 +133,7 @@ export const ColorInput = defineComponent({
                 onClick: useEyeDropper,
               },
               () =>
-                props.eyeDropperIcon ??
+                resolveNode(props.eyeDropperIcon, slots.eyeDropperIcon) ??
                 h(EyeDropperIcon, {
                   class: classes.eyeDropperIcon,
                 }),

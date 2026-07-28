@@ -5,6 +5,7 @@ import {
   h,
   shallowRef,
   type PropType,
+  type SlotsType,
   type VNode,
   type VNodeChild,
 } from 'vue'
@@ -15,6 +16,7 @@ import {
   Box,
   createVarsResolver,
   getThemeColor,
+  resolveNode,
   useDirection,
   useProps,
   useStyles,
@@ -55,6 +57,12 @@ export interface SplitterProps {
   unstyled?: boolean
 }
 
+export interface SplitterSlots {
+  default?: () => VNodeChild
+  /** Custom icon rendered inside every resize handle, alternative to the `handleIcon` prop */
+  handleIcon?: () => VNodeChild
+}
+
 const defaultProps = {
   orientation: 'horizontal',
   lineSize: 2,
@@ -82,6 +90,7 @@ function flattenChildren(children: VNode[]): VNode[] {
 const SplitterBase = defineComponent({
   name: 'Splitter',
   inheritAttrs: false,
+  slots: Object as SlotsType<SplitterSlots>,
   props: {
     orientation: { type: String as PropType<'horizontal' | 'vertical'>, default: undefined },
     sizes: { type: Array as PropType<number[]>, default: undefined },
@@ -199,8 +208,8 @@ const SplitterBase = defineComponent({
                         'data-active': splitter.activeHandle === handleIndex || undefined,
                       },
                       [
-                        props.handleIcon !== undefined
-                          ? props.handleIcon
+                        props.handleIcon !== undefined || slots.handleIcon
+                          ? resolveNode(props.handleIcon, slots.handleIcon)
                           : h(
                               props.orientation === 'vertical'
                                 ? GripHorizontalIcon
