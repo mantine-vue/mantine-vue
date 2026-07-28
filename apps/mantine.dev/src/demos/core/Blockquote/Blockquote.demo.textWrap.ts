@@ -10,7 +10,10 @@ import { PhInfo } from '@phosphor-icons/vue'
 </script>
 
 <template>
-  <Blockquote{{props}} :icon="h(PhInfo)" cite="– Forrest Gump">
+  <Blockquote{{props}} cite="– Forrest Gump">
+    <template #icon>
+      <PhInfo />
+    </template>
     Life is like a box of chocolates. You never know what you are gonna get. But whatever you
     get, you should make the most of it and enjoy every moment.
   </Blockquote>

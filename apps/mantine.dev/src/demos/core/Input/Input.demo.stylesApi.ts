@@ -10,12 +10,14 @@ import { Input } from '@mantine-vue/core'
 </script>
 
 <template>
-  <Input
-    {{props}}
-    placeholder="Input component"
-    :leftSection="h(PhAt, { size: 16 })"
-    :rightSection="h(PhCaretDown, { size: 16 })"
-  />
+  <Input {{props}} placeholder="Input component">
+    <template #leftSection>
+      <PhAt :size="16" />
+    </template>
+    <template #rightSection>
+      <PhCaretDown :size="16" />
+    </template>
+  </Input>
 </template>
 `
 

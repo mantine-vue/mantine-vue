@@ -12,6 +12,12 @@ const value = ref(30)
 
 <template>
   <Stack align="center">
+    <RingProgress :sections="[{ value, color: 'blue' }]" :transitionDuration="250">
+      <template #label>
+        <Text ta="center">{{ value }}%</Text>
+      </template>
+    </RingProgress>
+
     <RingProgress
       :sections="[{ value, color: 'blue' }]"
       :transitionDuration="250"

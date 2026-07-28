@@ -13,26 +13,26 @@ const active = ref(1)
 </script>
 
 <template>
-  <Stepper
-    :active="active"
-    @step-click="active = $event"
-    :completed-icon="() => h(PhCheckCircle, { size: 18 })"
-  >
-    <Stepper.Step
-      :icon="() => h(PhUserCheck, { size: 18 })"
-      label="Step 1"
-      description="Create an account"
-    />
-    <Stepper.Step
-      :icon="() => h(PhEnvelopeOpen, { size: 18 })"
-      label="Step 2"
-      description="Verify email"
-    />
-    <Stepper.Step
-      :icon="() => h(PhShieldCheck, { size: 18 })"
-      label="Step 3"
-      description="Get full access"
-    />
+  <Stepper :active="active" @step-click="active = $event">
+    <template #completedIcon>
+      <PhCheckCircle :size="18" />
+    </template>
+
+    <Stepper.Step label="Step 1" description="Create an account">
+      <template #icon>
+        <PhUserCheck :size="18" />
+      </template>
+    </Stepper.Step>
+    <Stepper.Step label="Step 2" description="Verify email">
+      <template #icon>
+        <PhEnvelopeOpen :size="18" />
+      </template>
+    </Stepper.Step>
+    <Stepper.Step label="Step 3" description="Get full access">
+      <template #icon>
+        <PhShieldCheck :size="18" />
+      </template>
+    </Stepper.Step>
   </Stepper>
 </template>
 `

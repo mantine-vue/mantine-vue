@@ -10,7 +10,10 @@ import { PhInfo } from '@phosphor-icons/vue'
 </script>
 
 <template>
-  <Alert{{props}} :icon="h(PhInfo)">
+  <Alert{{props}}>
+    <template #icon>
+      <PhInfo />
+    </template>
     {{children}}
   </Alert>
 </template>

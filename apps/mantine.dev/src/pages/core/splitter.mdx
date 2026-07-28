@@ -56,6 +56,24 @@ Use `lineSize` prop to control the thickness of the separator line between panes
 
 <Demo data={SplitterDemos.lineSize} />
 
+## Custom handle icon
+
+Use the `handleIcon` prop to replace the default grip icon rendered inside every handle.
+You can also provide this content through the `#handleIcon` named slot:
+
+```vue
+<template>
+  <Splitter withHandle>
+    <template #handleIcon>
+      <PhDotsSixVertical :size="14" />
+    </template>
+
+    <Splitter.Pane :defaultSize="50">First</Splitter.Pane>
+    <Splitter.Pane :defaultSize="50">Second</Splitter.Pane>
+  </Splitter>
+</template>
+```
+
 ## Without handle
 
 Set `:withHandle="false"` to hide the thumb with grip icon. The separator line

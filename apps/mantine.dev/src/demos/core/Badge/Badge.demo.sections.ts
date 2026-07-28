@@ -13,6 +13,19 @@ const icon = h(PhAt, { size: 12 })
 
 <template>
   <Group>
+    <Badge>
+      <template #leftSection>
+        <PhAt :size="12" />
+      </template>
+      With left section
+    </Badge>
+    <Badge>
+      <template #rightSection>
+        <PhAt :size="12" />
+      </template>
+      With right section
+    </Badge>
+
     <Badge :leftSection="icon">With left section</Badge>
     <Badge :rightSection="icon">With right section</Badge>
   </Group>

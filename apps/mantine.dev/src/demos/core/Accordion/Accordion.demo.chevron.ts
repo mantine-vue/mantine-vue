@@ -46,12 +46,11 @@ const data = [/* ... */]
 -->
 
 <template>
-  <Accordion
-    defaultValue="Apples"
-    :classNames="{ chevron: classes.chevron }"
-    :chevron="h(PhPlus, { class: classes.icon })"
-    :order="3"
-  >
+  <Accordion defaultValue="Apples" :classNames="{ chevron: classes.chevron }" :order="3">
+    <template #chevron>
+      <PhPlus :class="classes.icon" />
+    </template>
+
     <Accordion.Item v-for="item in data" :key="item.value" :value="item.value">
       <Accordion.Control :icon="item.emoji">{{ item.value }}</Accordion.Control>
       <Accordion.Panel>{{ item.description }}</Accordion.Panel>

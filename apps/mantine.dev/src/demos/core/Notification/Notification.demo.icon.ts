@@ -10,7 +10,20 @@ import { Notification } from '@mantine-vue/core'
 </script>
 
 <template>
-  <Notification :icon="h(PhX, { size: 20 })" color="red" title="Bummer!">
+  <Notification color="red" title="Bummer!">
+    <template #icon>
+      <PhX :size="20" />
+    </template>
+    Something went wrong
+  </Notification>
+  <Notification color="teal" title="All good!" mt="md">
+    <template #icon>
+      <PhCheck :size="20" />
+    </template>
+    Everything is fine
+  </Notification>
+
+  <Notification :icon="h(PhX, { size: 20 })" color="red" title="Bummer!" mt="md">
     Something went wrong
   </Notification>
   <Notification :icon="h(PhCheck, { size: 20 })" color="teal" title="All good!" mt="md">

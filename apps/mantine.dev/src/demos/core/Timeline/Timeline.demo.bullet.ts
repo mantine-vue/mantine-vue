@@ -15,21 +15,30 @@ import { PhSun, PhVideoCamera } from '@phosphor-icons/vue'
       <Text c="dimmed" size="sm">Default bullet without anything</Text>
     </Timeline.Item>
 
-    <Timeline.Item
-      title="Avatar"
-      :bullet="h(Avatar, { size: 22, radius: 'xl', src: 'https://avatars0.githubusercontent.com/u/10353856?s=460&u=88394dfd67727327c1f7670a1764dc38a8a24831&v=4' })"
-    >
+    <Timeline.Item title="Avatar">
+      <template #bullet>
+        <Avatar
+          :size="22"
+          radius="xl"
+          src="https://avatars0.githubusercontent.com/u/10353856?s=460&u=88394dfd67727327c1f7670a1764dc38a8a24831&v=4"
+        />
+      </template>
       <Text c="dimmed" size="sm">Timeline bullet as avatar image</Text>
     </Timeline.Item>
 
-    <Timeline.Item title="Icon" :bullet="h(PhSun, { size: 13 })">
+    <Timeline.Item title="Icon">
+      <template #bullet>
+        <PhSun :size="13" />
+      </template>
       <Text c="dimmed" size="sm">Timeline bullet as icon</Text>
     </Timeline.Item>
 
-    <Timeline.Item
-      title="ThemeIcon"
-      :bullet="h(ThemeIcon, { size: 22, variant: 'gradient', gradient: { from: 'lime', to: 'cyan' }, radius: 'xl' }, { default: () => h(PhVideoCamera, { size: 13 }) })"
-    >
+    <Timeline.Item title="ThemeIcon">
+      <template #bullet>
+        <ThemeIcon :size="22" variant="gradient" :gradient="{ from: 'lime', to: 'cyan' }" radius="xl">
+          <PhVideoCamera :size="13" />
+        </ThemeIcon>
+      </template>
       <Text c="dimmed" size="sm">Timeline bullet as ThemeIcon component</Text>
     </Timeline.Item>
   </Timeline>

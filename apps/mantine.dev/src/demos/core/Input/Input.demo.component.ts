@@ -15,12 +15,11 @@ import { Input } from '@mantine-vue/core'
       Button input
     </Input>
 
-    <Input
-      component="select"
-      :rightSection="h(PhCaretDown, { size: 14 })"
-      pointer
-      mt="md"
-    >
+    <Input component="select" pointer mt="md">
+      <template #rightSection>
+        <PhCaretDown :size="14" />
+      </template>
+
       <option value="1">1</option>
       <option value="2">2</option>
     </Input>
