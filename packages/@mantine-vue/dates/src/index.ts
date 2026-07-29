@@ -11,6 +11,7 @@ import {
   type CSSProperties,
   type InjectionKey,
   type PropType,
+  type SlotsType,
   type VNodeChild,
 } from 'vue'
 import { useUncontrolled } from '@mantine-vue/hooks'
@@ -40,6 +41,11 @@ export type DateValue = DateStringValue | null
 export type DatesRangeValue = [DateValue, DateValue]
 export type DatePickerType = 'default' | 'multiple' | 'range'
 export type CalendarLevel = 'month' | 'year' | 'decade'
+export interface RenderDaySlots {
+  renderDay?: (input: { date: DateStringValue }) => VNodeChild
+  /** Short alias for `renderDay`. */
+  day?: (input: { date: DateStringValue }) => VNodeChild
+}
 export type DatePickerValue<Type extends DatePickerType = 'default'> = Type extends 'range'
   ? DatesRangeValue
   : Type extends 'multiple'
@@ -396,6 +402,7 @@ function getDecadeLabel(date: DateStringValue) {
 export const Day = defineComponent({
   name: 'Day',
   inheritAttrs: false,
+  slots: Object as SlotsType<RenderDaySlots>,
   props: {
     date: { type: String, required: true },
     size: { type: [String, Number], default: 'sm' },
@@ -415,7 +422,7 @@ export const Day = defineComponent({
     styles: { type: [Object, Function], default: undefined },
     unstyled: Boolean,
   },
-  setup(props, { attrs }) {
+  setup(props, { attrs, slots }) {
     return () =>
       h(
         UnstyledButton,
@@ -438,7 +445,10 @@ export const Day = defineComponent({
           'data-static': props.static || undefined,
           'data-full-width': props.fullWidth || undefined,
         },
-        () => props.renderDay?.(props.date) || dayjs(props.date).date(),
+        () =>
+          (props.renderDay
+            ? props.renderDay(props.date)
+            : (slots.renderDay ?? slots.day)?.({ date: props.date })) || dayjs(props.date).date(),
       )
   },
 })
@@ -489,6 +499,15 @@ export const CalendarHeader = defineComponent({
     previousLabel: { type: String, default: 'Previous' },
     levelControlAriaLabel: String,
     fullWidth: Boolean,
+    withNativeLevelSelect: Boolean,
+    yearsSelectRange: Array as unknown as PropType<[number, number]>,
+    calendarLevel: String as PropType<CalendarLevel>,
+    date: [String, Date] as PropType<string | Date>,
+    locale: String,
+    onDateChange: Function as PropType<(date: DateStringValue) => void>,
+    minDate: [String, Date] as PropType<string | Date>,
+    maxDate: [String, Date] as PropType<string | Date>,
+    disableNativeLevelSelect: Boolean,
     onNext: Function as PropType<() => void>,
     onPrevious: Function as PropType<() => void>,
     onLevelClick: Function as PropType<() => void>,
@@ -515,18 +534,98 @@ export const CalendarHeader = defineComponent({
           )
         : null
 
-      const levelControl = h(
-        UnstyledButton,
-        {
-          component: props.hasNextLevel ? 'button' : 'div',
-          class: classes.calendarHeaderLevel,
-          onClick: props.hasNextLevel ? props.onLevelClick : undefined,
-          disabled: !props.hasNextLevel,
-          'data-static': !props.hasNextLevel || undefined,
-          'aria-label': props.levelControlAriaLabel,
-        },
-        () => props.label,
-      )
+      const displayed = props.date ? dayjs(props.date) : dayjs()
+      const currentYear = new Date().getFullYear()
+      const rawMinYear =
+        props.yearsSelectRange?.[0] ??
+        (props.minDate ? dayjs(props.minDate).year() : currentYear - 100)
+      const rawMaxYear =
+        props.yearsSelectRange?.[1] ??
+        (props.maxDate ? dayjs(props.maxDate).year() : currentYear + 50)
+      const minYear = Math.min(rawMinYear, rawMaxYear, displayed.year())
+      const maxYear = Math.max(rawMinYear, rawMaxYear, displayed.year())
+      const updateNativeDate = (next: dayjs.Dayjs) => {
+        let result = next
+        if (props.minDate && result.isBefore(dayjs(props.minDate), 'day'))
+          result = dayjs(props.minDate)
+        if (props.maxDate && result.isAfter(dayjs(props.maxDate), 'day'))
+          result = dayjs(props.maxDate)
+        props.onDateChange?.(result.format('YYYY-MM-DD'))
+      }
+      const nativeLevelControl =
+        props.withNativeLevelSelect &&
+        props.date &&
+        props.onDateChange &&
+        props.calendarLevel !== 'decade'
+          ? h(
+              'div',
+              {
+                class: classes.calendarHeaderLevel,
+                'data-static': true,
+                'data-native-level-select': true,
+              },
+              [
+                props.calendarLevel === 'month'
+                  ? h(
+                      'select',
+                      {
+                        class: classes.calendarHeaderSelect,
+                        'data-select': 'month',
+                        disabled: props.disableNativeLevelSelect,
+                        value: displayed.month(),
+                        'aria-label': props.levelControlAriaLabel,
+                        onChange: (event: Event) =>
+                          updateNativeDate(
+                            displayed.month(Number((event.target as HTMLSelectElement).value)),
+                          ),
+                      },
+                      Array.from({ length: 12 }, (_, month) =>
+                        h(
+                          'option',
+                          { value: month },
+                          dayjs()
+                            .locale(props.locale || 'en')
+                            .month(month)
+                            .format('MMMM'),
+                        ),
+                      ),
+                    )
+                  : null,
+                h(
+                  'select',
+                  {
+                    class: classes.calendarHeaderSelect,
+                    'data-select': 'year',
+                    disabled: props.disableNativeLevelSelect,
+                    value: displayed.year(),
+                    'aria-label': props.levelControlAriaLabel,
+                    onChange: (event: Event) =>
+                      updateNativeDate(
+                        displayed.year(Number((event.target as HTMLSelectElement).value)),
+                      ),
+                  },
+                  Array.from({ length: maxYear - minYear + 1 }, (_, index) => {
+                    const year = minYear + index
+                    return h('option', { value: year }, year)
+                  }),
+                ),
+              ],
+            )
+          : null
+      const levelControl =
+        nativeLevelControl ??
+        h(
+          UnstyledButton,
+          {
+            component: props.hasNextLevel ? 'button' : 'div',
+            class: classes.calendarHeaderLevel,
+            onClick: props.hasNextLevel ? props.onLevelClick : undefined,
+            disabled: !props.hasNextLevel,
+            'data-static': !props.hasNextLevel || undefined,
+            'aria-label': props.levelControlAriaLabel,
+          },
+          () => props.label,
+        )
 
       const nextControl = props.withNext
         ? h(
@@ -598,6 +697,7 @@ export const WeekdaysRow = defineComponent({
 
 export const Month = defineComponent({
   name: 'Month',
+  slots: Object as SlotsType<RenderDaySlots>,
   props: {
     month: { type: String, default: () => dayjs().format('YYYY-MM-DD') },
     value: { type: [String, Array, null] as PropType<DatePickerValueType>, default: null },
@@ -620,7 +720,7 @@ export const Month = defineComponent({
     static: Boolean,
     fullWidth: Boolean,
   },
-  setup(props) {
+  setup(props, { slots }) {
     const ctx = useDatesContext()
     const hovered = ref<string | null>(null)
 
@@ -718,7 +818,11 @@ export const Month = defineComponent({
                       lastInRange: isSameDate(date, end),
                       highlightToday: props.highlightToday,
                       fullWidth: props.fullWidth,
-                      renderDay: props.renderDay,
+                      renderDay:
+                        props.renderDay ??
+                        ((slots.renderDay ?? slots.day)
+                          ? (date: DateStringValue) => (slots.renderDay ?? slots.day)?.({ date })
+                          : undefined),
                       'aria-label': props.getDayAriaLabel?.(date),
                       tabindex: props.static ? undefined : date === dateInTabOrder ? 0 : -1,
                       // Lets a focus-trapped Popover (e.g. DatePickerInput's
@@ -960,6 +1064,7 @@ function clampLevel(
 
 export const Calendar = defineComponent({
   name: 'Calendar',
+  slots: Object as SlotsType<RenderDaySlots>,
   props: {
     defaultLevel: String as PropType<CalendarLevel>,
     level: String as PropType<CalendarLevel>,
@@ -1015,8 +1120,10 @@ export const Calendar = defineComponent({
     withWeekNumbers: Boolean,
     static: Boolean,
     fullWidth: Boolean,
+    withNativeLevelSelect: Boolean,
+    yearsSelectRange: Array as unknown as PropType<[number, number]>,
   },
-  setup(props, { attrs }) {
+  setup(props, { attrs, slots }) {
     const [_level, setLevel] = useUncontrolled<CalendarLevel>({
       value: computed(() =>
         props.level === undefined
@@ -1070,6 +1177,15 @@ export const Calendar = defineComponent({
                   withPrevious: column === 0,
                   withNext: column === (props.numberOfColumns || 1) - 1,
                   fullWidth: props.fullWidth,
+                  withNativeLevelSelect: props.withNativeLevelSelect,
+                  yearsSelectRange: props.yearsSelectRange,
+                  calendarLevel: 'month',
+                  date: currentDate,
+                  locale: props.locale,
+                  onDateChange: setDate,
+                  minDate: props.minDate,
+                  maxDate: props.maxDate,
+                  disableNativeLevelSelect: props.date !== undefined && !props.onDateChange,
                   onPrevious: () => updateDate(-scroll, 'month'),
                   onNext: () => updateDate(scroll, 'month'),
                   onLevelClick: () => setLevel(getNextLevel(_level.value, 'up')),
@@ -1082,7 +1198,11 @@ export const Calendar = defineComponent({
                   maxDate: props.maxDate,
                   firstDayOfWeek: props.firstDayOfWeek,
                   weekendDays: props.weekendDays,
-                  renderDay: props.renderDay,
+                  renderDay:
+                    props.renderDay ??
+                    ((slots.renderDay ?? slots.day)
+                      ? (date: DateStringValue) => (slots.renderDay ?? slots.day)?.({ date })
+                      : undefined),
                   getDayProps: props.getDayProps,
                   getDayAriaLabel: props.getDayAriaLabel,
                   excludeDate: props.excludeDate,
@@ -1109,6 +1229,15 @@ export const Calendar = defineComponent({
                   withPrevious: column === 0,
                   withNext: column === (props.numberOfColumns || 1) - 1,
                   fullWidth: props.fullWidth,
+                  withNativeLevelSelect: props.withNativeLevelSelect,
+                  yearsSelectRange: props.yearsSelectRange,
+                  calendarLevel: 'year',
+                  date: currentDate,
+                  locale: props.locale,
+                  onDateChange: setDate,
+                  minDate: props.minDate,
+                  maxDate: props.maxDate,
+                  disableNativeLevelSelect: props.date !== undefined && !props.onDateChange,
                   onPrevious: () => updateDate(-scroll, 'year'),
                   onNext: () => updateDate(scroll, 'year'),
                   onLevelClick: () => setLevel(getNextLevel(_level.value, 'up')),
@@ -1218,6 +1347,7 @@ function getNextPickerValue(
 
 export const DatePicker = defineComponent({
   name: 'DatePicker',
+  slots: Object as SlotsType<RenderDaySlots>,
   props: {
     type: { type: String as PropType<DatePickerType>, default: 'default' },
     value: [String, Array, null] as PropType<DatePickerValueType>,
@@ -1226,8 +1356,10 @@ export const DatePicker = defineComponent({
     allowDeselect: { type: Boolean, default: true },
     sortDates: { type: Boolean, default: true },
     presets: Array as PropType<Array<{ value: DatePickerValueType; label: string }>>,
+    withNativeLevelSelect: Boolean,
+    yearsSelectRange: Array as unknown as PropType<[number, number]>,
   },
-  setup(props, { attrs }) {
+  setup(props, { attrs, slots }) {
     const finalValue = computed<DatePickerValueType>(() =>
       props.type === 'multiple' ? [] : props.type === 'range' ? [null, null] : null,
     )
@@ -1267,16 +1399,25 @@ export const DatePicker = defineComponent({
     }
 
     return () => {
-      const calendar = h(Calendar, {
-        ...attrs,
-        type: props.type,
-        value: _value.value,
-        date: calendarDate.value,
-        onDateChange: (date: DateStringValue) => (calendarDate.value = date),
-        level: calendarLevel.value,
-        onLevelChange: (level: CalendarLevel) => (calendarLevel.value = level),
-        onDayClick: selectDate,
-      })
+      const calendar = h(
+        Calendar,
+        {
+          ...attrs,
+          type: props.type,
+          value: _value.value,
+          date: calendarDate.value,
+          onDateChange: (date: DateStringValue) => (calendarDate.value = date),
+          level: calendarLevel.value,
+          onLevelChange: (level: CalendarLevel) => (calendarLevel.value = level),
+          withNativeLevelSelect: props.withNativeLevelSelect,
+          yearsSelectRange: props.yearsSelectRange,
+          onDayClick: selectDate,
+        },
+        {
+          renderDay: slots.renderDay,
+          day: slots.day,
+        },
+      )
 
       if (!props.presets?.length) return calendar
 
@@ -1322,6 +1463,8 @@ export const YearPicker = defineComponent({
     sortDates: { type: Boolean, default: true },
     presets: Array as PropType<Array<{ value: DatePickerValueType; label: string }>>,
     onYearSelect: Function as PropType<(date: DateStringValue) => void>,
+    withNativeLevelSelect: Boolean,
+    yearsSelectRange: Array as unknown as PropType<[number, number]>,
   },
   setup(props, { attrs }) {
     const finalValue = computed<DatePickerValueType>(() =>
@@ -1396,6 +1539,8 @@ export const YearPicker = defineComponent({
         onDateChange: (date: DateStringValue) => (calendarDate.value = date),
         defaultLevel: 'decade',
         minLevel: 'decade',
+        withNativeLevelSelect: props.withNativeLevelSelect,
+        yearsSelectRange: props.yearsSelectRange,
         onYearSelect: selectYear,
         getYearControlProps: yearControlProps,
         onYearMouseEnter: (date: DateStringValue) => {
@@ -1445,6 +1590,8 @@ export const MonthPicker = defineComponent({
     sortDates: { type: Boolean, default: true },
     presets: Array as PropType<Array<{ value: DatePickerValueType; label: string }>>,
     onMonthSelect: Function as PropType<(date: DateStringValue) => void>,
+    withNativeLevelSelect: Boolean,
+    yearsSelectRange: Array as unknown as PropType<[number, number]>,
   },
   setup(props, { attrs }) {
     const finalValue = computed<DatePickerValueType>(() =>
@@ -1520,6 +1667,8 @@ export const MonthPicker = defineComponent({
         onDateChange: (date: DateStringValue) => (calendarDate.value = date),
         defaultLevel: 'year',
         minLevel: 'year',
+        withNativeLevelSelect: props.withNativeLevelSelect,
+        yearsSelectRange: props.yearsSelectRange,
         onMonthSelect: selectMonth,
         getMonthControlProps: monthControlProps,
         onMonthMouseEnter: (date: DateStringValue) => {
@@ -1688,6 +1837,8 @@ function createPickerInput(
       closeOnChange: { type: Boolean, default: true },
       sortDates: { type: Boolean, default: true },
       valueFormatter: Function as PropType<DateFormatter>,
+      withNativeLevelSelect: Boolean,
+      yearsSelectRange: Array as unknown as PropType<[number, number]>,
     },
     setup(props, { attrs }) {
       const finalValue = computed<DatePickerValueType>(() =>
@@ -1733,6 +1884,8 @@ function createPickerInput(
                 sortDates: props.sortDates,
                 defaultLevel,
                 locale: props.locale,
+                withNativeLevelSelect: props.withNativeLevelSelect,
+                yearsSelectRange: props.yearsSelectRange,
                 onChange: (value: DatePickerValueType) => {
                   setValue(value)
                   if (props.closeOnChange && props.type === 'default') close()
@@ -2140,7 +2293,8 @@ export const SpinInput = defineComponent({
     readOnly: Boolean,
   },
   setup(props, { attrs }) {
-    const maxDigit = () => Number(props.max.toFixed(0)[0])
+    const finiteMax = () => Number.isFinite(props.max)
+    const maxDigit = () => (finiteMax() ? Number(props.max.toFixed(0)[0]) : Infinity)
     const arrowsMax = () => props.max + 1 - props.step
 
     const handleChange = (raw: string) => {
@@ -2151,12 +2305,14 @@ export const SpinInput = defineComponent({
       for (let i = 0; i < clearValue.length; i += 1) {
         const digit = clearValue.charCodeAt(i) - 48
         const next = parsedValue * 10 + digit
-        parsedValue = next > props.max ? digit : next
+        parsedValue = finiteMax() && next > props.max ? digit : next
       }
       const clampedValue =
         props.allowTemporaryZero && parsedValue === 0 && props.min > 0
           ? 0
-          : Math.min(Math.max(parsedValue, props.min), props.max)
+          : finiteMax()
+            ? Math.min(Math.max(parsedValue, props.min), props.max)
+            : Math.max(parsedValue, props.min)
       props.onChange?.(clampedValue)
       if (!props.disableAutoAdvance && (clampedValue > maxDigit() || raw.startsWith('00'))) {
         props.onNextInput?.()
@@ -2181,7 +2337,7 @@ export const SpinInput = defineComponent({
       }
       if (event.key === 'End') {
         event.preventDefault()
-        props.onChange?.(props.max)
+        if (finiteMax()) props.onChange?.(props.max)
       }
       if (event.key === 'Backspace' || event.key === 'Delete') {
         event.preventDefault()
@@ -2201,14 +2357,18 @@ export const SpinInput = defineComponent({
         const newValue =
           props.value === null
             ? props.min
-            : Math.min(Math.max(props.value + props.step, props.min), arrowsMax())
+            : finiteMax()
+              ? Math.min(Math.max(props.value + props.step, props.min), arrowsMax())
+              : Math.max(props.value + props.step, props.min)
         props.onChange?.(newValue)
       }
       if (event.key === 'ArrowDown') {
         event.preventDefault()
         const newValue =
           props.value === null
-            ? arrowsMax()
+            ? finiteMax()
+              ? arrowsMax()
+              : props.min
             : Math.min(Math.max(props.value - props.step, props.min), arrowsMax())
         props.onChange?.(newValue)
       }
@@ -2220,7 +2380,7 @@ export const SpinInput = defineComponent({
         type: 'text',
         role: 'spinbutton',
         'aria-valuemin': props.min,
-        'aria-valuemax': props.max,
+        'aria-valuemax': finiteMax() ? props.max : undefined,
         'aria-valuenow': props.value === null ? 0 : props.value,
         'data-empty': props.value === null || undefined,
         inputmode: 'numeric',
@@ -2311,6 +2471,7 @@ export const TimePicker = defineComponent({
     value: String,
     defaultValue: String,
     onChange: Function as PropType<(value: string) => void>,
+    type: { type: String as PropType<'time' | 'duration'>, default: 'time' },
     withSeconds: Boolean,
     min: String,
     max: String,
@@ -2336,6 +2497,9 @@ export const TimePicker = defineComponent({
     hoursRef: Object as PropType<{ value: any }>,
   },
   setup(props, { attrs }) {
+    const effectiveFormat = computed<'12h' | '24h'>(() =>
+      props.type === 'duration' ? '24h' : props.format,
+    )
     const [_value, setValue] = useUncontrolled<string>({
       value: computed(() => props.value),
       defaultValue: props.defaultValue,
@@ -2344,7 +2508,11 @@ export const TimePicker = defineComponent({
     })
 
     const parsed = computed(() =>
-      getParsedTime({ time: _value.value, format: props.format, amPmLabels: props.amPmLabels }),
+      getParsedTime({
+        time: _value.value,
+        format: effectiveFormat.value,
+        amPmLabels: props.amPmLabels,
+      }),
     )
     const hours = ref(parsed.value.hours)
     const minutes = ref(parsed.value.minutes)
@@ -2353,7 +2521,7 @@ export const TimePicker = defineComponent({
     watch(_value, (value) => {
       const next = getParsedTime({
         time: value,
-        format: props.format,
+        format: effectiveFormat.value,
         amPmLabels: props.amPmLabels,
       })
       hours.value = next.hours
@@ -2405,7 +2573,7 @@ export const TimePicker = defineComponent({
         hours: hours.value,
         minutes: minutes.value,
         seconds: seconds.value,
-        format: props.format,
+        format: effectiveFormat.value,
         withSeconds: props.withSeconds,
         amPm: amPm.value,
         amPmLabels: props.amPmLabels,
@@ -2415,7 +2583,7 @@ export const TimePicker = defineComponent({
 
     const setHours = (value: number | null) => {
       let adjusted = value
-      if (props.format === '12h' && typeof value === 'number' && value > 12) {
+      if (effectiveFormat.value === '12h' && typeof value === 'number' && value > 12) {
         adjusted = ((value - 1) % 12) + 1
       }
       hours.value = adjusted
@@ -2466,11 +2634,43 @@ export const TimePicker = defineComponent({
       }
     }
 
+    const handlePaste = (event: ClipboardEvent) => {
+      if (props.readOnly || props.disabled) return
+      const value = event.clipboardData?.getData('text').trim()
+      if (!value || !/^\d+:\d{2}(?::\d{2})?(?:\s+[aApP][mM])?$/.test(value)) return
+      const next = getParsedTime({
+        time: value,
+        format: effectiveFormat.value,
+        amPmLabels: props.amPmLabels,
+      })
+      if (
+        next.hours === null ||
+        next.minutes === null ||
+        next.minutes > 59 ||
+        (props.withSeconds && (next.seconds === null || next.seconds > 59)) ||
+        (props.type === 'time' && effectiveFormat.value === '24h' && next.hours > 23)
+      )
+        return
+      event.preventDefault()
+      hours.value = next.hours
+      minutes.value = next.minutes
+      seconds.value = props.withSeconds ? next.seconds : null
+      amPm.value = next.amPm
+      const result = getTimeString({
+        ...next,
+        seconds: props.withSeconds ? next.seconds : null,
+        format: effectiveFormat.value,
+        withSeconds: props.withSeconds,
+        amPmLabels: props.amPmLabels,
+      })
+      if (result.valid) setValue(clampTime(result.value, props.min, props.max))
+    }
+
     return () =>
       h(
         Popover,
         {
-          opened: props.withDropdown && opened.value,
+          opened: props.type !== 'duration' && props.withDropdown && opened.value,
           position: 'bottom-start',
           transitionProps: { duration: 0 },
         },
@@ -2485,11 +2685,11 @@ export const TimePicker = defineComponent({
                 disabled: props.disabled,
                 onClick: () => {
                   focus('hours')
-                  if (props.withDropdown) opened.value = true
+                  if (props.type !== 'duration' && props.withDropdown) opened.value = true
                 },
                 onMousedown: (event: MouseEvent) => event.preventDefault(),
                 onFocusin: () => {
-                  if (props.withDropdown) opened.value = true
+                  if (props.type !== 'duration' && props.withDropdown) opened.value = true
                 },
                 onFocusout: () => {
                   if (props.withDropdown) opened.value = false
@@ -2510,12 +2710,19 @@ export const TimePicker = defineComponent({
                       ref: hoursRef,
                       class: classes.timePickerField,
                       value: hours.value,
-                      min: props.format === '12h' ? 1 : 0,
-                      max: props.format === '12h' ? 12 : 23,
+                      min: effectiveFormat.value === '12h' ? 1 : 0,
+                      max:
+                        props.type === 'duration'
+                          ? Infinity
+                          : effectiveFormat.value === '12h'
+                            ? 12
+                            : 23,
                       step: props.hoursStep,
                       onChange: setHours,
                       onNextInput: () => focus('minutes'),
-                      allowTemporaryZero: props.format === '12h',
+                      allowTemporaryZero: effectiveFormat.value === '12h',
+                      disableAutoAdvance: props.type === 'duration',
+                      onPaste: handlePaste,
                       readOnly: props.readOnly,
                       disabled: props.disabled,
                       placeholder: '--',
@@ -2552,7 +2759,7 @@ export const TimePicker = defineComponent({
                           placeholder: '--',
                         })
                       : null,
-                    props.format === '12h'
+                    effectiveFormat.value === '12h'
                       ? h(AmPmInput, {
                           ref: amPmRef,
                           value: amPm.value,
@@ -2590,8 +2797,8 @@ export const TimePicker = defineComponent({
                   )
                 : h('div', { class: classes.timePickerControlsListGroup }, [
                     h(TimeControlsList, {
-                      min: props.format === '12h' ? 1 : 0,
-                      max: props.format === '12h' ? 12 : 23,
+                      min: effectiveFormat.value === '12h' ? 1 : 0,
+                      max: effectiveFormat.value === '12h' ? 12 : 23,
                       step: props.hoursStep,
                       value: hours.value,
                       onSelect: setHours,
