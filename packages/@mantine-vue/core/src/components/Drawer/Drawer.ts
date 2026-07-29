@@ -199,6 +199,7 @@ export const DrawerRoot = defineComponent({
   props: {
     opened: { type: Boolean, required: true },
     onClose: { type: Function as PropType<() => void>, required: true },
+    keepMounted: { type: Boolean, default: false },
     position: { type: String as PropType<DrawerPosition>, default: 'left' },
     radius: [String, Number],
     offset: { type: [String, Number], default: 0 },
@@ -240,6 +241,7 @@ export const DrawerRoot = defineComponent({
           ...attrs,
           opened: props.opened,
           onClose: props.onClose,
+          keepMounted: props.keepMounted,
           unstyled: props.unstyled,
           ...getStyles('root'),
           transitionProps: {
@@ -301,6 +303,7 @@ const DrawerBaseComponent = defineComponent({
   props: {
     opened: { type: Boolean, required: true },
     onClose: { type: Function as PropType<() => void>, required: true },
+    keepMounted: { type: Boolean, default: false },
     title: { type: null as unknown as PropType<MantineNode>, default: undefined },
     withOverlay: { type: Boolean, default: true },
     overlayProps: Object,
@@ -367,6 +370,7 @@ const DrawerBaseComponent = defineComponent({
           ...attrs,
           opened: props.opened,
           onClose: props.onClose,
+          keepMounted: props.keepMounted,
           zIndex: resolvedZIndex.value,
           ...stackProps.value,
         },
