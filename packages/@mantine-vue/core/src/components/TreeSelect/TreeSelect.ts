@@ -36,6 +36,7 @@ export interface TreeSelectRenderNodePayload {
   selected: boolean
   checked: boolean
   indeterminate: boolean
+  expand: (event?: Event) => void
 }
 export interface TreeSelectChevronAriaLabels {
   expand?: string
@@ -82,7 +83,7 @@ function flattenTo(
   for (let i = 0; i < data.length; i++) {
     const node = data[i]
     const isLast = i === data.length - 1
-    const hasLoadedChildren = Array.isArray(node.children)
+    const hasLoadedChildren = Array.isArray(node.children) && node.children.length > 0
     const hasAsyncChildren = !!node.hasChildren && !hasLoadedChildren
     const hasChildren = hasLoadedChildren || hasAsyncChildren
     const expanded = expandedSet.has(node.value)
@@ -194,6 +195,14 @@ export const TreeSelectOption = defineComponent({
           : props.checked
         : undefined
 
+      const expand = (event?: Event) => {
+        event?.preventDefault()
+        event?.stopPropagation()
+        if (props.hasChildren) {
+          props.onToggleExpand?.(props.node.value)
+        }
+      }
+
       const payload: TreeSelectRenderNodePayload = {
         node: props.node,
         level: props.level,
@@ -202,6 +211,7 @@ export const TreeSelectOption = defineComponent({
         selected: props.selected,
         checked: props.checked,
         indeterminate: props.indeterminate,
+        expand,
       }
 
       // Line guide elements (match React's TreeSelectOption)
@@ -271,15 +281,11 @@ export const TreeSelectOption = defineComponent({
                           : (props.chevronAriaLabels?.expand ?? 'Expand'),
                         onMousedown: (event: MouseEvent) => event.preventDefault(),
                         onClick: (event: MouseEvent) => {
-                          event.preventDefault()
-                          event.stopPropagation()
-                          props.onToggleExpand?.(props.node.value)
+                          expand(event)
                         },
                         onKeydown: (event: KeyboardEvent) => {
                           if (event.key === 'Enter') {
-                            event.preventDefault()
-                            event.stopPropagation()
-                            props.onToggleExpand?.(props.node.value)
+                            expand(event)
                           }
                         },
                       },
@@ -311,6 +317,7 @@ export interface TreeSelectSlots {
   rightSection?: () => VNodeChild
   renderNode?: (payload: TreeSelectRenderNodePayload) => VNodeChild
   nothingFound?: () => VNodeChild
+  nothingFoundMessage?: () => VNodeChild
 }
 
 export const TreeSelect = defineComponent({
@@ -521,8 +528,9 @@ export const TreeSelect = defineComponent({
       const multiValues = selectedArray()
       const hasValue = isMulti() ? multiValues.length > 0 : current() != null
       const canClear = props.clearable && hasValue && !disabled && !readOnly
+      const nothingFoundSlot = slots.nothingFoundMessage ?? slots.nothingFound
       const nothingFound =
-        props.nothingFoundMessage ?? (slots.nothingFound ? slots.nothingFound() : undefined)
+        props.nothingFoundMessage ?? (nothingFoundSlot ? nothingFoundSlot() : undefined)
       const renderNode =
         props.renderNode ??
         (slots.renderNode ? (payload: any) => slots.renderNode!(payload) : undefined)

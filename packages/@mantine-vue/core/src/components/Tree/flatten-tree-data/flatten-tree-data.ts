@@ -21,7 +21,7 @@ function flattenTo(
 ) {
   data.forEach((node, index) => {
     const isLast = index === data.length - 1
-    const loaded = Array.isArray(node.children)
+    const loaded = Array.isArray(node.children) && node.children.length > 0
     const hasChildren = loaded || (!!node.hasChildren && !loaded)
     const expanded = state[node.value] || false
     const linesPath: FlatTreeLineState[] = []
