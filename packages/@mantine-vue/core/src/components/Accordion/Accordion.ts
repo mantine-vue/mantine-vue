@@ -46,6 +46,7 @@ const defaultProps = {
   multiple: false,
   loop: true,
   disableChevronRotation: false,
+  disableCollapse: false,
   chevronPosition: 'right',
   variant: 'default',
   chevronSize: 'auto',
@@ -94,6 +95,7 @@ const AccordionBase = defineComponent({
     loop: { type: Boolean, default: undefined },
     transitionDuration: { type: Number, default: undefined },
     disableChevronRotation: { type: Boolean, default: undefined },
+    disableCollapse: { type: Boolean, default: undefined },
     chevronPosition: { type: String as PropType<AccordionChevronPosition>, default: undefined },
     chevronSize: { type: [String, Number] as PropType<string | number>, default: undefined },
     chevronIconSize: { type: [String, Number] as PropType<string | number>, default: undefined },
@@ -139,6 +141,11 @@ const AccordionBase = defineComponent({
 
     const handleItemChange = (itemValue: string) => {
       const value = currentValue.value
+
+      if (!Array.isArray(value) && props.disableCollapse && itemValue === value) {
+        return
+      }
+
       const nextValue = Array.isArray(value)
         ? value.includes(itemValue)
           ? value.filter((selectedValue) => selectedValue !== itemValue)
