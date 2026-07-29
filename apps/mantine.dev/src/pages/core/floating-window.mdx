@@ -1,4 +1,4 @@
-import { FloatingWindowDemos } from '@/demos'
+import { FloatingWindowDemos, UseFloatingWindowDemos } from '@/demos'
 import { Layout } from '@/layout'
 import { MDX_DATA } from '@/mdx'
 
@@ -47,8 +47,47 @@ from which you should only specify two (for example, `top` and `left`, `bottom` 
 
 <Demo data={FloatingWindowDemos.setPosition} />
 
+## Resize handle
+
+Use `FloatingWindow.ResizeHandle` to add a resize handle. The `dimensions` prop controls
+resize behavior:
+
+- `initialWidth` / `initialHeight` – initial window size in pixels
+- `minWidth` / `minHeight` – minimum size
+- `maxWidth` / `maxHeight` – maximum size
+
+The handle respects `constrainToViewport` and `constrainOffset`, so the window cannot be
+resized beyond the viewport boundaries.
+
+`FloatingWindow.ResizeHandle` renders with `role="separator"` and supports keyboard interaction.
+Arrow Left/Right resize width, Arrow Up/Down resize height in 10px steps, and Home/End jump to
+the minimum/maximum size.
+
+<Demo data={FloatingWindowDemos.resizeHandle} />
+
+## Resize callbacks
+
+`FloatingWindow` provides three resize callbacks:
+
+- `onSizeChange` receives `{ width, height }` whenever the window is resized
+- `onResizeStart` runs when pointer resizing starts
+- `onResizeEnd` runs when pointer resizing stops
+
+Reported sizes are measured after constraints are applied and match the actual window size.
+`onSizeChange` runs for pointer and keyboard resizing. Start/end callbacks apply only to pointer
+resizing. The callbacks require both `dimensions` and `FloatingWindow.ResizeHandle`.
+
+<Demo data={FloatingWindowDemos.resizeCallbacks} />
+
 ## Lock axis
 
 Use the `axis` option to restrict movement to the specified axis:
 
 <Demo data={FloatingWindowDemos.axis} />
+
+## use-floating-window hook
+
+If you prefer the composable API, use the [useFloatingWindow](/hooks/use-floating-window/) hook.
+It supports most `FloatingWindow` features:
+
+<Demo data={UseFloatingWindowDemos.usage} />
