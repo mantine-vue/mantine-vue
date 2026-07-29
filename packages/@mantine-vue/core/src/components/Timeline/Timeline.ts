@@ -24,6 +24,7 @@ export type TimelineStylesNames =
   | 'itemBullet'
   | 'item'
   | 'itemTitle'
+  | 'itemOpposite'
 
 const defaultProps = {
   active: -1,
@@ -81,6 +82,10 @@ const TimelineBase = defineComponent({
 
     return () => {
       const children = (slots.default?.() ?? []).filter(Boolean) as VNode[]
+      const hasOpposite = children.some((item) => {
+        const childSlots = item.children as Record<string, unknown> | null
+        return item.props?.opposite != null || childSlots?.opposite != null
+      })
       const active = props.active ?? defaultProps.active
       const items = children.map((item, index) =>
         cloneVNode(
@@ -101,7 +106,7 @@ const TimelineBase = defineComponent({
         Box,
         {
           ...attrs,
-          mod: [{ align: props.align }, props.mod],
+          mod: [{ align: props.align, opposite: hasOpposite }, props.mod],
           ...getStyles('root', { className: attrs.class, style: attrs.style as any }),
         },
         () => items,

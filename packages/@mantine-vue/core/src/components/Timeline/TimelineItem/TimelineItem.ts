@@ -21,11 +21,13 @@ export type TimelineItemStylesNames =
   | 'itemBullet'
   | 'item'
   | 'itemTitle'
+  | 'itemOpposite'
 
 export interface TimelineItemSlots {
   default?: () => VNodeChild
   title?: () => VNodeChild
   bullet?: () => VNodeChild
+  opposite?: () => VNodeChild
 }
 
 export const TimelineItem = withBoxProps(
@@ -41,6 +43,8 @@ export const TimelineItem = withBoxProps(
       lineActive: { type: Boolean, default: undefined },
       title: { type: null as unknown as PropType<MantineNode>, default: undefined },
       bullet: { type: null as unknown as PropType<MantineNode>, default: undefined },
+      opposite: { type: null as unknown as PropType<MantineNode>, default: undefined },
+      alternate: { type: Boolean, default: false },
       radius: { type: [String, Number] as PropType<MantineRadius>, default: undefined },
       color: { type: String as PropType<MantineColor>, default: undefined },
       lineVariant: { type: String as PropType<'solid' | 'dashed' | 'dotted'>, default: undefined },
@@ -60,13 +64,14 @@ export const TimelineItem = withBoxProps(
         const lineActive = props.lineActive ?? props.__lineActive
         const bullet = resolveNode(props.bullet, slots.bullet)
         const title = resolveNode(props.title, slots.title)
+        const opposite = resolveNode(props.opposite, slots.opposite)
         const stylesApiProps = { className: props.className ?? attrs.class, props }
 
         return h(
           Box,
           {
             ...attrs,
-            mod: [{ lineActive, active }, props.mod],
+            mod: [{ lineActive, active, alternate: props.alternate }, props.mod],
             ...ctx.getStyles('item', {
               ...stylesApiProps,
               style: {
@@ -87,6 +92,9 @@ export const TimelineItem = withBoxProps(
               },
               () => bullet,
             ),
+            hasNode(opposite)
+              ? h('div', ctx.getStyles('itemOpposite', { props }), opposite as any)
+              : null,
             h('div', ctx.getStyles('itemBody', { props }), [
               hasNode(title) ? h('div', ctx.getStyles('itemTitle', { props }), title as any) : null,
               h('div', ctx.getStyles('itemContent', { props }), slots.default?.() as any),
