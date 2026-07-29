@@ -2,6 +2,7 @@ import { createSafeContext } from '../../core'
 export interface MenuContextValue {
   opened: boolean
   hasSearch: boolean
+  withInitialFocusPlaceholder: boolean
   registerSearch: () => () => void
   setSearchExitClear: (callback: (() => void) | null) => void
   toggleDropdown: () => void

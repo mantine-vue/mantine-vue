@@ -147,6 +147,9 @@ const MenuBase = defineComponent({
       get hasSearch() {
         return searchCount.value > 0
       },
+      get withInitialFocusPlaceholder() {
+        return props.withInitialFocusPlaceholder
+      },
       registerSearch: () => {
         searchCount.value += 1
         return () => {
@@ -300,7 +303,18 @@ export const MenuDropdown = defineComponent({
             }
           },
         },
-        slots,
+        () => [
+          ctx.withInitialFocusPlaceholder && !ctx.hasSearch
+            ? h('div', {
+                role: 'presentation',
+                tabindex: -1,
+                'data-autofocus': true,
+                'data-mantine-stop-propagation': true,
+                style: { outline: 0 },
+              })
+            : null,
+          slots.default?.(),
+        ],
       )
   },
 })
