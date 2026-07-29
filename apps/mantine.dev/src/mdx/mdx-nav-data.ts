@@ -56,6 +56,7 @@ const INPUTS_PAGES: MdxNavItem[] = [
 
 const COMBOBOX_PAGES: MdxNavItem[] = [
   { label: 'Autocomplete', link: '/core/autocomplete' },
+  { label: 'Cascader', link: '/core/cascader' },
   { label: 'Combobox', link: '/core/combobox' },
   { label: 'ComboboxPopover', link: '/core/combobox-popover' },
   { label: 'MultiSelect', link: '/core/multi-select' },

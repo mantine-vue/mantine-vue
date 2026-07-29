@@ -445,6 +445,18 @@ export const MDX_DATA: Record<string, Frontmatter> = {
     docs: 'core/autocomplete.mdx',
     searchTags: 'autocomplete, combobox, input, suggestions, search, typeahead',
   },
+  Cascader: {
+    title: 'Cascader',
+    package: '@mantine-vue/core',
+    slug: '/core/cascader',
+    description: 'Text input with suggestions based on user input',
+    componentPrefix: 'Cascader',
+    props: ['Autocomplete'],
+    styles: ['Autocomplete'],
+    source: '@mantine-vue/core/src/components/Cascader/Cascader.ts',
+    docs: 'core/cascader.mdx',
+    searchTags: 'cascader, autocomplete, combobox, input, suggestions, search, typeahead',
+  },
   Combobox: {
     title: 'Combobox',
     package: '@mantine-vue/core',

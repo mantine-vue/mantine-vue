@@ -1,0 +1,339 @@
+import { CascaderDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.Cascader)
+
+## Usage
+
+`Cascader` lets users select a value from hierarchical data by drilling down through
+cascading columns. Picking an option in one column reveals its children in the next column.
+The value is an ordered path from the root option to the selected node, for example
+`['asia', 'jp', 'tokyo']`.
+
+All demos on this page switch to the [flat list layout](#flat-list-layout) on small screens.
+Open them on a larger screen to test cascading columns, hover expansion, and column keyboard
+navigation.
+
+<Demo data={CascaderDemos.usage} />
+
+## Data prop
+
+Data passed to `data` is an array of `CascaderOption` objects:
+
+- Each option must have a unique `value` across the whole tree
+- `label` is optional; `value` is used when it is not set
+- `children` contains nested options
+- `disabled` prevents an option from being selected or expanded
+
+```ts
+import type { CascaderOption } from '@mantine-vue/core'
+
+const data: CascaderOption[] = [
+  {
+    value: 'asia',
+    label: 'Asia',
+    children: [
+      {
+        value: 'jp',
+        label: 'Japan',
+        children: [{ value: 'tokyo', label: 'Tokyo' }],
+      },
+    ],
+  },
+]
+```
+
+## Value and change event
+
+`Cascader` value is an ordered array of option values, or `null` when nothing is selected.
+Use `v-model` to control it. The `change` event receives the selected path and the resolved
+chain of `CascaderOption` objects:
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue'
+import { Cascader } from '@mantine-vue/core'
+import type { CascaderOption } from '@mantine-vue/core'
+
+const value = ref<string[] | null>(['europe', 'fr', 'paris'])
+
+function handleChange(path: string[] | null, options: CascaderOption[]) {
+  console.log(path, options)
+}
+</script>
+
+<template>
+  <Cascader v-model="value" :data="data" @change="handleChange" />
+</template>
+```
+
+By default, only leaf options can be selected. Clicking a parent expands the next column.
+
+## Change on select
+
+Set `changeOnSelect` to allow selecting any option, including intermediate levels:
+
+<Demo data={CascaderDemos.changeOnSelect} />
+
+## Close on select
+
+`closeOnSelect` controls whether the dropdown closes after a value is selected. When it is not
+set, it defaults to the opposite of [allowDeselect](#allow-deselect):
+
+<Demo data={CascaderDemos.closeOnSelect} />
+
+## Allow deselect
+
+By default, clicking the selected option again removes the value. Set `allowDeselect` to `false`
+to disable this behavior:
+
+<Demo data={CascaderDemos.allowDeselect} />
+
+## Expand trigger
+
+Set `expandTrigger="hover"` to open the next column on hover. Selecting a leaf still requires
+a click:
+
+<Demo data={CascaderDemos.hoverExpand} />
+
+## Flat list layout
+
+Set `withColumns` to `false` to render a flat list of full paths. This works well on narrow
+screens:
+
+<Demo data={CascaderDemos.flatList} />
+
+Use [useMediaQuery](/hooks/use-media-query/) to switch layouts responsively:
+
+```vue
+<script setup lang="ts">
+import { Cascader } from '@mantine-vue/core'
+import { useMediaQuery } from '@mantine-vue/hooks'
+
+const withColumns = useMediaQuery('(min-width: 48em)')
+</script>
+
+<template>
+  <Cascader :with-columns="withColumns" :data="data" />
+</template>
+```
+
+## Max displayed levels
+
+Use `maxDisplayedLevels` (`3` by default) to limit the number of visible columns. Navigation
+controls reveal earlier or later levels when the path is deeper than the limit:
+
+<Demo data={CascaderDemos.maxDisplayedLevels} />
+
+## Searchable
+
+Set `searchable` to filter options. Search mode replaces columns with a flat list of matching
+full paths:
+
+<Demo data={CascaderDemos.searchable} />
+
+Use `filter` to customize matching and the `renderSearchOption` prop or named slot to customize
+search results.
+
+## Controlled search value
+
+Use `searchValue` and the `searchChange` event to control the search value:
+
+```vue
+<Cascader
+  searchable
+  :data="data"
+  :search-value="searchValue"
+  @search-change="searchValue = $event"
+/>
+```
+
+## Nothing found
+
+Set `nothingFoundMessage` to display a message when no options match:
+
+<Demo data={CascaderDemos.nothingFound} />
+
+## Display value
+
+The selected path is displayed as labels joined by `separator` (`/` by default). Use
+`formatValue` to fully customize the input value:
+
+<Demo data={CascaderDemos.formatValue} />
+
+## Column width
+
+Use `columnWidth` to set every column width and `maxDropdownHeight` to control the height before
+a column becomes scrollable:
+
+<Demo data={CascaderDemos.columnWidth} />
+
+## Custom option rendering
+
+Use the `renderOption` prop or named slot to customize options. It receives `option` and `level`:
+
+<Demo data={CascaderDemos.renderOption} />
+
+## Named slots
+
+Every Cascader prop that accepts renderable content also has an idiomatic Vue named slot.
+The existing prop API remains supported and takes precedence when both are provided:
+
+```vue
+<Cascader :data="data" searchable>
+  <template #renderOption="{ option, level }">
+    <span>Level {{ level + 1 }}: {{ option.label }}</span>
+  </template>
+  <template #renderSearchOption="{ query, options }">
+    <span>{{ query }}: {{ options.map((option) => option.label).join(' / ') }}</span>
+  </template>
+  <template #separator>→</template>
+  <template #nothingFoundMessage>No matching paths</template>
+</Cascader>
+```
+
+The `label`, `description`, `error`, `leftSection`, and `rightSection` input slots are forwarded.
+`nothingFound` is supported as an alias for `nothingFoundMessage`.
+
+## Check icon
+
+Use `withCheckIcon` to toggle the selected-option icon and `checkIconPosition` to place it on the
+left or right:
+
+<Demo data={CascaderDemos.checkIcon} />
+
+## Disabled options
+
+Set `disabled` on an option to prevent selection or expansion. Keyboard navigation skips disabled
+options:
+
+<Demo data={CascaderDemos.disabledOptions} />
+
+## Left and right sections
+
+`Cascader` supports `leftSection` and `rightSection` props and slots like other inputs:
+
+<Demo data={CascaderDemos.sections} />
+
+## Clearable
+
+Set `clearable` to display a clear button when a value is selected:
+
+<Demo data={CascaderDemos.clearable} />
+
+Use `clearSectionMode` to control how the clear button and right section are rendered:
+
+<Demo data={CascaderDemos.clearSectionMode} />
+
+## Scrollable columns
+
+Use `maxDropdownHeight` to control column height and `scrollAreaProps` to pass props to each
+[ScrollArea](/core/scroll-area/):
+
+<Demo data={CascaderDemos.scrollArea} />
+
+## Control dropdown opened state
+
+Use `dropdownOpened`, `defaultDropdownOpened`, `dropdownOpen`, and `dropdownClose` to control
+the opened state.
+
+## Dropdown position
+
+Use `comboboxProps` to pass props to the underlying [Combobox](/core/combobox/) and
+[Popover](/core/popover/):
+
+<Demo data={CascaderDemos.dropdownPosition} />
+
+## Dropdown offset
+
+<Demo data={CascaderDemos.dropdownOffset} />
+
+## Dropdown width
+
+In flat-list mode, use `comboboxProps.width`. Columns mode sizes the dropdown to its columns:
+
+<Demo data={CascaderDemos.dropdownWidth} />
+
+## Dropdown padding
+
+<Demo data={CascaderDemos.dropdownPadding} />
+
+## Dropdown shadow
+
+<Demo data={CascaderDemos.dropdownShadow} />
+
+## Dropdown animation
+
+<Demo data={CascaderDemos.dropdownAnimation} />
+
+## Inside Popover
+
+Set `comboboxProps.withinPortal` to `false` when using Cascader inside a Popover:
+
+<Demo data={CascaderDemos.withinPopover} />
+
+<ComboboxProps component="Cascader" />
+
+## Styles API
+
+Use the [Styles API](/styles/styles-api/) to customize `Cascader`:
+
+<Demo data={CascaderDemos.stylesApi} />
+
+<InputSections component="Cascader" />
+
+## Input props
+
+<InputFeatures component="Cascader" element="input" />
+
+<Demo data={CascaderDemos.configurator} />
+
+## Read only
+
+`readOnly` prevents the dropdown from opening and prevents value changes:
+
+<Demo data={CascaderDemos.readOnly} />
+
+## Disabled
+
+`disabled` prevents all user interaction:
+
+<Demo data={CascaderDemos.disabled} />
+
+## Error state
+
+<Demo data={CascaderDemos.error} />
+
+## Success state
+
+<Demo data={CascaderDemos.success} />
+
+## Loading state
+
+Set `loading` to display a loader instead of the chevron:
+
+<Demo data={CascaderDemos.loading} />
+
+## Accessibility
+
+Columns are nested listboxes with option elements. Set `label` or `aria-label`:
+
+```vue
+<Cascader :data="data" aria-label="Pick location" />
+```
+
+## Keyboard interactions
+
+<KeyboardEventsTable
+  data={[
+    {
+      key: 'ArrowDown/ArrowUp',
+      description: 'Opens the dropdown, then moves in the current column',
+    },
+    { key: 'ArrowRight', description: 'Expands the highlighted option' },
+    { key: 'ArrowLeft', description: 'Moves back to the previous column' },
+    { key: 'Enter', description: 'Expands a parent or selects a leaf' },
+    { key: 'Escape', description: 'Closes the dropdown' },
+  ]}
+/>
