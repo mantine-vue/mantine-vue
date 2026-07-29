@@ -477,7 +477,12 @@ export const ResourcesWeekView = defineComponent({
                     class: classes.resourcesWeekViewBackgroundEvent,
                     style: {
                       left: `${dayOffset + (event.position.top / 100) * dayWidth}%`,
-                      width: `${(event.position.height / 100) * dayWidth}%`,
+                      right: `${
+                        100 -
+                        dayOffset -
+                        ((event.position.top + event.position.height) / 100) * dayWidth
+                      }%`,
+                      minWidth: '1px',
                       top: 0,
                       height: '100%',
                       '--bg-event-bg': colors.background,

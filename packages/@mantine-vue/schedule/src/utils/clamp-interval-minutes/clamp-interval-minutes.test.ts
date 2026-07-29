@@ -29,4 +29,21 @@ describe('@mantine/schedule/clamp-interval-minutes', () => {
     expect(clampIntervalMinutes(29.4)).toBe(60)
     expect(clampIntervalMinutes(-5.5)).toBe(1)
   })
+
+  it('allows intervals longer than an hour when they are whole hours', () => {
+    ;[120, 180, 240, 360, 480, 720, 1440].forEach((interval) => {
+      expect(clampIntervalMinutes(interval)).toBe(interval)
+    })
+  })
+
+  it('defaults to 60 for values above an hour that are not whole hours', () => {
+    ;[61, 90, 100, 150, 200].forEach((interval) => {
+      expect(clampIntervalMinutes(interval)).toBe(60)
+    })
+  })
+
+  it('caps intervals at a full day', () => {
+    expect(clampIntervalMinutes(1440)).toBe(1440)
+    expect(clampIntervalMinutes(2000)).toBe(1440)
+  })
 })

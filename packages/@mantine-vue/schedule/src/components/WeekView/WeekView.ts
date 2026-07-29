@@ -559,7 +559,8 @@ export const WeekView = defineComponent({
                                 class: classes.weekViewBackgroundEvent,
                                 style: {
                                   top: `${event.position.top}%`,
-                                  height: `${event.position.height}%`,
+                                  bottom: `${100 - event.position.top - event.position.height}%`,
+                                  minHeight: '1px',
                                   width: '100%',
                                 },
                               }),
@@ -576,7 +577,12 @@ export const WeekView = defineComponent({
                                   style: {
                                     position: 'absolute',
                                     top: `${resizePosition?.top ?? event.position.top}%`,
-                                    height: `${resizePosition?.height ?? event.position.height}%`,
+                                    bottom: `${
+                                      100 -
+                                      (resizePosition?.top ?? event.position.top) -
+                                      (resizePosition?.height ?? event.position.height)
+                                    }%`,
+                                    minHeight: '1px',
                                     width: `${event.position.width}%`,
                                     insetInlineStart: `${event.position.offset}%`,
                                   },

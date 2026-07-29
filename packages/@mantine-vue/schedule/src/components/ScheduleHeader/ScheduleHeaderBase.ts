@@ -1,5 +1,5 @@
 import dayjs from 'dayjs'
-import { defineComponent, h, type PropType, type VNodeChild } from 'vue'
+import { defineComponent, h, type PropType, type SlotsType, type VNodeChild } from 'vue'
 import { Box, NativeSelect } from '@mantine-vue/core'
 import { getLabel, type ScheduleLabelsOverride } from '../../labels'
 import type { DateStringValue, ScheduleViewLevel } from '../../types'
@@ -29,8 +29,13 @@ export interface ScheduleHeaderBaseProps {
   viewSelectProps?: Partial<ViewSelectProps>
 }
 
+export interface ScheduleHeaderBaseSlots {
+  title?: () => VNodeChild
+}
+
 export const ScheduleHeaderBase = defineComponent({
   name: 'ScheduleHeaderBase',
+  slots: Object as SlotsType<ScheduleHeaderBaseSlots>,
   props: {
     view: { type: String as PropType<ScheduleViewLevel>, required: true },
     navigationHandlers: {
@@ -46,7 +51,7 @@ export const ScheduleHeaderBase = defineComponent({
     todayControlProps: Object as PropType<NativeButtonProps>,
     viewSelectProps: Object as PropType<Partial<ViewSelectProps>>,
   },
-  setup(props) {
+  setup(props, { slots }) {
     return () => {
       const views = props.viewSelectProps?.views || ['day', 'week', 'month', 'year']
       return h(ScheduleHeader, { labels: props.labels }, () => [
@@ -60,7 +65,9 @@ export const ScheduleHeaderBase = defineComponent({
                 ...props.control.monthYearSelect,
                 labels: props.labels,
               })
-            : h(ScheduleHeader.Control, { interactive: false }, () => props.control.title),
+            : h(ScheduleHeader.Control, { interactive: false }, () =>
+                props.control.title !== undefined ? props.control.title : slots.title?.(),
+              ),
           h(ScheduleHeader.Next, {
             ...props.nextControlProps,
             onClick: () => props.onDateChange?.(props.navigationHandlers.next()),
