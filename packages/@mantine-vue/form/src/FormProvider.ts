@@ -1,6 +1,10 @@
 import { inject, provide, type InjectionKey } from 'vue'
 import type { UseFormReturnType } from './types'
 
+export interface FormProviderProps<Values extends Record<string, any>> {
+  form: UseFormReturnType<Values>
+}
+
 export function createFormContext<Values extends Record<string, any>>() {
   const key = Symbol('MantineVueFormContext') as InjectionKey<UseFormReturnType<Values>>
 
