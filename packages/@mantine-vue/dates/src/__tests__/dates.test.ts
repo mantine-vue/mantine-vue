@@ -1,5 +1,9 @@
 import { describe, expect, it } from 'vitest'
+import { h } from 'vue'
+import { mount } from '@vue/test-utils'
+import { MantineProvider } from '@mantine-vue/core'
 import {
+  Day,
   assignTime,
   clampDate,
   compareTime,
@@ -7,10 +11,22 @@ import {
   getEndOfWeek,
   getStartOfWeek,
   getTimeRange,
+  getTimeString,
   isSameDate,
   timeToSeconds,
+  padTime,
   toDateString,
 } from '../index'
+
+describe('TimePicker 9.5 duration support', () => {
+  it('formats hour values greater than 9999 without truncation', () => {
+    expect(padTime(10_000)).toBe('10000')
+    expect(getTimeString({ hours: 10_000, minutes: 5 })).toEqual({
+      valid: true,
+      value: '10000:05',
+    })
+  })
+})
 
 describe('@mantine-vue/dates utilities', () => {
   it('normalizes dates to date strings', () => {
@@ -42,5 +58,38 @@ describe('@mantine-vue/dates utilities', () => {
 
   it('compares dates by day', () => {
     expect(isSameDate('2024-01-01', '2024-01-01T20:00:00')).toBe(true)
+  })
+})
+
+describe('@mantine-vue/dates render slots', () => {
+  it('supports renderDay slot and keeps the renderDay prop authoritative', () => {
+    const slotted = mount({
+      render: () =>
+        h(MantineProvider, { env: 'test' }, () =>
+          h(
+            Day,
+            { date: '2024-01-02', static: true },
+            { renderDay: ({ date }: any) => h('span', { class: 'day-slot' }, date) },
+          ),
+        ),
+    })
+    expect(slotted.get('.day-slot').text()).toBe('2024-01-02')
+
+    const withProp = mount({
+      render: () =>
+        h(MantineProvider, { env: 'test' }, () =>
+          h(
+            Day,
+            {
+              date: '2024-01-02',
+              static: true,
+              renderDay: () => h('span', { class: 'day-prop' }, 'Prop'),
+            },
+            { renderDay: () => h('span', { class: 'day-slot' }, 'Slot') },
+          ),
+        ),
+    })
+    expect(withProp.find('.day-prop').exists()).toBe(true)
+    expect(withProp.find('.day-slot').exists()).toBe(false)
   })
 })
