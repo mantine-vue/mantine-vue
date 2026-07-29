@@ -5,7 +5,9 @@ export const HueSlider = defineComponent({
   name: 'HueSlider',
   inheritAttrs: false,
   props: {
-    value: { type: Number, required: true },
+    modelValue: { type: Number, default: undefined },
+    value: { type: Number, default: undefined },
+    defaultValue: { type: Number, default: undefined },
     onChange: { type: Function as PropType<(value: number) => void>, default: undefined },
     onChangeEnd: { type: Function as PropType<(value: number) => void>, default: undefined },
     onScrubStart: { type: Function as PropType<() => void>, default: undefined },
@@ -13,14 +15,17 @@ export const HueSlider = defineComponent({
     size: { type: String, default: 'md' },
     focusable: { type: Boolean, default: true },
   },
-  setup(props, { attrs }) {
+  emits: ['update:modelValue', 'change'],
+  setup(props, { attrs, emit }) {
     return () =>
       h(ColorSlider, {
         ...attrs,
         ...props,
+        'onUpdate:modelValue': (value: number) => emit('update:modelValue', value),
+        onChange: (value: number) => emit('change', value),
         __staticSelector: 'HueSlider',
         maxValue: 360,
-        thumbColor: `hsl(${props.value}, 100%, 50%)`,
+        thumbColor: `hsl(${props.modelValue ?? props.value ?? props.defaultValue ?? 0}, 100%, 50%)`,
         round: true,
         'data-hue': '',
         overlays: [

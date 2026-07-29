@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
-import { h } from 'vue'
+import { h, nextTick, ref } from 'vue'
 import { mount } from '@vue/test-utils'
 import { MantineProvider, NativeSelect, getParsedNativeSelectData } from '../../index'
 
@@ -58,7 +58,7 @@ describe('@mantine-vue/core NativeSelect', () => {
   })
 
   it('supports controlled value and change handler', async () => {
-    const onChange = vi.fn((event: Event) => (event.target as HTMLSelectElement).value)
+    const onChange = vi.fn((value: string) => value)
     const wrapper = withProvider({ data: ['test-1', 'test-2'], value: 'test-1', onChange })
     const select = wrapper.find('select')
 
@@ -66,6 +66,27 @@ describe('@mantine-vue/core NativeSelect', () => {
 
     expect(onChange).toHaveReturnedWith('test-2')
     expect((select.element as HTMLSelectElement).value).toBe('test-1')
+  })
+
+  it('supports v-model in both directions', async () => {
+    const value = ref('test-1')
+    const wrapper = mount({
+      components: { MantineProvider, NativeSelect },
+      setup: () => ({ value }),
+      template: `
+        <MantineProvider env="test">
+          <NativeSelect v-model="value" :data="['test-1', 'test-2']" />
+        </MantineProvider>
+      `,
+    })
+    const select = wrapper.get('select')
+
+    value.value = 'test-2'
+    await nextTick()
+    expect((select.element as HTMLSelectElement).value).toBe('test-2')
+
+    await select.setValue('test-1')
+    expect(value.value).toBe('test-1')
   })
 
   it('prefers children over data', () => {

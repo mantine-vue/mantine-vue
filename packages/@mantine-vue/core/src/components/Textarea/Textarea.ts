@@ -13,6 +13,9 @@ export const Textarea = defineComponent({
   inheritAttrs: false,
   slots: Object as SlotsType<TextareaSlots>,
   props: {
+    modelValue: { type: String, default: undefined },
+    value: { type: String, default: undefined },
+    defaultValue: { type: String, default: undefined },
     autosize: { type: Boolean, default: false },
     maxRows: { type: Number, default: undefined },
     minRows: { type: Number, default: undefined },
@@ -27,7 +30,8 @@ export const Textarea = defineComponent({
     bottomSectionProps: { type: Object as PropType<Record<string, any>>, default: undefined },
     __staticSelector: { type: String, default: undefined },
   },
-  setup(props, { attrs, slots }) {
+  emits: ['update:modelValue', 'change'],
+  setup(props, { attrs, slots, emit }) {
     return () => {
       const shouldAutosize = props.autosize
       const autosizeProps = shouldAutosize
@@ -38,6 +42,11 @@ export const Textarea = defineComponent({
         InputBase,
         {
           ...attrs,
+          modelValue: props.modelValue,
+          value: props.value,
+          defaultValue: props.defaultValue,
+          'onUpdate:modelValue': (value: string) => emit('update:modelValue', value),
+          onChange: (value: string) => emit('change', value),
           component: shouldAutosize ? TextareaAutosize : 'textarea',
           __staticSelector: props.__staticSelector || 'Textarea',
           multiline: true,

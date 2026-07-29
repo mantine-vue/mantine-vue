@@ -60,6 +60,7 @@ export const SegmentedControl = defineComponent({
       type: Array as PropType<Array<string | number | SegmentedControlItem<string | number>>>,
       required: true,
     },
+    modelValue: { type: [String, Number, Boolean] as PropType<any>, default: undefined },
     value: { type: [String, Number, Boolean] as PropType<any>, default: undefined },
     defaultValue: { type: [String, Number, Boolean] as PropType<any>, default: undefined },
     onChange: { type: Function as PropType<(value: any) => void>, default: undefined },
@@ -82,7 +83,8 @@ export const SegmentedControl = defineComponent({
     vars: { type: [Object, Function], default: undefined },
     unstyled: { type: Boolean, default: false },
   },
-  setup(props, { attrs }) {
+  emits: ['update:modelValue', 'change'],
+  setup(props, { attrs, emit }) {
     const theme = useMantineTheme()
     const uuid = useId(props.name)
     const mounted = useMounted()
@@ -90,12 +92,15 @@ export const SegmentedControl = defineComponent({
     const itemRefs = reactive<Record<string, HTMLElement | null>>({})
     const normalizedData = computed(() => normalizeData(props.data))
     const [value, setValue] = useUncontrolled<any>({
-      value: () => props.value,
+      value: () => (props.modelValue !== undefined ? props.modelValue : props.value),
       defaultValue: props.defaultValue,
       finalValue:
         normalizedData.value.find((item) => !item.disabled)?.value ??
         normalizedData.value[0]?.value,
-      onChange: (nextValue) => props.onChange?.(nextValue),
+      onChange: (nextValue) => {
+        emit('update:modelValue', nextValue)
+        emit('change', nextValue)
+      },
     })
     const getStyles = useStyles({
       name: 'SegmentedControl',

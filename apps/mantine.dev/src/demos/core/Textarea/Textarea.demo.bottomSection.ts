@@ -18,7 +18,7 @@ const value = ref('')
     autosize
     :min-rows="4"
     :value="value"
-    @change="(event) => (value = event.currentTarget.value.slice(0, maxLength))"
+    @change="(nextValue) => (value = nextValue.slice(0, maxLength))"
   >
     <template #bottomSection>
       <Text size="xs" c="dimmed">{{ value.length }}/{{ maxLength }} characters</Text>

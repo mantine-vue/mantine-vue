@@ -26,9 +26,10 @@ export interface NativeSelectProps {
   id?: string
   name?: string
   form?: string
+  modelValue?: string
   value?: string
   defaultValue?: string
-  onChange?: (event: Event) => void
+  onChange?: (value: string) => void
   variant?: 'default' | 'filled' | 'unstyled'
   radius?: string | number
   classNames?: Record<string, string> | ((theme: any, props: any) => Record<string, string>)
@@ -91,9 +92,10 @@ export const NativeSelect = defineComponent({
     id: { type: String, default: undefined },
     name: { type: String, default: undefined },
     form: { type: String, default: undefined },
+    modelValue: { type: String, default: undefined },
     value: { type: String, default: undefined },
     defaultValue: { type: String, default: undefined },
-    onChange: { type: Function as PropType<(event: Event) => void>, default: undefined },
+    onChange: { type: Function as PropType<(value: string) => void>, default: undefined },
     variant: { type: String as PropType<'default' | 'filled' | 'unstyled'>, default: undefined },
     radius: { type: [String, Number] as PropType<MantineRadius>, default: undefined },
     classNames: { type: [Object, Function], default: undefined },
@@ -101,7 +103,8 @@ export const NativeSelect = defineComponent({
     vars: { type: [Object, Function], default: undefined },
     unstyled: { type: Boolean, default: false },
   },
-  setup(rawProps, { attrs, slots }) {
+  emits: ['update:modelValue', 'change'],
+  setup(rawProps, { attrs, slots, emit }) {
     const props = useProps('NativeSelect', defaultProps, rawProps)
 
     return () => {
@@ -131,9 +134,11 @@ export const NativeSelect = defineComponent({
           id: props.id,
           name: props.name,
           form: props.form,
-          ...(props.value !== undefined ? { value: props.value } : null),
-          ...(props.defaultValue !== undefined ? { value: props.defaultValue } : null),
-          onChange: props.onChange,
+          modelValue: props.modelValue,
+          value: props.value,
+          defaultValue: props.defaultValue,
+          'onUpdate:modelValue': (value: string) => emit('update:modelValue', value),
+          onChange: (value: string) => emit('change', value),
           variant: props.variant,
           radius: props.radius,
           classNames: props.classNames,

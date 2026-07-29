@@ -88,6 +88,7 @@ export const Slider = withBoxProps(
       domain: { type: Array as unknown as PropType<[number, number]>, default: undefined },
       step: { type: Number, default: undefined },
       precision: { type: Number, default: undefined },
+      modelValue: { type: Number, default: undefined },
       value: { type: Number, default: undefined },
       defaultValue: { type: Number, default: undefined },
       onChange: { type: Function as PropType<(value: number) => void>, default: undefined },
@@ -118,20 +119,28 @@ export const Slider = withBoxProps(
       vars: { type: [Object, Function], default: undefined },
       unstyled: { type: Boolean, default: false },
     },
-    setup(rawProps, { attrs, slots }) {
+    emits: ['update:modelValue', 'change'],
+    setup(rawProps, { attrs, slots, emit }) {
       const props = useProps('Slider', defaultProps as any, rawProps) as any
       const direction = useDirection()
       const hovered = ref(false)
       const thumb = ref<HTMLElement | null>(null)
       const [current, setCurrent] = useUncontrolled<number>({
-        value: () =>
-          props.value === undefined ? undefined : clamp(props.value, props.min, props.max),
+        value: () => {
+          const controlledValue = props.modelValue !== undefined ? props.modelValue : props.value
+          return controlledValue === undefined
+            ? undefined
+            : clamp(controlledValue, props.min, props.max)
+        },
         defaultValue:
           props.defaultValue === undefined
             ? undefined
             : clamp(props.defaultValue, props.min, props.max),
         finalValue: clamp(0, props.min, props.max),
-        onChange: (value) => props.onChange?.(value),
+        onChange: (value) => {
+          emit('update:modelValue', value)
+          emit('change', value)
+        },
       })
       const valueRef = ref(current.value)
       watch(current, (value) => {

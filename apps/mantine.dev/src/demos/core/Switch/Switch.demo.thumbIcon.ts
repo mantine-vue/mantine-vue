@@ -32,8 +32,8 @@ const Demo = defineComponent({
     return () =>
       h(Switch, {
         checked: checked.value,
-        onChange: (e: Event) => {
-          checked.value = (e.target as HTMLInputElement).checked
+        onChange: (value: boolean) => {
+          checked.value = value
         },
         color: 'teal',
         size: 'md',

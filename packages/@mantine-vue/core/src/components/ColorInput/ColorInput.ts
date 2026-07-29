@@ -69,7 +69,7 @@ export const ColorInput = defineComponent({
     swatches: Array as PropType<string[]>,
     swatchesPerRow: { type: Number, default: 7 },
   },
-  emits: ['update:modelValue'],
+  emits: ['update:modelValue', 'change'],
   setup(props, { attrs, emit, slots }) {
     const internal = ref(props.defaultValue)
     const current = () => props.modelValue ?? props.value ?? internal.value
@@ -78,8 +78,8 @@ export const ColorInput = defineComponent({
     const lastValid = ref(isColorValid(current()) ? current() : '')
     const setValue = (value: string, end = false) => {
       if (!controlled()) internal.value = value
-      props.onChange?.(value)
       emit('update:modelValue', value)
+      emit('change', value)
       if (isColorValid(value)) {
         lastValid.value = value
         if (end) props.onChangeEnd?.(convertHsvaTo(props.format, parseColor(value)))

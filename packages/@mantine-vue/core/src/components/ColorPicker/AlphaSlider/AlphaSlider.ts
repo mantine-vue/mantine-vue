@@ -6,7 +6,9 @@ export const AlphaSlider = defineComponent({
   name: 'AlphaSlider',
   inheritAttrs: false,
   props: {
-    value: { type: Number, required: true },
+    modelValue: { type: Number, default: undefined },
+    value: { type: Number, default: undefined },
+    defaultValue: { type: Number, default: undefined },
     color: { type: String, required: true },
     onChange: { type: Function as PropType<(value: number) => void>, default: undefined },
     onChangeEnd: { type: Function as PropType<(value: number) => void>, default: undefined },
@@ -15,7 +17,8 @@ export const AlphaSlider = defineComponent({
     size: { type: String, default: 'md' },
     focusable: { type: Boolean, default: true },
   },
-  setup(props, { attrs }) {
+  emits: ['update:modelValue', 'change'],
+  setup(props, { attrs, emit }) {
     return () =>
       h(ColorSlider, {
         ...attrs,
@@ -24,7 +27,8 @@ export const AlphaSlider = defineComponent({
         maxValue: 1,
         round: false,
         'data-alpha': '',
-        onChange: (value: number) => props.onChange?.(round(value, 2)),
+        'onUpdate:modelValue': (value: number) => emit('update:modelValue', round(value, 2)),
+        onChange: (value: number) => emit('change', round(value, 2)),
         onChangeEnd: (value: number) => props.onChangeEnd?.(round(value, 2)),
         overlays: [
           {

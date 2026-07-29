@@ -12,6 +12,7 @@ import {
   type SlotsType,
   type VNodeChild,
 } from 'vue'
+import { useUncontrolled } from '@mantine-vue/hooks'
 import {
   Box,
   hasNode,
@@ -414,19 +415,30 @@ export const MenuSearch = defineComponent({
   name: 'MenuSearch',
   inheritAttrs: false,
   props: {
+    modelValue: { type: String, default: undefined },
+    value: { type: String, default: undefined },
+    defaultValue: { type: String, default: undefined },
+    onChange: { type: Function as PropType<(value: string) => void>, default: undefined },
     clearSearchOnClose: { type: Boolean, default: true },
   },
-  setup(props, { attrs }) {
+  emits: ['update:modelValue', 'change'],
+  setup(props, { attrs, emit }) {
     const ctx = useMenuContext()
+    const [value, setValue] = useUncontrolled<string>({
+      value: () => (props.modelValue !== undefined ? props.modelValue : props.value),
+      defaultValue: props.defaultValue,
+      finalValue: '',
+      onChange: (nextValue) => {
+        emit('update:modelValue', nextValue)
+        emit('change', nextValue)
+      },
+    })
     const unregister = ctx.registerSearch()
     ctx.setSearchExitClear(
       props.clearSearchOnClose
         ? () => {
             clearActive(document.querySelector('[data-menu-dropdown]'))
-            ;(attrs as any).onChange?.({
-              currentTarget: { value: '' },
-              target: { value: '' },
-            })
+            setValue('')
           }
         : null,
     )
@@ -452,6 +464,7 @@ export const MenuSearch = defineComponent({
 
       return h(Input, {
         ...forwarded,
+        value: value.value,
         type: 'search',
         'data-autofocus': '',
         'data-mantine-stop-propagation': '',
@@ -469,11 +482,7 @@ export const MenuSearch = defineComponent({
         },
         onInput: (event: Event) => {
           call((attrs as any).onInput, event)
-          call((attrs as any).onChange, event)
-          clearActive((event.currentTarget as HTMLElement).closest('[data-menu-dropdown]'))
-        },
-        onChange: (event: Event) => {
-          call((attrs as any).onChange, event)
+          setValue((event.currentTarget as HTMLInputElement).value)
           clearActive((event.currentTarget as HTMLElement).closest('[data-menu-dropdown]'))
         },
         onKeydown: (event: KeyboardEvent) => {

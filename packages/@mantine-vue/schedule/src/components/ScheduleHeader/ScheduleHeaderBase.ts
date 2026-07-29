@@ -85,10 +85,7 @@ export const ScheduleHeaderBase = defineComponent({
           size: 'sm',
           data: views.map((view) => ({ value: view, label: getLabel(view, props.labels) })),
           'aria-label': getLabel('viewSelectLabel', props.labels),
-          onChange: (event: Event) =>
-            props.onViewChange?.(
-              (event.currentTarget as HTMLSelectElement).value as ScheduleViewLevel,
-            ),
+          onChange: (value: string) => props.onViewChange?.(value as ScheduleViewLevel),
         }),
         h(Box, { class: classes.viewSelect, style: { marginInlineStart: 'auto' } }, () => [
           h(ScheduleHeader.ViewSelect, {

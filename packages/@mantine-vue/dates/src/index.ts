@@ -1350,6 +1350,7 @@ export const DatePicker = defineComponent({
   slots: Object as SlotsType<RenderDaySlots>,
   props: {
     type: { type: String as PropType<DatePickerType>, default: 'default' },
+    modelValue: [String, Array, null] as PropType<DatePickerValueType>,
     value: [String, Array, null] as PropType<DatePickerValueType>,
     defaultValue: [String, Array, null] as PropType<DatePickerValueType>,
     onChange: Function as PropType<(value: DatePickerValueType) => void>,
@@ -1359,15 +1360,19 @@ export const DatePicker = defineComponent({
     withNativeLevelSelect: Boolean,
     yearsSelectRange: Array as unknown as PropType<[number, number]>,
   },
-  setup(props, { attrs, slots }) {
+  emits: ['update:modelValue', 'change'],
+  setup(props, { attrs, slots, emit }) {
     const finalValue = computed<DatePickerValueType>(() =>
       props.type === 'multiple' ? [] : props.type === 'range' ? [null, null] : null,
     )
     const [_value, setValue] = useUncontrolled<DatePickerValueType>({
-      value: computed(() => props.value),
+      value: computed(() => (props.modelValue !== undefined ? props.modelValue : props.value)),
       defaultValue: props.defaultValue,
       finalValue: finalValue.value,
-      onChange: (value) => props.onChange?.(value),
+      onChange: (value) => {
+        emit('update:modelValue', value)
+        emit('change', value)
+      },
     })
     const selectDate = (date: DateStringValue) => {
       if (
@@ -1456,6 +1461,7 @@ export const YearPicker = defineComponent({
   name: 'YearPicker',
   props: {
     type: { type: String as PropType<DatePickerType>, default: 'default' },
+    modelValue: [String, Array, null] as PropType<DatePickerValueType>,
     value: [String, Array, null] as PropType<DatePickerValueType>,
     defaultValue: [String, Array, null] as PropType<DatePickerValueType>,
     onChange: Function as PropType<(value: DatePickerValueType) => void>,
@@ -1466,15 +1472,19 @@ export const YearPicker = defineComponent({
     withNativeLevelSelect: Boolean,
     yearsSelectRange: Array as unknown as PropType<[number, number]>,
   },
-  setup(props, { attrs }) {
+  emits: ['update:modelValue', 'change'],
+  setup(props, { attrs, emit }) {
     const finalValue = computed<DatePickerValueType>(() =>
       props.type === 'multiple' ? [] : props.type === 'range' ? [null, null] : null,
     )
     const [_value, setValue] = useUncontrolled<DatePickerValueType>({
-      value: computed(() => props.value),
+      value: computed(() => (props.modelValue !== undefined ? props.modelValue : props.value)),
       defaultValue: props.defaultValue,
       finalValue: finalValue.value,
-      onChange: (value) => props.onChange?.(value),
+      onChange: (value) => {
+        emit('update:modelValue', value)
+        emit('change', value)
+      },
     })
     const hoveredDate = ref<DateStringValue | null>(null)
     const selectYear = (date: DateStringValue) => {
@@ -1583,6 +1593,7 @@ export const MonthPicker = defineComponent({
   name: 'MonthPicker',
   props: {
     type: { type: String as PropType<DatePickerType>, default: 'default' },
+    modelValue: [String, Array, null] as PropType<DatePickerValueType>,
     value: [String, Array, null] as PropType<DatePickerValueType>,
     defaultValue: [String, Array, null] as PropType<DatePickerValueType>,
     onChange: Function as PropType<(value: DatePickerValueType) => void>,
@@ -1593,15 +1604,19 @@ export const MonthPicker = defineComponent({
     withNativeLevelSelect: Boolean,
     yearsSelectRange: Array as unknown as PropType<[number, number]>,
   },
-  setup(props, { attrs }) {
+  emits: ['update:modelValue', 'change'],
+  setup(props, { attrs, emit }) {
     const finalValue = computed<DatePickerValueType>(() =>
       props.type === 'multiple' ? [] : props.type === 'range' ? [null, null] : null,
     )
     const [_value, setValue] = useUncontrolled<DatePickerValueType>({
-      value: computed(() => props.value),
+      value: computed(() => (props.modelValue !== undefined ? props.modelValue : props.value)),
       defaultValue: props.defaultValue,
       finalValue: finalValue.value,
-      onChange: (value) => props.onChange?.(value),
+      onChange: (value) => {
+        emit('update:modelValue', value)
+        emit('change', value)
+      },
     })
     const hoveredDate = ref<DateStringValue | null>(null)
     const selectMonth = (date: DateStringValue) => {
@@ -1825,6 +1840,7 @@ function createPickerInput(
     name,
     props: {
       type: { type: String as PropType<DatePickerType>, default: 'default' },
+      modelValue: [String, Array, null] as PropType<DatePickerValueType>,
       value: [String, Array, null] as PropType<DatePickerValueType>,
       defaultValue: [String, Array, null] as PropType<DatePickerValueType>,
       onChange: Function as PropType<(value: DatePickerValueType) => void>,
@@ -1840,15 +1856,19 @@ function createPickerInput(
       withNativeLevelSelect: Boolean,
       yearsSelectRange: Array as unknown as PropType<[number, number]>,
     },
-    setup(props, { attrs }) {
+    emits: ['update:modelValue', 'change'],
+    setup(props, { attrs, emit }) {
       const finalValue = computed<DatePickerValueType>(() =>
         props.type === 'multiple' ? [] : props.type === 'range' ? [null, null] : null,
       )
       const [_value, setValue] = useUncontrolled<DatePickerValueType>({
-        value: computed(() => props.value),
+        value: computed(() => (props.modelValue !== undefined ? props.modelValue : props.value)),
         defaultValue: props.defaultValue,
         finalValue: finalValue.value,
-        onChange: (value) => props.onChange?.(value),
+        onChange: (value) => {
+          emit('update:modelValue', value)
+          emit('change', value)
+        },
       })
       const opened = ref(false)
       const formattedValue = computed(() =>
@@ -1947,6 +1967,7 @@ export const DateInput = defineComponent({
   name: 'DateInput',
   inheritAttrs: false,
   props: {
+    modelValue: [String, Date, null] as PropType<string | Date | null>,
     value: [String, Date, null] as PropType<string | Date | null>,
     defaultValue: [String, Date, null] as PropType<string | Date | null>,
     onChange: Function as PropType<(value: DateValue) => void>,
@@ -1961,17 +1982,24 @@ export const DateInput = defineComponent({
   // A free-text input that also opens a Calendar dropdown (in a Popover,
   // same as DatePickerInput) on focus/click, so users can either type a
   // date or pick it from the calendar.
-  setup(props, { attrs }) {
+  emits: ['update:modelValue', 'change'],
+  setup(props, { attrs, emit }) {
     const [_value, setValue] = useUncontrolled<DateValue>({
       // normalizeDate() coerces a missing prop to `null`, but useUncontrolled
       // relies on strict `undefined` to detect "no value prop passed" (i.e.
       // uncontrolled usage). Coercing to null here made the component always
       // look controlled-with-null, so setValue() never actually updated
       // anything without an external value/onChange binding.
-      value: computed(() => (props.value === undefined ? undefined : normalizeDate(props.value))),
+      value: computed(() => {
+        const controlledValue = props.modelValue !== undefined ? props.modelValue : props.value
+        return controlledValue === undefined ? undefined : normalizeDate(controlledValue)
+      }),
       defaultValue: normalizeDate(props.defaultValue),
       finalValue: null,
-      onChange: (value) => props.onChange?.(value),
+      onChange: (value) => {
+        emit('update:modelValue', value)
+        emit('change', value)
+      },
     })
     const formatValue = (value: DateValue) =>
       value
@@ -2198,19 +2226,23 @@ export const TimeInput = defineComponent({
   name: 'TimeInput',
   props: {
     withSeconds: Boolean,
+    modelValue: String,
     value: String,
     defaultValue: String,
-    onChange: Function as PropType<(event: Event) => void>,
+    onChange: Function as PropType<(value: string) => void>,
   },
-  setup(props, { attrs }) {
+  emits: ['update:modelValue', 'change'],
+  setup(props, { attrs, emit }) {
     return () =>
       h(InputBase, {
         ...attrs,
         type: 'time',
         step: props.withSeconds ? 1 : 60,
+        modelValue: props.modelValue,
         value: props.value,
         defaultValue: props.defaultValue,
-        onChange: props.onChange,
+        'onUpdate:modelValue': (value: string) => emit('update:modelValue', value),
+        onChange: (value: string) => emit('change', value),
       })
   },
 })
@@ -2222,6 +2254,7 @@ export const TimeGrid = defineComponent({
   name: 'TimeGrid',
   props: {
     data: { type: Array as PropType<string[]>, default: () => [] },
+    modelValue: String,
     value: String,
     defaultValue: String,
     minTime: String,
@@ -2231,12 +2264,16 @@ export const TimeGrid = defineComponent({
     onChange: Function as PropType<(value: string | null) => void>,
     getControlProps: Function as PropType<(value: string) => Record<string, any>>,
   },
-  setup(props, { attrs }) {
+  emits: ['update:modelValue', 'change'],
+  setup(props, { attrs, emit }) {
     const [_value, setValue] = useUncontrolled<string | null>({
-      value: computed(() => props.value),
+      value: computed(() => (props.modelValue !== undefined ? props.modelValue : props.value)),
       defaultValue: props.defaultValue,
       finalValue: null,
-      onChange: (value) => props.onChange?.(value),
+      onChange: (value) => {
+        emit('update:modelValue', value)
+        emit('change', value)
+      },
     })
     return () =>
       h(Box, { ...attrs, class: [classes.timeGridRoot, (attrs as any).class] }, () =>
@@ -2279,7 +2316,9 @@ export const SpinInput = defineComponent({
   name: 'SpinInput',
   inheritAttrs: false,
   props: {
-    value: { type: Number as PropType<number | null>, default: null },
+    modelValue: { type: Number as PropType<number | null | undefined>, default: undefined },
+    value: { type: Number as PropType<number | null | undefined>, default: undefined },
+    defaultValue: { type: Number as PropType<number | null | undefined>, default: undefined },
     min: { type: Number, required: true },
     max: { type: Number, required: true },
     onChange: Function as PropType<(value: number | null) => void>,
@@ -2292,7 +2331,17 @@ export const SpinInput = defineComponent({
     disabled: Boolean,
     readOnly: Boolean,
   },
-  setup(props, { attrs }) {
+  emits: ['update:modelValue', 'change'],
+  setup(props, { attrs, emit }) {
+    const [value, setValue] = useUncontrolled<number | null>({
+      value: computed(() => (props.modelValue !== undefined ? props.modelValue : props.value)),
+      defaultValue: props.defaultValue,
+      finalValue: null,
+      onChange: (nextValue) => {
+        emit('update:modelValue', nextValue)
+        emit('change', nextValue)
+      },
+    })
     const finiteMax = () => Number.isFinite(props.max)
     const maxDigit = () => (finiteMax() ? Number(props.max.toFixed(0)[0]) : Infinity)
     const arrowsMax = () => props.max + 1 - props.step
@@ -2313,7 +2362,7 @@ export const SpinInput = defineComponent({
           : finiteMax()
             ? Math.min(Math.max(parsedValue, props.min), props.max)
             : Math.max(parsedValue, props.min)
-      props.onChange?.(clampedValue)
+      setValue(clampedValue)
       if (!props.disableAutoAdvance && (clampedValue > maxDigit() || raw.startsWith('00'))) {
         props.onNextInput?.()
       }
@@ -2326,22 +2375,22 @@ export const SpinInput = defineComponent({
         const { selectionStart, selectionEnd, value: inputValue } = target
         const isEntireValueSelected =
           inputValue.length > 0 && selectionStart === 0 && selectionEnd === inputValue.length
-        if (props.value === 0 && !isEntireValueSelected) {
+        if (value.value === 0 && !isEntireValueSelected) {
           event.preventDefault()
           props.onNextInput?.()
         }
       }
       if (event.key === 'Home') {
         event.preventDefault()
-        props.onChange?.(props.min)
+        setValue(props.min)
       }
       if (event.key === 'End') {
         event.preventDefault()
-        if (finiteMax()) props.onChange?.(props.max)
+        if (finiteMax()) setValue(props.max)
       }
       if (event.key === 'Backspace' || event.key === 'Delete') {
         event.preventDefault()
-        if (props.value !== null) props.onChange?.(null)
+        if (value.value !== null) setValue(null)
         else props.onPreviousInput?.()
       }
       if (event.key === 'ArrowRight') {
@@ -2355,22 +2404,22 @@ export const SpinInput = defineComponent({
       if (event.key === 'ArrowUp') {
         event.preventDefault()
         const newValue =
-          props.value === null
+          value.value === null
             ? props.min
             : finiteMax()
-              ? Math.min(Math.max(props.value + props.step, props.min), arrowsMax())
-              : Math.max(props.value + props.step, props.min)
-        props.onChange?.(newValue)
+              ? Math.min(Math.max(value.value + props.step, props.min), arrowsMax())
+              : Math.max(value.value + props.step, props.min)
+        setValue(newValue)
       }
       if (event.key === 'ArrowDown') {
         event.preventDefault()
         const newValue =
-          props.value === null
+          value.value === null
             ? finiteMax()
               ? arrowsMax()
               : props.min
-            : Math.min(Math.max(props.value - props.step, props.min), arrowsMax())
-        props.onChange?.(newValue)
+            : Math.min(Math.max(value.value - props.step, props.min), arrowsMax())
+        setValue(newValue)
       }
     }
 
@@ -2381,13 +2430,13 @@ export const SpinInput = defineComponent({
         role: 'spinbutton',
         'aria-valuemin': props.min,
         'aria-valuemax': finiteMax() ? props.max : undefined,
-        'aria-valuenow': props.value === null ? 0 : props.value,
-        'data-empty': props.value === null || undefined,
+        'aria-valuenow': value.value === null ? 0 : value.value,
+        'data-empty': value.value === null || undefined,
         inputmode: 'numeric',
         placeholder: props.placeholder,
         disabled: props.disabled,
         readonly: props.readOnly,
-        value: props.value === null ? '' : padTime(props.value),
+        value: value.value === null ? '' : padTime(value.value),
         onInput: (event: Event) => handleChange((event.target as HTMLInputElement).value),
         onKeydown: handleKeydown,
         onFocus: (event: FocusEvent) => (event.target as HTMLInputElement).select(),
@@ -2403,13 +2452,25 @@ export const SpinInput = defineComponent({
 export const AmPmInput = defineComponent({
   name: 'AmPmInput',
   props: {
-    value: { type: String as PropType<string | null>, default: null },
+    modelValue: { type: String as PropType<string | null | undefined>, default: undefined },
+    value: { type: String as PropType<string | null | undefined>, default: undefined },
+    defaultValue: { type: String as PropType<string | null | undefined>, default: undefined },
     labels: { type: Object as PropType<TimePickerAmPmLabels>, default: () => defaultAmPmLabels },
     onChange: Function as PropType<(value: string) => void>,
     disabled: Boolean,
     readOnly: Boolean,
   },
-  setup(props, { attrs }) {
+  emits: ['update:modelValue', 'change'],
+  setup(props, { attrs, emit }) {
+    const [value, setValue] = useUncontrolled<string | null>({
+      value: computed(() => (props.modelValue !== undefined ? props.modelValue : props.value)),
+      defaultValue: props.defaultValue,
+      finalValue: null,
+      onChange: (nextValue) => {
+        emit('update:modelValue', nextValue)
+        emit('change', nextValue)
+      },
+    })
     return () =>
       h(
         'select',
@@ -2418,8 +2479,8 @@ export const AmPmInput = defineComponent({
           class: classes.timePickerField,
           'data-am-pm': true,
           disabled: props.disabled,
-          value: props.value ?? props.labels.am,
-          onChange: (event: Event) => props.onChange?.((event.target as HTMLSelectElement).value),
+          value: value.value ?? props.labels.am,
+          onChange: (event: Event) => setValue((event.target as HTMLSelectElement).value),
         },
         [
           h('option', { value: props.labels.am }, props.labels.am),
@@ -2468,6 +2529,7 @@ export const TimeControlsList = defineComponent({
 export const TimePicker = defineComponent({
   name: 'TimePicker',
   props: {
+    modelValue: String,
     value: String,
     defaultValue: String,
     onChange: Function as PropType<(value: string) => void>,
@@ -2496,15 +2558,19 @@ export const TimePicker = defineComponent({
     // date is picked.
     hoursRef: Object as PropType<{ value: any }>,
   },
-  setup(props, { attrs }) {
+  emits: ['update:modelValue', 'change'],
+  setup(props, { attrs, emit }) {
     const effectiveFormat = computed<'12h' | '24h'>(() =>
       props.type === 'duration' ? '24h' : props.format,
     )
     const [_value, setValue] = useUncontrolled<string>({
-      value: computed(() => props.value),
+      value: computed(() => (props.modelValue !== undefined ? props.modelValue : props.value)),
       defaultValue: props.defaultValue,
       finalValue: '',
-      onChange: (value) => props.onChange?.(value),
+      onChange: (value) => {
+        emit('update:modelValue', value)
+        emit('change', value)
+      },
     })
 
     const parsed = computed(() =>
@@ -2847,6 +2913,7 @@ export const TimeValue = defineComponent({
 export const DateTimePicker = defineComponent({
   name: 'DateTimePicker',
   props: {
+    modelValue: [String, Date, null] as PropType<string | Date | null>,
     value: [String, Date, null] as PropType<string | Date | null>,
     defaultValue: [String, Date, null] as PropType<string | Date | null>,
     onChange: Function as PropType<(value: Date | null) => void>,
@@ -2856,7 +2923,8 @@ export const DateTimePicker = defineComponent({
     size: { type: [String, Number], default: 'sm' },
     submitButtonProps: Object as PropType<Record<string, any>>,
   },
-  setup(props, { attrs }) {
+  emits: ['update:modelValue', 'change'],
+  setup(props, { attrs, emit }) {
     // Populated with the actual hours <input> DOM node once TimePicker
     // mounts (see TimePicker's hoursRef prop) so we can auto-focus it right
     // after a date is picked from the calendar.
@@ -2869,12 +2937,20 @@ export const DateTimePicker = defineComponent({
       // so picking a date/time in the dropdown never updated anything
       // without an external value/onChange binding - the picker looked
       // completely broken/inert.
-      value: computed(() =>
-        props.value === undefined ? undefined : props.value === null ? null : new Date(props.value),
-      ),
+      value: computed(() => {
+        const controlledValue = props.modelValue !== undefined ? props.modelValue : props.value
+        return controlledValue === undefined
+          ? undefined
+          : controlledValue === null
+            ? null
+            : new Date(controlledValue)
+      }),
       defaultValue: props.defaultValue ? new Date(props.defaultValue) : null,
       finalValue: null,
-      onChange: (value) => props.onChange?.(value),
+      onChange: (value) => {
+        emit('update:modelValue', value)
+        emit('change', value)
+      },
     })
     const date = computed(() => (_value.value ? dayjs(_value.value).format('YYYY-MM-DD') : null))
     const time = computed(() =>
@@ -2961,7 +3037,9 @@ export const MiniCalendar = defineComponent({
     date: [String, Date] as PropType<string | Date>,
     defaultDate: [String, Date] as PropType<string | Date>,
     onDateChange: Function as PropType<(date: DateStringValue) => void>,
+    modelValue: [String, Date, null] as PropType<string | Date | null>,
     value: [String, Date, null] as PropType<string | Date | null>,
+    defaultValue: [String, Date, null] as PropType<string | Date | null>,
     onChange: Function as PropType<(date: DateStringValue) => void>,
     maxDate: [String, Date] as PropType<string | Date>,
     minDate: [String, Date] as PropType<string | Date>,
@@ -2975,12 +3053,25 @@ export const MiniCalendar = defineComponent({
     nextControlProps: Object as PropType<Record<string, any>>,
     locale: String,
   },
-  setup(props, { attrs }) {
+  emits: ['update:modelValue', 'change'],
+  setup(props, { attrs, emit }) {
     const ctx = useDatesContext()
+    const [value, setValue] = useUncontrolled<DateValue>({
+      value: computed(() => {
+        const controlledValue = props.modelValue !== undefined ? props.modelValue : props.value
+        return controlledValue === undefined ? undefined : toDateString(controlledValue)
+      }),
+      defaultValue: toDateString(props.defaultValue ?? null),
+      finalValue: null,
+      onChange: (nextValue) => {
+        emit('update:modelValue', nextValue)
+        emit('change', nextValue)
+      },
+    })
     const [_date, setDate] = useUncontrolled<DateStringValue>({
       value: computed(() => toDateString(props.date ?? null) ?? undefined),
       defaultValue: toDateString(props.defaultDate ?? null) ?? undefined,
-      finalValue: toDateString(props.value ?? null) || dayjs().format('YYYY-MM-DD'),
+      finalValue: value.value || dayjs().format('YYYY-MM-DD'),
       onChange: (value) => props.onDateChange?.(value),
     })
 
@@ -3017,12 +3108,12 @@ export const MiniCalendar = defineComponent({
             disabled,
             'aria-label': date.format('YYYY-MM-DD'),
             'data-disabled': disabled || undefined,
-            'data-selected': (props.value && dayjs(date).isSame(props.value, 'day')) || undefined,
+            'data-selected': (value.value && dayjs(date).isSame(value.value, 'day')) || undefined,
             ...dayProps,
             class: [classes.miniCalendarDay, dayProps.class],
             onClick: (event: MouseEvent) => {
               dayProps.onClick?.(event)
-              props.onChange?.(toDateString(date.format('YYYY-MM-DD'))!)
+              setValue(toDateString(date.format('YYYY-MM-DD'))!)
             },
           },
           () => [

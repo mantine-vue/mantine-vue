@@ -23,6 +23,7 @@ export interface AngleSliderMark {
 
 export interface AngleSliderProps {
   step?: number
+  modelValue?: number
   value?: number
   defaultValue?: number
   onChange?: (value: number) => void
@@ -64,6 +65,7 @@ export const AngleSlider = withBoxProps(
     inheritAttrs: false,
     props: {
       step: { type: Number, default: undefined },
+      modelValue: { type: Number, default: undefined },
       value: { type: Number, default: undefined },
       defaultValue: { type: Number, default: undefined },
       onChange: { type: Function as PropType<(value: number) => void>, default: undefined },
@@ -84,14 +86,18 @@ export const AngleSlider = withBoxProps(
       vars: { type: [Object, Function], default: undefined },
       unstyled: { type: Boolean, default: false },
     },
-    setup(rawProps, { attrs }) {
+    emits: ['update:modelValue', 'change'],
+    setup(rawProps, { attrs, emit }) {
       const props = useProps('AngleSlider', defaultProps, rawProps)
       const rootRef = ref<HTMLDivElement | null>(null)
       const [value, setValue] = useUncontrolled<number>({
-        value: () => props.value,
+        value: () => (props.modelValue !== undefined ? props.modelValue : props.value),
         defaultValue: props.defaultValue,
         finalValue: 0,
-        onChange: props.onChange,
+        onChange: (value) => {
+          emit('update:modelValue', value)
+          emit('change', value)
+        },
       })
 
       const update = (nextValue: number) => {

@@ -39,6 +39,7 @@ export const RadioGroup = defineComponent({
   inheritAttrs: false,
   slots: Object as SlotsType<RadioGroupSlots>,
   props: {
+    modelValue: { type: String as PropType<string | null | undefined>, default: undefined },
     value: { type: String as PropType<string | null | undefined>, default: undefined },
     defaultValue: { type: String as PropType<string | null | undefined>, default: undefined },
     onChange: { type: Function as PropType<(value: string) => void>, default: undefined },
@@ -58,13 +59,17 @@ export const RadioGroup = defineComponent({
     vars: { type: [Object, Function], default: undefined },
     unstyled: { type: Boolean, default: false },
   },
-  setup(props, { attrs, slots }) {
+  emits: ['update:modelValue', 'change'],
+  setup(props, { attrs, slots, emit }) {
     const name = useId(props.name)
     const [value, setValue] = useUncontrolled<string | null>({
-      value: () => props.value,
+      value: () => (props.modelValue !== undefined ? props.modelValue : props.value),
       defaultValue: props.defaultValue,
       finalValue: '',
-      onChange: (nextValue) => props.onChange?.(String(nextValue ?? '')),
+      onChange: (nextValue) => {
+        emit('update:modelValue', nextValue)
+        emit('change', nextValue)
+      },
     })
 
     const handleChange = (eventOrValue: Event | string) => {

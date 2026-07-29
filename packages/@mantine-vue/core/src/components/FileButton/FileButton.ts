@@ -5,9 +5,13 @@ export const FileButton = defineComponent({
   name: 'FileButton',
   inheritAttrs: false,
   props: {
+    modelValue: {
+      type: [Object, Array, null] as PropType<File | File[] | null | undefined>,
+      default: undefined,
+    },
     onChange: {
       type: Function as PropType<(payload: File | File[] | null) => void>,
-      required: true,
+      default: undefined,
     },
     multiple: { type: Boolean, default: false },
     accept: { type: String, default: undefined },
@@ -22,7 +26,8 @@ export const FileButton = defineComponent({
     inputProps: { type: Object as PropType<Record<string, any>>, default: undefined },
     inputRef: { type: [Object, Function] as PropType<any>, default: undefined },
   },
-  setup(props, { attrs, slots }) {
+  emits: ['update:modelValue', 'change'],
+  setup(props, { attrs, slots, emit }) {
     const inputRef = ref<HTMLInputElement | null>(null)
     const reset = () => {
       if (inputRef.value) {
@@ -56,11 +61,15 @@ export const FileButton = defineComponent({
           const files = (event.currentTarget as HTMLInputElement).files
 
           if (files === null) {
-            props.onChange(props.multiple ? [] : null)
+            const nextValue = props.multiple ? [] : null
+            emit('update:modelValue', nextValue)
+            emit('change', nextValue)
             return
           }
 
-          props.onChange(props.multiple ? Array.from(files) : files[0] || null)
+          const nextValue = props.multiple ? Array.from(files) : files[0] || null
+          emit('update:modelValue', nextValue)
+          emit('change', nextValue)
         },
       }),
       slots.default?.({ onClick, ...attrs }),

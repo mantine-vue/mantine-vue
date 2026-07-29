@@ -61,6 +61,7 @@ export const Rating = withBoxProps(
     inheritAttrs: false,
     slots: Object as SlotsType<RatingSlots>,
     props: {
+      modelValue: { type: Number, default: undefined },
       defaultValue: { type: Number, default: undefined },
       value: { type: Number, default: undefined },
       onChange: { type: Function as PropType<(value: number) => void>, default: undefined },
@@ -91,7 +92,8 @@ export const Rating = withBoxProps(
       vars: { type: [Object, Function], default: undefined },
       unstyled: { type: Boolean, default: false },
     },
-    setup(rawProps, { attrs, slots }) {
+    emits: ['update:modelValue', 'change'],
+    setup(rawProps, { attrs, slots, emit }) {
       const props = useProps('Rating', defaultProps, rawProps)
       const rootRef = ref<HTMLDivElement | null>(null)
       const hovered = ref(-1)
@@ -100,10 +102,13 @@ export const Rating = withBoxProps(
       const name = useId(props.name)
       const id = useId(props.id)
       const [currentValue, setCurrentValue] = useUncontrolled<number>({
-        value: () => props.value,
+        value: () => (props.modelValue !== undefined ? props.modelValue : props.value),
         defaultValue: props.defaultValue,
         finalValue: 0,
-        onChange: (value) => props.onChange?.(value),
+        onChange: (value) => {
+          emit('update:modelValue', value)
+          emit('change', value)
+        },
       })
       const getStyles = useStyles({
         name: 'Rating',

@@ -185,11 +185,17 @@ export const Cascader = defineComponent({
     styles: [Object, Function],
     unstyled: Boolean,
   },
-  emits: ['update:modelValue', 'update:searchValue'],
+  emits: ['update:modelValue', 'update:searchValue', 'change'],
   setup(props, { attrs, emit, slots }) {
     const id = useId((attrs as any).id)
     const internalValue = ref<string[] | null>(props.defaultValue ?? null)
-    const currentValue = computed(() => props.modelValue ?? props.value ?? internalValue.value)
+    const currentValue = computed(() =>
+      props.modelValue !== undefined
+        ? props.modelValue
+        : props.value !== undefined
+          ? props.value
+          : internalValue.value,
+    )
     const pathOptions = computed(() => getCascaderPathOptions(props.data, currentValue.value))
     const separatorString = computed(() =>
       typeof props.separator === 'string' || typeof props.separator === 'number'
@@ -232,8 +238,9 @@ export const Cascader = defineComponent({
 
     const setValue = (value: string[] | null) => {
       if (props.modelValue === undefined && props.value === undefined) internalValue.value = value
-      props.onChange?.(value, getCascaderPathOptions(props.data, value))
+      const selectedOptions = getCascaderPathOptions(props.data, value)
       emit('update:modelValue', value)
+      emit('change', value, selectedOptions)
     }
 
     const resetActivePath = () => {

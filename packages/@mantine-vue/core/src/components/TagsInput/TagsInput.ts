@@ -127,7 +127,7 @@ export const TagsInput = defineComponent({
     openOnFocus: { type: Boolean, default: true },
     selectFirstOptionOnDropdownOpen: Boolean,
   },
-  emits: ['update:modelValue', 'update:searchValue'],
+  emits: ['update:modelValue', 'update:searchValue', 'change'],
   setup(props, { attrs, emit, slots }) {
     const parsed = computed(() => getParsedComboboxData(props.data))
     const lockup = computed(() => getOptionsLockup(parsed.value))
@@ -144,8 +144,8 @@ export const TagsInput = defineComponent({
     }
     const setValue = (value: string[]) => {
       if (!controlled()) internal.value = value
-      props.onChange?.(value)
       emit('update:modelValue', value)
+      emit('change', value)
     }
     const combobox = useCombobox({
       opened: () => props.dropdownOpened,

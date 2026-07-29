@@ -15,8 +15,7 @@ export const ConfiguratorBooleanControl = defineComponent({
       h(Switch, {
         ...attrs,
         checked: props.value,
-        onChange: (event: Event) =>
-          props.onChange((event.currentTarget as HTMLInputElement).checked),
+        onChange: (checked: boolean) => props.onChange(checked),
         label: getControlLabel(props.prop),
       })
   },

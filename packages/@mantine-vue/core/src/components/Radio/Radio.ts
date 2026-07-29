@@ -1,5 +1,5 @@
 import { defineComponent, h, type PropType, type SlotsType, type VNodeChild } from 'vue'
-import { useId, assignRef } from '@mantine-vue/hooks'
+import { useId, assignRef, useUncontrolled } from '@mantine-vue/hooks'
 import {
   withBoxProps,
   Box,
@@ -60,14 +60,6 @@ const varsResolver = createVarsResolver<any>(
   }),
 )
 
-function callHandler(handler: any, event: Event) {
-  if (Array.isArray(handler)) {
-    handler.forEach((item) => item?.(event))
-  } else {
-    handler?.(event)
-  }
-}
-
 const RadioBase = defineComponent({
   name: 'Radio',
   inheritAttrs: false,
@@ -90,8 +82,12 @@ const RadioBase = defineComponent({
     iconColor: { type: String, default: undefined },
     autoContrast: { type: Boolean, default: undefined },
     withErrorStyles: { type: Boolean, default: true },
+    modelValue: { type: Boolean, default: undefined },
     checked: { type: Boolean, default: undefined },
+    defaultChecked: { type: Boolean, default: undefined },
+    onChange: { type: Function as PropType<(checked: boolean) => void>, default: undefined },
     disabled: { type: Boolean, default: false },
+    readOnly: { type: Boolean, default: false },
     variant: { type: String as PropType<RadioVariant>, default: 'filled' },
     mod: { type: [Object, Array] as PropType<any>, default: undefined },
     classNames: { type: [Object, Function], default: undefined },
@@ -99,9 +95,20 @@ const RadioBase = defineComponent({
     vars: { type: [Object, Function], default: undefined },
     unstyled: { type: Boolean, default: false },
   },
-  setup(props, { attrs, slots }) {
+  emits: ['update:modelValue', 'update:checked', 'change'],
+  setup(props, { attrs, slots, emit }) {
     const uuid = useId(props.id)
     const groupContext = useRadioGroupContext()
+    const [localChecked, setLocalChecked] = useUncontrolled<boolean>({
+      value: () => (props.modelValue !== undefined ? props.modelValue : props.checked),
+      defaultValue: props.defaultChecked,
+      finalValue: false,
+      onChange: (checked) => {
+        emit('update:modelValue', checked)
+        emit('update:checked', checked)
+        emit('change', checked)
+      },
+    })
     const getStyles = useStyles({
       name: 'Radio',
       props,
@@ -127,7 +134,7 @@ const RadioBase = defineComponent({
       const iconStyles = getStyles('icon')
       const Icon = props.icon || RadioIcon
       const value = String(attrs.value ?? '')
-      const checked = groupContext ? groupContext.value === value : props.checked
+      const checked = groupContext ? groupContext.value === value : localChecked.value
       const disabled = groupContext?.disabled || props.disabled
       const size = groupContext?.size ?? props.size
       const name = groupContext?.name ?? attrs.name
@@ -163,14 +170,19 @@ const RadioBase = defineComponent({
               id,
               checked,
               disabled,
+              readonly: props.readOnly,
               name,
               type: 'radio',
               'aria-describedby': describedBy,
               mod: { error: Boolean(error), withErrorStyles: props.withErrorStyles },
               variant: props.variant,
               onChange: (event: Event) => {
-                callHandler(attrs.onChange, event)
+                if (props.readOnly) {
+                  ;(event.currentTarget as HTMLInputElement).checked = Boolean(checked)
+                  return
+                }
                 groupContext?.onChange(event)
+                setLocalChecked((event.currentTarget as HTMLInputElement).checked)
               },
             }),
             slots.icon ? slots.icon(iconStyles) : h(Icon, iconStyles),

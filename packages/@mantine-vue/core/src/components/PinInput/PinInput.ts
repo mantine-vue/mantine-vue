@@ -66,6 +66,7 @@ export interface PinInputProps {
   radius?: string | number
   size?: string | number
   autoFocus?: boolean
+  modelValue?: string
   value?: string
   defaultValue?: string
   onChange?: (value: string) => void
@@ -138,6 +139,7 @@ export const PinInput = withBoxProps(
       radius: { type: [String, Number] as PropType<MantineRadius>, default: undefined },
       size: { type: String as PropType<MantineSize>, default: undefined },
       autoFocus: { type: Boolean, default: false },
+      modelValue: { type: String, default: undefined },
       value: { type: String, default: undefined },
       defaultValue: { type: String, default: undefined },
       onChange: { type: Function as PropType<(value: string) => void>, default: undefined },
@@ -180,7 +182,8 @@ export const PinInput = withBoxProps(
       vars: { type: [Object, Function], default: undefined },
       unstyled: { type: Boolean, default: false },
     },
-    setup(rawProps, { attrs }) {
+    emits: ['update:modelValue', 'change'],
+    setup(rawProps, { attrs, emit }) {
       const props = useProps('PinInput', defaultProps, rawProps)
       const uuid = useId(props.id)
       const focusedIndex = ref(-1)
@@ -203,12 +206,15 @@ export const PinInput = withBoxProps(
 
       const [value, setValue] = useUncontrolled<string[]>({
         value: () =>
-          props.value !== undefined ? createPinArray(currentLength.value, props.value) : undefined,
+          props.modelValue !== undefined || props.value !== undefined
+            ? createPinArray(currentLength.value, props.modelValue ?? props.value ?? '')
+            : undefined,
         defaultValue: props.defaultValue?.split('').slice(0, currentLength.value),
         finalValue: createPinArray(currentLength.value, ''),
         onChange: (nextValue) => {
           const stringValue = nextValue.join('').trim()
-          props.onChange?.(stringValue)
+          emit('update:modelValue', stringValue)
+          emit('change', stringValue)
 
           if (stringValue.length === currentLength.value && !completed.value) {
             completed.value = true
@@ -399,7 +405,6 @@ export const PinInput = withBoxProps(
                     id: `${uuid.value}-${index + 1}`,
                     inputMode: props.inputMode || (props.type === 'number' ? 'numeric' : 'text'),
                     onInput: (event: Event) => handleInput(event, index),
-                    onChange: (event: Event) => handleInput(event, index),
                     onKeydown: (event: KeyboardEvent) => handleKeyDown(event, index),
                     onFocus: (event: FocusEvent) => {
                       ;(event.target as HTMLInputElement).select()

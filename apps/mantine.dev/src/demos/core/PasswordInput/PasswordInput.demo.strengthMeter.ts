@@ -52,8 +52,7 @@ const color = computed(() => strength.value === 100 ? 'teal' : strength.value > 
           withAsterisk
           label="Your password"
           placeholder="Your password"
-          :value="value"
-          @change="(e) => (value = e.target.value)"
+          v-model="value"
         />
       </div>
     </PopoverTarget>
@@ -163,8 +162,8 @@ const Demo = defineComponent({
                       label: 'Your password',
                       placeholder: 'Your password',
                       value: value.value,
-                      onChange: (event: Event) => {
-                        value.value = (event.currentTarget as HTMLInputElement).value
+                      onChange: (nextValue: string) => {
+                        value.value = nextValue
                       },
                     }),
                   ],

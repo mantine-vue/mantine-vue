@@ -17,8 +17,7 @@ export const ConfiguratorSelectControl = defineComponent({
       h(NativeSelect, {
         ...attrs,
         value: props.value,
-        onChange: (event: Event) =>
-          props.onChange((event.currentTarget as HTMLSelectElement).value),
+        onChange: (value: string) => props.onChange(value),
         label: getControlLabel(props.prop),
         data: transformSelectData(props.data),
       })

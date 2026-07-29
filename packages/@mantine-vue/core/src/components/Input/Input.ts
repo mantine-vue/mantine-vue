@@ -1,5 +1,5 @@
 import { reactive, defineComponent, h, type PropType, type SlotsType, type VNodeChild } from 'vue'
-import { assignRef } from '@mantine-vue/hooks'
+import { assignRef, useUncontrolled } from '@mantine-vue/hooks'
 import {
   withBoxProps,
   Box,
@@ -78,6 +78,10 @@ const InputBase = defineComponent({
   slots: Object as SlotsType<InputSlots>,
   props: {
     component: { type: [String, Object, Function] as PropType<any>, default: 'input' },
+    modelValue: { type: null as unknown as PropType<any>, default: undefined },
+    value: { type: null as unknown as PropType<any>, default: undefined },
+    defaultValue: { type: null as unknown as PropType<any>, default: undefined },
+    onChange: { type: Function as PropType<(value: any) => void>, default: undefined },
     __staticSelector: { type: String, default: undefined },
     __stylesApiProps: { type: Object as PropType<Record<string, any>>, default: undefined },
     leftSection: { type: null as unknown as PropType<MantineNode>, default: undefined },
@@ -131,7 +135,26 @@ const InputBase = defineComponent({
     vars: { type: [Object, Function], default: undefined },
     unstyled: { type: Boolean, default: false },
   },
-  setup(props, { attrs, slots }) {
+  emits: ['update:modelValue', 'change'],
+  setup(props, { attrs, slots, emit }) {
+    const [value, setValue] = useUncontrolled<any>({
+      value: () => (props.modelValue !== undefined ? props.modelValue : props.value),
+      defaultValue: props.defaultValue,
+      finalValue: undefined,
+      onChange: (nextValue) => {
+        emit('update:modelValue', nextValue)
+        emit('change', nextValue)
+      },
+    })
+
+    const callHandler = (handler: unknown, event: Event) => {
+      if (Array.isArray(handler)) {
+        handler.forEach((item) => item?.(event))
+      } else if (typeof handler === 'function') {
+        handler(event)
+      }
+    }
+
     const wrapperCtx = useInputWrapperContext()
     const stylesCtx = reactive<InputStylesCtx>({
       offsetBottom: false,
@@ -232,6 +255,19 @@ const InputBase = defineComponent({
             {
               ...attrs,
               ...ariaAttributes,
+              value:
+                props.component === 'button' || props.component === 'div' ? undefined : value.value,
+              onInput: (event: Event) => {
+                callHandler(attrs.onInput, event)
+                if (props.component !== 'select') {
+                  setValue((event.currentTarget as HTMLInputElement).value)
+                }
+              },
+              onChange: (event: Event) => {
+                if (props.component === 'select') {
+                  setValue((event.currentTarget as HTMLSelectElement).value)
+                }
+              },
               component: props.component,
               required: props.required,
               disabled: props.disabled,

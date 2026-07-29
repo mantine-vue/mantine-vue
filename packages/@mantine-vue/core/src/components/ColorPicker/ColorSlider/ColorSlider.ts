@@ -1,5 +1,5 @@
 import { defineComponent, h, ref, watch, type PropType } from 'vue'
-import { clampUseMovePosition, useMove } from '@mantine-vue/hooks'
+import { clampUseMovePosition, useMove, useUncontrolled } from '@mantine-vue/hooks'
 import { Box, useMantineTheme, useStyles } from '../../../core'
 import { useColorPickerContext } from '../ColorPicker.context'
 import { Thumb } from '../Thumb/Thumb'
@@ -9,7 +9,9 @@ export const ColorSlider = defineComponent({
   name: 'ColorSlider',
   inheritAttrs: false,
   props: {
-    value: { type: Number, required: true },
+    modelValue: { type: Number, default: undefined },
+    value: { type: Number, default: undefined },
+    defaultValue: { type: Number, default: undefined },
     onChange: { type: Function as PropType<(value: number) => void>, default: undefined },
     onChangeEnd: { type: Function as PropType<(value: number) => void>, default: undefined },
     onScrubStart: { type: Function as PropType<() => void>, default: undefined },
@@ -25,10 +27,20 @@ export const ColorSlider = defineComponent({
     styles: { type: [Object, Function], default: undefined },
     unstyled: { type: Boolean, default: false },
   },
-  setup(props, { attrs }) {
+  emits: ['update:modelValue', 'change'],
+  setup(props, { attrs, emit }) {
     const ctx = useColorPickerContext()
     const theme = useMantineTheme()
-    const position = ref({ x: props.value / props.maxValue, y: 0 })
+    const [value, setValue] = useUncontrolled<number>({
+      value: () => (props.modelValue !== undefined ? props.modelValue : props.value),
+      defaultValue: props.defaultValue,
+      finalValue: 0,
+      onChange: (nextValue) => {
+        emit('update:modelValue', nextValue)
+        emit('change', nextValue)
+      },
+    })
+    const position = ref({ x: value.value / props.maxValue, y: 0 })
     const positionRef = ref(position.value)
     const ownStyles = useStyles({
       name: props.__staticSelector,
@@ -47,7 +59,7 @@ export const ColorSlider = defineComponent({
       ({ x, y }) => {
         positionRef.value = { x, y }
         position.value = { x, y: 0 }
-        props.onChange?.(changeValue(x))
+        setValue(changeValue(x))
       },
       {
         onScrubStart: props.onScrubStart,
@@ -57,10 +69,7 @@ export const ColorSlider = defineComponent({
         },
       },
     )
-    watch(
-      () => props.value,
-      (value) => (position.value = { x: value / props.maxValue, y: 0 }),
-    )
+    watch(value, (value) => (position.value = { x: value / props.maxValue, y: 0 }))
     const keydown = (event: KeyboardEvent) => {
       if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return
       event.preventDefault()
@@ -69,7 +78,7 @@ export const ColorSlider = defineComponent({
         y: 0,
       })
       const value = changeValue(next.x)
-      props.onChange?.(value)
+      setValue(value)
       props.onChangeEnd?.(value)
     }
     return () =>
@@ -80,7 +89,7 @@ export const ColorSlider = defineComponent({
           ref: (node: any) => move.ref(node?.$el ?? node),
           ...getStyles('slider', { className: attrs.class, style: attrs.style }),
           role: 'slider',
-          'aria-valuenow': props.value,
+          'aria-valuenow': value.value,
           'aria-valuemax': props.maxValue,
           'aria-valuemin': 0,
           tabindex: props.focusable ? 0 : -1,

@@ -16,6 +16,10 @@ import {
 
 export interface MaskInputProps {
   mask: MaskInputMask
+  modelValue?: string
+  value?: string
+  defaultValue?: string
+  onChange?: (value: string) => void
   tokens?: Record<string, RegExp>
   modify?: (
     value: string,
@@ -49,6 +53,10 @@ export const MaskInput = defineComponent({
   inheritAttrs: false,
   props: {
     mask: { type: [String, Array] as PropType<MaskInputMask>, required: true },
+    modelValue: { type: String, default: undefined },
+    value: { type: String, default: undefined },
+    defaultValue: { type: String, default: undefined },
+    onChange: { type: Function as PropType<(value: string) => void>, default: undefined },
     tokens: { type: Object as PropType<Record<string, RegExp>>, default: undefined },
     modify: { type: Function as PropType<MaskInputProps['modify']>, default: undefined },
     separate: { type: Boolean, default: false },
@@ -71,7 +79,8 @@ export const MaskInput = defineComponent({
     },
     resetRef: { type: [Object, Function] as PropType<any>, default: undefined },
   },
-  setup(props, { attrs, slots }) {
+  emits: ['update:modelValue', 'change'],
+  setup(props, { attrs, slots, emit }) {
     const input = ref<HTMLInputElement | null>(null)
     const processed = ref('')
     const rawValue = ref('')
@@ -128,6 +137,8 @@ export const MaskInput = defineComponent({
 
       const complete = isComplete(reprocessed, resolved.slots)
       if (notify) {
+        emit('update:modelValue', nextDisplay)
+        emit('change', nextDisplay)
         props.onChangeRaw?.(resolvedRaw, nextDisplay)
         if (complete && !wasComplete.value) {
           props.onComplete?.(nextDisplay, resolvedRaw)
@@ -147,6 +158,8 @@ export const MaskInput = defineComponent({
       if (input.value) {
         input.value.value = displayValue.value
       }
+      emit('update:modelValue', '')
+      emit('change', '')
       props.onChangeRaw?.('', '')
     }
 
@@ -156,7 +169,7 @@ export const MaskInput = defineComponent({
       (value) => assignRef(value, reset),
     )
     watch(
-      () => (attrs as any).value,
+      () => (props.modelValue !== undefined ? props.modelValue : props.value),
       (value) => {
         if (input.value && value !== undefined && String(value) !== displayValue.value) {
           commit(String(value), undefined, false, String(value))
@@ -174,7 +187,7 @@ export const MaskInput = defineComponent({
         return
       }
 
-      const initial = (attrs as any).value ?? (attrs as any).defaultValue ?? input.value.value
+      const initial = props.modelValue ?? props.value ?? props.defaultValue ?? input.value.value
       if (initial) {
         commit(String(initial), undefined, false, String(initial))
       } else if (props.alwaysShowMask) {
@@ -332,6 +345,7 @@ export const MaskInput = defineComponent({
           type: forwarded.type ?? 'text',
           __staticSelector: 'MaskInput',
           __stylesApiProps: attrs,
+          value: displayValue.value,
           rootRef: attach,
           onInput: handleInput,
           onFocus: handleFocus,

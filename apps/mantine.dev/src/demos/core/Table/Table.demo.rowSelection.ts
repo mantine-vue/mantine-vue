@@ -46,7 +46,7 @@ const toggleRow = (position: number, checked: boolean) => {
           <Checkbox
             aria-label="Select row"
             :checked="selectedRows.includes(el.position)"
-            @change="(e) => toggleRow(el.position, e.target.checked)"
+            @change="(checked) => toggleRow(el.position, checked)"
           />
         </Table.Td>
         <Table.Td>{{ el.position }}</Table.Td>
@@ -120,8 +120,7 @@ const Demo = defineComponent({
                                 h(Checkbox, {
                                   'aria-label': 'Select row',
                                   checked: selectedRows.value.includes(el.position),
-                                  onChange: (e: Event) =>
-                                    toggleRow(el.position, (e.target as HTMLInputElement).checked),
+                                  onChange: (checked: boolean) => toggleRow(el.position, checked),
                                 }),
                             },
                           ),
