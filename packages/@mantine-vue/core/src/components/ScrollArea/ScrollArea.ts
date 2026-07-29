@@ -40,6 +40,7 @@ export interface ScrollAreaProps {
   onRightReached?: () => void
   overscrollBehavior?: string
   startScrollPosition?: { x?: number; y?: number }
+  verticalScrollbarPosition?: 'left' | 'right'
 }
 
 const defaultProps = {
@@ -109,6 +110,10 @@ export const ScrollAreaBase = defineComponent({
     overscrollBehavior: { type: String, default: undefined },
     startScrollPosition: {
       type: Object as PropType<ScrollAreaProps['startScrollPosition']>,
+      default: undefined,
+    },
+    verticalScrollbarPosition: {
+      type: String as PropType<'left' | 'right'>,
       default: undefined,
     },
     classNames: { type: [Object, Function], default: undefined },
@@ -337,6 +342,7 @@ export const ScrollAreaBase = defineComponent({
               },
               'data-offset-scrollbars': toOffsetScrollbars(props.offsetScrollbars),
               'data-scrollbars': props.scrollbars || undefined,
+              'data-vertical-scrollbar-position': props.verticalScrollbarPosition,
               onScroll: handleScroll,
             },
             () => slots.default?.(),
@@ -347,6 +353,7 @@ export const ScrollAreaBase = defineComponent({
               {
                 ...getStyles('scrollbar'),
                 orientation: 'horizontal',
+                'data-vertical-scrollbar-position': props.verticalScrollbarPosition,
                 'data-hidden': props.type === 'never' ? true : undefined,
                 'data-state': getScrollbarState('horizontal'),
                 forceMount: true,
@@ -359,6 +366,7 @@ export const ScrollAreaBase = defineComponent({
               {
                 ...getStyles('scrollbar'),
                 orientation: 'vertical',
+                'data-vertical-scrollbar-position': props.verticalScrollbarPosition,
                 'data-hidden': props.type === 'never' ? true : undefined,
                 'data-state': getScrollbarState('vertical'),
                 forceMount: true,
@@ -367,6 +375,7 @@ export const ScrollAreaBase = defineComponent({
             ),
           h(ScrollAreaCorner, {
             ...getStyles('corner'),
+            'data-vertical-scrollbar-position': props.verticalScrollbarPosition,
             'data-hidden': props.type === 'never' ? true : undefined,
           }),
         ],
