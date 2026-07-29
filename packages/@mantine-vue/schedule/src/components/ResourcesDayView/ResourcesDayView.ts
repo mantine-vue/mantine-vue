@@ -411,7 +411,8 @@ export const ResourcesDayView = defineComponent({
                 class: classes.resourcesDayViewBackgroundEvent,
                 style: {
                   left: `${event.position.top}%`,
-                  width: `${event.position.height}%`,
+                  right: `${100 - event.position.top - event.position.height}%`,
+                  minWidth: '1px',
                   top: 0,
                   height: '100%',
                   '--bg-event-bg': colors.background,

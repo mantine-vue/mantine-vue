@@ -578,7 +578,8 @@ describe('@mantine-vue/schedule', () => {
       document.dispatchEvent(new MouseEvent('pointermove', { clientY: 196 }))
       await nextTick()
 
-      expect(eventButton.attributes('style')).toContain('height: 75%')
+      expect(eventButton.attributes('style')).toContain('bottom: 25%')
+      expect(eventButton.attributes('style')).toContain('min-height: 1px')
       expect(eventButton.attributes('data-resizing')).toBe('true')
       expect(onEventResize).not.toHaveBeenCalled()
 
