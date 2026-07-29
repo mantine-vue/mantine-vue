@@ -131,6 +131,7 @@ export function useFloatingWindow<T extends HTMLElement>(options: UseFloatingWin
     document.removeEventListener('mouseup', end)
     document.removeEventListener('touchmove', move)
     document.removeEventListener('touchend', end)
+    document.removeEventListener('touchcancel', end)
   }
 
   const move = (event: MouseEvent | TouchEvent) => {
@@ -163,6 +164,7 @@ export function useFloatingWindow<T extends HTMLElement>(options: UseFloatingWin
     document.addEventListener('mouseup', end)
     document.addEventListener('touchmove', move, { passive: false })
     document.addEventListener('touchend', end)
+    document.addEventListener('touchcancel', end)
   }
 
   const setRef = (node: Element | ComponentPublicInstance | null) => {

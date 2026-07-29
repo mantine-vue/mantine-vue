@@ -5,6 +5,8 @@ import { dragHandleSelector } from './FloatingWindow.demo.dragHandleSelector'
 import { enabled } from './FloatingWindow.demo.enabled'
 import { setPosition } from './FloatingWindow.demo.setPosition'
 import { axis } from './FloatingWindow.demo.axis'
+import { resizeHandle } from './FloatingWindow.demo.resizeHandle'
+import { resizeCallbacks } from './FloatingWindow.demo.resizeCallbacks'
 
 export const FloatingWindowDemos = {
   usage,
@@ -13,5 +15,7 @@ export const FloatingWindowDemos = {
   dragHandleSelector,
   enabled,
   setPosition,
+  resizeHandle,
+  resizeCallbacks,
   axis,
 }
