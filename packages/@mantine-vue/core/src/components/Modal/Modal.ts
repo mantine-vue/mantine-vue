@@ -65,6 +65,7 @@ export const ModalRoot = defineComponent({
   props: {
     opened: { type: Boolean, required: true },
     onClose: { type: Function as PropType<() => void>, required: true },
+    keepMounted: { type: Boolean, default: false },
     centered: Boolean,
     fullScreen: Boolean,
     radius: [String, Number],
@@ -109,6 +110,7 @@ export const ModalRoot = defineComponent({
           ...attrs,
           opened: props.opened,
           onClose: props.onClose,
+          keepMounted: props.keepMounted,
           unstyled: props.unstyled,
           ...getStyles('root'),
           mod: { centered: props.centered, 'full-screen': props.fullScreen },
@@ -164,6 +166,7 @@ const ModalBaseComponent = defineComponent({
   props: {
     opened: { type: Boolean, required: true },
     onClose: { type: Function as PropType<() => void>, required: true },
+    keepMounted: { type: Boolean, default: false },
     title: { type: null as unknown as PropType<MantineNode>, default: undefined },
     withOverlay: { type: Boolean, default: true },
     overlayProps: Object,
@@ -176,7 +179,12 @@ const ModalBaseComponent = defineComponent({
       const header = hasNode(title) || props.withCloseButton
       return h(
         ModalRoot,
-        { ...attrs, opened: props.opened, onClose: props.onClose },
+        {
+          ...attrs,
+          opened: props.opened,
+          onClose: props.onClose,
+          keepMounted: props.keepMounted,
+        },
         {
           default: () => [
             props.withOverlay && h(ModalOverlay, props.overlayProps),

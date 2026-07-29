@@ -26,7 +26,6 @@ const VALUE_ERROR =
 
 const defaultProps = {
   keepMounted: true,
-  keepMountedMode: 'activity',
   orientation: 'horizontal',
   loop: true,
   activateTabWithKeyboard: true,
@@ -72,7 +71,6 @@ const TabsBase = defineComponent({
     radius: { type: [String, Number] as PropType<MantineRadius>, default: undefined },
     inverted: { type: Boolean, default: false },
     keepMounted: { type: Boolean, default: undefined },
-    keepMountedMode: { type: String as PropType<'activity' | 'display-none'>, default: undefined },
     autoContrast: { type: Boolean, default: undefined },
     mod: { type: [Object, Array] as PropType<any>, default: undefined },
     classNames: { type: [Object, Function], default: undefined },
@@ -131,9 +129,7 @@ const TabsBase = defineComponent({
       get keepMounted() {
         return props.keepMounted
       },
-      get keepMountedMode() {
-        return props.keepMountedMode
-      },
+
       get placement() {
         return props.placement
       },
