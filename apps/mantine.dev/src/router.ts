@@ -145,6 +145,11 @@ const routes: RouteRecordRaw[] = [
     component: mdxRoute(() => import('./pages/core/autocomplete.mdx')),
   },
   {
+    path: '/core/cascader',
+    name: 'core-cascader',
+    component: mdxRoute(() => import('./pages/core/cascader.mdx')),
+  },
+  {
     path: '/core/combobox',
     name: 'core-combobox',
     component: mdxRoute(() => import('./pages/core/combobox.mdx')),
