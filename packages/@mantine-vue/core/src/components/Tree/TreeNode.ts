@@ -54,9 +54,10 @@ export const TreeNode: ReturnType<typeof defineComponent> = defineComponent({
   },
   setup(props) {
     const element = ref<HTMLElement | null>(null)
-    const hasChildren = () =>
-      Array.isArray(props.node.children) ||
-      (!!props.node.hasChildren && !Array.isArray(props.node.children))
+    const hasChildren = () => {
+      const hasLoadedChildren = Array.isArray(props.node.children) && props.node.children.length > 0
+      return hasLoadedChildren || (!!props.node.hasChildren && !hasLoadedChildren)
+    }
     const expanded = () => props.controller.expandedState.value[props.node.value] || false
     const dnd = useTreeNodeDragDrop({
       nodeValue: props.node.value,
@@ -73,14 +74,20 @@ export const TreeNode: ReturnType<typeof defineComponent> = defineComponent({
       if (event.code === 'ArrowRight') {
         event.stopPropagation()
         event.preventDefault()
-        if (expanded()) element.value?.querySelector<HTMLElement>('[role=treeitem]')?.focus()
-        else if (hasChildren()) props.controller.expand(props.node.value)
+        if (expanded()) {
+          const nextNode = element.value?.querySelector<HTMLElement>('[role=treeitem]')
+          nextNode?.setAttribute('data-focus-ring', 'true')
+          nextNode?.focus()
+        } else if (hasChildren()) props.controller.expand(props.node.value)
       } else if (event.code === 'ArrowLeft') {
         event.stopPropagation()
         event.preventDefault()
         if (expanded() && hasChildren()) props.controller.collapse(props.node.value)
-        else if (props.isSubtree)
-          element.value?.parentElement?.closest<HTMLElement>('[role=treeitem]')?.focus()
+        else if (props.isSubtree) {
+          const parentNode = element.value?.parentElement?.closest<HTMLElement>('[role=treeitem]')
+          parentNode?.setAttribute('data-focus-ring', 'true')
+          parentNode?.focus()
+        }
       } else if (event.code === 'ArrowDown' || event.code === 'ArrowUp') {
         const root = element.value?.closest('[data-tree-root]')
         if (!root || !element.value) return
@@ -91,6 +98,7 @@ export const TreeNode: ReturnType<typeof defineComponent> = defineComponent({
         )
         const index = nodes.indexOf(element.value)
         const next = nodes[event.code === 'ArrowDown' ? index + 1 : index - 1]
+        next?.setAttribute('data-focus-ring', 'true')
         next?.focus()
         if (event.shiftKey && next)
           props.controller.setSelectedState(
@@ -217,6 +225,12 @@ export const TreeNode: ReturnType<typeof defineComponent> = defineComponent({
           'data-level': props.level,
           tabindex: props.rootIndex === 0 ? 0 : -1,
           onKeydown,
+          onBlur: (event: FocusEvent) => {
+            const currentTarget = event.currentTarget as HTMLElement
+            if (!currentTarget.contains(event.relatedTarget as Node | null)) {
+              currentTarget.removeAttribute('data-focus-ring')
+            }
+          },
           ref: element,
         },
         [label as any, loading, subtree],
