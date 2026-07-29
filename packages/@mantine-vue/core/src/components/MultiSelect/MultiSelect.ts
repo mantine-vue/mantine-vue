@@ -29,7 +29,14 @@ export interface MultiSelectSlots {
   leftSection?: () => VNodeChild
   rightSection?: () => VNodeChild
   renderOption?: (input: { option: any; checked?: boolean }) => VNodeChild
+  renderPill?: (input: {
+    option: any
+    value: Primitive
+    onRemove: () => void
+    disabled: boolean
+  }) => VNodeChild
   nothingFound?: () => VNodeChild
+  nothingFoundMessage?: () => VNodeChild
 }
 
 export interface MultiSelectProps<Value extends Primitive = string> {
@@ -215,18 +222,21 @@ export const MultiSelect = defineComponent({
                         const option = lockup.value[String(item)] ??
                           retained[String(item)] ?? { value: item, label: String(item) }
                         const onRemove = () => remove(item)
+                        const renderPillInput = { option, value: item, onRemove, disabled }
                         return props.renderPill
-                          ? props.renderPill({ option, value: item, onRemove, disabled })
-                          : h(
-                              Pill,
-                              {
-                                key: `${String(item)}-${index}`,
-                                withRemoveButton: !readOnly && !option.disabled,
-                                disabled,
-                                onRemove,
-                              },
-                              () => option.label,
-                            )
+                          ? props.renderPill(renderPillInput)
+                          : slots.renderPill
+                            ? slots.renderPill(renderPillInput)
+                            : h(
+                                Pill,
+                                {
+                                  key: `${String(item)}-${index}`,
+                                  withRemoveButton: !readOnly && !option.disabled,
+                                  disabled,
+                                  onRemove,
+                                },
+                                () => option.label,
+                              )
                       }),
                       h(Combobox.EventsTarget, { withExpandedAttribute: true }, () =>
                         h(PillsInput.Field, {
@@ -275,7 +285,10 @@ export const MultiSelect = defineComponent({
                 filter: props.filter,
                 limit: props.limit,
                 filterOptions: props.searchable,
-                hiddenWhenEmpty: props.nothingFoundMessage == null && !slots.nothingFound,
+                hiddenWhenEmpty:
+                  props.nothingFoundMessage == null &&
+                  !slots.nothingFoundMessage &&
+                  !slots.nothingFound,
                 nothingFoundMessage: props.nothingFoundMessage,
                 value: values,
                 withCheckIcon: props.withCheckIcon,
@@ -288,7 +301,7 @@ export const MultiSelect = defineComponent({
               },
               {
                 renderOption: slots.renderOption,
-                nothingFound: slots.nothingFound,
+                nothingFound: slots.nothingFoundMessage ?? slots.nothingFound,
               },
             ),
           ],

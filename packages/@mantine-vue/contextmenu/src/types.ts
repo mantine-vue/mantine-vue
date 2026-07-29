@@ -119,10 +119,7 @@ export type ContextMenuSubmenuProps = Pick<
   dir?: 'ltr' | 'rtl'
 }
 
-export type ContextMenuItemProps = WithRequiredProperty<
-  Omit<ContextMenuItemOptions, 'key'>,
-  'title'
-> & {
+export type ContextMenuItemProps = Omit<ContextMenuItemOptions, 'key'> & {
   onHide: HideContextMenuFunction
   submenuProps: ContextMenuSubmenuProps
 }

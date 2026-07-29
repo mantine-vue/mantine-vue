@@ -143,8 +143,12 @@ export interface ComboboxPopoverSlots {
   default?: () => VNodeChild
   /** Custom option content, alternative to the `renderOption` prop */
   option?: (input: ComboboxLikeRenderOptionInput<ComboboxItem>) => VNodeChild
+  /** Exact-name alias for the `renderOption` prop */
+  renderOption?: (input: ComboboxLikeRenderOptionInput<ComboboxItem>) => VNodeChild
   /** Custom "nothing found" content, alternative to the `nothingFoundMessage` prop */
   nothingFound?: () => VNodeChild
+  /** Exact-name alias for the `nothingFoundMessage` prop */
+  nothingFoundMessage?: () => VNodeChild
 }
 
 const defaultProps = {
@@ -341,12 +345,13 @@ export const ComboboxPopoverBase = defineComponent({
       (props.renderOption as
         | ((input: ComboboxLikeRenderOptionInput<ComboboxItem>) => VNodeChild)
         | undefined) ??
-      (slots.option
-        ? (input: ComboboxLikeRenderOptionInput<ComboboxItem>) => slots.option!(input)
+      ((slots.renderOption ?? slots.option)
+        ? (input: ComboboxLikeRenderOptionInput<ComboboxItem>) =>
+            (slots.renderOption ?? slots.option)!(input)
         : undefined)
 
     const resolveNothingFound = (): VNodeChild =>
-      resolveNode(props.nothingFoundMessage, slots.nothingFound)
+      resolveNode(props.nothingFoundMessage, slots.nothingFoundMessage ?? slots.nothingFound)
 
     const renderSearchableDropdown = () => {
       const filteredData = (props.filter || defaultOptionsFilter)({

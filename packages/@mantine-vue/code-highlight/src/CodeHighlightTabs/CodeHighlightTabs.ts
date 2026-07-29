@@ -1,4 +1,4 @@
-import { defineComponent, h, watch, type PropType, type VNodeChild } from 'vue'
+import { defineComponent, h, watch, type PropType, type SlotsType, type VNodeChild } from 'vue'
 import { Box, ScrollArea, UnstyledButton, useProps, useStyles } from '@mantine-vue/core'
 import { useUncontrolled } from '@mantine-vue/hooks'
 import {
@@ -44,9 +44,15 @@ export interface CodeHighlightTabsFactory {
   stylesNames: CodeHighlightTabsStylesNames
 }
 
+export interface CodeHighlightTabsSlots {
+  getFileIcon?: (input: { fileName: string }) => VNodeChild
+  controls?: () => VNodeChild
+}
+
 export const CodeHighlightTabs = defineComponent({
   name: 'CodeHighlightTabs',
   inheritAttrs: false,
+  slots: Object as SlotsType<CodeHighlightTabsSlots>,
   props: {
     code: { type: Array as PropType<CodeHighlightTabsCode[]>, required: true },
     getFileIcon: {
@@ -86,7 +92,7 @@ export const CodeHighlightTabs = defineComponent({
     vars: { type: [Object, Function], default: undefined },
     unstyled: { type: Boolean, default: false },
   },
-  setup(rawProps, { attrs }) {
+  setup(rawProps, { attrs, slots }) {
     const props = useProps<CodeHighlightTabsProps>('CodeHighlightTabs', null, rawProps as any)
     const getStyles = useStyles<CodeHighlightTabsFactory>({
       name: 'CodeHighlightTabs',
@@ -128,6 +134,9 @@ export const CodeHighlightTabs = defineComponent({
       }
 
       const currentCode = props.code[value.value] || { code: '', language: 'tsx', fileName: '' }
+      const getFileIcon =
+        props.getFileIcon ??
+        (slots.getFileIcon ? (fileName: string) => slots.getFileIcon?.({ fileName }) : undefined)
       const files = props.code.map((node, index) =>
         h(
           UnstyledButton,
@@ -141,7 +150,7 @@ export const CodeHighlightTabs = defineComponent({
           () => [
             h(FileIcon, {
               fileIcon: node.icon,
-              getFileIcon: props.getFileIcon,
+              getFileIcon,
               fileName: node.fileName,
               key: 'file-icon',
               ...getStyles('fileIcon'),
@@ -162,29 +171,33 @@ export const CodeHighlightTabs = defineComponent({
           },
           () => h('div', getStyles('files'), files),
         ),
-        h(CodeHighlight, {
-          code: currentCode.code,
-          language: currentCode.language,
-          expanded: expanded.value,
-          onExpandedChange: setExpanded,
-          withCopyButton: props.withCopyButton,
-          withExpandButton: props.withExpandButton,
-          withBorder: props.withBorder,
-          radius: props.radius,
-          maxCollapsedHeight: props.maxCollapsedHeight,
-          copiedLabel: props.copiedLabel,
-          copyLabel: props.copyLabel,
-          expandCodeLabel: props.expandCodeLabel,
-          collapseCodeLabel: props.collapseCodeLabel,
-          background: props.background,
-          controls: props.controls,
-          codeColorScheme: props.codeColorScheme,
-          withLineNumbers: props.withLineNumbers,
-          __withOffset: true,
-          __staticSelector: 'CodeHighlightTabs',
-          classNames: props.classNames,
-          styles: props.styles,
-        }),
+        h(
+          CodeHighlight,
+          {
+            code: currentCode.code,
+            language: currentCode.language,
+            expanded: expanded.value,
+            onExpandedChange: setExpanded,
+            withCopyButton: props.withCopyButton,
+            withExpandButton: props.withExpandButton,
+            withBorder: props.withBorder,
+            radius: props.radius,
+            maxCollapsedHeight: props.maxCollapsedHeight,
+            copiedLabel: props.copiedLabel,
+            copyLabel: props.copyLabel,
+            expandCodeLabel: props.expandCodeLabel,
+            collapseCodeLabel: props.collapseCodeLabel,
+            background: props.background,
+            controls: props.controls,
+            codeColorScheme: props.codeColorScheme,
+            withLineNumbers: props.withLineNumbers,
+            __withOffset: true,
+            __staticSelector: 'CodeHighlightTabs',
+            classNames: props.classNames,
+            styles: props.styles,
+          },
+          { controls: slots.controls },
+        ),
       ])
     }
   },

@@ -250,11 +250,18 @@ export const RangeSlider = defineComponent({
                       value: props.scale(current.value[index]),
                       position: positions[index],
                       dragging: move.active.value && activeThumb.value === index,
-                      label: slots.label
-                        ? slots.label({ value: props.scale(current.value[index]), index })
-                        : typeof props.label === 'function'
-                          ? props.label(props.scale(current.value[index]))
-                          : props.label,
+                      label:
+                        rawProps.label !== undefined
+                          ? typeof props.label === 'function'
+                            ? props.label(props.scale(current.value[index]))
+                            : props.label
+                          : (slots.label?.({
+                              value: props.scale(current.value[index]),
+                              index,
+                            }) ??
+                            (typeof props.label === 'function'
+                              ? props.label(props.scale(current.value[index]))
+                              : props.label)),
                       labelAlwaysOn: props.labelAlwaysOn,
                       thumbLabel: props.thumbLabel?.[index],
                       thumbValueText: props.thumbValueText,
@@ -267,9 +274,9 @@ export const RangeSlider = defineComponent({
                       onKeydown: (event: KeyboardEvent) => keydown(index, event),
                     },
                     () =>
-                      slots.thumbChildren
-                        ? slots.thumbChildren({ index })
-                        : props.thumbChildren?.[index],
+                      props.thumbChildren !== undefined
+                        ? props.thumbChildren[index]
+                        : slots.thumbChildren?.({ index }),
                   ),
                 ),
             },

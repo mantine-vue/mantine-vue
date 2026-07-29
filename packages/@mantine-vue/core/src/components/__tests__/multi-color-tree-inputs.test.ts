@@ -5,16 +5,24 @@ import { createSSRApp, h } from 'vue'
 import { ColorInput, MantineProvider, MultiSelect, TagsInput, TreeSelect } from '../../index'
 
 const mounted: Array<ReturnType<typeof mount>> = []
-function render(component: any, props: Record<string, any>) {
+function render(
+  component: any,
+  props: Record<string, any>,
+  slots: Record<string, (...args: any[]) => any> = {},
+) {
   const wrapper = mount(
     {
       render: () =>
         h(MantineProvider, { env: 'test' }, () =>
-          h(component, {
-            ...props,
-            comboboxProps: { withinPortal: false, ...props.comboboxProps },
-            popoverProps: { withinPortal: false, ...props.popoverProps },
-          }),
+          h(
+            component,
+            {
+              ...props,
+              comboboxProps: { withinPortal: false, ...props.comboboxProps },
+              popoverProps: { withinPortal: false, ...props.popoverProps },
+            },
+            slots,
+          ),
         ),
     },
     { attachTo: document.body },
@@ -79,6 +87,44 @@ describe('@mantine-vue/core multi-value inputs', () => {
     expect((wrapper.find('input[type="hidden"]').element as HTMLInputElement).value).toBe(
       'Vue,React',
     )
+  })
+
+  it('supports scoped renderPill and exact-name nothingFoundMessage slots', async () => {
+    const wrapper = render(
+      MultiSelect,
+      {
+        data: [{ value: 'vue', label: 'Vue' }],
+        defaultValue: ['vue'],
+        searchable: true,
+      },
+      {
+        renderPill: ({ option }: any) => h('span', { class: 'pill-slot' }, `Slot: ${option.label}`),
+        nothingFoundMessage: () => h('span', { class: 'empty-slot' }, 'No matches'),
+      },
+    )
+
+    expect(wrapper.get('.pill-slot').text()).toBe('Slot: Vue')
+    const input = wrapper.find('input:not([type="hidden"])')
+    await input.trigger('focus')
+    await input.setValue('missing')
+
+    expect(wrapper.get('.empty-slot').text()).toBe('No matches')
+  })
+
+  it('keeps renderPill prop precedence over its slot', () => {
+    const wrapper = render(
+      TagsInput,
+      {
+        defaultValue: ['Vue'],
+        renderPill: ({ value }: any) => h('span', { class: 'prop-pill' }, value),
+      },
+      {
+        renderPill: ({ value }: any) => h('span', { class: 'slot-pill' }, value),
+      },
+    )
+
+    expect(wrapper.find('.prop-pill').exists()).toBe(true)
+    expect(wrapper.find('.slot-pill').exists()).toBe(false)
   })
 })
 

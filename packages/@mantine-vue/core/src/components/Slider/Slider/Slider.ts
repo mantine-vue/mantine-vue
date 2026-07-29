@@ -207,11 +207,13 @@ export const Slider = withBoxProps(
           max: domain.value[1],
         })
         const scaled = props.scale(current.value)
-        const label = slots.label
-          ? slots.label({ value: scaled })
-          : typeof props.label === 'function'
-            ? props.label(scaled)
-            : props.label
+        const label =
+          rawProps.label !== undefined
+            ? typeof props.label === 'function'
+              ? props.label(scaled)
+              : props.label
+            : (slots.label?.({ value: scaled }) ??
+              (typeof props.label === 'function' ? props.label(scaled) : props.label))
         const start =
           typeof props.startPointValue === 'number' && !props.inverted
             ? getPosition({

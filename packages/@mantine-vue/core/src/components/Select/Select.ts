@@ -71,6 +71,7 @@ export interface SelectSlots {
   rightSection?: () => VNodeChild
   renderOption?: (input: { option: any; checked?: boolean }) => VNodeChild
   nothingFound?: () => VNodeChild
+  nothingFoundMessage?: () => VNodeChild
 }
 
 export const Select = defineComponent({
@@ -305,7 +306,7 @@ export const Select = defineComponent({
               },
               {
                 renderOption: slots.renderOption,
-                nothingFound: slots.nothingFound,
+                nothingFound: slots.nothingFoundMessage ?? slots.nothingFound,
               },
             ),
           ],

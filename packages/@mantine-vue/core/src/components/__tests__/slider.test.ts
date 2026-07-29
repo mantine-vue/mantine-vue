@@ -9,8 +9,14 @@ import {
   getPrecision,
 } from '../Slider/utils/slider-utils'
 
-function render(component: any, props: Record<string, any>) {
-  return mount({ render: () => h(MantineProvider, { env: 'test' }, () => h(component, props)) })
+function render(
+  component: any,
+  props: Record<string, any>,
+  slots: Record<string, (...args: any[]) => any> = {},
+) {
+  return mount({
+    render: () => h(MantineProvider, { env: 'test' }, () => h(component, props, slots)),
+  })
 }
 
 describe('@mantine-vue/core Slider utilities', () => {
@@ -47,6 +53,23 @@ describe('@mantine-vue/core Slider', () => {
     expect(wrapper.find('.mantine-Slider-root').attributes('style')).toContain(
       '--slider-size: var(--slider-size-sm)',
     )
+  })
+
+  it('supports scoped label slots without overriding an explicit label prop', () => {
+    const slotted = render(
+      Slider,
+      { defaultValue: 25, labelAlwaysOn: true },
+      { label: ({ value }: any) => `Slot ${value}` },
+    )
+    expect(slotted.text()).toContain('Slot 25')
+
+    const withProp = render(
+      Slider,
+      { defaultValue: 25, labelAlwaysOn: true, label: (value: number) => `Prop ${value}` },
+      { label: ({ value }: any) => `Slot ${value}` },
+    )
+    expect(withProp.text()).toContain('Prop 25')
+    expect(withProp.text()).not.toContain('Slot 25')
   })
 
   it('updates with keyboard and reports change end', async () => {
