@@ -7,6 +7,7 @@ import {
   watch,
   type Component,
   type PropType,
+  type SlotsType,
   type VNodeChild,
 } from 'vue'
 import {
@@ -68,6 +69,11 @@ export interface TreeProps extends BoxProps {
   withLines?: boolean
 }
 export type TreeFactory = any
+export interface TreeSlots {
+  default?: () => VNodeChild
+  node?: (payload: RenderTreeNodePayload) => VNodeChild
+  renderNode?: (payload: RenderTreeNodePayload) => VNodeChild
+}
 
 function getFlatValues(data: TreeNodeData[]): string[] {
   return data.flatMap((node) => [
@@ -84,6 +90,7 @@ export const Tree = withBoxProps(
   defineComponent({
     name: 'Tree',
     inheritAttrs: false,
+    slots: Object as SlotsType<TreeSlots>,
     props: {
       component: {
         type: [String, Object, Function] as PropType<string | Component>,
@@ -148,7 +155,11 @@ export const Tree = withBoxProps(
         const flatValues = getFlatValues(props.data)
         const renderNode =
           props.renderNode ||
-          (slots.node ? (payload: RenderTreeNodePayload) => slots.node?.(payload) : undefined)
+          (slots.renderNode
+            ? (payload: RenderTreeNodePayload) => slots.renderNode?.(payload)
+            : slots.node
+              ? (payload: RenderTreeNodePayload) => slots.node?.(payload)
+              : undefined)
         const nodes = props.data.map((node, index) =>
           h(TreeNode, {
             key: node.value,

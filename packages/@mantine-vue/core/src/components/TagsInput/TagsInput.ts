@@ -27,7 +27,14 @@ export interface TagsInputSlots {
   leftSection?: () => VNodeChild
   rightSection?: () => VNodeChild
   renderOption?: (input: { option: any; checked?: boolean }) => VNodeChild
+  renderPill?: (input: {
+    option: any
+    value: string
+    onRemove: () => void
+    disabled: boolean
+  }) => VNodeChild
   nothingFound?: () => VNodeChild
+  nothingFoundMessage?: () => VNodeChild
 }
 
 export interface TagsInputProps {
@@ -252,18 +259,21 @@ export const TagsInput = defineComponent({
                           label: item,
                           disabled: false,
                         }
+                        const renderPillInput = { option, value: item, onRemove, disabled }
                         return props.renderPill
-                          ? props.renderPill({ option, value: item, onRemove, disabled })
-                          : h(
-                              Pill,
-                              {
-                                key: `${item}-${index}`,
-                                withRemoveButton: !readOnly,
-                                disabled,
-                                onRemove,
-                              },
-                              () => item,
-                            )
+                          ? props.renderPill(renderPillInput)
+                          : slots.renderPill
+                            ? slots.renderPill(renderPillInput)
+                            : h(
+                                Pill,
+                                {
+                                  key: `${item}-${index}`,
+                                  withRemoveButton: !readOnly,
+                                  disabled,
+                                  onRemove,
+                                },
+                                () => item,
+                              )
                       }),
                       h(PillsInput.Field, {
                         value: search(),
@@ -322,7 +332,10 @@ export const TagsInput = defineComponent({
                 search: search(),
                 filter: props.filter,
                 limit: props.limit,
-                hiddenWhenEmpty: props.nothingFoundMessage == null && !slots.nothingFound,
+                hiddenWhenEmpty:
+                  props.nothingFoundMessage == null &&
+                  !slots.nothingFoundMessage &&
+                  !slots.nothingFound,
                 nothingFoundMessage: props.nothingFoundMessage,
                 withScrollArea: props.withScrollArea,
                 maxDropdownHeight: props.maxDropdownHeight,
@@ -331,7 +344,7 @@ export const TagsInput = defineComponent({
               },
               {
                 renderOption: slots.renderOption,
-                nothingFound: slots.nothingFound,
+                nothingFound: slots.nothingFoundMessage ?? slots.nothingFound,
               },
             ),
           ],

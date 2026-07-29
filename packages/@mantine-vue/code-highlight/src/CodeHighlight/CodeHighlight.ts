@@ -11,7 +11,7 @@ import {
   useStyles,
 } from '@mantine-vue/core'
 import { useUncontrolled } from '@mantine-vue/hooks'
-import { defineComponent, h, type PropType, type VNodeChild } from 'vue'
+import { defineComponent, h, type PropType, type SlotsType, type VNodeChild } from 'vue'
 import classes from '../CodeHighlight.module.css'
 import {
   useHighlight,
@@ -84,6 +84,10 @@ export interface CodeHighlightFactory {
   vars: CodeHighlightCssVariables
 }
 
+export interface CodeHighlightSlots {
+  controls?: () => VNodeChild
+}
+
 const defaultProps = {
   withCopyButton: true,
   expandCodeLabel: 'Expand code',
@@ -122,6 +126,7 @@ function resolveColorScheme(value: 'light' | 'dark' | 'auto'): 'light' | 'dark' 
 const CodeHighlightBase = defineComponent({
   name: 'CodeHighlight',
   inheritAttrs: false,
+  slots: Object as SlotsType<CodeHighlightSlots>,
   props: {
     code: { type: String, required: true },
     language: { type: String, default: undefined },
@@ -158,7 +163,7 @@ const CodeHighlightBase = defineComponent({
     vars: { type: [Object, Function], default: undefined },
     unstyled: { type: Boolean, default: false },
   },
-  setup(rawProps, { attrs }) {
+  setup(rawProps, { attrs, slots }) {
     const props = useProps<CodeHighlightProps>('CodeHighlight', defaultProps, rawProps as any)
     const mantine = useMantineContext()
     const getStyles = useStyles<CodeHighlightFactory>({
@@ -217,7 +222,11 @@ const CodeHighlightBase = defineComponent({
       }
 
       const renderedControls =
-        typeof props.controls === 'function' ? props.controls() : props.controls
+        props.controls !== undefined
+          ? typeof props.controls === 'function'
+            ? props.controls()
+            : props.controls
+          : slots.controls?.()
       const controlsArray = Array.isArray(renderedControls)
         ? renderedControls
         : renderedControls

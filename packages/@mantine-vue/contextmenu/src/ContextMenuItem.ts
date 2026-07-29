@@ -1,4 +1,13 @@
-import { defineComponent, h, ref, type DefineComponent, type PropType, type VNode } from 'vue'
+import {
+  defineComponent,
+  h,
+  ref,
+  type DefineComponent,
+  type PropType,
+  type SlotsType,
+  type VNode,
+  type VNodeChild,
+} from 'vue'
 import {
   Box,
   parseThemeColor,
@@ -21,12 +30,19 @@ import type {
 } from './types'
 import './ContextMenuItem.css'
 
+export interface ContextMenuItemSlots {
+  title?: () => VNodeChild
+  icon?: () => VNodeChild
+  iconRight?: () => VNodeChild
+}
+
 export const ContextMenuItem = defineComponent({
   name: 'ContextMenuItem',
+  slots: Object as SlotsType<ContextMenuItemSlots>,
   props: {
     title: {
       type: null as unknown as PropType<MantineNode>,
-      required: true,
+      default: undefined,
     },
     icon: {
       type: null as unknown as PropType<MantineNode>,
@@ -63,7 +79,7 @@ export const ContextMenuItem = defineComponent({
       default: undefined,
     },
   },
-  setup(props) {
+  setup(props, { slots }) {
     const button = ref<HTMLElement | null>(null)
     const submenuPosition = ref<{ x: number; y: number } | null>(null)
     const settings = useContextMenuSettings()
@@ -117,6 +133,9 @@ export const ContextMenuItem = defineComponent({
         : null
       const itemColor = parsed?.value ?? 'var(--mantine-color-text)'
       const colorValue = parsed?.value
+      const icon = resolveNode(props.icon, slots.icon)
+      const title = resolveNode(props.title, slots.title)
+      const iconRight = resolveNode(props.iconRight, slots.iconRight)
 
       return h(
         'div',
@@ -155,14 +174,10 @@ export const ContextMenuItem = defineComponent({
                   : undefined,
             },
             () => [
-              props.icon
-                ? h(Box, { fz: 0, me: 'xs', mt: -2 }, () => resolveNode(props.icon))
-                : null,
-              h('div', { class: 'mantine-contextmenu-item-button-title' }, [
-                resolveNode(props.title),
-              ]),
-              props.iconRight
-                ? h(Box, { fz: 0, ms: 'xs', mt: -2 }, () => resolveNode(props.iconRight))
+              icon ? h(Box, { fz: 0, me: 'xs', mt: -2 }, () => icon) : null,
+              h('div', { class: 'mantine-contextmenu-item-button-title' }, [title]),
+              iconRight
+                ? h(Box, { fz: 0, ms: 'xs', mt: -2 }, () => iconRight)
                 : props.items
                   ? h(Box, { mt: -1, ms: 'xs' }, () =>
                       (props.submenuProps.dir || 'ltr') === 'rtl' ? '‹' : '›',

@@ -44,6 +44,7 @@ export interface OptionsDropdownProps {
 export interface OptionsDropdownSlots {
   renderOption?: (input: ComboboxLikeRenderOptionInput<any>) => VNodeChild
   nothingFound?: () => VNodeChild
+  nothingFoundMessage?: () => VNodeChild
 }
 const checked = (value: Primitive | Primitive[] | null | undefined, option: Primitive) =>
   Array.isArray(value) ? value.includes(option) : value === option
@@ -113,8 +114,9 @@ export const OptionsDropdown = defineComponent({
       const renderOption =
         props.renderOption ??
         (slots.renderOption ? (input: any) => slots.renderOption!(input) : undefined)
+      const nothingFoundSlot = slots.nothingFoundMessage ?? slots.nothingFound
       const nothingFound =
-        props.nothingFoundMessage ?? (slots.nothingFound ? slots.nothingFound() : undefined)
+        props.nothingFoundMessage ?? (nothingFoundSlot ? nothingFoundSlot() : undefined)
       const data =
         typeof props.search === 'string'
           ? (props.filter || defaultOptionsFilter)({

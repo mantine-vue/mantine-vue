@@ -1,4 +1,4 @@
-import { computed, defineComponent, h, type PropType } from 'vue'
+import { computed, defineComponent, h, type PropType, type SlotsType, type VNodeChild } from 'vue'
 import type { ChartRenderable, ChartSeries, ChartTooltipPayload } from '../types'
 import { resolveColor } from '../internal/colors'
 
@@ -13,8 +13,14 @@ export interface ChartTooltipProps {
   showColor?: boolean
 }
 
+export interface ChartTooltipSlots {
+  label?: () => VNodeChild
+  valueFormatter?: (input: { value: number; item: ChartTooltipPayload }) => VNodeChild
+}
+
 export const ChartTooltip = defineComponent({
   name: 'MantineChartTooltip',
+  slots: Object as SlotsType<ChartTooltipSlots>,
   props: {
     label: null,
     payload: Array as PropType<readonly ChartTooltipPayload[]>,
@@ -25,11 +31,12 @@ export const ChartTooltip = defineComponent({
     valueFormatter: Function as PropType<(value: number) => ChartRenderable>,
     showColor: { type: Boolean, default: true },
   },
-  setup(props) {
+  setup(props, { slots }) {
     const labels = computed(() =>
       Object.fromEntries((props.series ?? []).map((item) => [item.name, item.label ?? item.name])),
     )
     return () => {
+      const label = props.label !== undefined ? props.label : slots.label?.()
       const payload = props.segmentId
         ? props.payload?.filter(
             (item) => item.name === props.segmentId || item.dataKey === props.segmentId,
@@ -37,9 +44,7 @@ export const ChartTooltip = defineComponent({
         : props.payload
       if (!payload?.length) return null
       return h('div', { class: 'mantine-ChartTooltip-tooltip', 'data-type': props.type }, [
-        props.label != null
-          ? h('div', { class: 'mantine-ChartTooltip-tooltipLabel' }, [props.label])
-          : null,
+        label != null ? h('div', { class: 'mantine-ChartTooltip-tooltipLabel' }, [label]) : null,
         h(
           'div',
           { class: 'mantine-ChartTooltip-tooltipBody' },
@@ -58,11 +63,13 @@ export const ChartTooltip = defineComponent({
                   labels.value[item.name ?? ''] ?? item.name,
                 ),
               ]),
-              h(
-                'span',
-                { class: 'mantine-ChartTooltip-tooltipItemData' },
-                `${props.valueFormatter ? props.valueFormatter(Number(item.value)) : (item.value ?? '')}${props.unit ?? item.unit ?? ''}`,
-              ),
+              h('span', { class: 'mantine-ChartTooltip-tooltipItemData' }, [
+                props.valueFormatter
+                  ? props.valueFormatter(Number(item.value))
+                  : (slots.valueFormatter?.({ value: Number(item.value), item }) ??
+                    (item.value == null ? '' : String(item.value))),
+                props.unit ?? item.unit ?? '',
+              ]),
             ]),
           ),
         ),

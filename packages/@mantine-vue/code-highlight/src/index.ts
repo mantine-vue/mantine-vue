@@ -26,6 +26,7 @@ export type {
   CodeHighlightFactory,
   CodeHighlightProps,
   CodeHighlightSettings,
+  CodeHighlightSlots,
   CodeHighlightStylesNames,
 } from './CodeHighlight/CodeHighlight'
 export type { CodeHighlightContextValue } from './CodeHighlight/CodeHighlight.context'
@@ -41,5 +42,6 @@ export type {
   CodeHighlightTabsCode,
   CodeHighlightTabsFactory,
   CodeHighlightTabsProps,
+  CodeHighlightTabsSlots,
   CodeHighlightTabsStylesNames,
 } from './CodeHighlightTabs/CodeHighlightTabs'

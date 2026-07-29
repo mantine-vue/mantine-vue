@@ -1,4 +1,12 @@
-import { cloneVNode, defineComponent, h, isVNode, type VNodeChild } from 'vue'
+import {
+  cloneVNode,
+  defineComponent,
+  h,
+  isVNode,
+  type PropType,
+  type SlotsType,
+  type VNodeChild,
+} from 'vue'
 import { useDropzoneContext, type DropzoneContextValue } from './Dropzone.context'
 
 function upperFirst(value: string) {
@@ -8,14 +16,23 @@ function upperFirst(value: string) {
 function createDropzoneStatus(status: keyof DropzoneContextValue) {
   return defineComponent({
     name: `Dropzone${upperFirst(status)}`,
-    setup(_, { slots, attrs }) {
+    slots: Object as SlotsType<{ default?: () => VNodeChild }>,
+    props: {
+      children: {
+        type: null as unknown as PropType<VNodeChild>,
+        default: undefined,
+      },
+    },
+    setup(props, { slots, attrs }) {
       const ctx = useDropzoneContext()
 
       return () => {
         if (!ctx[status]) return null
 
-        const children = slots.default?.()
-        const child: VNodeChild = children && children.length === 1 ? children[0] : children
+        const slotChildren = slots.default?.()
+        const children = props.children !== undefined ? props.children : slotChildren
+        const child: VNodeChild =
+          Array.isArray(children) && children.length === 1 ? children[0] : children
 
         if (isVNode(child) && !Array.isArray(child)) {
           return cloneVNode(child, attrs)
