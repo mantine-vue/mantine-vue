@@ -14,7 +14,7 @@ const value = ref<[number, number]>([30, 60])
   <Text size="sm" mb="xs">
     Minimum range: 20 (thumbs must be at least 20 units apart)
   </Text>
-  <RangeSlider :value="value" @change="(v) => (value = v)" :min-range="20" />
+  <RangeSlider v-model="value" :min-range="20" />
   <Text size="sm" mt="xs">
     Value: [{{ value[0] }}, {{ value[1] }}] - Range: {{ value[1] - value[0] }}
   </Text>
@@ -35,8 +35,8 @@ const Demo = defineComponent({
           },
         ),
         h(RangeSlider, {
-          value: value.value,
-          onChange: (v: [number, number]) => {
+          modelValue: value.value,
+          'onUpdate:modelValue': (v: [number, number]) => {
             value.value = v
           },
           minRange: 20,

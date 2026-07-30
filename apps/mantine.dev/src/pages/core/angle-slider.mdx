@@ -23,7 +23,7 @@ const value = ref(180)
 </script>
 
 <template>
-  <AngleSlider :value="value" @change="(v) => (value = v)" />
+  <AngleSlider v-model="value" />
 </template>
 ```
 

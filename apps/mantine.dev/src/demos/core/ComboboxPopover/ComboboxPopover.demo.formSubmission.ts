@@ -21,10 +21,9 @@ function handleSubmit(event: Event) {
   <form @submit="handleSubmit">
     <Stack>
       <ComboboxPopover
+        v-model="value"
         :data="['React', 'Angular', 'Vue', 'Svelte']"
-        :value="value"
         name="framework"
-        @change="value = $event"
       >
         <ComboboxPopover.Target>
           <Button variant="default" :miw="200" type="button">
@@ -59,9 +58,9 @@ const Demo = defineComponent({
             ComboboxPopover,
             {
               data: ['React', 'Angular', 'Vue', 'Svelte'],
-              value: value.value,
+              modelValue: value.value,
               name: 'framework',
-              onChange: (val: string | null) => {
+              'onUpdate:modelValue': (val: string | null) => {
                 value.value = val
               },
             },

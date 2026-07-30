@@ -13,7 +13,7 @@ const value = ref(3)
 <template>
   <Stack gap="md" align="center">
     <Text size="sm">Click the same star to clear the rating</Text>
-    <Rating :value="value" @change="(v) => (value = v)" allow-clear />
+    <Rating v-model="value" allow-clear />
     <Group gap="xs">
       <Text size="sm" c="dimmed">Current rating:</Text>
       <Text size="sm" fw={600}>{{ value === 0 ? 'Not rated' : value }}</Text>
@@ -34,8 +34,8 @@ const Demo = defineComponent({
           default: () => [
             h(Text, { size: 'sm' }, { default: () => 'Click the same star to clear the rating' }),
             h(Rating, {
-              value: value.value,
-              onChange: (v: number) => {
+              modelValue: value.value,
+              'onUpdate:modelValue': (v: number) => {
                 value.value = v
               },
               allowClear: true,

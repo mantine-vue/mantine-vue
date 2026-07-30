@@ -14,10 +14,9 @@ const value2 = ref<string | null>('React')
 <template>
   <Stack>
     <ComboboxPopover
+      v-model="value1"
       :data="['React', 'Angular', 'Vue', 'Svelte']"
-      :value="value1"
       :allow-deselect="false"
-      @change="value1 = $event"
     >
       <ComboboxPopover.Target>
         <Button variant="default" :miw="200">{{ value1 || 'Cannot deselect' }}</Button>
@@ -25,10 +24,9 @@ const value2 = ref<string | null>('React')
     </ComboboxPopover>
 
     <ComboboxPopover
+      v-model="value2"
       :data="['React', 'Angular', 'Vue', 'Svelte']"
-      :value="value2"
       allow-deselect
-      @change="value2 = $event"
     >
       <ComboboxPopover.Target>
         <Button variant="default" :miw="200">{{ value2 || 'Can deselect (default)' }}</Button>
@@ -49,9 +47,9 @@ const Demo = defineComponent({
           ComboboxPopover,
           {
             data: ['React', 'Angular', 'Vue', 'Svelte'],
-            value: value1.value,
+            modelValue: value1.value,
             allowDeselect: false,
-            onChange: (val: string | null) => {
+            'onUpdate:modelValue': (val: string | null) => {
               value1.value = val
             },
           },
@@ -64,9 +62,9 @@ const Demo = defineComponent({
           ComboboxPopover,
           {
             data: ['React', 'Angular', 'Vue', 'Svelte'],
-            value: value2.value,
+            modelValue: value2.value,
             allowDeselect: true,
-            onChange: (val: string | null) => {
+            'onUpdate:modelValue': (val: string | null) => {
               value2.value = val
             },
           },

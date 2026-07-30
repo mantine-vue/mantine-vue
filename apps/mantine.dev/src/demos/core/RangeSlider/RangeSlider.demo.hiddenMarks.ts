@@ -17,8 +17,7 @@ const value = ref<[number, number]>([25, 75])
       value: [{{ value[0] }}, {{ value[1] }}]
     </Text>
     <RangeSlider
-      :value="value"
-      @change="(v) => (value = v)"
+      v-model="value"
       :min="0"
       :max="100"
       :step="1"
@@ -57,8 +56,8 @@ const Demo = defineComponent({
               },
             ),
             h(RangeSlider, {
-              value: value.value,
-              onChange: (v: [number, number]) => {
+              modelValue: value.value,
+              'onUpdate:modelValue': (v: [number, number]) => {
                 value.value = v
               },
               min: 0,

@@ -11,7 +11,7 @@ const value = ref<string | null>('2025-04-15')
 </script>
 
 <template>
-  <MiniCalendar :value="value" :number-of-days="6" @change="value = $event" />
+  <MiniCalendar v-model="value" :number-of-days="6" />
 </template>`
 
 export const usage: MantineDemo = {
@@ -22,9 +22,9 @@ export const usage: MantineDemo = {
       const value = ref<string | null>('2025-04-15')
       return () =>
         h(MiniCalendar, {
-          value: value.value,
+          modelValue: value.value,
           numberOfDays: 6,
-          onChange: (date: string) => (value.value = date),
+          'onUpdate:modelValue': (date: string | null) => (value.value = date),
         })
     },
   }),
@@ -40,8 +40,7 @@ const value = ref<string | null>('2025-04-15')
 
 <template>
   <MiniCalendar
-    :value="value"
-    @change="value = $event"
+    v-model="value"
     :number-of-days="6"
     default-date="2025-04-13"
     min-date="2025-04-14"
@@ -57,8 +56,8 @@ export const minMax: MantineDemo = {
       const value = ref<string | null>('2025-04-15')
       return () =>
         h(MiniCalendar, {
-          value: value.value,
-          onChange: (date: string) => (value.value = date),
+          modelValue: value.value,
+          'onUpdate:modelValue': (date: string | null) => (value.value = date),
           numberOfDays: 6,
           defaultDate: '2025-04-13',
           minDate: '2025-04-14',

@@ -31,8 +31,8 @@ const Demo = defineComponent({
     const checked = ref(false)
     return () =>
       h(Switch, {
-        checked: checked.value,
-        onChange: (value: boolean) => {
+        modelValue: checked.value,
+        'onUpdate:modelValue': (value: boolean) => {
           checked.value = value
         },
         color: 'teal',

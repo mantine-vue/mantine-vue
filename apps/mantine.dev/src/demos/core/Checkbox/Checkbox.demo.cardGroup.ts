@@ -89,8 +89,7 @@ const value = ref<string[]>([])
 <template>
   <div>
     <CheckboxGroup
-      :value="value"
-      @change="value = $event"
+      v-model="value"
       label="Pick packages to install"
       description="Choose all packages that you will need in your application"
     >
@@ -171,8 +170,8 @@ const Demo = defineComponent({
         h(
           CheckboxGroup,
           {
-            value: value.value,
-            onChange: (v: string[]) => {
+            modelValue: value.value,
+            'onUpdate:modelValue': (v: string[]) => {
               value.value = v
             },
             label: 'Pick packages to install',

@@ -23,7 +23,7 @@ You can change the position with the `loadingPosition` prop to `'left'` or `'rig
 ## Controlled
 
 The `MultiSelect` value must be an array of strings; other types are not supported.
-The `onChange` function is called with an array of strings as a single argument.
+Use `v-model` to control the value:
 
 ```vue
 <script setup lang="ts">
@@ -34,7 +34,7 @@ const value = ref<string[]>([])
 </script>
 
 <template>
-  <MultiSelect :data="[]" :value="value" @change="(v) => (value = v)" />
+  <MultiSelect v-model="value" :data="[]" />
 </template>
 ```
 

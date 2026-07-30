@@ -28,7 +28,7 @@ const value = ref<string | number>('')
 </script>
 
 <template>
-  <NumberInput :value="value" @change="(v) => (value = v)" />
+  <NumberInput v-model="value" />
 </template>
 ```
 

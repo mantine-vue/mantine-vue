@@ -12,11 +12,10 @@ const value = ref<string | null>(null)
 
 <template>
   <ComboboxPopover
+    v-model="value"
     :data="['React', 'Angular', 'Vue', 'Svelte']"
-    :value="value"
     searchable
     nothing-found-message="Nothing found..."
-    @change="value = $event"
   >
     <ComboboxPopover.Target>
       <Button variant="default" :miw="200">{{ value || 'Select framework' }}</Button>
@@ -34,10 +33,10 @@ const Demo = defineComponent({
         ComboboxPopover,
         {
           data: ['React', 'Angular', 'Vue', 'Svelte'],
-          value: value.value,
+          modelValue: value.value,
           searchable: true,
           nothingFoundMessage: 'Nothing found...',
-          onChange: (val: string | null) => {
+          'onUpdate:modelValue': (val: string | null) => {
             value.value = val
           },
         },

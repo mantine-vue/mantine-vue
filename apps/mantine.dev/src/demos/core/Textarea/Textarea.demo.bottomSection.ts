@@ -39,8 +39,8 @@ const Demo = defineComponent({
         autosize: true,
         minRows: 4,
         value: value.value,
-        onChange: (event: Event) => {
-          value.value = (event.currentTarget as HTMLTextAreaElement).value.slice(0, maxLength)
+        onChange: (nextValue: string) => {
+          value.value = nextValue.slice(0, maxLength)
         },
         bottomSection: h(
           Text,

@@ -14,8 +14,7 @@ const value = ref<bigint | string>(BigInt('12345678901234567890'))
   <NumberInput
     label="BigInt value"
     description="BigInt mode is inferred from defaultValue/value"
-    :value="value"
-    @change="(v) => (value = v)"
+    v-model="value"
     :step="BigInt(10)"
     :min="BigInt(0)"
     thousandSeparator=","
@@ -32,8 +31,8 @@ const Demo = defineComponent({
       h(NumberInput, {
         label: 'BigInt value',
         description: 'BigInt mode is inferred from defaultValue/value',
-        value: value.value,
-        onChange: (v: bigint | string | number) => {
+        modelValue: value.value,
+        'onUpdate:modelValue': (v: bigint | string | number) => {
           value.value = v as bigint | string
         },
         step: BigInt(10),

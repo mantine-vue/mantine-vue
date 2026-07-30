@@ -47,13 +47,10 @@ export const MVT_SelectCheckbox = defineComponent({
         size: state.density === 'xs' ? 'sm' : 'md',
         ...checkboxProps,
         title: undefined,
-        onChange: (event: Event) => {
-          event.stopPropagation()
-          if ((event as any).shiftKey === undefined) {
-            ;(event as any).shiftKey = lastShiftKey
-          }
-          selection(event)
-          checkboxProps.onChange?.(event)
+        onChange: (nextChecked: boolean) => {
+          selection({ shiftKey: lastShiftKey } as unknown as Event, nextChecked)
+          checkboxProps.onChange?.(nextChecked)
+          lastShiftKey = false
         },
         onClick: (event: MouseEvent) => {
           event.stopPropagation()

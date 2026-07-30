@@ -19,7 +19,7 @@ const checked = ref(false)
 </script>
 
 <template>
-  <Chip :checked="checked" @change="checked = !checked">My chip</Chip>
+  <Chip v-model="checked">My chip</Chip>
 </template>
 ```
 
@@ -63,7 +63,7 @@ const multiple = ref(['react'])
 
 <template>
   <!-- Single selection -->
-  <ChipGroup :multiple="false" :value="single" @change="single = $event">
+  <ChipGroup v-model="single" :multiple="false">
     <Chip value="react">React</Chip>
     <Chip value="ng">Angular</Chip>
     <Chip value="svelte">Svelte</Chip>
@@ -71,7 +71,7 @@ const multiple = ref(['react'])
   </ChipGroup>
 
   <!-- Multiple selection -->
-  <ChipGroup multiple :value="multiple" @change="multiple = $event">
+  <ChipGroup v-model="multiple" multiple>
     <Chip value="react">React</Chip>
     <Chip value="ng">Angular</Chip>
     <Chip value="svelte">Svelte</Chip>

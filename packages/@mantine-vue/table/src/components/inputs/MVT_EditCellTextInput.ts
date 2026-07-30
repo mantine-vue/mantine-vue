@@ -54,7 +54,7 @@ export const MVT_EditCellTextInput = defineComponent({
         label: modal ? def.header : undefined,
         name: cell.id,
         placeholder: !modal ? def.header : undefined,
-        value: value.value,
+        modelValue: value.value,
         variant: table.options.editDisplayMode === 'table' ? 'unstyled' : 'default',
         onClick: (e: MouseEvent) => e.stopPropagation(),
         ref: setRef,
@@ -64,10 +64,10 @@ export const MVT_EditCellTextInput = defineComponent({
           ...common,
           searchable: true,
           ...selectProps,
-          onChange: (newValue: any, option: any) => {
+          'onUpdate:modelValue': (newValue: any) => {
             value.value = newValue
-            selectProps.onChange?.(newValue, option)
           },
+          onChange: selectProps.onChange,
           onBlur: blur,
         } as any)
       if (def.editVariant === 'multi-select')
@@ -75,20 +75,20 @@ export const MVT_EditCellTextInput = defineComponent({
           ...common,
           searchable: true,
           ...selectProps,
-          onChange: (newValue: any[]) => {
+          'onUpdate:modelValue': (newValue: any[]) => {
             value.value = newValue
-            selectProps.onChange?.(newValue)
           },
+          onChange: selectProps.onChange,
           onBlur: blur,
         } as any)
       return h(TextInput, {
         ...common,
-        value: value.value ?? '',
+        modelValue: value.value ?? '',
         ...textProps,
-        onChange: (event: Event | string) => {
-          value.value = typeof event === 'string' ? event : (event.target as HTMLInputElement).value
-          textProps.onChange?.(event)
+        'onUpdate:modelValue': (nextValue: string) => {
+          value.value = nextValue
         },
+        onChange: textProps.onChange,
         onBlur: blur,
         onKeydown: (event: KeyboardEvent) => {
           textProps.onKeyDown?.(event)

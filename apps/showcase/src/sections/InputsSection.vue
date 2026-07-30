@@ -348,7 +348,7 @@ const treeData = [
 
     <DemoCard name="AngleSlider" description="Circular control for selecting an angle.">
       <Group align="center" gap="lg">
-        <AngleSlider :value="angle" :size="80" :thumbSize="8" @change="angle = $event" />
+        <AngleSlider v-model="angle" :size="80" :thumbSize="8" />
         <Text size="sm" c="dimmed">{{ angle }}°</Text>
       </Group>
     </DemoCard>

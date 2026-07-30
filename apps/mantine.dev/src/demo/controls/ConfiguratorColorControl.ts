@@ -69,14 +69,13 @@ export const ConfiguratorColorControl = defineComponent({
                   ),
                   h(Popover.Dropdown, { p: 8 }, () => [
                     h(ColorPicker, {
-                      value: colorPickerColor.value,
-                      onChange: handleColorPickerChange,
+                      modelValue: colorPickerColor.value,
+                      'onUpdate:modelValue': handleColorPickerChange,
                       format: 'rgba',
                     }),
                     h(TextInput, {
-                      value: colorPickerColor.value,
-                      onChange: (event: Event) =>
-                        handleColorPickerChange((event.currentTarget as HTMLInputElement).value),
+                      modelValue: colorPickerColor.value,
+                      'onUpdate:modelValue': handleColorPickerChange,
                       placeholder: 'Enter color',
                       radius: 'md',
                       size: 'xs',
