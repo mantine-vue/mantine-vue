@@ -1,5 +1,5 @@
 import { defineComponent, h, type PropType, type SlotsType, type VNodeChild } from 'vue'
-import { useId, assignRef } from '@mantine-vue/hooks'
+import { useId, assignRef, useUncontrolled } from '@mantine-vue/hooks'
 import {
   withBoxProps,
   Box,
@@ -96,7 +96,10 @@ const CheckboxBase = defineComponent({
     iconColor: { type: String, default: undefined },
     autoContrast: { type: Boolean, default: undefined },
     withErrorStyles: { type: Boolean, default: true },
+    modelValue: { type: Boolean, default: undefined },
     checked: { type: Boolean, default: undefined },
+    defaultChecked: { type: Boolean, default: undefined },
+    onChange: { type: Function as PropType<(checked: boolean) => void>, default: undefined },
     disabled: { type: Boolean, default: false },
     readOnly: { type: Boolean, default: false },
     variant: { type: String as PropType<CheckboxVariant>, default: 'filled' },
@@ -106,9 +109,20 @@ const CheckboxBase = defineComponent({
     vars: { type: [Object, Function], default: undefined },
     unstyled: { type: Boolean, default: false },
   },
-  setup(props, { attrs, slots }) {
+  emits: ['update:modelValue', 'update:checked', 'change'],
+  setup(props, { attrs, slots, emit }) {
     const uuid = useId(props.id)
     const groupContext = useCheckboxGroupContext()
+    const [localChecked, setLocalChecked] = useUncontrolled<boolean>({
+      value: () => (props.modelValue !== undefined ? props.modelValue : props.checked),
+      defaultValue: props.defaultChecked,
+      finalValue: false,
+      onChange: (checked) => {
+        emit('update:modelValue', checked)
+        emit('update:checked', checked)
+        emit('change', checked)
+      },
+    })
     const getStyles = useStyles({
       name: 'Checkbox',
       props,
@@ -135,7 +149,7 @@ const CheckboxBase = defineComponent({
       const iconSlotProps = { indeterminate: props.indeterminate, ...iconStyles }
       const Icon = props.icon || CheckboxIcon
       const value = String(attrs.value ?? '')
-      const checked = groupContext ? groupContext.value.includes(value) : props.checked
+      const checked = groupContext ? groupContext.value.includes(value) : localChecked.value
       const disabled = groupContext?.isDisabled?.(value) || props.disabled
       const size = groupContext?.size ?? props.size
 
@@ -178,7 +192,7 @@ const CheckboxBase = defineComponent({
               variant: props.variant,
               onClick: (event: MouseEvent) => {
                 callHandler(attrs.onClick, event)
-                if (props.readOnly && checked === undefined) {
+                if (props.readOnly) {
                   event.preventDefault()
                 }
               },
@@ -186,8 +200,9 @@ const CheckboxBase = defineComponent({
                 if (props.readOnly) {
                   return
                 }
-                callHandler(attrs.onChange, event)
+                const nextChecked = (event.currentTarget as HTMLInputElement).checked
                 groupContext?.onChange(event)
+                setLocalChecked(nextChecked)
               },
             }),
             slots.icon

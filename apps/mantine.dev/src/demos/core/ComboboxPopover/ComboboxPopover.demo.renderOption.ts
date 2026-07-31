@@ -48,7 +48,7 @@ function renderOption({ option, checked }: ComboboxLikeRenderOptionInput<Combobo
 </script>
 
 <template>
-  <ComboboxPopover :data="data" :value="value" :render-option="renderOption" @change="value = $event">
+  <ComboboxPopover v-model="value" :data="data" :render-option="renderOption">
     <ComboboxPopover.Target>
       <Button variant="default" :miw="200">{{ value || 'Select alignment' }}</Button>
     </ComboboxPopover.Target>
@@ -93,9 +93,9 @@ const Demo = defineComponent({
         ComboboxPopover,
         {
           data,
-          value: value.value,
+          modelValue: value.value,
           renderOption: renderSelectOption as any,
-          onChange: (val: string | null) => {
+          'onUpdate:modelValue': (val: string | null) => {
             value.value = val
           },
         },

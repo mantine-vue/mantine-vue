@@ -32,6 +32,7 @@ export const CheckboxCard = withBoxProps(
     name: 'CheckboxCard',
     inheritAttrs: false,
     props: {
+      modelValue: { type: Boolean, default: undefined },
       checked: { type: Boolean, default: undefined },
       defaultChecked: { type: Boolean, default: undefined },
       onChange: { type: Function as PropType<(value: boolean) => void>, default: undefined },
@@ -44,18 +45,25 @@ export const CheckboxCard = withBoxProps(
       vars: { type: [Object, Function], default: undefined },
       unstyled: { type: Boolean, default: false },
     },
-    setup(props, { attrs, slots }) {
+    emits: ['update:modelValue', 'update:checked', 'change'],
+    setup(props, { attrs, slots, emit }) {
       const groupContext = useCheckboxGroupContext()
       const [checked, setChecked] = useUncontrolled<boolean>({
         value: () =>
-          typeof props.checked === 'boolean'
-            ? props.checked
-            : groupContext
-              ? groupContext.value.includes(props.value || '')
-              : undefined,
+          typeof props.modelValue === 'boolean'
+            ? props.modelValue
+            : typeof props.checked === 'boolean'
+              ? props.checked
+              : groupContext
+                ? groupContext.value.includes(props.value || '')
+                : undefined,
         defaultValue: props.defaultChecked,
         finalValue: false,
-        onChange: (nextValue) => props.onChange?.(nextValue),
+        onChange: (nextValue) => {
+          emit('update:modelValue', nextValue)
+          emit('update:checked', nextValue)
+          emit('change', nextValue)
+        },
       })
       const getStyles = useStyles({
         name: 'CheckboxCard',

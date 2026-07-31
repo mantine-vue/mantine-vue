@@ -42,6 +42,9 @@ export interface ComboboxPopoverProps<
   multiple?: Multiple
 
   /** Controlled component value */
+  modelValue?: ComboboxPopoverValue<Multiple, Value>
+
+  /** Legacy controlled component value */
   value?: ComboboxPopoverValue<Multiple, Value>
 
   /** Uncontrolled component default value */
@@ -225,6 +228,7 @@ export const ComboboxPopoverBase = defineComponent({
   slots: Object as SlotsType<ComboboxPopoverSlots>,
   props: {
     multiple: { type: Boolean, default: undefined },
+    modelValue: { type: null as unknown as PropType<any>, default: undefined },
     value: { type: null as unknown as PropType<any>, default: undefined },
     defaultValue: { type: null as unknown as PropType<any>, default: undefined },
     onChange: { type: Function as PropType<(value: any) => void>, default: undefined },
@@ -266,7 +270,8 @@ export const ComboboxPopoverBase = defineComponent({
     vars: { type: [Object, Function], default: undefined },
     unstyled: { type: Boolean, default: false },
   },
-  setup(rawProps, { attrs, slots }) {
+  emits: ['update:modelValue', 'change'],
+  setup(rawProps, { attrs, slots, emit }) {
     const props = new Proxy(rawProps, {
       get(target, key: string) {
         const value = (target as any)[key]
@@ -278,10 +283,13 @@ export const ComboboxPopoverBase = defineComponent({
     const optionsLockup = computed(() => getOptionsLockup(parsedData.value))
 
     const [_value, setValue] = useUncontrolled<any>({
-      value: () => props.value,
+      value: () => (props.modelValue !== undefined ? props.modelValue : props.value),
       defaultValue: props.defaultValue,
       finalValue: props.multiple ? [] : null,
-      onChange: (val) => props.onChange?.(val),
+      onChange: (value) => {
+        emit('update:modelValue', value)
+        emit('change', value)
+      },
     })
 
     const [_searchValue, setSearchValue] = useUncontrolled<string>({

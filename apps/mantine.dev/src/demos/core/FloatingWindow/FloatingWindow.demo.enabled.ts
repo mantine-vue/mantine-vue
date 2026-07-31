@@ -18,7 +18,7 @@ const enabled = ref(true)
     <Button variant="default" @click="handlers.toggle">
       {{ visible ? 'Hide' : 'Show' }} floating window
     </Button>
-    <Chip :checked="enabled" @change="enabled = !enabled">
+    <Chip v-model="enabled">
       Drag {{ enabled ? 'enabled' : 'disabled' }}
     </Chip>
   </Group>
@@ -58,9 +58,9 @@ const Demo = defineComponent({
             h(
               Chip,
               {
-                checked: enabled.value,
-                onChange: () => {
-                  enabled.value = !enabled.value
+                modelValue: enabled.value,
+                'onUpdate:modelValue': (value: boolean) => {
+                  enabled.value = value
                 },
               },
               () => `Drag ${enabled.value ? 'enabled' : 'disabled'}`,

@@ -73,6 +73,7 @@ export const RangeSlider = defineComponent({
   inheritAttrs: false,
   slots: Object as SlotsType<RangeSliderSlots>,
   props: {
+    modelValue: { type: Array as unknown as PropType<RangeSliderValue>, default: undefined },
     value: { type: Array as unknown as PropType<RangeSliderValue>, default: undefined },
     defaultValue: { type: Array as unknown as PropType<RangeSliderValue>, default: undefined },
     onChange: { type: Function as PropType<(value: RangeSliderValue) => void>, default: undefined },
@@ -118,17 +119,21 @@ export const RangeSlider = defineComponent({
     vars: { type: [Object, Function], default: undefined },
     unstyled: { type: Boolean, default: false },
   },
-  setup(rawProps, { attrs, slots }) {
+  emits: ['update:modelValue', 'change'],
+  setup(rawProps, { attrs, slots, emit }) {
     const props = useProps('RangeSlider', defaults as any, rawProps) as any
     const direction = useDirection()
     const activeThumb = ref(0)
     const focused = ref(0)
     const hovered = ref(false)
     const [current, setCurrent] = useUncontrolled<RangeSliderValue>({
-      value: () => props.value,
+      value: () => (props.modelValue !== undefined ? props.modelValue : props.value),
       defaultValue: props.defaultValue,
       finalValue: [props.min, props.max],
-      onChange: (value) => props.onChange?.(value),
+      onChange: (value) => {
+        emit('update:modelValue', value)
+        emit('change', value)
+      },
     })
     const valueRef = ref<RangeSliderValue>([...current.value])
     watch(current, (value) => (valueRef.value = [...value]))

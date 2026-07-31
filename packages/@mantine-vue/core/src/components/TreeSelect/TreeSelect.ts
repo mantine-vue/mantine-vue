@@ -369,17 +369,22 @@ export const TreeSelect = defineComponent({
     openOnFocus: { type: Boolean, default: true },
     chevronAriaLabels: Object as PropType<TreeSelectChevronAriaLabels>,
   },
-  emits: ['update:modelValue', 'update:searchValue'],
+  emits: ['update:modelValue', 'update:searchValue', 'change'],
   setup(props, { attrs, emit, slots }) {
     const isMulti = () => props.mode !== 'single'
 
     const initial = props.defaultValue !== undefined ? props.defaultValue : isMulti() ? [] : null
     const internal = ref<any>(initial)
-    const current = () => props.modelValue ?? props.value ?? internal.value
+    const current = () =>
+      props.modelValue !== undefined
+        ? props.modelValue
+        : props.value !== undefined
+          ? props.value
+          : internal.value
     const setValue = (value: any) => {
       if (props.modelValue === undefined && props.value === undefined) internal.value = value
-      props.onChange?.(value)
       emit('update:modelValue', value)
+      emit('change', value)
     }
 
     const initialExpanded = props.defaultExpandAll

@@ -180,16 +180,11 @@ const treeData = [
 
     <DemoCard name="Checkbox" description="Boolean control, individually or grouped.">
       <Stack gap="md">
-        <Checkbox
-          :checked="terms"
-          label="I accept the terms and conditions"
-          @change="terms = ($event.target as HTMLInputElement).checked"
-        />
+        <Checkbox v-model="terms" label="I accept the terms and conditions" />
         <CheckboxGroup
-          :value="permissions"
+          v-model="permissions"
           label="Permissions"
           description="Select all that apply"
-          @change="permissions = $event"
         >
           <Group mt="xs">
             <Checkbox value="read" label="Read" />
@@ -201,12 +196,7 @@ const treeData = [
     </DemoCard>
 
     <DemoCard name="Radio" description="Single choice from a set of options.">
-      <Radio.Group
-        :value="shipping"
-        label="Shipping method"
-        withAsterisk
-        @change="shipping = $event"
-      >
+      <Radio.Group v-model="shipping" label="Shipping method" withAsterisk>
         <Stack gap="xs" mt="xs">
           <Radio value="standard" label="Standard — 5 business days" />
           <Radio value="express" label="Express — 2 business days" />
@@ -223,7 +213,7 @@ const treeData = [
     </DemoCard>
 
     <DemoCard name="Chip" description="Compact selectable pill, single or multi-select group.">
-      <ChipGroup :value="size" multiple @change="size = $event">
+      <ChipGroup v-model="size" multiple>
         <Group>
           <Chip value="sm">Small</Chip>
           <Chip value="md">Medium</Chip>
@@ -234,11 +224,10 @@ const treeData = [
 
     <DemoCard name="NativeSelect" description="Native HTML select element, Mantine-styled.">
       <NativeSelect
-        :value="nativeFramework"
+        v-model="nativeFramework"
         label="Framework"
         :data="frameworks"
         style="max-width: 340px"
-        @change="nativeFramework = ($event.target as HTMLSelectElement).value"
       />
     </DemoCard>
 
@@ -359,7 +348,7 @@ const treeData = [
 
     <DemoCard name="AngleSlider" description="Circular control for selecting an angle.">
       <Group align="center" gap="lg">
-        <AngleSlider :value="angle" :size="80" :thumbSize="8" @change="angle = $event" />
+        <AngleSlider v-model="angle" :size="80" :thumbSize="8" />
         <Text size="sm" c="dimmed">{{ angle }}°</Text>
       </Group>
     </DemoCard>

@@ -25,7 +25,7 @@ const axis = ref<'x' | 'y'>('y')
     <Button variant="default" @click="handlers.toggle">
       {{ visible ? 'Hide' : 'Show' }} floating window
     </Button>
-    <SegmentedControl :data="['x', 'y']" :value="axis" @change="(val) => axis = val as 'x' | 'y'" />
+    <SegmentedControl v-model="axis" :data="['x', 'y']" />
   </Group>
 
   <FloatingWindow
@@ -64,8 +64,8 @@ const Demo = defineComponent({
             ),
             h(SegmentedControl, {
               data: ['x', 'y'],
-              value: axis.value,
-              onChange: (val: string) => {
+              modelValue: axis.value,
+              'onUpdate:modelValue': (val: string) => {
                 axis.value = val as 'x' | 'y'
               },
             }),

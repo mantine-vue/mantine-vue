@@ -40,6 +40,10 @@ export const FileInput = defineComponent({
   slots: Object as SlotsType<FileInputSlots>,
   props: {
     component: { type: String, default: 'button' },
+    modelValue: {
+      type: [Object, Array, null] as PropType<File | File[] | null | undefined>,
+      default: undefined,
+    },
     onChange: {
       type: Function as PropType<(payload: File | File[] | null) => void>,
       default: undefined,
@@ -93,13 +97,17 @@ export const FileInput = defineComponent({
     vars: { type: [Object, Function], default: undefined },
     unstyled: { type: Boolean, default: false },
   },
-  setup(props, { attrs, slots }) {
+  emits: ['update:modelValue', 'change'],
+  setup(props, { attrs, slots, emit }) {
     const resetRef = ref<(() => void) | null>(null)
     const [value, setValue] = useUncontrolled<File | File[] | null>({
-      value: () => props.value,
+      value: () => (props.modelValue !== undefined ? props.modelValue : props.value),
       defaultValue: props.defaultValue,
       finalValue: props.multiple ? [] : null,
-      onChange: (nextValue) => props.onChange?.(nextValue),
+      onChange: (nextValue) => {
+        emit('update:modelValue', nextValue)
+        emit('change', nextValue)
+      },
     })
     const hasValue = computed(() =>
       Array.isArray(value.value) ? value.value.length !== 0 : value.value !== null,

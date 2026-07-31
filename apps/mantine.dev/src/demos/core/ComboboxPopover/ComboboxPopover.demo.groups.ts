@@ -16,7 +16,7 @@ const data = [
 </script>
 
 <template>
-  <ComboboxPopover :data="data" :value="value" @change="value = $event">
+  <ComboboxPopover v-model="value" :data="data">
     <ComboboxPopover.Target>
       <Button variant="default" :miw="200">{{ value || 'Select technology' }}</Button>
     </ComboboxPopover.Target>
@@ -38,8 +38,8 @@ const Demo = defineComponent({
         ComboboxPopover,
         {
           data,
-          value: value.value,
-          onChange: (val: string | null) => {
+          modelValue: value.value,
+          'onUpdate:modelValue': (val: string | null) => {
             value.value = val
           },
         },

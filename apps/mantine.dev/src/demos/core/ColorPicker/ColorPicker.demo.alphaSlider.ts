@@ -12,7 +12,7 @@ const value = ref(0.55)
 
 <template>
   <Text>Alpha value: {{ value }}</Text>
-  <AlphaSlider color="#1c7ed6" :value="value" @change="value = $event" />
+  <AlphaSlider v-model="value" color="#1c7ed6" />
 </template>
 `
 
@@ -25,8 +25,8 @@ const Demo = defineComponent({
         h(Text, {}, { default: () => `Alpha value: ${value.value}` }),
         h(AlphaSlider, {
           color: '#1c7ed6',
-          value: value.value,
-          onChange: (v: number) => {
+          modelValue: value.value,
+          'onUpdate:modelValue': (v: number) => {
             value.value = v
           },
         }),

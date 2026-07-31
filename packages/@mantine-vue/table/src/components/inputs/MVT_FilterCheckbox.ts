@@ -38,11 +38,11 @@ export const MVT_FilterCheckbox = defineComponent({
             size: table.getState().density === 'xs' ? 'sm' : 'md',
             ...checkboxProps,
             title: undefined,
-            onChange: (e: Event) => {
+            onChange: (checked: boolean) => {
               column.setFilterValue(
                 value === undefined ? 'true' : value === 'true' ? 'false' : undefined,
               )
-              checkboxProps.onChange?.(e)
+              checkboxProps.onChange?.(checked)
             },
             onClick: (e: MouseEvent) => {
               e.stopPropagation()

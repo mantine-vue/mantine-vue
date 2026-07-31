@@ -61,8 +61,8 @@ const [selection, handlers] = useSelection({
             aria-label="Select row"
             :checked="selection.value.includes(element.position)"
             @change="
-              (event) => {
-                if (event.target.checked) {
+              (checked) => {
+                if (checked) {
                   handlers.select(element.position)
                 } else {
                   handlers.deselect(element.position)
@@ -110,8 +110,7 @@ const Demo = defineComponent({
               h(Checkbox, {
                 'aria-label': 'Select row',
                 checked: isSelected,
-                onChange: (event: Event) => {
-                  const checked = (event.target as HTMLInputElement).checked
+                onChange: (checked: boolean) => {
                   if (checked) {
                     handlers.select(element.position)
                   } else {

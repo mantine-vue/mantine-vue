@@ -17,8 +17,7 @@ const value = ref(50)
       value: {{ value }}
     </Text>
     <Slider
-      :value="value"
-      @change="(v) => (value = v)"
+      v-model="value"
       :min="0"
       :max="100"
       :step="1"
@@ -54,8 +53,8 @@ const Demo = defineComponent({
               },
             ),
             h(Slider, {
-              value: value.value,
-              onChange: (v: number) => {
+              modelValue: value.value,
+              'onUpdate:modelValue': (v: number) => {
                 value.value = v
               },
               min: 0,

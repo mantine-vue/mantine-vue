@@ -18,7 +18,7 @@ const value = ref('')
     autosize
     :min-rows="4"
     :value="value"
-    @change="(event) => (value = event.currentTarget.value.slice(0, maxLength))"
+    @change="(nextValue) => (value = nextValue.slice(0, maxLength))"
   >
     <template #bottomSection>
       <Text size="xs" c="dimmed">{{ value.length }}/{{ maxLength }} characters</Text>
@@ -39,8 +39,8 @@ const Demo = defineComponent({
         autosize: true,
         minRows: 4,
         value: value.value,
-        onChange: (event: Event) => {
-          value.value = (event.currentTarget as HTMLTextAreaElement).value.slice(0, maxLength)
+        onChange: (nextValue: string) => {
+          value.value = nextValue.slice(0, maxLength)
         },
         bottomSection: h(
           Text,

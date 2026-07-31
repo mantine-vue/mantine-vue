@@ -13,13 +13,13 @@ const endValue = ref(50)
 
 <template>
   <Box maw="400" mx="auto">
-    <Slider :value="value" @change="(v) => (value = v)" @change-end="(v) => (endValue = v)" />
+    <Slider v-model="value" @change-end="(v) => (endValue = v)" />
 
     <Text mt="md" size="sm">
-      onChange value: <b>{{ value }}</b>
+      Current value: <b>{{ value }}</b>
     </Text>
     <Text :mt="5" size="sm">
-      onChangeEnd value: <b>{{ endValue }}</b>
+      Change end value: <b>{{ endValue }}</b>
     </Text>
   </Box>
 </template>
@@ -37,8 +37,8 @@ const Demo = defineComponent({
         {
           default: () => [
             h(Slider, {
-              value: value.value,
-              onChange: (v: number) => {
+              modelValue: value.value,
+              'onUpdate:modelValue': (v: number) => {
                 value.value = v
               },
               onChangeEnd: (v: number) => {
@@ -49,14 +49,14 @@ const Demo = defineComponent({
               Text,
               { mt: 'md', size: 'sm' },
               {
-                default: () => ['onChange value: ', h('b', null, String(value.value))],
+                default: () => ['Current value: ', h('b', null, String(value.value))],
               },
             ),
             h(
               Text,
               { mt: 5, size: 'sm' },
               {
-                default: () => ['onChangeEnd value: ', h('b', null, String(endValue.value))],
+                default: () => ['Change end value: ', h('b', null, String(endValue.value))],
               },
             ),
           ],

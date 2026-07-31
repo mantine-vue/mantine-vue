@@ -22,8 +22,8 @@ const UsageDemo = defineComponent({
     return () =>
       h(TimeGrid, {
         data,
-        value: value.value,
-        onChange: (v: string | null) => (value.value = v ?? undefined),
+        modelValue: value.value,
+        'onUpdate:modelValue': (v: string | null) => (value.value = v ?? undefined),
       })
   },
 })

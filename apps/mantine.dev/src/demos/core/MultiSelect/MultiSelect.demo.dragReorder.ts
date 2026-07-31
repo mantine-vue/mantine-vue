@@ -16,8 +16,7 @@ const value = ref(['React', 'Angular', 'Vue'])
     description="Selected values can be reordered by dragging pills"
     placeholder="Pick value"
     :data="['React', 'Angular', 'Vue', 'Svelte', 'Solid', 'Ember']"
-    :value="value"
-    @change="(v) => (value = v)"
+    v-model="value"
     with-pills-reorder
   />
 </template>
@@ -33,8 +32,8 @@ const Demo = defineComponent({
         description: 'Selected values can be reordered by dragging pills',
         placeholder: 'Pick value',
         data: ['React', 'Angular', 'Vue', 'Svelte', 'Solid', 'Ember'],
-        value: value.value,
-        onChange: (v: any[]) => {
+        modelValue: value.value,
+        'onUpdate:modelValue': (v: any[]) => {
           value.value = v.filter((item): item is string => typeof item === 'string')
         },
         withPillsReorder: true,

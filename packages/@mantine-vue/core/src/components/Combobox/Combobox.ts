@@ -289,11 +289,15 @@ export const ComboboxSearch = defineComponent({
   name: 'ComboboxSearch',
   inheritAttrs: false,
   props: {
+    modelValue: { type: String, default: undefined },
+    value: { type: String, default: undefined },
+    defaultValue: { type: String, default: undefined },
     withAriaAttributes: { type: Boolean, default: true },
     withKeyboardNavigation: { type: Boolean, default: true },
     size: String,
   },
-  setup(props, { attrs }) {
+  emits: ['update:modelValue', 'change'],
+  setup(props, { attrs, emit }) {
     const ctx = useComboboxContext()
     const targetProps = useComboboxTargetProps({
       targetType: 'input',
@@ -307,6 +311,11 @@ export const ComboboxSearch = defineComponent({
     return () =>
       h(Input, {
         ...attrs,
+        modelValue: props.modelValue,
+        value: props.value,
+        defaultValue: props.defaultValue,
+        'onUpdate:modelValue': (value: string) => emit('update:modelValue', value),
+        onChange: (value: string) => emit('change', value),
         ...targetProps,
         ref: (node: any) => {
           const element = node?.$el?.querySelector?.('input') ?? node?.$el ?? node

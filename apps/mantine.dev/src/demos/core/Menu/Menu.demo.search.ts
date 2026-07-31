@@ -25,11 +25,7 @@ const items = computed(() =>
     </Menu.Target>
 
     <Menu.Dropdown>
-      <Menu.Search
-        :value="query"
-        @change="(e) => query = e.target.value"
-        placeholder="Search items"
-      />
+      <Menu.Search v-model="query" placeholder="Search items" />
 
       <template v-if="items.length > 0">
         <Menu.Item v-for="item in items" :key="item">{{ item }}</Menu.Item>
@@ -74,8 +70,8 @@ const Demo = defineComponent({
                 h(Menu.Search, {
                   value: query.value,
                   placeholder: 'Search items',
-                  onChange: (e: Event) => {
-                    query.value = (e.target as HTMLInputElement).value
+                  onChange: (value: string) => {
+                    query.value = value
                   },
                 }),
                 items.length > 0

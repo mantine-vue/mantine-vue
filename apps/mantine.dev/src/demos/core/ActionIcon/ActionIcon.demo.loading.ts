@@ -40,7 +40,7 @@ const loading = ref(false)
     </ActionIcon>
   </Group>
 
-  <Switch :checked="loading" @change="loading = !loading" label="Loading state" mt="md" />
+  <Switch v-model="loading" label="Loading state" mt="md" />
 </template>
 `
 
@@ -70,9 +70,9 @@ const Demo = defineComponent({
           ],
         }),
         h(Switch, {
-          checked: loading.value,
-          onChange: () => {
-            loading.value = !loading.value
+          modelValue: loading.value,
+          'onUpdate:modelValue': (value: boolean) => {
+            loading.value = value
           },
           label: 'Loading state',
           mt: 'md',

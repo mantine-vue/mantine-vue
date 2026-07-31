@@ -14,8 +14,8 @@ export const ConfiguratorStringControl = defineComponent({
     return () =>
       h(TextInput, {
         ...attrs,
-        value: props.value,
-        onChange: (event: Event) => props.onChange((event.currentTarget as HTMLInputElement).value),
+        modelValue: props.value,
+        'onUpdate:modelValue': (value: string) => props.onChange(value),
         label: getControlLabel(props.prop),
         placeholder: 'Enter prop value',
       })

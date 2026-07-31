@@ -52,6 +52,7 @@ export const ColorPicker = defineComponent({
   name: 'ColorPicker',
   inheritAttrs: false,
   props: {
+    modelValue: { type: String, default: undefined },
     value: { type: String, default: undefined },
     defaultValue: { type: String, default: undefined },
     onChange: { type: Function as PropType<(value: string) => void>, default: undefined },
@@ -76,13 +77,17 @@ export const ColorPicker = defineComponent({
     vars: { type: [Object, Function], default: undefined },
     unstyled: { type: Boolean, default: false },
   },
-  setup(rawProps, { attrs }) {
+  emits: ['update:modelValue', 'change'],
+  setup(rawProps, { attrs, emit }) {
     const props = useProps('ColorPicker', defaults as any, rawProps) as any
     const [current, setCurrent, controlled] = useUncontrolled<string>({
-      value: () => props.value,
+      value: () => (props.modelValue !== undefined ? props.modelValue : props.value),
       defaultValue: props.defaultValue,
       finalValue: '#FFFFFF',
-      onChange: (value) => props.onChange?.(value),
+      onChange: (value) => {
+        emit('update:modelValue', value)
+        emit('change', value)
+      },
     })
     const parsed = ref<HsvaColor>(parseColor(current.value))
     let scrubbing = false

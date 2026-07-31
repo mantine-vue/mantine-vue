@@ -51,6 +51,10 @@ export const PasswordInput = defineComponent({
   inheritAttrs: false,
   slots: Object as SlotsType<PasswordInputSlots>,
   props: {
+    modelValue: { type: String, default: undefined },
+    value: { type: String, default: undefined },
+    defaultValue: { type: String, default: undefined },
+    onChange: { type: Function as PropType<(value: string) => void>, default: undefined },
     visibilityToggleIcon: { type: [Object, Function] as PropType<any>, default: undefined },
     visibilityToggleButtonProps: {
       type: Object as PropType<Record<string, any>>,
@@ -104,7 +108,8 @@ export const PasswordInput = defineComponent({
     vars: { type: [Object, Function], default: undefined },
     unstyled: { type: Boolean, default: false },
   },
-  setup(props, { attrs, slots }) {
+  emits: ['update:modelValue', 'change'],
+  setup(props, { attrs, slots, emit }) {
     const uuid = useId(props.id)
     const fallbackId = ref(`password-input-${Math.random().toString(36).slice(2)}`)
     const [visible, setVisible] = useUncontrolled<boolean>({
@@ -112,6 +117,15 @@ export const PasswordInput = defineComponent({
       defaultValue: props.defaultVisible,
       finalValue: false,
       onChange: (value) => props.onVisibilityChange?.(value),
+    })
+    const [value, setValue] = useUncontrolled<string>({
+      value: () => (props.modelValue !== undefined ? props.modelValue : props.value),
+      defaultValue: props.defaultValue,
+      finalValue: '',
+      onChange: (nextValue) => {
+        emit('update:modelValue', nextValue)
+        emit('change', nextValue)
+      },
     })
     const getStyles = useStyles({
       name: 'PasswordInput',
@@ -251,6 +265,7 @@ export const PasswordInput = defineComponent({
                   h('input', {
                     ...attrs,
                     ...getStyles('innerInput'),
+                    value: value.value,
                     required: props.required,
                     'data-invalid': props.error || slots.error ? true : undefined,
                     'data-with-left-section':
@@ -260,6 +275,11 @@ export const PasswordInput = defineComponent({
                     'aria-describedby': describedBy,
                     autocomplete: (attrs.autocomplete as any) || 'off',
                     type: visible.value ? 'text' : 'password',
+                    onInput: (event: Event) => {
+                      const handler = attrs.onInput as ((event: Event) => void) | undefined
+                      handler?.(event)
+                      setValue((event.currentTarget as HTMLInputElement).value)
+                    },
                   }),
                 leftSection: slots.leftSection,
                 rightSection: slots.rightSection,

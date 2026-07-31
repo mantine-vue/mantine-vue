@@ -19,7 +19,7 @@ const checked = ref(false)
 </script>
 
 <template>
-  <Radio :checked="checked" @change="(event) => (checked = event.currentTarget.checked)" />
+  <Radio v-model="checked" />
 </template>
 ```
 
@@ -117,8 +117,7 @@ const value = ref('react')
 
 <template>
   <Radio.Group
-    :value="value"
-    @change="(v) => (value = v)"
+    v-model="value"
     name="favoriteFramework"
     label="Select your favorite framework/library"
     description="This is anonymous"

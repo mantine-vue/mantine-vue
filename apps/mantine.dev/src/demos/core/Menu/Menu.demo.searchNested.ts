@@ -54,7 +54,7 @@ const items = computed(() => filterTree(data, query.value.toLowerCase().trim()))
   <Menu shadow="md" :width="240">
     <Menu.Target><Button>Toggle menu</Button></Menu.Target>
     <Menu.Dropdown>
-      <Menu.Search :value="query" @change="(e) => query = e.target.value" placeholder="Search items" />
+      <Menu.Search v-model="query" placeholder="Search items" />
       <!-- render tree recursively via component -->
     </Menu.Dropdown>
   </Menu>
@@ -146,8 +146,8 @@ const Demo = defineComponent({
                 h(Menu.Search, {
                   value: query.value,
                   placeholder: 'Search items',
-                  onChange: (e: Event) => {
-                    query.value = (e.target as HTMLInputElement).value
+                  onChange: (value: string) => {
+                    query.value = value
                   },
                 }),
                 items.length > 0

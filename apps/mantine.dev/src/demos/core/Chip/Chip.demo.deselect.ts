@@ -17,7 +17,7 @@ const handleChipClick = (chipValue: string) => {
 </script>
 
 <template>
-  <ChipGroup :multiple="false" :value="value" @change="value = $event">
+  <ChipGroup v-model="value" :multiple="false">
     <Group>
       <Chip value="first" @click.capture="handleChipClick('first')">First</Chip>
       <Chip value="second" @click.capture="handleChipClick('second')">Second</Chip>
@@ -43,8 +43,8 @@ const Demo = defineComponent({
         ChipGroup,
         {
           multiple: false,
-          value: value.value,
-          onChange: (v: string | string[]) => {
+          modelValue: value.value,
+          'onUpdate:modelValue': (v: string | string[]) => {
             value.value = v as string
           },
         },

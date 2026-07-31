@@ -16,6 +16,7 @@ export const JsonInput = defineComponent({
   name: 'JsonInput',
   inheritAttrs: false,
   props: {
+    modelValue: { type: String, default: undefined },
     value: { type: String, default: undefined },
     defaultValue: { type: String, default: undefined },
     onChange: { type: Function as PropType<(value: string) => void>, default: undefined },
@@ -33,12 +34,16 @@ export const JsonInput = defineComponent({
       default: undefined,
     },
   },
-  setup(props, { attrs, slots }) {
+  emits: ['update:modelValue', 'change'],
+  setup(props, { attrs, slots, emit }) {
     const [value, setValue] = useUncontrolled<string>({
-      value: () => props.value,
+      value: () => (props.modelValue !== undefined ? props.modelValue : props.value),
       defaultValue: props.defaultValue,
       finalValue: '',
-      onChange: (nextValue) => props.onChange?.(nextValue),
+      onChange: (nextValue) => {
+        emit('update:modelValue', nextValue)
+        emit('change', nextValue)
+      },
     })
     const valid = ref(validateJson(value.value, props.deserialize))
 

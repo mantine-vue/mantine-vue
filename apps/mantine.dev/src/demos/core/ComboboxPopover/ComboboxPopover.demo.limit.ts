@@ -16,12 +16,11 @@ const largeData = Array(1000)
 
 <template>
   <ComboboxPopover
+    v-model="value"
     :data="largeData"
-    :value="value"
     searchable
     :limit="5"
     nothing-found-message="Nothing found..."
-    @change="value = $event"
   >
     <ComboboxPopover.Target>
       <Button variant="default" :miw="200">{{ value || 'Select option' }}</Button>
@@ -43,11 +42,11 @@ const Demo = defineComponent({
         ComboboxPopover,
         {
           data: largeData,
-          value: value.value,
+          modelValue: value.value,
           searchable: true,
           limit: 5,
           nothingFoundMessage: 'Nothing found...',
-          onChange: (val: string | null) => {
+          'onUpdate:modelValue': (val: string | null) => {
             value.value = val
           },
         },

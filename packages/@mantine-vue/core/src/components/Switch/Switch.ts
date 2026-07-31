@@ -1,4 +1,4 @@
-import { defineComponent, h, ref, type PropType, type SlotsType, type VNodeChild } from 'vue'
+import { defineComponent, h, type PropType, type SlotsType, type VNodeChild } from 'vue'
 import { useId, useUncontrolled, assignRef } from '@mantine-vue/hooks'
 import {
   withBoxProps,
@@ -53,14 +53,6 @@ const varsResolver = createVarsResolver<any>((theme, { radius, color, size }) =>
   },
 }))
 
-function callHandler(handler: any, event: Event) {
-  if (Array.isArray(handler)) {
-    handler.forEach((item) => item?.(event))
-  } else {
-    handler?.(event)
-  }
-}
-
 const SwitchBase = defineComponent({
   name: 'Switch',
   inheritAttrs: false,
@@ -83,10 +75,12 @@ const SwitchBase = defineComponent({
     },
     rootRef: { type: [Object, Function] as PropType<any>, default: undefined },
     withThumbIndicator: { type: Boolean, default: true },
+    modelValue: { type: Boolean, default: undefined },
     checked: { type: Boolean, default: undefined },
     defaultChecked: { type: Boolean, default: undefined },
-    onChange: { type: Function as PropType<(event: Event) => void>, default: undefined },
+    onChange: { type: Function as PropType<(checked: boolean) => void>, default: undefined },
     disabled: { type: Boolean, default: false },
+    readOnly: { type: Boolean, default: false },
     variant: { type: String, default: undefined },
     mod: { type: [Object, Array] as PropType<any>, default: undefined },
     classNames: { type: [Object, Function], default: undefined },
@@ -94,16 +88,18 @@ const SwitchBase = defineComponent({
     vars: { type: [Object, Function], default: undefined },
     unstyled: { type: Boolean, default: false },
   },
-  setup(props, { attrs, slots }) {
+  emits: ['update:modelValue', 'update:checked', 'change'],
+  setup(props, { attrs, slots, emit }) {
     const uuid = useId(props.id)
     const groupContext = useSwitchGroupContext()
-    const internalChecked = ref(false)
     const [checked, setChecked] = useUncontrolled<boolean>({
-      value: () => props.checked,
+      value: () => (props.modelValue !== undefined ? props.modelValue : props.checked),
       defaultValue: props.defaultChecked,
       finalValue: false,
       onChange: (value) => {
-        internalChecked.value = value
+        emit('update:modelValue', value)
+        emit('update:checked', value)
+        emit('change', value)
       },
     })
     const getStyles = useStyles({
@@ -166,18 +162,21 @@ const SwitchBase = defineComponent({
             ...getStyles('input'),
             disabled,
             checked: currentChecked,
+            readonly: props.readOnly,
             id,
             type: 'checkbox',
             role: 'switch',
             'aria-describedby': describedBy,
             onChange: (event: Event) => {
-              callHandler(attrs.onChange, event)
-              props.onChange?.(event)
+              if (props.readOnly) {
+                ;(event.currentTarget as HTMLInputElement).checked = currentChecked
+                return
+              }
+              const nextChecked = (event.currentTarget as HTMLInputElement).checked
               if (groupContext) {
                 groupContext.onChange(event)
-              } else {
-                setChecked((event.currentTarget as HTMLInputElement).checked)
               }
+              setChecked(nextChecked)
             },
           }),
           h(

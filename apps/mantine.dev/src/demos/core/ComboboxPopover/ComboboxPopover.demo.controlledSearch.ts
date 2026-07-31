@@ -13,11 +13,10 @@ const searchValue = ref('')
 
 <template>
   <ComboboxPopover
+    v-model="value"
     :data="['React', 'Angular', 'Vue', 'Svelte']"
-    :value="value"
     searchable
     :search-value="searchValue"
-    @change="value = $event"
     @search-change="searchValue = $event"
   >
     <ComboboxPopover.Target>
@@ -41,10 +40,10 @@ const Demo = defineComponent({
           ComboboxPopover,
           {
             data: ['React', 'Angular', 'Vue', 'Svelte'],
-            value: value.value,
+            modelValue: value.value,
             searchable: true,
             searchValue: searchValue.value,
-            onChange: (val: string | null) => {
+            'onUpdate:modelValue': (val: string | null) => {
               value.value = val
             },
             onSearchChange: (val: string) => {

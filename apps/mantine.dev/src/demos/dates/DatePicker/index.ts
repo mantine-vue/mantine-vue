@@ -90,8 +90,8 @@ const PresetsDemo = defineComponent({
     const value = ref<string | null>(null)
     return () =>
       h(DatePicker, {
-        value: value.value,
-        onChange: (v: any) => (value.value = v),
+        modelValue: value.value,
+        'onUpdate:modelValue': (v: any) => (value.value = v),
         presets: [{ value: new Date().toISOString().slice(0, 10), label: 'Today' }],
       })
   },

@@ -47,14 +47,6 @@ const varsResolver = createVarsResolver<any>(
   },
 )
 
-function callHandler(handler: any, event: Event) {
-  if (Array.isArray(handler)) {
-    handler.forEach((item) => item?.(event))
-  } else {
-    handler?.(event)
-  }
-}
-
 const ChipBase = defineComponent({
   name: 'Chip',
   inheritAttrs: false,
@@ -63,6 +55,7 @@ const ChipBase = defineComponent({
     radius: { type: [String, Number] as PropType<MantineRadius>, default: undefined },
     size: { type: String as PropType<MantineSize>, default: 'sm' },
     type: { type: String as PropType<'radio' | 'checkbox'>, default: 'checkbox' },
+    modelValue: { type: Boolean, default: undefined },
     checked: { type: Boolean, default: undefined },
     defaultChecked: { type: Boolean, default: undefined },
     onChange: { type: Function as PropType<(checked: boolean) => void>, default: undefined },
@@ -83,15 +76,20 @@ const ChipBase = defineComponent({
     vars: { type: [Object, Function], default: undefined },
     unstyled: { type: Boolean, default: false },
   },
-  setup(rawProps, { attrs, slots }) {
+  emits: ['update:modelValue', 'update:checked', 'change'],
+  setup(rawProps, { attrs, slots, emit }) {
     const props = useProps('Chip', null, rawProps)
     const groupContext = useChipGroupContext()
     const uuid = useId(props.id)
     const [value, setValue] = useUncontrolled<boolean>({
-      value: () => props.checked,
+      value: () => (props.modelValue !== undefined ? props.modelValue : props.checked),
       defaultValue: props.defaultChecked,
       finalValue: false,
-      onChange: (nextValue) => props.onChange?.(nextValue),
+      onChange: (nextValue) => {
+        emit('update:modelValue', nextValue)
+        emit('update:checked', nextValue)
+        emit('change', nextValue)
+      },
     })
     const getStyles = useStyles({
       name: 'Chip',
@@ -116,7 +114,6 @@ const ChipBase = defineComponent({
       const {
         class: _class,
         style: _style,
-        onChange: attrsOnChange,
         value: _attrsValue,
         ...inputAttrs
       } = attrs as Record<string, any>
@@ -150,14 +147,11 @@ const ChipBase = defineComponent({
             disabled: props.disabled,
             value: chipValue,
             onChange: (event: Event) => {
-              callHandler(attrsOnChange, event)
-
+              const nextChecked = (event.currentTarget as HTMLInputElement).checked
               if (groupContext) {
                 groupContext.onChange(event)
-                props.onChange?.((event.currentTarget as HTMLInputElement).checked)
-              } else {
-                setValue((event.currentTarget as HTMLInputElement).checked)
               }
+              setValue(nextChecked)
             },
           }),
           h(

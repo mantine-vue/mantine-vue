@@ -14,7 +14,7 @@ const value = ref<[number, number]>([20, 80])
   <Text size="sm" mb="xs">
     Maximum range: 50 (selection cannot be wider than 50 units)
   </Text>
-  <RangeSlider :value="value" @change="(v) => (value = v)" :max-range="50" />
+  <RangeSlider v-model="value" :max-range="50" />
   <Text size="sm" mt="xs">
     Value: [{{ value[0] }}, {{ value[1] }}] - Range: {{ value[1] - value[0] }}
   </Text>
@@ -35,8 +35,8 @@ const Demo = defineComponent({
           },
         ),
         h(RangeSlider, {
-          value: value.value,
-          onChange: (v: [number, number]) => {
+          modelValue: value.value,
+          'onUpdate:modelValue': (v: [number, number]) => {
             value.value = v
           },
           maxRange: 50,

@@ -91,8 +91,7 @@ const value = ref<string | null>(null)
 <template>
   <div>
     <Radio.Group
-      :value="value"
-      @change="(v) => (value = v)"
+      v-model="value"
       label="Pick one package to install"
       description="Choose a package that you will need in your application"
     >
@@ -174,8 +173,8 @@ const Demo = defineComponent({
         h(
           Radio.Group,
           {
-            value: value.value,
-            onChange: (v: string) => {
+            modelValue: value.value,
+            'onUpdate:modelValue': (v: string) => {
               value.value = v
             },
             label: 'Pick one package to install',

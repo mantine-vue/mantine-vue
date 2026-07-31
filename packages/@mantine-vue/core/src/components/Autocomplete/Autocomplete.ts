@@ -90,6 +90,7 @@ export const Autocomplete = defineComponent({
   },
   emits: {
     'update:modelValue': (value: string) => typeof value === 'string',
+    change: (value: string) => typeof value === 'string',
   },
   setup(props, { attrs, emit, slots }) {
     const internal = ref(props.defaultValue)
@@ -97,8 +98,8 @@ export const Autocomplete = defineComponent({
     const controlled = () => props.modelValue !== undefined || props.value !== undefined
     const change = (value: string) => {
       if (!controlled()) internal.value = value
-      props.onChange?.(value)
       emit('update:modelValue', value)
+      emit('change', value)
       combobox.resetSelectedOption()
     }
     const parsed = computed(() => getParsedComboboxData(props.data))

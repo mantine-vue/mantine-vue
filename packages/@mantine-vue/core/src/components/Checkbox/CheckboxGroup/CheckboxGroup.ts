@@ -39,6 +39,7 @@ export const CheckboxGroup = defineComponent({
   inheritAttrs: false,
   slots: Object as SlotsType<CheckboxGroupSlots>,
   props: {
+    modelValue: { type: Array as PropType<string[] | undefined>, default: undefined },
     value: { type: Array as PropType<string[] | undefined>, default: undefined },
     defaultValue: { type: Array as PropType<string[] | undefined>, default: undefined },
     onChange: { type: Function as PropType<(value: string[]) => void>, default: undefined },
@@ -61,12 +62,16 @@ export const CheckboxGroup = defineComponent({
     vars: { type: [Object, Function], default: undefined },
     unstyled: { type: Boolean, default: false },
   },
-  setup(props, { attrs, slots }) {
+  emits: ['update:modelValue', 'change'],
+  setup(props, { attrs, slots, emit }) {
     const [value, setValue] = useUncontrolled<string[]>({
-      value: () => props.value,
+      value: () => (props.modelValue !== undefined ? props.modelValue : props.value),
       defaultValue: props.defaultValue,
       finalValue: [],
-      onChange: (nextValue) => props.onChange?.(nextValue),
+      onChange: (nextValue) => {
+        emit('update:modelValue', nextValue)
+        emit('change', nextValue)
+      },
     })
 
     const handleChange = (eventOrValue: Event | string) => {

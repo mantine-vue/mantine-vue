@@ -118,7 +118,7 @@ export const Select = defineComponent({
     },
     chevronColor: { type: String, default: undefined },
   },
-  emits: ['update:modelValue', 'update:searchValue'],
+  emits: ['update:modelValue', 'update:searchValue', 'change'],
   setup(props, { attrs, emit, slots }) {
     const parsed = computed(() => getParsedComboboxData(props.data))
     const lockup = computed(() => getOptionsLockup(parsed.value))
@@ -147,8 +147,8 @@ export const Select = defineComponent({
     }
     const changeValue = (value: any, option: ComboboxItem<any> | null) => {
       if (!controlled()) internal.value = value
-      props.onChange?.(value, option)
       emit('update:modelValue', value)
+      emit('change', value, option)
     }
     const combobox = useCombobox({
       opened: () => props.dropdownOpened,

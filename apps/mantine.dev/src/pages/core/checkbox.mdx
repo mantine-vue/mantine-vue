@@ -10,7 +10,7 @@ export default Layout(MDX_DATA.Checkbox)
 
 ## Controlled state
 
-Use `checked` and `@change` to control `Checkbox` state:
+Use `v-model` to control `Checkbox` state:
 
 ```vue
 <script setup lang="ts">
@@ -21,7 +21,7 @@ const checked = ref(false)
 </script>
 
 <template>
-  <Checkbox :checked="checked" @change="(e) => (checked = e.target.checked)" />
+  <Checkbox v-model="checked" />
 </template>
 ```
 
@@ -140,10 +140,9 @@ You can add any number of custom sizes with [data-size](/styles/data-attributes/
 
 ## Checkbox.Group
 
-`Checkbox.Group` manages the state of multiple checkboxes. It accepts `value` and `@change`
-props which control the state of checkboxes inside the group. The `value` prop should be an
-array of strings, where each string is the value of a checkbox.
-The `@change` handler receives the new value as an array of strings.
+`Checkbox.Group` manages the state of multiple checkboxes with `v-model`. The model is an
+array of strings, where each string is the value of a checkbox. The `@change` handler also
+receives the new array value.
 
 ```vue
 <script setup lang="ts">
@@ -154,7 +153,7 @@ const value = ref<string[]>([])
 </script>
 
 <template>
-  <CheckboxGroup :value="value" @change="value = $event">
+  <CheckboxGroup v-model="value">
     <Checkbox value="react" label="React" />
     <Checkbox value="svelte" label="Svelte" />
   </CheckboxGroup>

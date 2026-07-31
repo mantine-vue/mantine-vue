@@ -19,6 +19,10 @@ export const ChipGroup = defineComponent({
   name: 'ChipGroup',
   props: {
     multiple: { type: Boolean, default: false },
+    modelValue: {
+      type: [String, Array] as PropType<string | string[] | null | undefined>,
+      default: undefined,
+    },
     value: {
       type: [String, Array] as PropType<string | string[] | null | undefined>,
       default: undefined,
@@ -32,12 +36,16 @@ export const ChipGroup = defineComponent({
       default: undefined,
     },
   },
-  setup(props, { slots }) {
+  emits: ['update:modelValue', 'change'],
+  setup(props, { slots, emit }) {
     const [value, setValue] = useUncontrolled<ChipGroupValue>({
-      value: () => props.value,
+      value: () => (props.modelValue !== undefined ? props.modelValue : props.value),
       defaultValue: props.defaultValue,
       finalValue: props.multiple ? [] : null,
-      onChange: (nextValue) => props.onChange?.(nextValue as string | string[]),
+      onChange: (nextValue) => {
+        emit('update:modelValue', nextValue)
+        emit('change', nextValue)
+      },
     })
 
     const isChipSelected = (chipValue: string) =>

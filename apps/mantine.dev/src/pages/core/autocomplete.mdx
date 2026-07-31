@@ -31,7 +31,7 @@ You can change the position with the `loadingPosition` prop to `'left'` or `'rig
 ## Controlled
 
 The `Autocomplete` value must be a string; other types are not supported.
-The `onChange` function is called with a string value as a single argument.
+Use `v-model` to control the value:
 
 ```vue
 <script setup lang="ts">
@@ -42,7 +42,7 @@ const value = ref('')
 </script>
 
 <template>
-  <Autocomplete :data="[]" :value="value" @change="(v) => (value = v)" />
+  <Autocomplete v-model="value" :data="[]" />
 </template>
 ```
 

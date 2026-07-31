@@ -67,7 +67,7 @@ const checked = ref(false)
     :classNames="{ root: classes.root }"
     label="Checkbox button"
     :checked="checked"
-    @change="(e) => (checked = e.target.checked)"
+    @change="(value) => (checked = value)"
     :wrapperProps="{ onClick: () => (checked = !checked) }"
   />
 </template>
@@ -84,8 +84,8 @@ const Demo = defineComponent({
         classNames: { root: 'checkbox-customize-demo-root' },
         label: 'Checkbox button',
         checked: checked.value,
-        onChange: (e: Event) => {
-          checked.value = (e.target as HTMLInputElement).checked
+        onChange: (value: boolean) => {
+          checked.value = value
         },
         wrapperProps: {
           onClick: () => {

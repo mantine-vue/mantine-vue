@@ -297,6 +297,10 @@ export const NumberInput = defineComponent({
   inheritAttrs: false,
   slots: Object as SlotsType<NumberInputSlots>,
   props: {
+    modelValue: {
+      type: [String, Number, BigInt] as PropType<NumberInputValue | undefined>,
+      default: undefined,
+    },
     value: {
       type: [String, Number, BigInt] as PropType<NumberInputValue | undefined>,
       default: undefined,
@@ -375,17 +379,24 @@ export const NumberInput = defineComponent({
     vars: { type: [Object, Function], default: undefined },
     unstyled: { type: Boolean, default: false },
   },
-  setup(props, { attrs, slots }) {
+  emits: ['update:modelValue', 'change'],
+  setup(props, { attrs, slots, emit }) {
     const inputRef = ref<HTMLInputElement | null>(null)
     const isEditing = ref(false)
     const isBigIntMode = computed(
-      () => typeof props.value === 'bigint' || typeof props.defaultValue === 'bigint',
+      () =>
+        typeof props.modelValue === 'bigint' ||
+        typeof props.value === 'bigint' ||
+        typeof props.defaultValue === 'bigint',
     )
     const [value, setValue] = useUncontrolled<NumberInputValue>({
-      value: () => props.value,
+      value: () => (props.modelValue !== undefined ? props.modelValue : props.value),
       defaultValue: props.defaultValue,
       finalValue: '',
-      onChange: (nextValue) => props.onChange?.(nextValue),
+      onChange: (nextValue) => {
+        emit('update:modelValue', nextValue)
+        emit('change', nextValue)
+      },
     })
     const getStyles = useStyles({
       name: 'NumberInput',

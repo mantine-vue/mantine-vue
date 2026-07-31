@@ -37,7 +37,7 @@ const toggleAll = () => {
       :ml="33"
       :label="item.label"
       :checked="item.checked"
-      @change="(e) => { values[index] = { ...values[index], checked: e.target.checked } }"
+      @change="(checked) => { values[index] = { ...values[index], checked } }"
     />
   </div>
 </template>
@@ -79,8 +79,7 @@ const Demo = defineComponent({
                 ml: 33,
                 label: item.label,
                 checked: item.checked,
-                onChange: (e: Event) => {
-                  const checked = (e.target as HTMLInputElement).checked
+                onChange: (checked: boolean) => {
                   values.value = values.value.map((v, i) => (i === index ? { ...v, checked } : v))
                 },
               }),

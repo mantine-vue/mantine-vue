@@ -250,11 +250,7 @@ describe('@mantine-vue/core Menu', () => {
 
     await wrapper.find('.target').trigger('click')
 
-    expect(onChange).toHaveBeenCalledWith(
-      expect.objectContaining({
-        currentTarget: expect.objectContaining({ value: '' }),
-      }),
-    )
+    expect(onChange).toHaveBeenCalledWith('')
   })
 
   it('opens nested submenus on hover', async () => {

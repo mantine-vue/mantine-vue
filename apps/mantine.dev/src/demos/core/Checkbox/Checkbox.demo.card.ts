@@ -83,8 +83,7 @@ const checked = ref(false)
 <template>
   <Checkbox.Card
     :class="classes.root"
-    :checked="checked"
-    @click="checked = !checked"
+    v-model="checked"
   >
     <Group wrap="nowrap" align="flex-start">
       <Checkbox.Indicator />
@@ -110,9 +109,9 @@ const Demo = defineComponent({
         Checkbox.Card,
         {
           class: 'checkbox-card-demo-root',
-          checked: checked.value,
-          onClick: () => {
-            checked.value = !checked.value
+          modelValue: checked.value,
+          'onUpdate:modelValue': (value: boolean) => {
+            checked.value = value
           },
         },
         {

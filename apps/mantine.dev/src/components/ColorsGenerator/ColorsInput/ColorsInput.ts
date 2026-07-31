@@ -92,8 +92,7 @@ export const ColorsInput = defineComponent({
             label: 'Display colors info',
             size: 'md',
             checked: props.displayColorsInfo,
-            onChange: (event: Event) =>
-              props.setDisplayColorsInfo((event.currentTarget as HTMLInputElement).checked),
+            onChange: (checked: boolean) => props.setDisplayColorsInfo(checked),
             mt: 'xl',
           }),
           h(

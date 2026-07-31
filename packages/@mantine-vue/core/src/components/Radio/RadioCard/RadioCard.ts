@@ -1,4 +1,5 @@
 import { defineComponent, h, inject, provide, type InjectionKey, type PropType } from 'vue'
+import { useUncontrolled } from '@mantine-vue/hooks'
 import {
   withBoxProps,
   createVarsResolver,
@@ -39,7 +40,10 @@ export const RadioCard = withBoxProps(
     name: 'RadioCard',
     inheritAttrs: false,
     props: {
+      modelValue: { type: Boolean, default: undefined },
       checked: { type: Boolean, default: undefined },
+      defaultChecked: { type: Boolean, default: undefined },
+      onChange: { type: Function as PropType<(checked: boolean) => void>, default: undefined },
       withBorder: { type: Boolean, default: true },
       radius: { type: [String, Number] as PropType<MantineRadius>, default: undefined },
       value: { type: String, default: undefined },
@@ -50,8 +54,19 @@ export const RadioCard = withBoxProps(
       vars: { type: [Object, Function], default: undefined },
       unstyled: { type: Boolean, default: false },
     },
-    setup(props, { attrs, slots }) {
+    emits: ['update:modelValue', 'update:checked', 'change'],
+    setup(props, { attrs, slots, emit }) {
       const groupContext = useRadioGroupContext()
+      const [localChecked, setLocalChecked] = useUncontrolled<boolean>({
+        value: () => (props.modelValue !== undefined ? props.modelValue : props.checked),
+        defaultValue: props.defaultChecked,
+        finalValue: false,
+        onChange: (checked) => {
+          emit('update:modelValue', checked)
+          emit('update:checked', checked)
+          emit('change', checked)
+        },
+      })
       const getStyles = useStyles({
         name: 'RadioCard',
         props,
@@ -66,9 +81,7 @@ export const RadioCard = withBoxProps(
       })
 
       const isChecked = () =>
-        typeof props.checked === 'boolean'
-          ? props.checked
-          : groupContext?.value === props.value || false
+        groupContext ? groupContext.value === props.value : localChecked.value
 
       provide(RadioCardContextKey, {
         get checked() {
@@ -93,6 +106,7 @@ export const RadioCard = withBoxProps(
             onClick: (event: MouseEvent) => {
               callHandler(attrs.onClick, event)
               groupContext?.onChange(props.value || '')
+              setLocalChecked(true)
             },
           },
           () => slots.default?.(),

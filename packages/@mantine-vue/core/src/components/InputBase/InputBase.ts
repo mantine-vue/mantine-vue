@@ -1,3 +1,4 @@
+import { useUncontrolled } from '@mantine-vue/hooks'
 import { withBoxProps, type MantineRadius, type MantineSize } from '../../core'
 import { defineComponent, h, type PropType, type SlotsType, type VNodeChild } from 'vue'
 import { Input } from '../Input'
@@ -28,6 +29,10 @@ export const InputBase = withBoxProps(
     slots: Object as SlotsType<InputBaseSlots>,
     props: {
       component: { type: [String, Object, Function] as PropType<any>, default: 'input' },
+      modelValue: { type: null as unknown as PropType<any>, default: undefined },
+      value: { type: null as unknown as PropType<any>, default: undefined },
+      defaultValue: { type: null as unknown as PropType<any>, default: undefined },
+      onChange: { type: Function as PropType<(value: any) => void>, default: undefined },
       __staticSelector: { type: String, default: 'InputBase' },
       __stylesApiProps: { type: Object as PropType<Record<string, any>>, default: undefined },
       label: { type: null as unknown as PropType<MantineNode>, default: undefined },
@@ -108,7 +113,18 @@ export const InputBase = withBoxProps(
       rootRef: { type: [Object, Function] as PropType<any>, default: undefined },
       mod: { type: [Object, Array] as PropType<any>, default: undefined },
     },
-    setup(props, { attrs, slots }) {
+    emits: ['update:modelValue', 'change'],
+    setup(props, { attrs, slots, emit }) {
+      const [value, setValue] = useUncontrolled<any>({
+        value: () => (props.modelValue !== undefined ? props.modelValue : props.value),
+        defaultValue: props.defaultValue,
+        finalValue: undefined,
+        onChange: (nextValue) => {
+          emit('update:modelValue', nextValue)
+          emit('change', nextValue)
+        },
+      })
+
       return () =>
         h(
           Input.Wrapper,
@@ -143,6 +159,8 @@ export const InputBase = withBoxProps(
                 Input,
                 {
                   ...attrs,
+                  modelValue: value.value,
+                  'onUpdate:modelValue': setValue,
                   component: props.component,
                   __staticSelector: props.__staticSelector,
                   __stylesApiProps: props.__stylesApiProps ?? props,

@@ -13,7 +13,7 @@ const value = ref(250)
 <template>
   <div>
     <Text>Hue value: {{ value }}</Text>
-    <HueSlider :value="value" @change="value = $event" />
+    <HueSlider v-model="value" />
   </div>
 </template>
 `
@@ -26,8 +26,8 @@ const Demo = defineComponent({
       h('div', null, [
         h(Text, {}, { default: () => `Hue value: ${value.value}` }),
         h(HueSlider, {
-          value: value.value,
-          onChange: (v: number) => {
+          modelValue: value.value,
+          'onUpdate:modelValue': (v: number) => {
             value.value = v
           },
         }),

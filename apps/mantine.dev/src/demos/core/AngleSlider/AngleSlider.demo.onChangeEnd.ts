@@ -13,8 +13,7 @@ const endValue = ref(0)
 
 <template>
   <AngleSlider
-    :value="value"
-    @change="(v) => (value = v)"
+    v-model="value"
     @change-end="(v) => (endValue = v)"
   />
   <Text mt="md">Current value: {{ value }}</Text>
@@ -30,8 +29,8 @@ const Demo = defineComponent({
     return () =>
       h('div', null, [
         h(AngleSlider, {
-          value: value.value,
-          onChange: (v: number) => {
+          modelValue: value.value,
+          'onUpdate:modelValue': (v: number) => {
             value.value = v
           },
           onChangeEnd: (v: number) => {
