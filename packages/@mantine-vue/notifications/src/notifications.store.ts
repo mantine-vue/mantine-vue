@@ -10,12 +10,21 @@ export type NotificationPosition =
   | 'bottom-center'
 
 export interface NotificationData extends Record<`data-${string}`, any> {
+  /** Notification id, can be used to close or update notification. */
   id?: string
+  /** Position of the notification, if not set, the position is determined based on `position` prop on Notifications component. */
   position?: NotificationPosition
+  /** Notification message, required for all notifications. */
   message: any
+  /** Display priority. Higher numbers are shown before lower ones when the number of active notifications exceeds `limit`. Notifications with equal priority keep insertion order (FIFO). @default 0 */
+  priority?: number
+  /** Determines whether notification should be closed automatically, number is auto close timeout in ms, overrides `autoClose` from `Notifications`. */
   autoClose?: boolean | number
+  /** Determines whether notification can be closed with close button, drag or horizontal scroll swipe. @default true */
   allowClose?: boolean
+  /** Called when notification closes. */
   onClose?: (props: NotificationData) => void
+  /** Called when notification opens. */
   onOpen?: (props: NotificationData) => void
   style?: any
   withCloseButton?: boolean
@@ -35,25 +44,39 @@ function randomId() {
   return `mantine-${Math.random().toString(36).slice(2, 11)}`
 }
 
+interface SequencedNotificationData extends NotificationData {
+  __sequence?: number
+}
+
+let notificationSequence = 0
+
 function getDistributedNotifications(
-  data: NotificationData[],
+  data: SequencedNotificationData[],
   defaultPosition: NotificationPosition,
   limit: number,
 ) {
   const queue: NotificationData[] = []
   const notifications: NotificationData[] = []
-  const count: Record<string, number> = {}
+  const groups = new Map<string, SequencedNotificationData[]>()
 
   for (const item of data) {
     const position = item.position || defaultPosition
-    count[position] = count[position] || 0
-    count[position] += 1
-
-    if (count[position] <= limit) {
-      notifications.push(item)
+    const group = groups.get(position)
+    if (group) {
+      group.push(item)
     } else {
-      queue.push(item)
+      groups.set(position, [item])
     }
+  }
+
+  for (const group of groups.values()) {
+    group.sort(
+      (a, b) => (b.priority ?? 0) - (a.priority ?? 0) || (a.__sequence ?? 0) - (b.__sequence ?? 0),
+    )
+    group.forEach((item, index) => {
+      if (index < limit) notifications.push(item)
+      else queue.push(item)
+    })
   }
 
   return { notifications, queue }
@@ -78,6 +101,12 @@ export function updateNotificationsState(
 ) {
   const state = store.getState()
   const notifications = update([...state.notifications, ...state.queue])
+  for (const item of notifications as SequencedNotificationData[]) {
+    if (item.__sequence === undefined) {
+      item.__sequence = notificationSequence
+      notificationSequence += 1
+    }
+  }
   const updated = getDistributedNotifications(notifications, state.defaultPosition, state.limit)
 
   store.setState({
@@ -138,7 +167,12 @@ export function cleanNotifications(store: NotificationsStore = notificationsStor
 }
 
 export function cleanNotificationsQueue(store: NotificationsStore = notificationsStore) {
-  updateNotificationsState(store, (notifications) => notifications.slice(0, store.getState().limit))
+  const { defaultPosition, limit } = store.getState()
+  updateNotificationsState(
+    store,
+    (notifications) =>
+      getDistributedNotifications(notifications, defaultPosition, limit).notifications,
+  )
 }
 
 export const notifications = {
