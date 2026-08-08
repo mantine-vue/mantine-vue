@@ -12,7 +12,7 @@ const [opened, { open, close }] = useDisclosure(false)
 </script>
 
 <template>
-  <Drawer :opened="opened" :on-close="close" :with-close-button="false">
+  <Drawer :opened="opened" @close="close" :with-close-button="false">
     Drawer without header, press escape or click on overlay to close
   </Drawer>
 

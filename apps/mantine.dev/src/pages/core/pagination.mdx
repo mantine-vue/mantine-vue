@@ -25,7 +25,7 @@ const activePage = ref(1)
 </script>
 
 <template>
-  <Pagination :value="activePage" @change="activePage = $event" :total="10" />
+  <Pagination v-model="activePage" :total="10" />
 </template>
 ```
 
@@ -116,6 +116,6 @@ const handlePageChange = (p: number) => {
 </script>
 
 <template>
-  <Pagination :total="10" :value="page" @change="handlePageChange" />
+  <Pagination :total="10" :model-value="page" @change="handlePageChange" />
 </template>
 ```

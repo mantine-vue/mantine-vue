@@ -144,12 +144,14 @@ function writeTempConfig(options: {
 
   const contents = `
 import { defineConfig } from 'vite'
+import vue from '@vitejs/plugin-vue'
 import { isAbsolute } from 'node:path'
 
 export default defineConfig({
   root: ${JSON.stringify(pkgPath)},
   configFile: false,
   logLevel: 'warn',
+  plugins: [vue()],
   build: {
     outDir: ${JSON.stringify(outDir)},
     emptyOutDir: true,

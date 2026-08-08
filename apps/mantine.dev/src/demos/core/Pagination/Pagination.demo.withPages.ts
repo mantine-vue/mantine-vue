@@ -20,7 +20,7 @@ const message = computed(
 <template>
   <Group justify="flex-end">
     <Text size="sm">{{ message }}</Text>
-    <Pagination :total="totalPages" :value="page" @change="page = $event" :with-pages="false" />
+    <Pagination :total="totalPages" v-model="page" :with-pages="false" />
   </Group>
 </template>
 `
@@ -47,8 +47,8 @@ const Demo = defineComponent({
             h(Text, { size: 'sm' }, { default: () => message.value }),
             h(Pagination, {
               total: totalPages,
-              value: page.value,
-              onChange: (p: number) => {
+              modelValue: page.value,
+              'onUpdate:modelValue': (p: number) => {
                 page.value = p
               },
               withPages: false,

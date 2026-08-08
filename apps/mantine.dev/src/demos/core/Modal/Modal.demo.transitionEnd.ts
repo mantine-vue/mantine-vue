@@ -17,7 +17,7 @@ const modalData = ref({ title: '', message: '' })
 <template>
   <Modal
     :opened="firstOpened"
-    :on-close="() => { firstHandlers.close(); modalData = { title: '', message: '' } }"
+    @close="() => { firstHandlers.close(); modalData = { title: '', message: '' } }"
     :transition-props="{ duration: 300, exitDuration: 1000, transition: 'fade-down' }"
     :title="modalData.title"
   >
@@ -26,7 +26,7 @@ const modalData = ref({ title: '', message: '' })
 
   <Modal
     :opened="secondOpened"
-    :on-close="secondHandlers.close"
+    @close="secondHandlers.close"
     :transition-props="{ duration: 300, exitDuration: 1000, transition: 'fade-down' }"
     :on-exit-transition-end="() => (modalData = { title: '', message: '' })"
     :title="modalData.title"

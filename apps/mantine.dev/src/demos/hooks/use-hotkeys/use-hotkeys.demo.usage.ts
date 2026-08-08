@@ -25,8 +25,7 @@ const handleKeydown = getHotkeyHandler([
   <TextInput
     placeholder="Your message"
     label="Press ⌘+Enter or Ctrl+Enter when input has focus to send message"
-    :value="value"
-    @input="value = ($event.target as HTMLInputElement).value"
+    v-model="value"
     @keydown="handleKeydown"
   />
   <p v-if="log">{{ log }}</p>
@@ -52,7 +51,7 @@ const Demo = defineComponent({
         h(TextInput, {
           placeholder: 'Your message',
           label: 'Press ⌘+Enter or Ctrl+Enter when input has focus to send message',
-          value: value.value,
+          modelValue: value.value,
           onInput: (event: Event) => (value.value = (event.target as HTMLInputElement).value),
           onKeydown: handleKeydown,
         }),

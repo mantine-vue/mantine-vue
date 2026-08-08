@@ -12,7 +12,7 @@ const [opened, { open, close }] = useDisclosure(false)
 </script>
 
 <template>
-  <Drawer :opened="opened" :on-close="close" title="Focus demo">
+  <Drawer :opened="opened" @close="close" title="Focus demo">
     <TextInput label="First input" placeholder="First input" />
     <TextInput
       data-autofocus

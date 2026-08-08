@@ -6,8 +6,6 @@ const code = `
 <script setup lang="ts">
 import { TagsInput, Pill } from '@mantine-vue/core'
 
-const renderPillFn = ({ value, onRemove }) =>
-  h(Pill, { withRemoveButton: true, onRemove }, () => \`★ \${value}\`)
 </script>
 
 <template>
@@ -16,8 +14,11 @@ const renderPillFn = ({ value, onRemove }) =>
     description="Tags are rendered with a star prefix"
     placeholder="Enter tag"
     :default-value="['React', 'Angular']"
-    :render-pill="renderPillFn"
-  />
+  >
+    <template #renderPill="{ value, onRemove }">
+      <Pill with-remove-button @remove="onRemove">★ {{ value }}</Pill>
+    </template>
+  </TagsInput>
 </template>
 `
 

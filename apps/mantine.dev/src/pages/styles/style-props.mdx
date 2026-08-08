@@ -1,0 +1,53 @@
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+import StylePropsTable from '@/components/StylePropsTable/StylePropsTable.vue'
+
+export default Layout(MDX_DATA.StyleProps)
+
+## What are style props
+
+Style props let you add inline styles to any Mantine component with a shorthand prop.
+Every Mantine component supports them – they are inherited from
+[Box](/core/box), which every component renders under the hood.
+
+```vue
+<script setup lang="ts">
+import { Badge } from '@mantine-vue/core'
+</script>
+
+<template>
+  <!-- margin-top: 1rem, padding-inline: 2rem, background-color: red.5 -->
+  <Badge mt="md" px="xl" bg="red.5">Badge</Badge>
+</template>
+```
+
+Style props are not listed in the props table of each component: they are the same on every
+component and are documented once, here.
+
+## Theme values
+
+Props with a theme key resolve values from the theme. For example, `mt="md"` uses
+`theme.spacing.md` and `c="blue.6"` uses the sixth shade of the `blue` color.
+Any valid CSS value is accepted as well – `mt="20px"` and `c="#fff"` both work.
+
+Numbers are converted to rem: `mt={20}` is `margin-top: 1.25rem`.
+
+## Responsive values
+
+All style props accept an object with breakpoint keys. The `base` value applies to every
+viewport, the others apply from the given breakpoint up:
+
+```vue
+<template>
+  <Badge :mt="{ base: 'xs', md: 'xl' }">Badge</Badge>
+</template>
+```
+
+## Supported props
+
+<StylePropsTable />
+
+## Logical property aliases
+
+`mis`, `mie`, `pis` and `pie` are aliases of `ms`, `me`, `ps` and `pe`. They exist for
+compatibility and are intentionally left out of the table above.

@@ -1,5 +1,6 @@
 import { defineComponent, h, ref } from 'vue'
 import { Chip, ChipGroup, Group } from '@mantine-vue/core'
+import type { ChipGroupValue } from '@mantine-vue/core'
 import type { MantineDemo } from '@/demo'
 
 const code = `
@@ -44,8 +45,8 @@ const Demo = defineComponent({
         {
           multiple: false,
           modelValue: value.value,
-          'onUpdate:modelValue': (v: string | string[]) => {
-            value.value = v as string
+          'onUpdate:modelValue': (v: ChipGroupValue) => {
+            value.value = (v as string | null) ?? ''
           },
         },
         {

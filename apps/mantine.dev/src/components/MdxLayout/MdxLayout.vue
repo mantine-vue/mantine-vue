@@ -5,17 +5,24 @@ import { DOCS_BASE } from '@/links'
 import PageHead from '../PageHead/PageHead.vue'
 import MdxPageHeader from '../MdxPageHeader/MdxPageHeader.vue'
 import MdxSiblings from '../MdxSiblings/MdxSiblings.vue'
+import MdxTabs from '../MdxTabs/MdxTabs.vue'
 import TableOfContents from '../TableOfContents/TableOfContents.vue'
 
 const props = defineProps<{ meta: Frontmatter }>()
 
 const editPageLink = computed(() => `${DOCS_BASE}${props.meta.slug}.mdx`)
+const withTabs = computed(() => Array.isArray(props.meta.props))
 </script>
 
 <template>
   <PageHead :title="meta.title" :description="meta.description" />
   <MdxPageHeader :meta="meta" />
-  <div class="wrapper">
+
+  <MdxTabs v-if="withTabs" :meta="meta">
+    <slot />
+  </MdxTabs>
+
+  <div v-else class="wrapper">
     <article class="container" id="mdx">
       <slot />
       <MdxSiblings :meta="meta" />

@@ -45,11 +45,8 @@ const filteredOptions = computed(() => {
           search = value || ''
         }"
         placeholder="Search value"
-        :value="search"
-        @input="(event) => {
-          combobox.updateSelectedOptionIndex()
-          search = event.currentTarget.value
-        }"
+        v-model="search"
+        @input="() => combobox.updateSelectedOptionIndex()"
       />
     </Combobox.Target>
 
@@ -104,7 +101,7 @@ const Demo = defineComponent({
                     search.value = value.value || ''
                   },
                   placeholder: 'Search value',
-                  value: search.value,
+                  modelValue: search.value,
                   onInput: (event: Event) => {
                     combobox.updateSelectedOptionIndex()
                     search.value = (event.currentTarget as HTMLInputElement).value

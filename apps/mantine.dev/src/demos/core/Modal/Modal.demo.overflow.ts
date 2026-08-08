@@ -12,7 +12,7 @@ const [opened, { open, close }] = useDisclosure(false)
 </script>
 
 <template>
-  <Modal :opened="opened" :on-close="close" title="Header is sticky">
+  <Modal :opened="opened" @close="close" title="Header is sticky">
     <p v-for="i in 100" :key="i">Modal with scroll</p>
   </Modal>
 

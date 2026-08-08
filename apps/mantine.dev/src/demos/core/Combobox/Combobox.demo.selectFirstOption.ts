@@ -39,11 +39,8 @@ watch(value, () => combobox.selectFirstOption())
       <TextInput
         label="Pick value or type anything"
         placeholder="Pick value or type anything"
-        :value="value"
-        @input="(event) => {
-          value = event.currentTarget.value
-          combobox.openDropdown()
-        }"
+        v-model="value"
+        @input="() => combobox.openDropdown()"
         @click="combobox.openDropdown()"
         @focus="combobox.openDropdown()"
         @blur="combobox.closeDropdown()"
@@ -95,7 +92,7 @@ const Demo = defineComponent({
                 h(TextInput, {
                   label: 'Pick value or type anything',
                   placeholder: 'Pick value or type anything',
-                  value: value.value,
+                  modelValue: value.value,
                   onInput: (event: Event) => {
                     value.value = (event.currentTarget as HTMLInputElement).value
                     combobox.openDropdown()

@@ -10,6 +10,15 @@ export const MDX_DATA: Record<string, Frontmatter> = {
     searchTags: 'getting started, installation, vite, nuxt, templates, setup',
     hideHeader: true,
   },
+  StyleProps: {
+    title: 'Style props',
+    package: '@mantine-vue/core',
+    slug: '/styles/style-props',
+    description: 'Learn how to use style props to add inline styles to any Mantine Vue component',
+    docs: 'styles/style-props.mdx',
+    searchTags: 'style props, inline styles, spacing, responsive styles, box',
+    hideHeader: true,
+  },
   GuideVite: {
     title: 'Usage with Vite',
     package: '@mantine-vue/core',
@@ -1645,7 +1654,7 @@ export const MDX_DATA: Record<string, Frontmatter> = {
     source: '@mantine-vue/table/src/components/MantineVueTable.ts',
     docs: 'x/table.mdx',
     searchTags:
-      'table, data table, data grid, datagrid, tanstack table, mantine react table, sorting, filtering, pagination, row selection, virtualization, editing',
+      'table, data table, data grid, datagrid, tanstack table, mantine vue table, sorting, filtering, pagination, row selection, virtualization, editing',
   },
   Carousel: {
     title: 'Carousel',
@@ -1861,8 +1870,8 @@ export const MDX_DATA: Record<string, Frontmatter> = {
     title: 'InlineDateTimePicker',
     package: '@mantine-vue/dates',
     slug: '/dates/inline-date-time-picker',
-    componentPrefix: 'DateTimePicker',
-    props: ['DateTimePicker'],
+    componentPrefix: 'InlineDateTimePicker',
+    props: ['InlineDateTimePicker'],
     styles: ['DateTimePicker'],
     description: 'Displays date and time pickers inline',
     source: '@mantine-vue/dates/src/index.ts',
