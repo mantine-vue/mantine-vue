@@ -1,6 +1,6 @@
-export { ModalsProvider } from './ModalsProvider'
+export { ModalsProvider } from './components/ModalsProvider'
 export { useModals } from './use-modals'
-export { ConfirmModal } from './ConfirmModal'
+export { ConfirmModal } from './components/ConfirmModal'
 export {
   modals,
   openModal,
@@ -23,8 +23,12 @@ export {
 } from './modals.store'
 export { modalsReducer, handleCloseModal } from './reducer'
 
-export type { ModalsProviderProps } from './ModalsProvider'
-export type { ConfirmModalProps } from './ConfirmModal'
+export type { ModalsProviderProps } from './components/ModalsProvider'
+export type {
+  ConfirmModalCallbacks,
+  ConfirmModalEmits,
+  ConfirmModalProps,
+} from './components/ConfirmModal'
 export type { ModalsStore } from './modals.store'
 export type { ModalsState, ModalsAction } from './reducer'
 export type {
