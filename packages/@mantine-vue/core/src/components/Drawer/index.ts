@@ -11,11 +11,16 @@ export {
   useDrawersStack,
 } from './Drawer'
 export type {
-  DrawerProps,
-  DrawerPosition,
-  DrawerStylesNames,
+  DrawerCompoundProps,
   DrawerCssVariables,
   DrawerFactory,
+  DrawerPosition,
+  DrawerProps,
+  DrawerRootProps,
+  DrawerRootSlots,
+  DrawerSlots,
   DrawerStackContextValue,
+  DrawerStackSlots,
+  DrawerStylesNames,
   UseDrawersStackReturnType,
 } from './Drawer'

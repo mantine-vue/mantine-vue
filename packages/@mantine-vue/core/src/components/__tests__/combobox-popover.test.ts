@@ -57,7 +57,7 @@ describe('@mantine-vue/core ComboboxPopover', () => {
 
   it('supports controlled single value state', async () => {
     const spy = vi.fn()
-    const wrapper = render({ data: ['test-1', 'test-2'], value: 'test-1', onChange: spy })
+    const wrapper = render({ data: ['test-1', 'test-2'], modelValue: 'test-1', onChange: spy })
     await openDropdown(wrapper)
     await optionByName(wrapper, 'test-2').trigger('click')
     expect(spy).toHaveBeenCalledWith('test-2')
@@ -97,7 +97,7 @@ describe('@mantine-vue/core ComboboxPopover', () => {
     const wrapper = render({
       data: ['test-1', 'test-2'],
       multiple: true,
-      value: ['test-1'],
+      modelValue: ['test-1'],
       onChange: spy,
     })
     await openDropdown(wrapper)

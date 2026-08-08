@@ -1,2 +1,8 @@
 export { Select } from './Select'
-export type { SelectProps, SelectSlots, SelectStylesNames } from './Select'
+export type {
+  SelectEmits,
+  SelectOptionRenderPayload,
+  SelectProps,
+  SelectSlots,
+  SelectStylesNames,
+} from './Select'

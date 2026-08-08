@@ -24,6 +24,14 @@ function childrenOne(slots: any): VNode {
   return children[0]
 }
 
+/**
+ * Kept as a render function deliberately.
+ *
+ * The target clones the single child the consumer provides in order to inject the
+ * combobox ARIA attributes, keyboard handlers and a merged ref. A template cannot
+ * clone and re-prop an arbitrary child VNode, so this stays as-is – the same reason
+ * `HoverCard.Target`, `FocusTrap` and `Portal` keep theirs.
+ */
 export const ComboboxPopoverTarget = defineComponent({
   name: 'ComboboxPopoverTarget',
   inheritAttrs: false,

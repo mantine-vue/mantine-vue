@@ -8,13 +8,18 @@ export interface SectionSlots {
   rightSection?: () => VNodeChild
 }
 
-/** Prop content takes precedence over slot content. Explicit null is preserved. */
+/**
+ * Resolves content for props that accept both a scoped slot and a plain prop.
+ * Precedence: slot > prop > undefined. A slot passed by the parent always wins,
+ * even if a prop is also set, so consumers can override built-in defaults from
+ * their template without fighting prop-driven content.
+ */
 export function resolveNode(prop: MantineNode | undefined, slot?: () => VNodeChild): VNodeChild {
-  if (prop !== undefined) {
-    return typeof prop === 'function' ? prop() : prop
+  if (slot) {
+    return slot()
   }
 
-  return slot?.()
+  return typeof prop === 'function' ? prop() : prop
 }
 
 export function hasNode(node: VNodeChild): boolean {

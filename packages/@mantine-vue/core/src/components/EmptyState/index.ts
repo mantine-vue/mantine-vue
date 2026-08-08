@@ -1,5 +1,6 @@
 export { EmptyState } from './EmptyState'
 export type {
+  EmptyStateOwnProps,
   EmptyStateProps,
   EmptyStateSlots,
   EmptyStateStylesNames,
@@ -9,6 +10,7 @@ export type {
 
 export { EmptyStateIndicator } from './EmptyStateIndicator/EmptyStateIndicator'
 export type {
+  EmptyStateIndicatorOwnProps,
   EmptyStateIndicatorProps,
   EmptyStateIndicatorSlots,
   EmptyStateIndicatorStylesNames,
@@ -16,6 +18,7 @@ export type {
 
 export { EmptyStateTitle } from './EmptyStateTitle/EmptyStateTitle'
 export type {
+  EmptyStateTitleOwnProps,
   EmptyStateTitleProps,
   EmptyStateTitleSlots,
   EmptyStateTitleStylesNames,
@@ -23,6 +26,7 @@ export type {
 
 export { EmptyStateDescription } from './EmptyStateDescription/EmptyStateDescription'
 export type {
+  EmptyStateDescriptionOwnProps,
   EmptyStateDescriptionProps,
   EmptyStateDescriptionSlots,
   EmptyStateDescriptionStylesNames,
@@ -30,6 +34,7 @@ export type {
 
 export { EmptyStateActions } from './EmptyStateActions/EmptyStateActions'
 export type {
+  EmptyStateActionsOwnProps,
   EmptyStateActionsProps,
   EmptyStateActionsSlots,
   EmptyStateActionsStylesNames,

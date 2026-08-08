@@ -17,6 +17,7 @@ export {
 } from './Combobox'
 export type {
   ComboboxProps,
+  ComboboxSlots,
   ComboboxOptionProps,
   ComboboxTargetProps,
   ComboboxEventsTargetProps,

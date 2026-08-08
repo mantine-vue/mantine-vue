@@ -217,9 +217,9 @@ describe('@mantine-vue/core Menubar', () => {
     expect(wrapper.findAll('[role="menu"]')).toHaveLength(0)
   })
 
-  it('calls onOpenChange with the opened menu index', async () => {
+  it('emits update:openIndex with the opened menu index', async () => {
     const onOpenChange = vi.fn()
-    const wrapper = render({ onOpenChange })
+    const wrapper = render({ 'onUpdate:openIndex': onOpenChange })
     await ready(wrapper)
     await target(wrapper, 'File').trigger('click')
     await ready(wrapper)

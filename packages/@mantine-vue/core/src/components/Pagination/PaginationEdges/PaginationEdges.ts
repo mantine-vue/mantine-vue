@@ -1,92 +1,30 @@
-import { defineComponent, h, type PropType, type SlotsType, type VNodeChild } from 'vue'
-import {
-  PaginationFirstIcon,
-  PaginationLastIcon,
-  PaginationNextIcon,
-  PaginationPreviousIcon,
-} from '../Pagination.icons'
-import { usePaginationContext } from '../Pagination.context'
-import { PaginationControl } from '../PaginationControl/PaginationControl'
 import { withBoxProps } from '../../../core'
+import PaginationFirstComponent from './PaginationFirst.vue'
+import PaginationLastComponent from './PaginationLast.vue'
+import PaginationNextComponent from './PaginationNext.vue'
+import PaginationPreviousComponent from './PaginationPrevious.vue'
 
-export interface PaginationEdgeSlots {
-  icon?: () => VNodeChild
-}
+/**
+ * The four edge controls share `PaginationEdge.vue`; each wrapper only fixes the edge
+ * it targets so the component keeps its own name in devtools and in
+ * `findComponent({ name })` lookups.
+ */
+export const PaginationNext = withBoxProps(PaginationNextComponent)
+export const PaginationPrevious = withBoxProps(PaginationPreviousComponent)
+export const PaginationFirst = withBoxProps(PaginationFirstComponent)
+export const PaginationLast = withBoxProps(PaginationLastComponent)
 
-function createEdge(
-  name: string,
-  icon: any,
-  label: string,
-  getDisabled: (ctx: any) => boolean,
-  getAction: (ctx: any) => () => void,
-) {
-  return defineComponent({
-    name,
-    inheritAttrs: false,
-    slots: Object as SlotsType<PaginationEdgeSlots>,
-    props: {
-      icon: { type: [Object, Function] as PropType<any>, default: undefined },
-      disabled: { type: Boolean, default: false },
-    },
-    setup(props, { attrs, slots }) {
-      const ctx = usePaginationContext()
+export type {
+  PaginationEdgeKind,
+  PaginationEdgeOwnProps,
+  PaginationEdgeProps,
+  PaginationEdgeSlots,
+} from './PaginationEdges.types'
 
-      return () => {
-        const Icon = props.icon ?? icon
-        const disabled = props.disabled || ctx.disabled || getDisabled(ctx)
-
-        return h(
-          PaginationControl,
-          {
-            ...attrs,
-            disabled,
-            withPadding: false,
-            'aria-label': attrs['aria-label'] ?? label,
-            onClick: disabled ? undefined : getAction(ctx),
-          },
-          () => (slots.icon ? slots.icon() : h(Icon, { class: 'mantine-rotate-rtl' })),
-        )
-      }
-    },
-  })
-}
-
-export const PaginationNext = withBoxProps(
-  createEdge(
-    'PaginationNext',
-    PaginationNextIcon,
-    'Next page',
-    (ctx) => ctx.active >= ctx.total,
-    (ctx) => ctx.onNext,
-  ),
-)
-
-export const PaginationPrevious = withBoxProps(
-  createEdge(
-    'PaginationPrevious',
-    PaginationPreviousIcon,
-    'Previous page',
-    (ctx) => ctx.active <= 1,
-    (ctx) => ctx.onPrevious,
-  ),
-)
-
-export const PaginationFirst = withBoxProps(
-  createEdge(
-    'PaginationFirst',
-    PaginationFirstIcon,
-    'First page',
-    (ctx) => ctx.active <= 1,
-    (ctx) => ctx.onFirst,
-  ),
-)
-
-export const PaginationLast = withBoxProps(
-  createEdge(
-    'PaginationLast',
-    PaginationLastIcon,
-    'Last page',
-    (ctx) => ctx.active >= ctx.total,
-    (ctx) => ctx.onLast,
-  ),
-)
+/** The edge controls share one props interface; each name is kept for discoverability. */
+export type {
+  PaginationEdgeProps as PaginationNextProps,
+  PaginationEdgeProps as PaginationPreviousProps,
+  PaginationEdgeProps as PaginationFirstProps,
+  PaginationEdgeProps as PaginationLastProps,
+} from './PaginationEdges.types'

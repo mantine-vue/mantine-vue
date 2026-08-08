@@ -1,3 +1,11 @@
 export { NumberInput } from './NumberInput'
-export type { NumberInputHandlers, NumberInputStylesNames, NumberInputValue } from './NumberInput'
-export { NumberInputChevron } from './NumberInputChevron'
+export type {
+  NumberInputCssVariables,
+  NumberInputHandlers,
+  NumberInputProps,
+  NumberInputSlots,
+  NumberInputStylesNames,
+  NumberInputValue,
+  NumberInputValueChangePayload,
+} from './NumberInput'
+export * from './NumberInputChevron'

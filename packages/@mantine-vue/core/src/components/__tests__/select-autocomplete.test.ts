@@ -108,6 +108,19 @@ describe('@mantine-vue/core Select', () => {
     expect((wrapper.find('input[type="hidden"]').element as HTMLInputElement).value).toBe('')
   })
 
+  it('empties the input and drops the clear button on the same tick', async () => {
+    const wrapper = render(Select, { data: ['Vue', 'React'], defaultValue: 'Vue', clearable: true })
+    const input = wrapper.find('input:not([type="hidden"])')
+
+    await input.trigger('focus')
+    await input.trigger('blur')
+    await wrapper.find('button').trigger('click')
+
+    expect((input.element as HTMLInputElement).value).toBe('')
+    expect((wrapper.find('input[type="hidden"]').element as HTMLInputElement).value).toBe('')
+    expect(wrapper.findAll('button')).toHaveLength(0)
+  })
+
   it('hides dropdown for disabled and read-only inputs', async () => {
     const wrapper = render(Select, { data: ['One'], disabled: true })
     await wrapper.find('input:not([type="hidden"])').trigger('click')

@@ -10,6 +10,10 @@ import {
   type MantineStyleProps,
 } from './style-props'
 
+/** A single set of element modifiers, transformed into `data-` attributes. Falsy values are removed. */
+export type Mod = Record<string, boolean | string | number | undefined>
+export type BoxMod = Mod | Array<Mod | BoxMod | undefined>
+
 export interface BoxProps extends MantineStyleProps {
   component?: string | Component
   __size?: string | number
@@ -19,9 +23,8 @@ export interface BoxProps extends MantineStyleProps {
   visibleFrom?: string
   lightHidden?: boolean
   darkHidden?: boolean
-  mod?:
-    | Record<string, boolean | string | number | undefined>
-    | Array<Record<string, boolean | string | number | undefined> | undefined>
+  /** Element modifiers transformed into `data-` attributes, for example, `{ 'data-size': 'xl' }`, falsy values are removed */
+  mod?: BoxMod
 }
 
 function styleProp<Key extends keyof MantineStyleProps>() {
@@ -32,19 +35,27 @@ function isVueComponent(component: string | Component): component is Component {
   return typeof component !== 'string'
 }
 
+/** Recursively flattens a (possibly nested) `BoxMod` into a single `data-*` attribute map. */
 function modToAttributes(
-  mod: BoxProps['mod'],
+  mod: BoxMod | undefined,
+  acc: Record<string, boolean | string | number | undefined> = {},
 ): Record<string, boolean | string | number | undefined> {
   const mods = Array.isArray(mod) ? mod : [mod]
 
-  return mods.reduce<Record<string, boolean | string | number | undefined>>((acc, item) => {
+  mods.forEach((item) => {
+    if (Array.isArray(item)) {
+      modToAttributes(item, acc)
+      return
+    }
+
     Object.entries(item ?? {}).forEach(([key, value]) => {
       if (value !== false && value !== undefined && value !== null) {
         acc[`data-${camelToKebabCase(key)}`] = value
       }
     })
-    return acc
-  }, {})
+  })
+
+  return acc
 }
 
 export const Box = defineComponent({

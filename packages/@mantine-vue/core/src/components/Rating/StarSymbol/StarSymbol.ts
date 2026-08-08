@@ -1,19 +1,6 @@
-import { defineComponent, h, type PropType } from 'vue'
-import { useRatingContext } from '../Rating.context'
-import { StarIcon } from './StarIcon'
+import StarSymbolComponent from './StarSymbol.vue'
 
-export const StarSymbol = defineComponent({
-  name: 'StarSymbol',
-  props: {
-    type: { type: String as PropType<'empty' | 'full'>, required: true },
-  },
-  setup(props) {
-    const ctx = useRatingContext()
+/** Default symbol rendered by `Rating` for each item. */
+export const StarSymbol = StarSymbolComponent
 
-    return () =>
-      h(StarIcon, {
-        ...ctx.getStyles('starSymbol'),
-        'data-filled': props.type === 'full' ? true : undefined,
-      })
-  },
-})
+export type { StarSymbolProps } from './StarSymbol.types'

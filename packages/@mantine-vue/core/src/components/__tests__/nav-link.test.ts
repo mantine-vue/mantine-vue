@@ -31,7 +31,9 @@ describe('@mantine-vue/core NavLink', () => {
   it('toggles nested children in uncontrolled mode', async () => {
     const onChange = vi.fn()
     const wrapper = withProvider(() =>
-      h(NavLink, { label: 'Parent', onChange }, () => h(NavLink, { label: 'Child' })),
+      h(NavLink, { label: 'Parent', 'onUpdate:opened': onChange }, () =>
+        h(NavLink, { label: 'Child' }),
+      ),
     )
 
     const root = () => wrapper.find('.mantine-NavLink-root')
@@ -48,10 +50,19 @@ describe('@mantine-vue/core NavLink', () => {
     expect(root().attributes('data-expanded')).toBeUndefined()
   })
 
+  it('calls a forwarded click handler exactly once', async () => {
+    const onClick = vi.fn()
+    const wrapper = withProvider(() => h(NavLink, { label: 'Link', onClick }))
+
+    await wrapper.find('.mantine-NavLink-root').trigger('click')
+
+    expect(onClick).toHaveBeenCalledTimes(1)
+  })
+
   it('respects controlled opened state', async () => {
     const onChange = vi.fn()
     const wrapper = withProvider(() =>
-      h(NavLink, { label: 'Parent', opened: false, onChange }, () =>
+      h(NavLink, { label: 'Parent', opened: false, 'onUpdate:opened': onChange }, () =>
         h(NavLink, { label: 'Child' }),
       ),
     )
@@ -65,7 +76,9 @@ describe('@mantine-vue/core NavLink', () => {
   it('toggles nested children with Space key', async () => {
     const onChange = vi.fn()
     const wrapper = withProvider(() =>
-      h(NavLink, { label: 'Parent', onChange }, () => h(NavLink, { label: 'Child' })),
+      h(NavLink, { label: 'Parent', 'onUpdate:opened': onChange }, () =>
+        h(NavLink, { label: 'Child' }),
+      ),
     )
 
     await wrapper.find('.mantine-NavLink-root').trigger('keydown', { code: 'Space' })

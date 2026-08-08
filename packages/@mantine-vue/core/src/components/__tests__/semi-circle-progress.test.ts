@@ -36,6 +36,13 @@ describe('@mantine-vue/core SemiCircleProgress', () => {
     expect(filled.attributes('style')).toContain(`stroke-dashoffset: ${circumference}`)
   })
 
+  it('hides the filled segment when value is zero', () => {
+    const wrapper = withProvider({ value: 0 })
+    const filled = wrapper.findAll('circle')[1]
+
+    expect(filled.attributes('style')).toContain('stroke-opacity: 0')
+  })
+
   it('sets orientation and fill direction variables', () => {
     const wrapper = withProvider({
       value: 20,

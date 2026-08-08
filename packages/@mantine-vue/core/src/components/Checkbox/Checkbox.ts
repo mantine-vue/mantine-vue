@@ -1,221 +1,11 @@
-import { defineComponent, h, type PropType, type SlotsType, type VNodeChild } from 'vue'
-import { useId, assignRef, useUncontrolled } from '@mantine-vue/hooks'
-import {
-  withBoxProps,
-  Box,
-  createVarsResolver,
-  getAutoContrastValue,
-  getContrastColor,
-  getRadius,
-  getSize,
-  getThemeColor,
-  resolveNode,
-  type MantineColor,
-  type MantineNode,
-  type MantineRadius,
-  type MantineSize,
-  useStyles,
-} from '../../core'
-import { InlineInput, InlineInputClasses } from '../../utils'
-import { CheckboxIcon } from './CheckIcon'
+import { withBoxProps } from '../../core'
 import { CheckboxCard } from './CheckboxCard/CheckboxCard'
-import { CheckboxGroup, useCheckboxGroupContext } from './CheckboxGroup/CheckboxGroup'
+import { CheckboxGroup } from './CheckboxGroup/CheckboxGroup'
 import { CheckboxIndicator } from './CheckboxIndicator/CheckboxIndicator'
-import classes from './Checkbox.module.css'
-
-export type CheckboxVariant = 'filled' | 'outline'
-
-export interface CheckboxIconSlotProps {
-  indeterminate?: boolean
-  class?: any
-  style?: any
-}
-
-export interface CheckboxSlots {
-  label?: () => VNodeChild
-  description?: () => VNodeChild
-  error?: () => VNodeChild
-  icon?: (props: CheckboxIconSlotProps) => VNodeChild
-}
-export type CheckboxStylesNames =
-  | 'icon'
-  | 'inner'
-  | 'input'
-  | 'root'
-  | 'body'
-  | 'labelWrapper'
-  | 'label'
-  | 'description'
-  | 'error'
-
-const mergedClasses = { ...InlineInputClasses, ...classes }
-
-const varsResolver = createVarsResolver<any>(
-  (theme, { radius, color, size, iconColor, autoContrast }) => ({
-    root: {
-      '--checkbox-size': getSize(size, 'checkbox-size'),
-      '--checkbox-radius': radius === undefined ? undefined : getRadius(radius),
-      '--checkbox-color': getThemeColor(color, theme),
-      '--checkbox-icon-color': iconColor
-        ? getThemeColor(iconColor, theme)
-        : getAutoContrastValue(autoContrast, theme)
-          ? getContrastColor({ color, theme, autoContrast })
-          : undefined,
-    },
-  }),
-)
-
-function callHandler(handler: any, event: Event) {
-  if (Array.isArray(handler)) {
-    handler.forEach((item) => item?.(event))
-  } else {
-    handler?.(event)
-  }
-}
-
-const CheckboxBase = defineComponent({
-  name: 'Checkbox',
-  inheritAttrs: false,
-  slots: Object as SlotsType<CheckboxSlots>,
-  props: {
-    id: { type: String, default: undefined },
-    label: { type: null as unknown as PropType<MantineNode>, default: undefined },
-    color: { type: String as PropType<MantineColor>, default: undefined },
-    size: { type: String as PropType<MantineSize | (string & {})>, default: 'sm' },
-    radius: { type: [String, Number] as PropType<MantineRadius>, default: 'sm' },
-    wrapperProps: { type: Object as PropType<Record<string, any>>, default: undefined },
-    labelPosition: { type: String as PropType<'left' | 'right'>, default: 'right' },
-    description: { type: null as unknown as PropType<MantineNode>, default: undefined },
-    error: {
-      type: null as unknown as PropType<MantineNode | boolean>,
-      default: undefined,
-    },
-    indeterminate: { type: Boolean, default: false },
-    icon: { type: [Object, Function] as PropType<any>, default: undefined },
-    rootRef: { type: [Object, Function] as PropType<any>, default: undefined },
-    iconColor: { type: String, default: undefined },
-    autoContrast: { type: Boolean, default: undefined },
-    withErrorStyles: { type: Boolean, default: true },
-    modelValue: { type: Boolean, default: undefined },
-    checked: { type: Boolean, default: undefined },
-    defaultChecked: { type: Boolean, default: undefined },
-    onChange: { type: Function as PropType<(checked: boolean) => void>, default: undefined },
-    disabled: { type: Boolean, default: false },
-    readOnly: { type: Boolean, default: false },
-    variant: { type: String as PropType<CheckboxVariant>, default: 'filled' },
-    mod: { type: [Object, Array] as PropType<any>, default: undefined },
-    classNames: { type: [Object, Function], default: undefined },
-    styles: { type: [Object, Function], default: undefined },
-    vars: { type: [Object, Function], default: undefined },
-    unstyled: { type: Boolean, default: false },
-  },
-  emits: ['update:modelValue', 'update:checked', 'change'],
-  setup(props, { attrs, slots, emit }) {
-    const uuid = useId(props.id)
-    const groupContext = useCheckboxGroupContext()
-    const [localChecked, setLocalChecked] = useUncontrolled<boolean>({
-      value: () => (props.modelValue !== undefined ? props.modelValue : props.checked),
-      defaultValue: props.defaultChecked,
-      finalValue: false,
-      onChange: (checked) => {
-        emit('update:modelValue', checked)
-        emit('update:checked', checked)
-        emit('change', checked)
-      },
-    })
-    const getStyles = useStyles({
-      name: 'Checkbox',
-      props,
-      classes: mergedClasses,
-      className: attrs.class,
-      style: attrs.style as any,
-      classNames: props.classNames as any,
-      styles: props.styles as any,
-      unstyled: props.unstyled,
-      vars: props.vars as any,
-      varsResolver,
-    })
-
-    return () => {
-      const id = uuid.value || props.id || ''
-      const label = resolveNode(props.label, slots.label)
-      const description = resolveNode(props.description, slots.description)
-      const error = resolveNode(props.error, slots.error)
-      const descriptionId = description ? `${id}-description` : undefined
-      const errorId = error && typeof error !== 'boolean' ? `${id}-error` : undefined
-      const describedBy =
-        [descriptionId, errorId, attrs['aria-describedby']].filter(Boolean).join(' ') || undefined
-      const iconStyles = getStyles('icon')
-      const iconSlotProps = { indeterminate: props.indeterminate, ...iconStyles }
-      const Icon = props.icon || CheckboxIcon
-      const value = String(attrs.value ?? '')
-      const checked = groupContext ? groupContext.value.includes(value) : localChecked.value
-      const disabled = groupContext?.isDisabled?.(value) || props.disabled
-      const size = groupContext?.size ?? props.size
-
-      return h(
-        InlineInput,
-        {
-          ...props.wrapperProps,
-          ...getStyles('root', { className: attrs.class, style: attrs.style as any }),
-          __staticSelector: 'Checkbox',
-          __stylesApiProps: props,
-          id,
-          size,
-          labelPosition: props.labelPosition,
-          label,
-          description,
-          error,
-          disabled,
-          classNames: props.classNames,
-          styles: props.styles,
-          unstyled: props.unstyled,
-          'data-checked': checked || undefined,
-          variant: props.variant,
-          ref: (node: any) => assignRef(props.rootRef, node?.$el ?? node ?? null),
-          mod: props.mod,
-        },
-        () =>
-          h(Box, { ...getStyles('inner'), mod: { labelPosition: props.labelPosition } }, () => [
-            h(Box, {
-              ...attrs,
-              ...getStyles('input', { style: undefined }),
-              component: 'input',
-              id,
-              checked: props.indeterminate ? false : checked,
-              disabled,
-              readonly: props.readOnly,
-              type: 'checkbox',
-              'aria-describedby': describedBy,
-              'data-indeterminate': props.indeterminate || undefined,
-              mod: { error: Boolean(error), withErrorStyles: props.withErrorStyles },
-              variant: props.variant,
-              onClick: (event: MouseEvent) => {
-                callHandler(attrs.onClick, event)
-                if (props.readOnly) {
-                  event.preventDefault()
-                }
-              },
-              onChange: (event: Event) => {
-                if (props.readOnly) {
-                  return
-                }
-                const nextChecked = (event.currentTarget as HTMLInputElement).checked
-                groupContext?.onChange(event)
-                setLocalChecked(nextChecked)
-              },
-            }),
-            slots.icon
-              ? slots.icon(iconSlotProps)
-              : h(Icon, { indeterminate: props.indeterminate, ...iconStyles }),
-          ]),
-      )
-    }
-  },
-})
+import CheckboxComponent, { mergedClasses, varsResolver } from './Checkbox.vue'
 
 export const Checkbox = withBoxProps(
-  Object.assign(CheckboxBase, {
+  Object.assign(CheckboxComponent, {
     classes: mergedClasses,
     varsResolver,
     Group: CheckboxGroup,
@@ -223,3 +13,13 @@ export const Checkbox = withBoxProps(
     Card: CheckboxCard,
   }),
 )
+
+export type {
+  CheckboxCssVariables,
+  CheckboxIconSlotProps,
+  CheckboxOwnProps,
+  CheckboxProps,
+  CheckboxSlots,
+  CheckboxStylesNames,
+  CheckboxVariant,
+} from './Checkbox.types'

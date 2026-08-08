@@ -1,102 +1,41 @@
-import { defineComponent, h, type PropType } from 'vue'
-import { Box, useProps } from '../../core'
-import { useTableContext, type TableContextValue } from './Table.context'
 import classes from './Table.module.css'
+import TableThComponent from './TableTh.vue'
+import TableTdComponent from './TableTd.vue'
+import TableTrComponent from './TableTr.vue'
+import TableTheadComponent from './TableThead.vue'
+import TableTbodyComponent from './TableTbody.vue'
+import TableTfootComponent from './TableTfoot.vue'
+import TableCaptionComponent from './TableCaption.vue'
 
-interface TableElementOptions {
-  columnBorder?: true
-  rowBorder?: true
-  striped?: true
-  highlightOnHover?: true
-  captionSide?: true
-  stickyHeader?: true
-}
+/**
+ * The seven table elements share `TableElement.vue`; each wrapper only fixes the tag it
+ * renders, which `Table` options it reacts to, and its theme lookup name. Separate
+ * named components rather than one with an `element` prop, because the names are public
+ * and `findComponent({ name })` depends on them.
+ */
+export const TableTh = Object.assign(TableThComponent, { classes })
+export const TableTd = Object.assign(TableTdComponent, { classes })
+export const TableTr = Object.assign(TableTrComponent, { classes })
+export const TableThead = Object.assign(TableTheadComponent, { classes })
+export const TableTbody = Object.assign(TableTbodyComponent, { classes })
+export const TableTfoot = Object.assign(TableTfootComponent, { classes })
+export const TableCaption = Object.assign(TableCaptionComponent, { classes })
 
-function getDataAttributes(ctx: TableContextValue, options?: TableElementOptions) {
-  if (!options) {
-    return undefined
-  }
+export type {
+  TableElementName,
+  TableElementOptions,
+  TableElementOwnProps,
+  TableElementProps,
+  TableElementSlots,
+} from './TableElement.types'
 
-  const data: Record<string, boolean | string | undefined> = {}
-
-  if (options.columnBorder && ctx.withColumnBorders) {
-    data['data-with-column-border'] = true
-  }
-
-  if (options.rowBorder && ctx.withRowBorders) {
-    data['data-with-row-border'] = true
-  }
-
-  if (options.striped && ctx.striped) {
-    data['data-striped'] = ctx.striped
-  }
-
-  if (options.highlightOnHover && ctx.highlightOnHover) {
-    data['data-hover'] = true
-  }
-
-  if (options.captionSide && ctx.captionSide) {
-    data['data-side'] = ctx.captionSide
-  }
-
-  if (options.stickyHeader && ctx.stickyHeader) {
-    data['data-sticky'] = true
-  }
-
-  return data
-}
-
-export function tableElement(
-  element: 'th' | 'td' | 'tr' | 'thead' | 'tbody' | 'tfoot' | 'caption',
-  options?: TableElementOptions,
-) {
-  const name = `Table${element.charAt(0).toUpperCase()}${element.slice(1)}`
-
-  return defineComponent({
-    name,
-    inheritAttrs: false,
-    props: {
-      classNames: { type: [Object, Function], default: undefined },
-      styles: { type: [Object, Function], default: undefined },
-      className: { type: [String, Array, Object] as PropType<any>, default: undefined },
-      style: { type: [String, Array, Object] as PropType<any>, default: undefined },
-    },
-    setup(rawProps, { attrs, slots }) {
-      const props = useProps(name, {}, rawProps)
-      const ctx = useTableContext()
-
-      return () =>
-        h(
-          Box,
-          {
-            ...attrs,
-            component: element,
-            ...getDataAttributes(ctx, options),
-            ...ctx.getStyles(element, {
-              className: [props.className, attrs.class],
-              style: [props.style, attrs.style],
-              props,
-            }),
-          },
-          () => slots.default?.(),
-        )
-    },
-  })
-}
-
-export const TableTh = Object.assign(tableElement('th', { columnBorder: true }), { classes })
-export const TableTd = Object.assign(tableElement('td', { columnBorder: true }), { classes })
-export const TableTr = Object.assign(
-  tableElement('tr', {
-    rowBorder: true,
-    striped: true,
-    highlightOnHover: true,
-  }),
-  { classes },
-)
-export const TableThead = Object.assign(tableElement('thead', { stickyHeader: true }), { classes })
-export const TableTbody = Object.assign(tableElement('tbody'), { classes })
-export const TableTfoot = Object.assign(tableElement('tfoot'), { classes })
-export const TableCaption = Object.assign(tableElement('caption', { captionSide: true }), {
-  classes,
-})
+/** Every table element takes the same props; the names are kept for discoverability. */
+export type {
+  TableElementProps as TableThProps,
+  TableElementProps as TableTdProps,
+  TableElementProps as TableTrProps,
+  TableElementProps as TableTheadProps,
+  TableElementProps as TableTbodyProps,
+  TableElementProps as TableTfootProps,
+  TableElementProps as TableCaptionProps,
+} from './TableElement.types'

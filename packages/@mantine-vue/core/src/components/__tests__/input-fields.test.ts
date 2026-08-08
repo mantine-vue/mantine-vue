@@ -38,6 +38,21 @@ describe('@mantine-vue/core input fields', () => {
     expect(input.attributes('placeholder')).toBe('Type here')
   })
 
+  it('applies TextInput class, style and style props to the InputWrapper root', () => {
+    const wrapper = withProvider(() =>
+      h(TextInput, { class: 'search', style: { marginBottom: '1rem' }, pt: 7 }),
+    )
+    const root = wrapper.find('.mantine-InputWrapper-root')
+    const input = wrapper.find('input')
+
+    expect(root.classes()).toContain('search')
+    expect(root.attributes('style')).toContain('padding-top')
+    expect(root.attributes('style')).toContain('margin-bottom: 1rem')
+    expect(input.classes()).not.toContain('search')
+    expect(input.attributes('style') ?? '').not.toContain('padding-top')
+    expect(input.attributes('style') ?? '').not.toContain('margin-bottom')
+  })
+
   it('does not set error state for empty string error props', () => {
     const wrapper = withProvider(() =>
       h('div', [
@@ -101,7 +116,7 @@ describe('@mantine-vue/core input fields', () => {
         id: 'password',
         label: 'Password',
         defaultVisible: false,
-        onVisibilityChange,
+        'onUpdate:visible': onVisibilityChange,
         value: 'secret',
       }),
     )
@@ -117,7 +132,7 @@ describe('@mantine-vue/core input fields', () => {
     const wrapper = withProvider(() =>
       h(PasswordInput, {
         visible: true,
-        onVisibilityChange,
+        'onUpdate:visible': onVisibilityChange,
         visibilityToggleIcon: (props: any) =>
           h('span', { class: 'custom-icon' }, props.reveal ? 'hide' : 'show'),
       }),
