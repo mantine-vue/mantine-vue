@@ -14,7 +14,7 @@ export const ConfiguratorBooleanControl = defineComponent({
     return () =>
       h(Switch, {
         ...attrs,
-        checked: props.value,
+        modelValue: props.value,
         onChange: (checked: boolean) => props.onChange(checked),
         label: getControlLabel(props.prop),
       })

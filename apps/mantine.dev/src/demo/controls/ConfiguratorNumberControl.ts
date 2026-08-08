@@ -17,7 +17,7 @@ export const ConfiguratorNumberControl = defineComponent({
     return () =>
       h(Input.Wrapper, { ...attrs, labelElement: 'div', label: getControlLabel(props.prop) }, () =>
         h(Slider, {
-          value: props.value,
+          modelValue: props.value,
           onChange: props.onChange,
           step: props.step,
           min: props.min,

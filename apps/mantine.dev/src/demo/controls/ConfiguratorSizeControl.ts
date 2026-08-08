@@ -29,7 +29,7 @@ export const ConfiguratorSizeControl = defineComponent({
         { ...attrs, labelElement: 'div', label: getControlLabel(props.prop) },
         () =>
           h(Slider, {
-            value: currentValue,
+            modelValue: currentValue,
             onChange: handleChange,
             label: (val: number) => MARKS.find((mark) => mark.value === val)!.label,
             step: 25,
