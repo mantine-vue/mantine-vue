@@ -43,7 +43,7 @@ const Demo = defineComponent({
       h('div', null, [
         h(ColorPicker, {
           format: 'hex',
-          value: value.value,
+          modelValue: value.value,
           onChange: (v: string) => {
             value.value = v
           },

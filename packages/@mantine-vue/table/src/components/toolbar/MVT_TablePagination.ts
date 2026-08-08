@@ -38,10 +38,10 @@ export const MVT_TablePagination = defineComponent({
         o.paginationDisplayMode === 'pages'
           ? h(Pagination, {
               total: numberOfPages,
-              value: pageIndex + 1,
+              modelValue: pageIndex + 1,
               withEdges,
               ...rest,
-              onChange: (page: number) => table.setPageIndex(page - 1),
+              'onUpdate:modelValue': (page: number) => table.setPageIndex(page - 1),
             } as any)
           : o.paginationDisplayMode === 'default'
             ? [
@@ -122,8 +122,8 @@ export const MVT_TablePagination = defineComponent({
                 'aria-labelledby': 'rpp-label',
                 class: classes.pagesize,
                 data: rowsPerPageOptions,
-                value: pageSize.toString(),
-                onChange: (value: null | string) => value && table.setPageSize(+value),
+                modelValue: pageSize.toString(),
+                'onUpdate:modelValue': (value: null | string) => value && table.setPageSize(+value),
               } as any),
             ]),
           controls,

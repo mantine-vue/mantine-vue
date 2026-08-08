@@ -18,7 +18,7 @@ const drawerData = ref({ title: '', message: '' })
 <template>
   <Drawer
     :opened="firstOpened"
-    :on-close="() => { firstHandlers.close(); drawerData = { title: '', message: '' } }"
+    @close="() => { firstHandlers.close(); drawerData = { title: '', message: '' } }"
     :title="drawerData.title"
     :transition-props="{ duration: 300, exitDuration: 1000 }"
   >
@@ -27,7 +27,7 @@ const drawerData = ref({ title: '', message: '' })
 
   <Drawer
     :opened="secondOpened"
-    :on-close="secondHandlers.close"
+    @close="secondHandlers.close"
     :on-exit-transition-end="() => { drawerData = { title: '', message: '' } }"
     :title="drawerData.title"
     :transition-props="{ duration: 300, exitDuration: 1000 }"

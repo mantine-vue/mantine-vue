@@ -14,7 +14,7 @@ const [opened, { open, close }] = useDisclosure(false)
 <template>
   <Drawer
     :opened="opened"
-    :on-close="close"
+    @close="close"
     title="Header is sticky"
     :scroll-area-component="ScrollAreaAutosize"
   >

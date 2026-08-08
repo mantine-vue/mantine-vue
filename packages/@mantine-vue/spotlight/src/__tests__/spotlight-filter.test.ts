@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { defaultSpotlightFilter } from '../default-spotlight-filter'
 import { limitActions } from '../limit-actions'
-import type { SpotlightActions } from '../Spotlight'
+import type { SpotlightActions } from '../components/Spotlight'
 
 const actions: SpotlightActions[] = [
   { id: '1', label: 'Dashboard', description: 'Home page' },

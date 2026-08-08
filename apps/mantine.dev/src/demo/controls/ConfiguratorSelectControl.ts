@@ -16,7 +16,7 @@ export const ConfiguratorSelectControl = defineComponent({
     return () =>
       h(NativeSelect, {
         ...attrs,
-        value: props.value,
+        modelValue: props.value,
         onChange: (value: string) => props.onChange(value),
         label: getControlLabel(props.prop),
         data: transformSelectData(props.data),

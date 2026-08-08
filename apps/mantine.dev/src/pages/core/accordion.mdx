@@ -80,7 +80,7 @@ const value = ref<string | null>(null)
 </script>
 
 <template>
-  <Accordion :value="value" @change="value = $event">
+  <Accordion v-model:value="value">
     <Accordion.Item value="item-1"><!-- ... --></Accordion.Item>
     <Accordion.Item value="item-2"><!-- ... --></Accordion.Item>
   </Accordion>

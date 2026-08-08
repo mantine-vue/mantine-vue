@@ -69,4 +69,19 @@ describe('@mantine-vue/core Dialog', () => {
 
     expect(wrapper.text()).not.toContain('Hidden')
   })
+
+  it('uses Mantine Transition outside the test environment', () => {
+    const wrapper = mount({
+      render: () =>
+        h(MantineProvider, { env: 'default' }, () =>
+          h(
+            Dialog,
+            { opened: false, withinPortal: false, transitionProps: { duration: 0 } },
+            () => 'Transition hidden',
+          ),
+        ),
+    })
+
+    expect(wrapper.text()).not.toContain('Transition hidden')
+  })
 })

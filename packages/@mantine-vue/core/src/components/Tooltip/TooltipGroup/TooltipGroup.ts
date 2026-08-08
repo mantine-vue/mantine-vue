@@ -1,28 +1,11 @@
-import { defineComponent, provide, type InjectionKey } from 'vue'
+import TooltipGroupComponent from './TooltipGroup.vue'
 
-export interface TooltipGroupContextValue {
-  withinGroup: boolean
-  openDelay: number
-  closeDelay: number
-}
-export const TooltipGroupKey: InjectionKey<TooltipGroupContextValue> = Symbol('TooltipGroup')
-export const TooltipGroup = defineComponent({
-  name: 'TooltipGroup',
-  props: { openDelay: { type: Number, default: 0 }, closeDelay: { type: Number, default: 0 } },
-  setup(props, { slots }) {
-    provide(TooltipGroupKey, {
-      withinGroup: true,
-      get openDelay() {
-        return props.openDelay
-      },
-      get closeDelay() {
-        return props.closeDelay
-      },
-    })
-    return () => slots.default?.()
-  },
-})
-export interface TooltipGroupProps {
-  openDelay?: number
-  closeDelay?: number
-}
+/** Shares open and close delays with every descendant `Tooltip`. */
+export const TooltipGroup = TooltipGroupComponent
+
+export { TooltipGroupKey } from './TooltipGroup.context'
+export type {
+  TooltipGroupContextValue,
+  TooltipGroupProps,
+  TooltipGroupSlots,
+} from './TooltipGroup.types'

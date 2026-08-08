@@ -16,10 +16,10 @@ export interface UseCollapseInput {
   expanded: MaybeRefOrGetter<boolean>
 
   /** Transition duration in milliseconds, by default calculated based on content height */
-  transitionDuration?: number
+  transitionDuration?: MaybeRefOrGetter<number | undefined>
 
   /** Transition timing function, `ease` by default */
-  transitionTimingFunction?: string
+  transitionTimingFunction?: MaybeRefOrGetter<string | undefined>
 
   /** Called when transition ends */
   onTransitionEnd?: () => void
@@ -125,6 +125,8 @@ export function createCollapse({
   getElementSize: (element: HTMLElement | null) => number | string
 }): UseCollapseReturnValue {
   const isExpanded = () => toValue(expanded)
+  const getTransitionDuration = () => toValue(transitionDuration)
+  const getTransitionTimingFunction = () => toValue(transitionTimingFunction) ?? 'ease'
   const collapsedStyles = {
     [dimension]: 0,
     overflow: 'hidden',
@@ -158,9 +160,9 @@ export function createCollapse({
   }
 
   const getTransitionStyles = (size: number | string) => {
-    const duration = transitionDuration ?? getAutoSizeDuration(size)
+    const duration = getTransitionDuration() ?? getAutoSizeDuration(size)
     return {
-      transition: `${dimension} ${duration}ms ${transitionTimingFunction}, opacity ${duration}ms ${transitionTimingFunction}`,
+      transition: `${dimension} ${duration}ms ${getTransitionTimingFunction()}, opacity ${duration}ms ${getTransitionTimingFunction()}`,
     }
   }
 
@@ -171,7 +173,7 @@ export function createCollapse({
         return
       }
 
-      if (transitionDuration !== 0) {
+      if (getTransitionDuration() !== 0) {
         onTransitionStart?.()
       }
 

@@ -15,8 +15,7 @@ const value = ref('')
     <Combobox.EventsTarget>
       <TextInput
         placeholder="Pick value"
-        :value="value"
-        @input="(event) => (value = event.currentTarget.value)"
+        v-model="value"
       />
     </Combobox.EventsTarget>
 
@@ -44,7 +43,7 @@ const Demo = defineComponent({
               default: () =>
                 h(TextInput, {
                   placeholder: 'Pick value',
-                  value: value.value,
+                  modelValue: value.value,
                   onInput: (event: Event) => {
                     value.value = (event.currentTarget as HTMLInputElement).value
                   },

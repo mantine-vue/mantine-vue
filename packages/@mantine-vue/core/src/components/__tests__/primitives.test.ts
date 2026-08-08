@@ -119,6 +119,7 @@ describe('@mantine-vue/core primitive components', () => {
   })
 
   it('resolves Stack and Group variables through createVarsResolver', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
     const stack = withProvider(Stack, { gap: 'xl', align: 'center' })
     expect(stack.find('.mantine-Stack-root').attributes('style')).toContain(
       '--stack-gap: var(--mantine-spacing-xl)',
@@ -133,6 +134,10 @@ describe('@mantine-vue/core primitive components', () => {
     expect(node.attributes('data-grow')).toBe('true')
     expect(node.attributes('style')).toContain('--group-gap: var(--mantine-spacing-sm)')
     expect(node.attributes('style')).toContain('--group-child-width')
+    expect(warn).not.toHaveBeenCalledWith(
+      expect.stringContaining('invoked outside of the render function'),
+    )
+    warn.mockRestore()
   })
 
   it('disables OptionalPortal in test env but Portal uses Vue Teleport', async () => {
@@ -150,5 +155,28 @@ describe('@mantine-vue/core primitive components', () => {
       document.querySelector('[data-mantine-shared-portal-node] #portal-child')?.textContent,
     ).toBe('Portal')
     portal.unmount()
+  })
+
+  it('moves Portal content when its target changes and removes owned nodes', async () => {
+    const target = document.createElement('div')
+    document.body.appendChild(target)
+    const portal = mount(Portal, {
+      props: { reuseTargetNode: false },
+      slots: { default: () => h('div', { id: 'moving-portal-child' }, 'Portal') },
+    })
+
+    await nextTick()
+    const ownedNode = document.querySelector<HTMLElement>(
+      '[data-portal="true"]:not([data-mantine-shared-portal-node])',
+    )
+    expect(ownedNode?.querySelector('#moving-portal-child')).not.toBeNull()
+
+    await portal.setProps({ target })
+    await nextTick()
+    expect(target.querySelector('#moving-portal-child')?.textContent).toBe('Portal')
+    expect(ownedNode?.isConnected).toBe(false)
+
+    portal.unmount()
+    target.remove()
   })
 })

@@ -45,4 +45,15 @@ describe('@mantine-vue/core Notification', () => {
     await wrapper.find('.mantine-Notification-closeButton').trigger('click')
     expect(onClose).toHaveBeenCalledTimes(1)
   })
+
+  it('calls closeButtonProps.onClick and onClose exactly once', async () => {
+    const onClick = vi.fn()
+    const onClose = vi.fn()
+    const wrapper = withProvider({ closeButtonProps: { onClick }, onClose })
+
+    await wrapper.find('.mantine-Notification-closeButton').trigger('click')
+
+    expect(onClick).toHaveBeenCalledTimes(1)
+    expect(onClose).toHaveBeenCalledTimes(1)
+  })
 })

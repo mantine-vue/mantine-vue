@@ -111,7 +111,7 @@ describe('@mantine-vue/core multi-value inputs', () => {
     expect(wrapper.get('.empty-slot').text()).toBe('No matches')
   })
 
-  it('keeps renderPill prop precedence over its slot', () => {
+  it('keeps renderPill slot precedence over its prop', () => {
     const wrapper = render(
       TagsInput,
       {
@@ -123,8 +123,8 @@ describe('@mantine-vue/core multi-value inputs', () => {
       },
     )
 
-    expect(wrapper.find('.prop-pill').exists()).toBe(true)
-    expect(wrapper.find('.slot-pill').exists()).toBe(false)
+    expect(wrapper.find('.slot-pill').exists()).toBe(true)
+    expect(wrapper.find('.prop-pill').exists()).toBe(false)
   })
 })
 

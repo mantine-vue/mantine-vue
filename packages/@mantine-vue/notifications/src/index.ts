@@ -10,7 +10,7 @@ export {
   notificationsStore,
   useNotifications,
 } from './notifications.store'
-export { Notifications } from './Notifications'
+export { Notifications } from './components/Notifications'
 
 export type {
   NotificationData,
@@ -22,4 +22,4 @@ export type {
   NotificationsCssVariables,
   NotificationsProps,
   NotificationsStylesNames,
-} from './Notifications'
+} from './components/Notifications'

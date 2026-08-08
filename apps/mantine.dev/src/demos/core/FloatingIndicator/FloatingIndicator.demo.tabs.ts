@@ -18,7 +18,7 @@ function setControlRef(val: string) {
 </script>
 
 <template>
-  <Tabs unstyled :value="value" @change="(v) => value = v">
+  <Tabs unstyled v-model="value">
     <Tabs.List :ref="(el: any) => rootRef = el?.$el ?? el" :class="classes.list">
       <Tabs.Tab value="1" :ref="setControlRef('1')" :class="classes.tab">First tab</Tabs.Tab>
       <Tabs.Tab value="2" :ref="setControlRef('2')" :class="classes.tab">Second tab</Tabs.Tab>
@@ -101,8 +101,8 @@ const Demo = defineComponent({
         Tabs,
         {
           unstyled: true,
-          value: value.value,
-          onChange: (v: string | null) => {
+          modelValue: value.value,
+          'onUpdate:modelValue': (v: string | null) => {
             value.value = v
           },
         },

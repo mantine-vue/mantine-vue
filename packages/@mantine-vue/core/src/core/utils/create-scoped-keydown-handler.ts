@@ -74,8 +74,19 @@ export function createScopedKeydownHandler({
     else if (orientation === 'horizontal' && event.key === 'ArrowLeft') index = horizontalPrevious
     else if (orientation === 'vertical' && event.key === 'ArrowUp') index = previous
     else if (orientation === 'vertical' && event.key === 'ArrowDown') index = next
-    else if (event.key === 'Home') index = 0
-    else if (event.key === 'End') index = elements.length - 1
+    else if (event.key === 'Home') {
+      const first = getNextIndex(-1, elements, false)
+      event.stopPropagation()
+      event.preventDefault()
+      if (!elements[first]?.disabled) elements[first]?.focus()
+      return
+    } else if (event.key === 'End') {
+      const last = getPreviousIndex(elements.length, elements, false)
+      event.stopPropagation()
+      event.preventDefault()
+      if (!elements[last]?.disabled) elements[last]?.focus()
+      return
+    }
 
     if (index === undefined || elements[index].disabled) return
 

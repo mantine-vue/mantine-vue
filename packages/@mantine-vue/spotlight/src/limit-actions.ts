@@ -1,5 +1,5 @@
 import { isActionsGroup } from './is-actions-group'
-import type { SpotlightActionData, SpotlightActions } from './Spotlight'
+import type { SpotlightActionData, SpotlightActions } from './components/Spotlight/Spotlight.types'
 
 export function limitActions(actions: SpotlightActions[], limit: number) {
   if (!Array.isArray(actions)) {

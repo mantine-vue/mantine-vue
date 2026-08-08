@@ -62,8 +62,8 @@ const Demo = defineComponent({
           mode: 'checkbox',
           checkedStrategy: 'child',
           defaultExpandAll: true,
-          value: childValue.value,
-          onChange: (v: string[]) => {
+          modelValue: childValue.value,
+          'onUpdate:modelValue': (v: string[]) => {
             childValue.value = v
           },
         }),
@@ -74,8 +74,8 @@ const Demo = defineComponent({
           mode: 'checkbox',
           checkedStrategy: 'all',
           defaultExpandAll: true,
-          value: allValue.value,
-          onChange: (v: string[]) => {
+          modelValue: allValue.value,
+          'onUpdate:modelValue': (v: string[]) => {
             allValue.value = v
           },
         }),
@@ -86,8 +86,8 @@ const Demo = defineComponent({
           mode: 'checkbox',
           checkedStrategy: 'parent',
           defaultExpandAll: true,
-          value: parentValue.value,
-          onChange: (v: string[]) => {
+          modelValue: parentValue.value,
+          'onUpdate:modelValue': (v: string[]) => {
             parentValue.value = v
           },
         }),

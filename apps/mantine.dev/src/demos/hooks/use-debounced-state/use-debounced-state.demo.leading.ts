@@ -19,7 +19,7 @@ function handleChange(event: Event) {
   <TextInput
     label="Enter value to see debounce effect"
     placeholder="Enter value to see debounce effect"
-    :value="value"
+    :model-value="value"
     @input="handleChange"
   />
   <Text mt="sm">
@@ -47,7 +47,7 @@ const Demo = defineComponent({
             h(TextInput, {
               label: 'Enter value to see debounce effect',
               placeholder: 'Enter value to see debounce effect',
-              value: value.value,
+              modelValue: value.value,
               onInput: handleChange,
             }),
             h(

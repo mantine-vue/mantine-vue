@@ -175,7 +175,7 @@ export const MVT_ColumnActionMenu = defineComponent({
           withinPortal: true,
           ...attrs,
           opened: props.opened,
-          onChange: props.onChange,
+          'onUpdate:opened': props.onChange,
         },
         () => [
           h(

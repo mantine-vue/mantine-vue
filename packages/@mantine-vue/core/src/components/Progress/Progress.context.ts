@@ -1,7 +1,16 @@
 import { createSafeContext } from '../../core'
 
 export interface ProgressContextValue {
-  getStyles: (selector: string, options?: { className?: any; style?: any; props?: any }) => any
+  getStyles: (
+    selector: string,
+    options?: {
+      className?: any
+      classNames?: any
+      style?: any
+      styles?: any
+      props?: any
+    },
+  ) => any
   autoContrast?: boolean
 }
 

@@ -10,10 +10,8 @@ import type { MantineDemo } from '@/demo'
 
 const code = `
 <script setup lang="ts">
-import { h } from 'vue'
 import { ref } from 'vue'
 import { Button, CheckIcon, ComboboxPopover, Group } from '@mantine-vue/core'
-import type { ComboboxLikeRenderOptionInput, ComboboxItem } from '@mantine-vue/core'
 import {
   PhTextAlignLeft,
   PhTextAlignCenter,
@@ -37,21 +35,21 @@ const data = [
   { value: 'right', label: 'Right' },
   { value: 'justify', label: 'Justify' },
 ]
-
-function renderOption({ option, checked }: ComboboxLikeRenderOptionInput<ComboboxItem>) {
-  return h(Group, { flex: '1', gap: 'xs' }, () => [
-    h(icons[option.value], iconProps),
-    option.label,
-    checked ? h(CheckIcon, { style: { marginInlineStart: 'auto' }, ...iconProps }) : null,
-  ])
-}
 </script>
 
 <template>
-  <ComboboxPopover v-model="value" :data="data" :render-option="renderOption">
+  <ComboboxPopover v-model="value" :data="data">
     <ComboboxPopover.Target>
       <Button variant="default" :miw="200">{{ value || 'Select alignment' }}</Button>
     </ComboboxPopover.Target>
+
+    <template #renderOption="{ option, checked }">
+      <Group flex="1" gap="xs">
+        <component :is="icons[option.value]" v-bind="iconProps" />
+        <span>{{ option.label }}</span>
+        <CheckIcon v-if="checked" :style="{ marginInlineStart: 'auto' }" v-bind="iconProps" />
+      </Group>
+    </template>
   </ComboboxPopover>
 </template>
 `

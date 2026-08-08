@@ -22,7 +22,7 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': alias('./src'),
-      // More specific subpath alias must come before the package alias below.
+      '@docs/styles-api': alias('../../packages/@docs/styles-api/src/index.ts'),
       '@mantine-vue/core/styles.css': alias('../../packages/@mantine-vue/core/src/styles.css'),
       '@mantine-vue/core': alias('../../packages/@mantine-vue/core/src/index.ts'),
       '@mantine-vue/code-highlight': alias(

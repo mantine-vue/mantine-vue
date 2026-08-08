@@ -115,6 +115,34 @@ describe('@mantine-vue/core selection groups', () => {
     expect(wrapper.find('input[type="hidden"][name="switches"]').element.value).toBe('wifi,bt')
   })
 
+  describe('control size overrides group size', () => {
+    it.each([
+      ['Checkbox', Checkbox, CheckboxGroup, 'mantine-Checkbox-root'],
+      ['Radio', Radio, RadioGroup, 'mantine-Radio-root'],
+      ['Switch', Switch, SwitchGroup, 'mantine-Switch-root'],
+    ])('%s', (_name, Control, Group, rootClass) => {
+      const wrapper = withProvider(() =>
+        h(Group as any, { size: 'xl' }, () => [
+          h(Control as any, { value: 'a', size: 'xs', label: 'A' }),
+        ]),
+      )
+
+      expect(wrapper.find(`.${rootClass}`).attributes('data-size')).toBe('xs')
+    })
+
+    it.each([
+      ['Checkbox', Checkbox, CheckboxGroup, 'mantine-Checkbox-root'],
+      ['Radio', Radio, RadioGroup, 'mantine-Radio-root'],
+      ['Switch', Switch, SwitchGroup, 'mantine-Switch-root'],
+    ])('%s falls back to the group size', (_name, Control, Group, rootClass) => {
+      const wrapper = withProvider(() =>
+        h(Group as any, { size: 'xl' }, () => [h(Control as any, { value: 'a', label: 'A' })]),
+      )
+
+      expect(wrapper.find(`.${rootClass}`).attributes('data-size')).toBe('xl')
+    })
+  })
+
   it('exposes Mantine-like static subcomponents', () => {
     expect((Checkbox as any).Group).toBe(CheckboxGroup)
     expect((Checkbox as any).Indicator).toBe(CheckboxIndicator)

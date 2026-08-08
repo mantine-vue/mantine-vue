@@ -1,27 +1,11 @@
-import { defineComponent, provide, type InjectionKey } from 'vue'
-export interface HoverCardGroupContextValue {
-  withinGroup: boolean
-  openDelay: number
-  closeDelay: number
-}
-export const HoverCardGroupKey: InjectionKey<HoverCardGroupContextValue> = Symbol('HoverCardGroup')
-export const HoverCardGroup = defineComponent({
-  name: 'HoverCardGroup',
-  props: { openDelay: { type: Number, default: 0 }, closeDelay: { type: Number, default: 0 } },
-  setup(props, { slots }) {
-    provide(HoverCardGroupKey, {
-      withinGroup: true,
-      get openDelay() {
-        return props.openDelay
-      },
-      get closeDelay() {
-        return props.closeDelay
-      },
-    })
-    return () => slots.default?.()
-  },
-})
-export interface HoverCardGroupProps {
-  openDelay?: number
-  closeDelay?: number
-}
+import HoverCardGroupComponent from './HoverCardGroup.vue'
+
+/** Shares open and close delays with every descendant `HoverCard`. */
+export const HoverCardGroup = HoverCardGroupComponent
+
+export { HoverCardGroupKey } from './HoverCardGroup.context'
+export type {
+  HoverCardGroupContextValue,
+  HoverCardGroupProps,
+  HoverCardGroupSlots,
+} from './HoverCardGroup.types'

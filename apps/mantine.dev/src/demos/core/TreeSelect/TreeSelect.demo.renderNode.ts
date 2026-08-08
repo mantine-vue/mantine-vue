@@ -1,23 +1,24 @@
 import { defineComponent, h } from 'vue'
 import { PhFileText, PhFolderOpen, PhFolderSimple } from '@phosphor-icons/vue'
-import { Group, Text, TreeSelect } from '@mantine-vue/core'
+import { Group, Text, TreeSelect, type TreeSelectRenderNodePayload } from '@mantine-vue/core'
 import type { MantineDemo } from '@/demo'
 import { data, dataCode } from './data'
 
 const code = `
 <script setup lang="ts">
+import { h } from 'vue'
 import { PhFileText, PhFolderOpen, PhFolderSimple } from '@phosphor-icons/vue'
-import { Group, Text, TreeSelect } from '@mantine-vue/core'
+import { Group, Text, TreeSelect, type TreeSelectRenderNodePayload } from '@mantine-vue/core'
 import { data } from './data'
 
-const renderTreeNode = ({ node, hasChildren, expanded }) =>
+const renderTreeNode = ({ node, hasChildren, expanded }: TreeSelectRenderNodePayload) =>
   h(Group, { gap: 'xs' }, () => [
     hasChildren
       ? expanded
         ? h(PhFolderOpen, { color: 'var(--mantine-color-yellow-9)', size: 16 })
         : h(PhFolderSimple, { color: 'var(--mantine-color-yellow-9)', size: 16 })
       : h(PhFileText, { size: 16 }),
-    h(Text, { size: 'sm' }, () => node.label),
+    h(Text, { size: 'sm' }, () => node.label as string),
   ])
 </script>
 
@@ -32,22 +33,14 @@ const renderTreeNode = ({ node, hasChildren, expanded }) =>
 </template>
 `
 
-const renderTreeNode = ({
-  node,
-  hasChildren,
-  expanded,
-}: {
-  node: { label: string; value: string }
-  hasChildren: boolean
-  expanded: boolean
-}) =>
+const renderTreeNode = ({ node, hasChildren, expanded }: TreeSelectRenderNodePayload) =>
   h(Group, { gap: 'xs' }, () => [
     hasChildren
       ? expanded
         ? h(PhFolderOpen, { color: 'var(--mantine-color-yellow-9)', size: 16 })
         : h(PhFolderSimple, { color: 'var(--mantine-color-yellow-9)', size: 16 })
       : h(PhFileText, { size: 16 }),
-    h(Text, { size: 'sm' }, () => node.label),
+    h(Text, { size: 'sm' }, () => node.label as string),
   ])
 
 const Demo = defineComponent({

@@ -47,4 +47,36 @@ describe('@mantine-vue/core Timeline', () => {
   it('exposes static Item component', () => {
     expect(Timeline.Item).toBe(TimelineItem)
   })
+
+  describe('item child order', () => {
+    function itemChildren(timelineProps: Record<string, any>, itemProps: Record<string, any> = {}) {
+      const wrapper = mount({
+        render: () =>
+          h(MantineProvider, { env: 'test' }, () =>
+            h(Timeline, timelineProps, () => [
+              h(TimelineItem, { bullet: 'B', opposite: 'OPP', ...itemProps }, () => 'BODY'),
+            ]),
+          ),
+      })
+
+      const item = wrapper.find('.mantine-Timeline-item').element
+      return Array.from(item.children).map((child) => (child.textContent || '').trim())
+    }
+
+    it('places opposite before the bullet for align="left" without alternate', () => {
+      expect(itemChildren({ align: 'left' })).toEqual(['OPP', 'B', 'BODY'])
+    })
+
+    it('places body before the bullet for align="left" with alternate', () => {
+      expect(itemChildren({ align: 'left' }, { alternate: true })).toEqual(['BODY', 'B', 'OPP'])
+    })
+
+    it('places body before the bullet for align="right" without alternate', () => {
+      expect(itemChildren({ align: 'right' })).toEqual(['BODY', 'B', 'OPP'])
+    })
+
+    it('places opposite before the bullet for align="right" with alternate', () => {
+      expect(itemChildren({ align: 'right' }, { alternate: true })).toEqual(['OPP', 'B', 'BODY'])
+    })
+  })
 })

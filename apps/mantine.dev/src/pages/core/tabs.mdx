@@ -21,7 +21,7 @@ const activeTab = ref<string | null>('first')
 </script>
 
 <template>
-  <Tabs :value="activeTab" @change="activeTab = $event">
+  <Tabs v-model="activeTab">
     <Tabs.List>
       <Tabs.Tab value="first">First tab</Tabs.Tab>
       <Tabs.Tab value="second">Second tab</Tabs.Tab>

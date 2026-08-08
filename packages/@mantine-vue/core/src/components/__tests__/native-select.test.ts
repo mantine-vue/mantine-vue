@@ -59,7 +59,7 @@ describe('@mantine-vue/core NativeSelect', () => {
 
   it('supports controlled value and change handler', async () => {
     const onChange = vi.fn((value: string) => value)
-    const wrapper = withProvider({ data: ['test-1', 'test-2'], value: 'test-1', onChange })
+    const wrapper = withProvider({ data: ['test-1', 'test-2'], modelValue: 'test-1', onChange })
     const select = wrapper.find('select')
 
     await select.setValue('test-2')

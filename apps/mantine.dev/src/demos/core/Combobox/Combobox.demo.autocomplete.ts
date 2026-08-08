@@ -33,9 +33,8 @@ const filteredOptions = computed(() => {
       <TextInput
         label="Pick value or type anything"
         placeholder="Pick value or type anything"
-        :value="value"
-        @input="(event) => {
-          value = event.currentTarget.value
+        v-model="value"
+        @input="() => {
           combobox.openDropdown()
           combobox.updateSelectedOptionIndex()
         }"
@@ -85,7 +84,7 @@ const Demo = defineComponent({
                 h(TextInput, {
                   label: 'Pick value or type anything',
                   placeholder: 'Pick value or type anything',
-                  value: value.value,
+                  modelValue: value.value,
                   onInput: (event: Event) => {
                     value.value = (event.currentTarget as HTMLInputElement).value
                     combobox.openDropdown()

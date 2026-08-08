@@ -20,9 +20,9 @@ export interface FloatingWindowContextValue {
   dimensions?: FloatingWindowDimensions
   constrainToViewport?: boolean
   constrainOffset?: number
-  onResizeStart?: () => void
-  onResizeEnd?: () => void
-  onSizeChange?: (size: FloatingWindowSize) => void
+  onResizeStart: () => void
+  onResizeEnd: () => void
+  onSizeChange: (size: FloatingWindowSize) => void
 }
 
 export const [provideFloatingWindowContext, useFloatingWindowContext] =

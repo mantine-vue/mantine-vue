@@ -50,8 +50,7 @@ const options = computed(() =>
 
     <Combobox.Dropdown>
       <Combobox.Search
-        :value="search"
-        @input="(event) => (search = event.currentTarget.value)"
+        v-model="search"
         placeholder="Search groceries"
       />
       <Combobox.Options>
@@ -116,7 +115,7 @@ const Demo = defineComponent({
               h(Combobox.Dropdown, null, {
                 default: () => [
                   h(Combobox.Search, {
-                    value: search.value,
+                    modelValue: search.value,
                     onInput: (event: Event) => {
                       search.value = (event.currentTarget as HTMLInputElement).value
                     },

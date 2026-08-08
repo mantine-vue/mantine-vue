@@ -12,7 +12,7 @@ const [opened, { open, close }] = useDisclosure(false)
 </script>
 
 <template>
-  <Drawer :opened="opened" :on-close="close" title="Header is sticky">
+  <Drawer :opened="opened" @close="close" title="Header is sticky">
     <p v-for="i in 100" :key="i">Drawer with scroll</p>
   </Drawer>
 

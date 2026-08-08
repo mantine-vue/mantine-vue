@@ -1,9 +1,9 @@
-import { createSafeContext } from '../../core'
+import { createSafeContext, type MantineNode } from '../../core'
 
 export interface ListContextValue {
   getStyles: (selector: string, options?: { className?: any; style?: any }) => any
   center?: boolean
-  icon?: any
+  icon?: MantineNode
 }
 
 export const [provideListContext, useListContext] = createSafeContext<ListContextValue>(

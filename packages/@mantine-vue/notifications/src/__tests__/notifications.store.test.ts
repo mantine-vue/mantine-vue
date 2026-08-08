@@ -1,4 +1,9 @@
+import { mount } from '@vue/test-utils'
+import { MantineProvider } from '@mantine-vue/core'
+import { h, nextTick } from 'vue'
 import { describe, expect, it, vi } from 'vitest'
+import { Notifications } from '../components/Notifications'
+import { NotificationContainer } from '../components/NotificationContainer'
 import {
   cleanNotifications,
   cleanNotificationsQueue,
@@ -33,6 +38,21 @@ describe('@mantine-vue/notifications store', () => {
     expect(store.getState().queue).toEqual([])
   })
 
+  it('orders notifications by priority and preserves FIFO order for equal priorities', () => {
+    const store = createNotificationsStore()
+    store.setState({ ...store.getState(), limit: 2 })
+
+    showNotification({ id: 'normal', message: 'normal' }, store)
+    showNotification({ id: 'urgent-first', message: 'urgent first', priority: 10 }, store)
+    showNotification({ id: 'urgent-second', message: 'urgent second', priority: 10 }, store)
+
+    expect(store.getState().notifications.map((item) => item.id)).toEqual([
+      'urgent-first',
+      'urgent-second',
+    ])
+    expect(store.getState().queue.map((item) => item.id)).toEqual(['normal'])
+  })
+
   it('skips duplicate explicit ids and calls onClose on hide', () => {
     const store = createNotificationsStore()
     const onClose = vi.fn()
@@ -59,5 +79,80 @@ describe('@mantine-vue/notifications store', () => {
 
     cleanNotifications(store)
     expect(store.getState().notifications).toEqual([])
+  })
+
+  it('does not mutate notification data with component instances while rendering', async () => {
+    const store = createNotificationsStore()
+    showNotification(
+      {
+        id: 'serializable',
+        title: 'Title',
+        message: h('span', 'Message'),
+        icon: h(MantineProvider, { env: 'test' }),
+      },
+      store,
+    )
+
+    mount(MantineProvider, {
+      props: { env: 'test' },
+      slots: {
+        default: () => h(Notifications, { store, autoClose: false, withinPortal: false }),
+      },
+      attachTo: document.body,
+    })
+    await nextTick()
+
+    expect(() => JSON.stringify(store.getState().notifications)).not.toThrow()
+  })
+
+  it('closes a notification after the default delay', async () => {
+    vi.useFakeTimers()
+    const store = createNotificationsStore()
+    showNotification({ id: 'auto-close', message: 'Message' }, store)
+
+    const wrapper = mount(MantineProvider, {
+      props: { env: 'test' },
+      slots: {
+        default: () => h(Notifications, { store, withinPortal: false, transitionDuration: 0 }),
+      },
+      attachTo: document.body,
+    })
+    await nextTick()
+    expect(store.getState().notifications).toHaveLength(1)
+
+    await vi.advanceTimersByTimeAsync(4000)
+    await nextTick()
+    expect(store.getState().notifications).toHaveLength(0)
+
+    wrapper.unmount()
+    vi.useRealTimers()
+  })
+
+  it('does not leave auto close paused when a hovered notification is removed', async () => {
+    vi.useFakeTimers()
+    const store = createNotificationsStore()
+    showNotification({ id: 'hovered', message: 'Hovered' }, store)
+
+    const wrapper = mount(MantineProvider, {
+      props: { env: 'test' },
+      slots: {
+        default: () => h(Notifications, { store, withinPortal: false, transitionDuration: 0 }),
+      },
+      attachTo: document.body,
+    })
+    await nextTick()
+
+    await wrapper.findComponent(NotificationContainer).trigger('mouseenter')
+    hideNotification('hovered', store)
+    await nextTick()
+    showNotification({ id: 'next', message: 'Next' }, store)
+    await nextTick()
+
+    await vi.advanceTimersByTimeAsync(4000)
+    await nextTick()
+    expect(store.getState().notifications).toHaveLength(0)
+
+    wrapper.unmount()
+    vi.useRealTimers()
   })
 })

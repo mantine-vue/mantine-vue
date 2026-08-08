@@ -2,7 +2,7 @@ import { defineComponent, h, nextTick } from 'vue'
 import { mount } from '@vue/test-utils'
 import { DirectionProvider, MantineProvider } from '@mantine-vue/core'
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { ContextMenuProvider, useContextMenu } from '../ContextMenuProvider'
+import { ContextMenuProvider, useContextMenu } from '../components/ContextMenuProvider'
 
 afterEach(() => {
   document.body.innerHTML = ''

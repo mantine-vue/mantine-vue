@@ -30,7 +30,7 @@ const Wrapper = defineComponent({
         {
           default: () => [
             h(ColorPicker, {
-              value: value.value,
+              modelValue: value.value,
               onChange: (v: string) => {
                 value.value = v
               },

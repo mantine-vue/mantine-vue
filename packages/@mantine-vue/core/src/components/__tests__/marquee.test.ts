@@ -31,6 +31,8 @@ describe('@mantine-vue/core Marquee', () => {
     expect(root.attributes('data-reverse')).toBe('true')
     expect(root.attributes('data-pause-on-hover')).toBe('true')
     expect(root.attributes('data-fade-edges')).toBeUndefined()
+
+    expect(withProvider().find('.mantine-Marquee-root').attributes('data-fade-edges')).toBe('true')
   })
 
   it('sets animation and fade variables', () => {

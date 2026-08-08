@@ -156,6 +156,12 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@docs/styles-api@workspace:packages/@docs/styles-api":
+  version: 0.0.0-use.local
+  resolution: "@docs/styles-api@workspace:packages/@docs/styles-api"
+  languageName: unknown
+  linkType: soft
+
 "@emnapi/core@npm:1.10.0":
   version: 1.10.0
   resolution: "@emnapi/core@npm:1.10.0"

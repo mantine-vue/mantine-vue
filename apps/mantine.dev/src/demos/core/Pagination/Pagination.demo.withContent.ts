@@ -28,7 +28,7 @@ const items = computed(() => data[activePage.value - 1])
     <Text v-for="item in items" :key="item.id">
       id: {{ item.id }}, name: {{ item.name }}
     </Text>
-    <Pagination :total="data.length" :value="activePage" @change="activePage = $event" mt="sm" />
+    <Pagination :total="data.length" v-model="activePage" mt="sm" />
   </div>
 </template>
 `
@@ -61,8 +61,8 @@ const Demo = defineComponent({
         ),
         h(Pagination, {
           total: data.length,
-          value: activePage.value,
-          onChange: (page: number) => {
+          modelValue: activePage.value,
+          'onUpdate:modelValue': (page: number) => {
             activePage.value = page
           },
           mt: 'sm',

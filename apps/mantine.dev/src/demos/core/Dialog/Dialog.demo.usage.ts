@@ -19,7 +19,7 @@ const [opened, { toggle, close }] = useDisclosure(false)
   <Dialog
     :opened="opened"
     with-close-button
-    :on-close="close"
+    @close="close"
     size="lg"
     :position="{ bottom: 20, left: 20 }"
   >

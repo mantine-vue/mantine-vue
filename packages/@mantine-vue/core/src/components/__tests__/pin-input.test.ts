@@ -40,7 +40,7 @@ describe('@mantine-vue/core PinInput', () => {
   })
 
   it('renders controlled value', async () => {
-    const wrapper = withProvider({ length: 4, value: 'ab' })
+    const wrapper = withProvider({ length: 4, modelValue: 'ab' })
 
     expect(getInputValues(wrapper)).toEqual(['a', 'b', '', ''])
   })

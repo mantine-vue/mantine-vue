@@ -38,7 +38,7 @@ function withProvider(
 }
 
 describe('@mantine-vue/core named slots', () => {
-  it('Alert: prop title/icon and slot title/icon both render, prop taking precedence', () => {
+  it('Alert: prop title/icon and slot title/icon both render, slot taking precedence', () => {
     const fromProps = withProvider(Alert, {
       title: 'Prop title',
       icon: () => h('span', { class: 'prop-icon' }, 'I'),
@@ -59,16 +59,16 @@ describe('@mantine-vue/core named slots', () => {
     expect(fromSlots.find('.slot-icon').exists()).toBe(true)
     expect(fromSlots.text()).toContain('Message')
 
-    // Prop wins over slot (precedence)
+    // Slot wins over prop (precedence)
     const both = withProvider(
       Alert,
-      { title: 'Prop wins' },
+      { title: 'Prop loses' },
       {
-        title: () => h('span', { class: 'slot-title' }, 'Slot loses'),
+        title: () => h('span', { class: 'slot-title' }, 'Slot wins'),
       },
     )
-    expect(both.text()).toContain('Prop wins')
-    expect(both.find('.slot-title').exists()).toBe(false)
+    expect(both.text()).toContain('Slot wins')
+    expect(both.find('.slot-title').exists()).toBe(true)
   })
 
   it('Checkbox: renders label and description from named slots', () => {
@@ -166,7 +166,7 @@ describe('@mantine-vue/core named slots', () => {
     expect(wrapper.find('.prop-title').exists()).toBe(true)
   })
 
-  it('EmptyState: renders icon/title/description from named slots and props take precedence', () => {
+  it('EmptyState: renders icon/title/description from named slots and slots take precedence', () => {
     const fromSlots = withProvider(
       EmptyState,
       {},
@@ -183,10 +183,10 @@ describe('@mantine-vue/core named slots', () => {
     const both = withProvider(
       EmptyState,
       { title: 'Prop title' },
-      { title: () => h('span', { class: 'slot-title' }, 'Slot loses') },
+      { title: () => h('span', { class: 'slot-title' }, 'Slot title') },
     )
-    expect(both.text()).toContain('Prop title')
-    expect(both.find('.slot-title').exists()).toBe(false)
+    expect(both.text()).toContain('Slot title')
+    expect(both.find('.slot-title').exists()).toBe(true)
   })
 
   it('EmptyState: preserves existing prop-based API (VNode and h render functions)', () => {
@@ -214,7 +214,7 @@ describe('@mantine-vue/core named slots', () => {
     expect(wrapper.text()).toContain('★ React')
   })
 
-  it('ComboboxPopover: renders #nothingFound slot and nothingFoundMessage prop wins', () => {
+  it('ComboboxPopover: renders #nothingFound slot and it wins over the nothingFoundMessage prop', () => {
     const fromSlot = withProvider(
       ComboboxPopover,
       { data: [], dropdownOpened: true, comboboxProps: { withinPortal: false } },
@@ -235,11 +235,11 @@ describe('@mantine-vue/core named slots', () => {
       },
       {
         default: () => h(ComboboxPopover.Target, null, () => h(Button, null, () => 'Open')),
-        nothingFound: () => h('span', { class: 'slot-nf' }, 'Slot loses'),
+        nothingFound: () => h('span', { class: 'slot-nf' }, 'Slot wins'),
       },
     )
-    expect(both.text()).toContain('Prop message')
-    expect(both.find('.slot-nf').exists()).toBe(false)
+    expect(both.text()).toContain('Slot wins')
+    expect(both.find('.slot-nf').exists()).toBe(true)
   })
 
   it('Accordion: #chevron slot is used by every control, chevron prop wins', () => {
@@ -286,7 +286,7 @@ describe('@mantine-vue/core named slots', () => {
     expect(wrapper.find('.mantine-Accordion-chevron svg').exists()).toBe(false)
   })
 
-  it('ColorInput: renders #eyeDropperIcon slot, eyeDropperIcon prop wins', () => {
+  it('ColorInput: renders #eyeDropperIcon slot, it wins over the eyeDropperIcon prop', () => {
     ;(window as any).EyeDropper = class {}
 
     const fromSlot = withProvider(
@@ -301,13 +301,13 @@ describe('@mantine-vue/core named slots', () => {
       { eyeDropperIcon: h('span', { class: 'prop-eye' }, 'E') },
       { eyeDropperIcon: () => h('span', { class: 'slot-eye' }, 'E') },
     )
-    expect(both.find('.prop-eye').exists()).toBe(true)
-    expect(both.find('.slot-eye').exists()).toBe(false)
+    expect(both.find('.slot-eye').exists()).toBe(true)
+    expect(both.find('.prop-eye').exists()).toBe(false)
 
     delete (window as any).EyeDropper
   })
 
-  it('Scroller: renders #startControlIcon and #endControlIcon slots, props win', () => {
+  it('Scroller: renders #startControlIcon and #endControlIcon slots, slots win', () => {
     const fromSlots = withProvider(
       Scroller,
       {},
@@ -328,11 +328,11 @@ describe('@mantine-vue/core named slots', () => {
         startControlIcon: () => h('span', { class: 'slot-start' }, '<'),
       },
     )
-    expect(both.find('.prop-start').exists()).toBe(true)
-    expect(both.find('.slot-start').exists()).toBe(false)
+    expect(both.find('.slot-start').exists()).toBe(true)
+    expect(both.find('.prop-start').exists()).toBe(false)
   })
 
-  it('Splitter: renders #handleIcon slot in the handle, handleIcon prop wins', () => {
+  it('Splitter: renders #handleIcon slot in the handle, it wins over the handleIcon prop', () => {
     const panes = () => [
       h(SplitterPane, { defaultSize: 50 }, () => 'left'),
       h(SplitterPane, { defaultSize: 50 }, () => 'right'),
@@ -350,11 +350,11 @@ describe('@mantine-vue/core named slots', () => {
       { withHandle: true, handleIcon: h('span', { class: 'prop-handle' }, '::') },
       { default: panes, handleIcon: () => h('span', { class: 'slot-handle' }, '::') },
     )
-    expect(both.find('.prop-handle').exists()).toBe(true)
-    expect(both.find('.slot-handle').exists()).toBe(false)
+    expect(both.find('.slot-handle').exists()).toBe(true)
+    expect(both.find('.prop-handle').exists()).toBe(false)
   })
 
-  it('Textarea: renders #bottomSection slot, bottomSection prop wins', () => {
+  it('Textarea: renders #bottomSection slot, it wins over the bottomSection prop', () => {
     const fromSlot = withProvider(
       Textarea,
       {},
@@ -367,8 +367,8 @@ describe('@mantine-vue/core named slots', () => {
       { bottomSection: h('span', { class: 'prop-bottom' }, '0/100') },
       { bottomSection: () => h('span', { class: 'slot-bottom' }, '0/100') },
     )
-    expect(both.find('.prop-bottom').exists()).toBe(true)
-    expect(both.find('.slot-bottom').exists()).toBe(false)
+    expect(both.find('.slot-bottom').exists()).toBe(true)
+    expect(both.find('.prop-bottom').exists()).toBe(false)
   })
 
   it('PasswordInput: #visibilityToggleIcon slot receives the reveal payload', async () => {
@@ -386,14 +386,14 @@ describe('@mantine-vue/core named slots', () => {
     expect(wrapper.find('.slot-toggle').text()).toBe('visible')
   })
 
-  it('PasswordInput: visibilityToggleIcon prop wins over the slot', () => {
+  it('PasswordInput: #visibilityToggleIcon slot wins over the visibilityToggleIcon prop', () => {
     const wrapper = withProvider(
       PasswordInput,
       { visibilityToggleIcon: { render: () => h('span', { class: 'prop-toggle' }) } },
       { visibilityToggleIcon: () => h('span', { class: 'slot-toggle' }) },
     )
-    expect(wrapper.find('.prop-toggle').exists()).toBe(true)
-    expect(wrapper.find('.slot-toggle').exists()).toBe(false)
+    expect(wrapper.find('.slot-toggle').exists()).toBe(true)
+    expect(wrapper.find('.prop-toggle').exists()).toBe(false)
   })
 
   it('Stepper.Step: step level #icon slot is not shadowed by the injected step number', () => {

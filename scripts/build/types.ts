@@ -22,6 +22,7 @@ function getPackages(): DeclarationPackage[] {
     'store',
     'core',
     'code-highlight',
+    'contextmenu',
     'dates',
     'form',
     'notifications',

@@ -16,15 +16,6 @@ const users = [
 
 const usersMap = new Map(users.map((user) => [user.value, user]))
 
-const renderPillFn = ({ option, onRemove }: { option: { value: string; label: string }; onRemove: () => void }) => {
-  const user = usersMap.get(option?.value)
-  return h(Pill, { withRemoveButton: true, onRemove, style: { paddingInlineStart: '2px' } }, () =>
-    h('div', { style: { display: 'flex', alignItems: 'center', gap: '8px' } }, [
-      h(Avatar, { src: user?.image, size: 16 }),
-      option?.label,
-    ])
-  )
-}
 </script>
 
 <template>
@@ -33,8 +24,16 @@ const renderPillFn = ({ option, onRemove }: { option: { value: string; label: st
     label="Candidates"
     placeholder="Select candidates"
     :default-value="['Emily Johnson', 'Ava Rodriguez']"
-    :render-pill="renderPillFn"
-  />
+  >
+    <template #renderPill="{ option, onRemove }">
+      <Pill with-remove-button :style="{ paddingInlineStart: '2px' }" @remove="onRemove">
+        <div :style="{ display: 'flex', alignItems: 'center', gap: '8px' }">
+          <Avatar :src="usersMap.get(option?.value)?.image" :size="16" />
+          <span>{{ option?.label }}</span>
+        </div>
+      </Pill>
+    </template>
+  </MultiSelect>
 </template>
 `
 

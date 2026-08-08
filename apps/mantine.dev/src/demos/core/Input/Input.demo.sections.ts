@@ -43,7 +43,7 @@ const Demo = defineComponent({
         }),
         h(Input, {
           placeholder: 'Clearable input',
-          value: value.value,
+          modelValue: value.value,
           onChange: (v: string) => {
             value.value = v
           },

@@ -1,53 +1,12 @@
-import { defineComponent, h, type PropType } from 'vue'
-import { withBoxProps, Box, createVarsResolver, rem, useProps, useStyles } from '../../../core'
+import { withBoxProps } from '../../../core'
+import ActionIconGroupComponent, { varsResolver } from './ActionIconGroup.vue'
 import classes from '../ActionIcon.module.css'
 
-const defaultProps = {
-  orientation: 'horizontal',
-} as const
+export const ActionIconGroup = withBoxProps(ActionIconGroupComponent)
+Object.assign(ActionIconGroup, { classes, varsResolver })
 
-const varsResolver = createVarsResolver<any>((_, { borderWidth }) => ({
-  group: { '--ai-border-width': rem(borderWidth) },
-}))
-
-export const ActionIconGroup = withBoxProps(
-  defineComponent({
-    name: 'ActionIconGroup',
-    inheritAttrs: false,
-    props: {
-      orientation: { type: String as PropType<'horizontal' | 'vertical'>, default: undefined },
-      borderWidth: [String, Number] as PropType<string | number>,
-      classNames: { type: [Object, Function], default: undefined },
-      styles: { type: [Object, Function], default: undefined },
-      vars: { type: [Object, Function], default: undefined },
-      unstyled: { type: Boolean, default: false },
-    },
-    setup(rawProps, { attrs, slots }) {
-      const props = useProps('ActionIconGroup', defaultProps, rawProps)
-      const getStyles = useStyles({
-        name: 'ActionIconGroup',
-        props,
-        classes,
-        className: attrs.class,
-        style: attrs.style as any,
-        classNames: props.classNames as any,
-        styles: props.styles as any,
-        vars: props.vars as any,
-        varsResolver,
-        unstyled: props.unstyled,
-      })
-
-      return () =>
-        h(
-          Box,
-          {
-            ...attrs,
-            ...getStyles('group'),
-            role: 'group',
-            mod: { orientation: props.orientation },
-          },
-          () => slots.default?.(),
-        )
-    },
-  }),
-)
+export type {
+  ActionIconGroupOwnProps,
+  ActionIconGroupProps,
+  ActionIconGroupSlots,
+} from './ActionIconGroup.types'

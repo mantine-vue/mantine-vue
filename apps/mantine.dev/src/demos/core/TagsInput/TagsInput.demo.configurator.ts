@@ -11,7 +11,7 @@ import { TagsInput } from '@mantine-vue/core'
   <TagsInput
     {{props}}
     placeholder="TagsInput placeholder"
-    :value="['First', 'Second']"
+    :default-value="['First', 'Second']"
     :data="['React', 'Angular', 'Vue', 'Svelte']"
   />
 </template>
@@ -52,7 +52,7 @@ const Demo = defineComponent({
     return () =>
       h(TagsInput, {
         placeholder: 'TagsInput placeholder',
-        value: ['First', 'Second'],
+        defaultValue: ['First', 'Second'],
         data: ['React', 'Angular', 'Vue', 'Svelte'],
         ...attrs,
       })
