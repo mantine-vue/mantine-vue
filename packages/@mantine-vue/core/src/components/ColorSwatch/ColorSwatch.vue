@@ -12,7 +12,8 @@ const defaultProps = { withShadow: true } as const
 </script>
 
 <script setup lang="ts">
-import { useAttrs } from 'vue'
+import { ref, useAttrs } from 'vue'
+import { assignRef } from '@mantine-vue/hooks'
 import { Box, useProps, useStyles } from '../../core'
 import type { ColorSwatchOwnProps, ColorSwatchSlots } from './ColorSwatch.types'
 import classes from './ColorSwatch.module.css'
@@ -20,6 +21,7 @@ import classes from './ColorSwatch.module.css'
 defineOptions({ name: 'ColorSwatch', inheritAttrs: false })
 
 const rawProps = withDefaults(defineProps<ColorSwatchOwnProps>(), {
+  rootRef: undefined,
   size: undefined,
   radius: undefined,
   withShadow: undefined,
@@ -44,10 +46,19 @@ const getStyles = useStyles({
   varsResolver,
   unstyled: props.unstyled,
 })
+
+const rootElement = ref<Element | null>(null)
+
+const setRootRef = (node: Element | null) => {
+  rootElement.value = node
+  assignRef(props.rootRef, node)
+}
+
+defineExpose({ rootElement })
 </script>
 
 <template>
-  <Box v-bind="{ ...attrs, ...getStyles('root', { focusable: true }) }">
+  <Box v-bind="{ ...attrs, ...getStyles('root', { focusable: true }) }" :rootRef="setRootRef">
     <span v-bind="getStyles('alphaOverlay')" />
     <span v-if="props.withShadow" v-bind="getStyles('shadowOverlay')" />
     <span v-bind="getStyles('colorOverlay', { style: { backgroundColor: props.color } })" />

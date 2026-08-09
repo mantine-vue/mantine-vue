@@ -1,4 +1,5 @@
 import type { CSSProperties, VNodeChild } from 'vue'
+import type { VueRefTarget } from '@mantine-vue/hooks'
 import type {
   BoxMod,
   BoxProps,
@@ -8,8 +9,11 @@ import type {
   MantineRadius,
   MantineSize,
   MantineVariant,
+  PolymorphicFactory,
   StylesApiProps,
 } from '../../core'
+import type { ButtonGroup } from './ButtonGroup/ButtonGroup'
+import type { ButtonGroupSection } from './ButtonGroupSection/ButtonGroupSection'
 
 export type ButtonSize = MantineSize | `compact-${MantineSize}` | (string & {})
 
@@ -148,6 +152,28 @@ export interface ButtonOwnProps extends StylesApiProps<ButtonProps> {
 
   /** Element modifiers transformed into `data-` attributes, for example, `{ 'data-size': 'xl' }`, falsy values are removed */
   mod?: BoxMod
+
+  /** Receives the root DOM node. The factory narrows this to the element the selected root renders. */
+  rootRef?: VueRefTarget<Element>
 }
 
 export interface ButtonProps extends Omit<BoxProps, keyof ButtonOwnProps>, ButtonOwnProps {}
+
+/**
+ * Public contract of `Button`.
+ */
+export type ButtonFactory = PolymorphicFactory<{
+  props: Omit<ButtonProps, 'component' | 'rootRef'>
+  slots: ButtonSlots
+  ref: HTMLButtonElement
+  exposed: { rootElement: Element | null }
+  defaultComponent: 'button'
+  defaultRef: HTMLButtonElement
+  stylesNames: ButtonStylesNames
+  vars: ButtonCssVariables
+  variant: ButtonVariant
+  staticComponents: {
+    Group: typeof ButtonGroup
+    GroupSection: typeof ButtonGroupSection
+  }
+}>

@@ -63,7 +63,7 @@ const Demo = defineComponent({
             h(Popover.Target, null, {
               default: () =>
                 h(
-                  UnstyledButton,
+                  UnstyledButton<'button'>,
                   { style: { zIndex: 10001, position: 'relative' } },
                   {
                     default: () =>

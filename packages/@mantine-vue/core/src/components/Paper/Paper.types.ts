@@ -1,5 +1,11 @@
 import type { VNodeChild } from 'vue'
-import type { BoxProps, MantineRadius, MantineShadow, StylesApiProps } from '../../core'
+import type {
+  BoxProps,
+  MantineRadius,
+  MantineShadow,
+  StylesApiProps,
+  MantineElementType,
+} from '../../core'
 
 export type PaperStylesNames = 'root'
 
@@ -14,11 +20,14 @@ export interface PaperSlots {
 
 /** Props declared by `Paper` itself. See `PaperProps` for the full public type. */
 export interface PaperOwnProps extends StylesApiProps<PaperProps> {
+  /** Receives the root DOM node. See the polymorphic components guide. */
+  rootRef?: VueRefTarget<Element>
+
   /**
    * Root element or component rendered by `Paper`.
    * @default 'div'
    */
-  component?: string
+  component?: MantineElementType
 
   /** Key of `theme.shadows` or any valid CSS value to set `box-shadow`. */
   shadow?: MantineShadow
@@ -36,5 +45,6 @@ export interface PaperOwnProps extends StylesApiProps<PaperProps> {
    */
   withBorder?: boolean
 }
+import type { VueRefTarget } from '@mantine-vue/hooks'
 
 export interface PaperProps extends Omit<BoxProps, keyof PaperOwnProps>, PaperOwnProps {}

@@ -67,13 +67,13 @@ const Demo = defineComponent({
             () =>
               h(ComboboxPopover.Target, null, () =>
                 h(
-                  Button,
+                  Button<'button'>,
                   { variant: 'default', miw: 200, type: 'button' },
                   () => value.value || 'Select framework',
                 ),
               ),
           ),
-          h(Button, { type: 'submit' }, () => 'Submit'),
+          h(Button<'button'>, { type: 'submit' }, () => 'Submit'),
           submitted.value
             ? h(Text, { size: 'sm' }, () => ['Submitted value: ', h('b', null, submitted.value)])
             : null,

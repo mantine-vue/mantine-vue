@@ -13,6 +13,7 @@ import type {
   ActionIconProps,
   AlignItems,
   BadgeVariant,
+  ComponentProps,
   ButtonVariant,
   FlexWrap,
   JustifyContent,
@@ -33,7 +34,7 @@ import type {
   ShowContextMenuFunction,
 } from '@mantine-vue/contextmenu'
 
-type ButtonProps = InstanceType<typeof Button>['$props']
+type ButtonProps = ComponentProps<typeof Button>
 type AutocompleteProps = InstanceType<typeof Autocomplete>['$props']
 type BoxPublicProps = InstanceType<typeof Box>['$props']
 type BadgeProps = InstanceType<typeof Badge>['$props']

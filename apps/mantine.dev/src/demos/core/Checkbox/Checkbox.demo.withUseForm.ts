@@ -46,7 +46,7 @@ const Demo = defineComponent({
           label: 'I accept the terms and conditions',
           ...form.getInputProps('terms', { type: 'checkbox' }),
         }),
-        h(Button, { type: 'submit', mt: 'md' }, { default: () => 'Submit' }),
+        h(Button<'button'>, { type: 'submit', mt: 'md' }, { default: () => 'Submit' }),
       ])
   },
 })

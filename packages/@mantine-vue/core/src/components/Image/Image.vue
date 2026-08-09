@@ -9,11 +9,13 @@ export const varsResolver = createVarsResolver<any>((_, { radius, fit }) => ({
 </script>
 <script setup lang="ts">
 import { computed, ref, useAttrs, watch } from 'vue'
+import { assignRef } from '@mantine-vue/hooks'
 import { Box, useProps, useStyles } from '../../core'
 import type { ImageEmits, ImageOwnProps } from './Image.types'
 import classes from './Image.module.css'
 defineOptions({ name: 'Image', inheritAttrs: false })
 const rawProps = withDefaults(defineProps<ImageOwnProps>(), {
+  rootRef: undefined,
   src: undefined,
   fallbackSrc: undefined,
   radius: undefined,
@@ -50,13 +52,23 @@ const onError = (event: Event) => {
   emit('error', event)
   error.value = true
 }
+
+const rootElement = ref<Element | null>(null)
+
+const setRootRef = (node: Element | null) => {
+  rootElement.value = node
+  assignRef(props.rootRef, node)
+}
+
+defineExpose({ rootElement })
 </script>
 <template>
   <Box
-    v-bind="{ ...attrs, ...getStyles('root') }"
     component="img"
+    v-bind="{ ...attrs, ...getStyles('root') }"
     :src="useFallback ? props.fallbackSrc : props.src"
     :mod="{ fallback: useFallback }"
+    :rootRef="setRootRef"
     @error="onError"
   />
 </template>

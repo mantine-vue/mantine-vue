@@ -10,5 +10,15 @@
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "types": ["vite/client"]
   },
-  "include": ["./PublicApi.vue", "./public-api.ts"]
+  "vueCompilerOptions": {
+    "strictTemplates": true
+  },
+  "include": [
+    "./PublicApi.vue",
+    "./public-api.ts",
+    "./Polymorphic.vue",
+    "./polymorphic.ts",
+    "./polymorphic-components.ts",
+    "./PolymorphicComponents.vue"
+  ]
 }

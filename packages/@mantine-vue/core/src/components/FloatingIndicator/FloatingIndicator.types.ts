@@ -1,5 +1,5 @@
 import type { VNodeChild } from 'vue'
-import type { BoxMod, BoxProps, StylesApiProps } from '../../core'
+import type { BoxMod, BoxProps, StylesApiProps, MantineElementType } from '../../core'
 
 /** Props declared by `FloatingIndicator` itself. See `FloatingIndicatorProps` for the full public type. */
 export interface FloatingIndicatorOwnProps extends StylesApiProps<FloatingIndicatorProps> {
@@ -36,7 +36,7 @@ export interface FloatingIndicatorOwnProps extends StylesApiProps<FloatingIndica
    *
    * @default 'div'
    */
-  component?: string
+  component?: MantineElementType
 
   /** Element modifiers transformed into `data-` attributes, for example, `{ 'data-size': 'xl' }`, falsy values are removed */
   mod?: BoxMod

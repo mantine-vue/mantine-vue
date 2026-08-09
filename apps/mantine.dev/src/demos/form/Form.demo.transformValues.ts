@@ -53,7 +53,7 @@ const Demo = defineComponent({
         h(Stack, { gap: 'md' }, () => [
           h(TextInput, { label: 'First name', ...form.getInputProps('firstName') }),
           h(TextInput, { label: 'Last name', ...form.getInputProps('lastName') }),
-          h(Button, { type: 'submit' }, () => 'Submit transformed values'),
+          h(Button<'button'>, { type: 'submit' }, () => 'Submit transformed values'),
         ]),
       )
   },

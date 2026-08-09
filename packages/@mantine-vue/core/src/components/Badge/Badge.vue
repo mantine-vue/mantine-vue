@@ -31,7 +31,8 @@ export { varsResolver }
 </script>
 
 <script setup lang="ts">
-import { computed, useAttrs, useSlots } from 'vue'
+import { ref, computed, useAttrs, useSlots } from 'vue'
+import { assignRef } from '@mantine-vue/hooks'
 import { Box, hasNode, resolveNode, useProps, useStyles } from '../../core'
 import type { BadgeOwnProps, BadgeSlots } from './Badge.types'
 import classes from './Badge.module.css'
@@ -42,6 +43,7 @@ defineOptions({
 })
 
 const rawProps = withDefaults(defineProps<BadgeOwnProps>(), {
+  rootRef: undefined,
   component: 'div',
   // Intentionally undefined to preserve downstream defaults.
   autoContrast: undefined,
@@ -93,6 +95,15 @@ const rootMod = computed(() => [
   },
   (attrs as any).mod,
 ])
+
+const rootElement = ref<Element | null>(null)
+
+const setRootRef = (node: Element | null) => {
+  rootElement.value = node
+  assignRef(props.rootRef, node)
+}
+
+defineExpose({ rootElement })
 </script>
 
 <template>
@@ -101,6 +112,7 @@ const rootMod = computed(() => [
     :component="props.component"
     :variant="props.variant"
     :mod="rootMod"
+    :rootRef="setRootRef"
   >
     <span v-if="hasNode(leftSection)" v-bind="getStyles('section')" data-position="left">
       <component :is="renderLeftSection" />

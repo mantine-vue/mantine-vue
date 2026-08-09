@@ -67,11 +67,11 @@ const Demo = defineComponent({
           h(TextInput, { label: 'Age', ...form.getInputProps('age') }),
           h(Group, { justify: 'space-between' }, () => [
             h(
-              Button,
+              Button<'button'>,
               { variant: 'default', type: 'button', onClick: form.validate },
               () => 'Validate',
             ),
-            h(Button, { type: 'submit' }, () => 'Submit'),
+            h(Button<'button'>, { type: 'submit' }, () => 'Submit'),
           ]),
         ]),
       )

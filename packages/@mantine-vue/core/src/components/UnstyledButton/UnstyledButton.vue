@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, useAttrs } from 'vue'
+import { assignRef } from '@mantine-vue/hooks'
 import { Box, useForwardedRef, useStyles } from '../../core'
 import type { UnstyledButtonOwnProps, UnstyledButtonSlots } from './UnstyledButton.types'
 import classes from './UnstyledButton.module.css'
@@ -13,6 +14,7 @@ const props = withDefaults(defineProps<UnstyledButtonOwnProps>(), {
   styles: undefined,
   vars: undefined,
   unstyled: false,
+  rootRef: undefined,
 })
 defineSlots<UnstyledButtonSlots>()
 const attrs = useAttrs()
@@ -41,6 +43,15 @@ const getStyles = useStyles({
 })
 const elementRef = ref<HTMLElement | null>(null)
 useForwardedRef(elementRef)
+
+const rootElement = ref<Element | null>(null)
+
+const setRootRef = (node: Element | null) => {
+  rootElement.value = node
+  assignRef(props.rootRef, node)
+}
+
+defineExpose({ rootElement })
 </script>
 <template>
   <Box
@@ -49,6 +60,7 @@ useForwardedRef(elementRef)
     :variant="props.variant"
     :mod="props.mod"
     :type="attrs.type ?? (props.component === 'button' ? 'button' : undefined)"
+    :rootRef="setRootRef"
     ref="elementRef"
     ><slot
   /></Box>

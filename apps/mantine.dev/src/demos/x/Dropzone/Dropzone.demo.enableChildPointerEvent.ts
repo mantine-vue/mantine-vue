@@ -30,7 +30,7 @@ const Demo = defineComponent({
       h(Dropzone, { openRef, onDrop: () => {}, activateOnClick: false }, () =>
         h(Group, { justify: 'center' }, () =>
           h(
-            Button,
+            Button<'button'>,
             { onClick: () => openRef.value?.(), style: { pointerEvents: 'all' } },
             () => 'Select files',
           ),

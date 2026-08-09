@@ -4,7 +4,7 @@ export interface CodeHighlightControlProps {
   /** Tooltip label. If omitted, the tooltip is not rendered. */
   tooltipLabel?: string
   /** Root element or component. @default 'button' */
-  component?: string
+  component?: MantineElementType
   classNames?: any
   styles?: any
   vars?: any
@@ -20,3 +20,4 @@ export interface CodeHighlightControlEmits {
 export interface CodeHighlightControlSlots {
   default?: () => VNodeChild
 }
+import type { MantineElementType } from '@mantine-vue/core'

@@ -24,7 +24,8 @@ export const varsResolver = createVarsResolver<any>(
 )
 </script>
 <script setup lang="ts">
-import { computed, useAttrs } from 'vue'
+import { ref, computed, useAttrs } from 'vue'
+import { assignRef } from '@mantine-vue/hooks'
 import { Box, useProps, useStyles } from '../../core'
 import { Loader } from '../Loader'
 import { Transition as MantineTransition } from '../Transition'
@@ -33,6 +34,7 @@ import type { ActionIconOwnProps, ActionIconSlots } from './ActionIcon.types'
 import classes from './ActionIcon.module.css'
 defineOptions({ name: 'ActionIcon', inheritAttrs: false })
 const rawProps = withDefaults(defineProps<ActionIconOwnProps>(), {
+  rootRef: undefined,
   component: 'button',
   loading: false,
   loaderProps: undefined,
@@ -78,9 +80,18 @@ const rootProps = computed(() => ({
     (attrs as any).mod,
   ],
 }))
+
+const rootElement = ref<Element | null>(null)
+
+const setRootRef = (node: Element | null) => {
+  rootElement.value = node
+  assignRef(props.rootRef, node)
+}
+
+defineExpose({ rootElement })
 </script>
 <template>
-  <UnstyledButton v-bind="rootProps">
+  <UnstyledButton v-bind="rootProps" :rootRef="setRootRef">
     <MantineTransition
       :mounted="props.loading"
       transition="slide-down"

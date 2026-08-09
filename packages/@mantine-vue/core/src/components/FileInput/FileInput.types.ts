@@ -1,5 +1,5 @@
 import type { VNodeChild } from 'vue'
-import type { MantineNode, MantineSize, StylesApiProps } from '../../core'
+import type { MantineNode, MantineSize, StylesApiProps, MantineElementType } from '../../core'
 import type { ClearSectionMode } from '../Input'
 import type { InputBaseStylesNames } from '../InputBase'
 
@@ -38,7 +38,7 @@ export interface FileInputProps extends StylesApiProps<FileInputProps> {
    *
    * @default 'button'
    */
-  component?: string
+  component?: MantineElementType
 
   /** Selected file, or files in `multiple` mode, bound with `v-model`. */
   modelValue?: File | File[] | null

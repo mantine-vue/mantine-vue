@@ -71,7 +71,7 @@ export const MVT_GlobalFilterTextInput = defineComponent({
               inputProps.onChange?.(event)
             },
             rightSection: h(
-              ActionIcon,
+              ActionIcon<'button'>,
               {
                 'aria-label': o.localization.clearSearch,
                 color: 'gray',

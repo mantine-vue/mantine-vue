@@ -1,5 +1,12 @@
 import type { VNodeChild } from 'vue'
-import type { BoxProps, MantineNode, MantineRadius, MantineSize, StylesApiProps } from '../../core'
+import type {
+  BoxProps,
+  MantineNode,
+  MantineRadius,
+  MantineSize,
+  StylesApiProps,
+  MantineElementType,
+} from '../../core'
 
 export type CloseButtonVariant = 'subtle' | 'transparent'
 
@@ -10,7 +17,7 @@ export interface CloseButtonOwnProps extends StylesApiProps<CloseButtonProps> {
    *
    * @default 'button'
    */
-  component?: string
+  component?: MantineElementType
 
   /**
    * Controls width and height of the button. Numbers are converted to rem.

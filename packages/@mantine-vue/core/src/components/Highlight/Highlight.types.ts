@@ -1,5 +1,11 @@
 import type { CSSProperties, VNodeChild } from 'vue'
-import type { BoxProps, MantineColor, MantineTheme, StylesApiProps } from '../../core'
+import type {
+  BoxProps,
+  MantineColor,
+  MantineTheme,
+  StylesApiProps,
+  MantineElementType,
+} from '../../core'
 
 export interface HighlightTerm {
   /** Text to highlight. */
@@ -60,7 +66,7 @@ export interface HighlightOwnProps extends StylesApiProps<HighlightProps> {
   accentInsensitive?: boolean
 
   /** Root element or component rendered by `Highlight`. */
-  component?: string
+  component?: MantineElementType
 
   /**
    * Shorthand for `component="span"`

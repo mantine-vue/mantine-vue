@@ -15,11 +15,13 @@ const defaultProps = { inherit: false }
 </script>
 <script setup lang="ts">
 import { ref, useAttrs } from 'vue'
+import { assignRef } from '@mantine-vue/hooks'
 import { Box, useForwardedRef, useProps, useStyles } from '../../core'
 import type { TextOwnProps, TextSlots, TextTruncate } from './Text.types'
 import classes from './Text.module.css'
 defineOptions({ name: 'Text', inheritAttrs: false })
 const rawProps = withDefaults(defineProps<TextOwnProps>(), {
+  rootRef: undefined,
   component: undefined,
   __staticSelector: undefined,
   size: undefined,
@@ -56,6 +58,15 @@ const elementRef = ref<HTMLElement | null>(null)
 useForwardedRef(elementRef)
 const getTextTruncate = (value: TextTruncate | undefined) =>
   value === 'start' ? 'start' : value === 'end' || value ? 'end' : undefined
+
+const rootElement = ref<Element | null>(null)
+
+const setRootRef = (node: Element | null) => {
+  rootElement.value = node
+  assignRef(props.rootRef, node)
+}
+
+defineExpose({ rootElement })
 </script>
 <template>
   <Box
@@ -72,6 +83,7 @@ const getTextTruncate = (value: TextTruncate | undefined) =>
       props.mod,
     ]"
     ref="elementRef"
+    :rootRef="setRootRef"
     ><slot
   /></Box>
 </template>

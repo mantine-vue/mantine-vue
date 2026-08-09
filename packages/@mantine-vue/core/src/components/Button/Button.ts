@@ -1,17 +1,20 @@
-import { withBoxProps } from '../../core'
-import ButtonComponent from './Button.vue'
+import { polymorphicFactory } from '../../core'
+import ButtonComponent, { varsResolver } from './Button.vue'
+import type { ButtonFactory } from './Button.types'
 import { ButtonGroup } from './ButtonGroup/ButtonGroup'
 import { ButtonGroupSection } from './ButtonGroupSection/ButtonGroupSection'
+import classes from './Button.module.css'
 
-export const Button = withBoxProps(
-  Object.assign(ButtonComponent, {
-    Group: ButtonGroup,
-    GroupSection: ButtonGroupSection,
-  }),
-)
+export const Button = polymorphicFactory<ButtonFactory>(ButtonComponent, {
+  classes,
+  varsResolver,
+  Group: ButtonGroup,
+  GroupSection: ButtonGroupSection,
+})
 
 export type {
   ButtonCssVariables,
+  ButtonFactory,
   ButtonOwnProps,
   ButtonProps,
   ButtonSize,

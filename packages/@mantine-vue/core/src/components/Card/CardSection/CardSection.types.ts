@@ -1,5 +1,5 @@
 import type { VNodeChild } from 'vue'
-import type { BoxMod, BoxProps, StylesApiProps } from '../../../core'
+import type { BoxMod, BoxProps, StylesApiProps, MantineElementType } from '../../../core'
 
 /** Props declared by `CardSection` itself. See `CardSectionProps` for the full public type. */
 export interface CardSectionOwnProps {
@@ -8,7 +8,7 @@ export interface CardSectionOwnProps {
    *
    * @default 'div'
    */
-  component?: string
+  component?: MantineElementType
 
   /**
    * Adds border to the root element

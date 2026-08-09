@@ -47,6 +47,7 @@ export { loaderTransition, varsResolver }
 
 <script setup lang="ts">
 import { computed, ref, useAttrs, useSlots } from 'vue'
+import { assignRef } from '@mantine-vue/hooks'
 import { Box, hasNode, resolveNode, useForwardedRef, useProps, useStyles } from '../../core'
 import { Loader } from '../Loader'
 import { Transition as MantineTransitionComponent } from '../Transition'
@@ -75,6 +76,7 @@ const rawProps = withDefaults(defineProps<ButtonOwnProps>(), {
   'data-disabled': false,
   dataDisabled: false,
   unstyled: false,
+  rootRef: undefined,
 })
 
 defineSlots<ButtonSlots>()
@@ -85,6 +87,15 @@ const props = useProps('Button', null, rawProps)
 
 const elementRef = ref<HTMLElement | null>(null)
 useForwardedRef(elementRef)
+
+const rootElement = ref<Element | null>(null)
+
+const setRootRef = (node: Element | null) => {
+  rootElement.value = node
+  assignRef(props.rootRef, node)
+}
+
+defineExpose({ rootElement })
 
 const getStyles = useStyles({
   name: 'Button',
@@ -158,6 +169,7 @@ const loaderStyleProps = computed(() => ({
     :variant="props.variant"
     :disabled="disabled"
     :mod="rootMod"
+    :rootRef="setRootRef"
   >
     <!-- Aliased: a bare `<Transition>` in a template resolves to Vue's built-in. -->
     <MantineTransitionComponent

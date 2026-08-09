@@ -14,6 +14,7 @@ export { varsResolver }
 
 <script setup lang="ts">
 import { ref, useAttrs } from 'vue'
+import { assignRef } from '@mantine-vue/hooks'
 import { Box, useForwardedRef, useProps, useStyles } from '../../core'
 import type { PaperOwnProps, PaperSlots } from './Paper.types'
 import classes from './Paper.module.css'
@@ -24,6 +25,7 @@ defineOptions({
 })
 
 const rawProps = withDefaults(defineProps<PaperOwnProps>(), {
+  rootRef: undefined,
   component: 'div',
   shadow: undefined,
   radius: undefined,
@@ -51,6 +53,15 @@ const getStyles = useStyles({
 
 const elementRef = ref<HTMLElement | null>(null)
 useForwardedRef(elementRef)
+
+const rootElement = ref<Element | null>(null)
+
+const setRootRef = (node: Element | null) => {
+  rootElement.value = node
+  assignRef(props.rootRef, node)
+}
+
+defineExpose({ rootElement })
 </script>
 
 <template>
@@ -62,6 +73,7 @@ useForwardedRef(elementRef)
     ref="elementRef"
     :component="props.component"
     :mod="[{ 'with-border': props.withBorder }, (attrs as any).mod]"
+    :rootRef="setRootRef"
   >
     <slot />
   </Box>
