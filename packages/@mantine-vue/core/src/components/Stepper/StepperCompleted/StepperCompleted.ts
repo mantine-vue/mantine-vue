@@ -1,8 +1,3 @@
-import { defineComponent } from 'vue'
-
-export const StepperCompleted = defineComponent({
-  name: 'StepperCompleted',
-  setup() {
-    return () => null
-  },
-})
+import StepperCompletedComponent from './StepperCompleted.vue'
+export const StepperCompleted = StepperCompletedComponent
+export type { StepperCompletedProps } from './StepperCompleted.types'

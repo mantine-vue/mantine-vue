@@ -42,7 +42,7 @@ describe('@mantine-vue/core Menu', () => {
     const onOpen = vi.fn()
     const onClose = vi.fn()
     const onChange = vi.fn()
-    const wrapper = render({ onOpen, onClose, onChange })
+    const wrapper = render({ onOpen, onClose, 'onUpdate:opened': onChange })
     await wrapper.find('.target').trigger('click')
     expect(wrapper.find('[role="menu"]').exists()).toBe(true)
     expect(onOpen).toHaveBeenCalledOnce()

@@ -26,8 +26,8 @@ const numberValueRef = ref<string | number>(0)
 <template>
   <!-- with useInputState -->
   <input type="text" :value="stringValue" @input="setStringValue" />
-  <TextInput :value="stringValue" @input="setStringValue" />
-  <NumberInput :value="numberValue" :on-change="setNumberValue" />
+  <TextInput :model-value="stringValue" @input="setStringValue" />
+  <NumberInput :model-value="numberValue" @change="setNumberValue" />
 
   <!-- with a plain ref -->
   <input
@@ -36,10 +36,10 @@ const numberValueRef = ref<string | number>(0)
     @input="stringValueRef = ($event.target as HTMLInputElement).value"
   />
   <TextInput
-    :value="stringValueRef"
+    :model-value="stringValueRef"
     @input="stringValueRef = ($event.target as HTMLInputElement).value"
   />
-  <NumberInput :value="numberValueRef" :on-change="(value) => (numberValueRef = value)" />
+  <NumberInput :model-value="numberValueRef" @change="(value) => (numberValueRef = value)" />
 </template>
 ```
 

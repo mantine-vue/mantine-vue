@@ -133,7 +133,7 @@ Set the `title` prop to make the component accessible, which will add `aria-labe
 
 ```vue
 <template>
-  <Modal title="Modal label" :opened="true" :on-close="() => {}" />
+  <Modal title="Modal label" :opened="true" @close="() => {}" />
 </template>
 ```
 
@@ -141,10 +141,6 @@ To set the close button's `aria-label`, use `closeButtonProps`:
 
 ```vue
 <template>
-  <Modal
-    :close-button-props="{ 'aria-label': 'Close modal' }"
-    :opened="true"
-    :on-close="() => {}"
-  />
+  <Modal :close-button-props="{ 'aria-label': 'Close modal' }" :opened="true" @close="() => {}" />
 </template>
 ```

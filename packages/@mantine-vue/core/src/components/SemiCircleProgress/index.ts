@@ -1,2 +1,7 @@
 export { SemiCircleProgress } from './SemiCircleProgress'
-export type { SemiCircleProgressStylesNames } from './SemiCircleProgress'
+export type {
+  SemiCircleProgressOwnProps,
+  SemiCircleProgressProps,
+  SemiCircleProgressSlots,
+  SemiCircleProgressStylesNames,
+} from './SemiCircleProgress'

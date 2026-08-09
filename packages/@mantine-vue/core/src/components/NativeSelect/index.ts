@@ -10,4 +10,9 @@ export type {
   NativeSelectParsedItemGroup,
   NativeSelectPrimitive,
 } from './get-parsed-data/get-parsed-data'
-export type { NativeSelectProps } from './NativeSelect'
+export type {
+  NativeSelectOwnProps,
+  NativeSelectProps,
+  NativeSelectSlots,
+  NativeSelectStylesNames,
+} from './NativeSelect'

@@ -174,8 +174,8 @@ const Demo = defineComponent({
           Radio.Group,
           {
             modelValue: value.value,
-            'onUpdate:modelValue': (v: string) => {
-              value.value = v
+            'onUpdate:modelValue': (v: string | null) => {
+              value.value = v ?? ''
             },
             label: 'Pick one package to install',
             description: 'Choose a package that you will need in your application',

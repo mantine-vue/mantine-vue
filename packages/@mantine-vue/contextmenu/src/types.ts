@@ -103,14 +103,25 @@ export interface ContextMenuInstanceOptions {
 }
 
 export interface ContextMenuProps extends ContextMenuInstanceOptions, ContextMenuOptions {
-  onHide: HideContextMenuFunction
   dir?: 'ltr' | 'rtl'
+}
+
+/** Events emitted by `ContextMenu`. */
+export interface ContextMenuEmits {
+  /** Emitted when the menu should be hidden. */
+  hide: []
 }
 
 export interface ContextMenuPortalProps extends ContextMenuProps {
   zIndex?: number
   dir: 'ltr' | 'rtl'
 }
+
+/** Events emitted by `ContextMenuPortal`. */
+export type ContextMenuPortalEmits = ContextMenuEmits
+
+/** Events emitted by `ContextMenuOverlay`. */
+export type ContextMenuOverlayEmits = ContextMenuEmits
 
 export type ContextMenuSubmenuProps = Pick<
   ContextMenuOptions,
@@ -120,9 +131,11 @@ export type ContextMenuSubmenuProps = Pick<
 }
 
 export type ContextMenuItemProps = Omit<ContextMenuItemOptions, 'key'> & {
-  onHide: HideContextMenuFunction
   submenuProps: ContextMenuSubmenuProps
 }
+
+/** Events emitted by `ContextMenuItem`. */
+export type ContextMenuItemEmits = ContextMenuEmits
 
 export interface ContextMenuDividerProps {
   className?: string

@@ -8,13 +8,13 @@ import { Rating } from '@mantine-vue/core'
 </script>
 
 <template>
-  <Rating :value="3.5" :fractions="2" read-only />
+  <Rating :model-value="3.5" :fractions="2" read-only />
 </template>
 `
 
 const Demo = defineComponent({
   name: 'RatingReadOnlyDemo',
-  setup: () => () => h(Rating, { value: 3.5, fractions: 2, readOnly: true }),
+  setup: () => () => h(Rating, { modelValue: 3.5, fractions: 2, readOnly: true }),
 })
 
 export const readOnly: MantineDemo = {

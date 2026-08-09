@@ -1,4 +1,4 @@
-export { NavigationProgress } from './NavigationProgress'
+export { NavigationProgress } from './components/NavigationProgress'
 export * from './nprogress.store'
 
-export type { NavigationProgressProps } from './NavigationProgress'
+export type { NavigationProgressProps } from './components/NavigationProgress'

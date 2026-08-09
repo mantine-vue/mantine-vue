@@ -15,7 +15,7 @@ const isMobile = useMediaQuery('(max-width: 50em)')
 <template>
   <Modal
     :opened="opened"
-    :on-close="close"
+    @close="close"
     title="This is a fullscreen modal"
     :full-screen="isMobile"
     :transition-props="{ transition: 'fade', duration: 200 }"

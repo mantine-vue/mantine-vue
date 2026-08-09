@@ -60,7 +60,7 @@ export const MVT_FilterRangeSlider = defineComponent({
         class: clsx('mvt-filter-range-slider', classes.root, rangeProps.class),
         min,
         max,
-        value: values.value,
+        modelValue: values.value,
         ...rangeProps,
         onChange: (value: [number, number]) => {
           values.value = value

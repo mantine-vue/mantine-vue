@@ -14,7 +14,7 @@ const [opened, { open, close }] = useDisclosure(false)
 <template>
   <Modal
     :opened="opened"
-    :on-close="close"
+    @close="close"
     title="Authentication"
     :overlay-props="{ backgroundOpacity: 0.55, blur: 3 }"
   >

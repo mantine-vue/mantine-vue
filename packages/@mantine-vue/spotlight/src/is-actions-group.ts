@@ -1,4 +1,7 @@
-import type { SpotlightActionData, SpotlightActionGroupData } from './Spotlight'
+import type {
+  SpotlightActionData,
+  SpotlightActionGroupData,
+} from './components/Spotlight/Spotlight.types'
 
 export function isActionsGroup(
   item: SpotlightActionData | SpotlightActionGroupData,

@@ -1,110 +1,17 @@
-import { defineComponent, h, inject, provide, type InjectionKey, type PropType } from 'vue'
-import { useUncontrolled } from '@mantine-vue/hooks'
-import {
-  withBoxProps,
-  createVarsResolver,
-  getRadius,
-  useStyles,
-  type MantineRadius,
-} from '../../../core'
-import { UnstyledButton } from '../../UnstyledButton'
-import { useCheckboxGroupContext } from '../CheckboxGroup/CheckboxGroup'
+import { withBoxProps } from '../../../core'
+import CheckboxCardComponent, { varsResolver } from './CheckboxCard.vue'
 import classes from './CheckboxCard.module.css'
 
-export interface CheckboxCardContextValue {
-  checked: boolean
-}
-
-const CheckboxCardContextKey: InjectionKey<CheckboxCardContextValue> = Symbol('CheckboxCardContext')
-
-export function useCheckboxCardContext() {
-  return inject(CheckboxCardContextKey, null)
-}
-
-const varsResolver = createVarsResolver<any>((_, { radius }) => ({
-  card: {
-    '--card-radius': getRadius(radius),
-  },
-}))
-
 export const CheckboxCard = withBoxProps(
-  defineComponent({
-    name: 'CheckboxCard',
-    inheritAttrs: false,
-    props: {
-      modelValue: { type: Boolean, default: undefined },
-      checked: { type: Boolean, default: undefined },
-      defaultChecked: { type: Boolean, default: undefined },
-      onChange: { type: Function as PropType<(value: boolean) => void>, default: undefined },
-      withBorder: { type: Boolean, default: true },
-      radius: { type: [String, Number] as PropType<MantineRadius>, default: undefined },
-      value: { type: String, default: undefined },
-      mod: { type: [Object, Array] as PropType<any>, default: undefined },
-      classNames: { type: [Object, Function], default: undefined },
-      styles: { type: [Object, Function], default: undefined },
-      vars: { type: [Object, Function], default: undefined },
-      unstyled: { type: Boolean, default: false },
-    },
-    emits: ['update:modelValue', 'update:checked', 'change'],
-    setup(props, { attrs, slots, emit }) {
-      const groupContext = useCheckboxGroupContext()
-      const [checked, setChecked] = useUncontrolled<boolean>({
-        value: () =>
-          typeof props.modelValue === 'boolean'
-            ? props.modelValue
-            : typeof props.checked === 'boolean'
-              ? props.checked
-              : groupContext
-                ? groupContext.value.includes(props.value || '')
-                : undefined,
-        defaultValue: props.defaultChecked,
-        finalValue: false,
-        onChange: (nextValue) => {
-          emit('update:modelValue', nextValue)
-          emit('update:checked', nextValue)
-          emit('change', nextValue)
-        },
-      })
-      const getStyles = useStyles({
-        name: 'CheckboxCard',
-        props,
-        classes,
-        className: attrs.class,
-        style: attrs.style as any,
-        classNames: props.classNames as any,
-        styles: props.styles as any,
-        unstyled: props.unstyled,
-        vars: props.vars as any,
-        varsResolver,
-      })
-
-      provide(CheckboxCardContextKey, {
-        get checked() {
-          return checked.value
-        },
-      })
-
-      return () =>
-        h(
-          UnstyledButton,
-          {
-            ...attrs,
-            ...getStyles('card', { className: attrs.class, style: attrs.style as any }),
-            __staticSelector: 'CheckboxCard',
-            mod: [{ 'with-border': props.withBorder, checked: checked.value }, props.mod],
-            role: 'checkbox',
-            'aria-checked': checked.value,
-            onClick: (event: MouseEvent) => {
-              const handler = attrs.onClick as ((event: MouseEvent) => void) | undefined
-              handler?.(event)
-              groupContext?.onChange(props.value || '')
-              setChecked(!checked.value)
-            },
-          },
-          () => slots.default?.(),
-        )
-    },
-  }),
+  Object.assign(CheckboxCardComponent, { classes, varsResolver }),
 )
 
-Object.assign(CheckboxCard, { classes, varsResolver })
+export { CheckboxCardContextKey, useCheckboxCardContext } from './CheckboxCard.context'
+export type {
+  CheckboxCardContextValue,
+  CheckboxCardCssVariables,
+  CheckboxCardOwnProps,
+  CheckboxCardProps,
+  CheckboxCardSlots,
+  CheckboxCardStylesNames,
+} from './CheckboxCard.types'

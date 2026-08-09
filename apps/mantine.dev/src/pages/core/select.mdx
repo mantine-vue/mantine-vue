@@ -62,7 +62,7 @@ function handleChange(_value: string | null, option: { value: string; label: str
 <template>
   <Select
     :data="[{ value: 'react', label: 'React library' }]"
-    :value="value ? value.value : null"
+    :model-value="value ? value.value : null"
     @change="handleChange"
   />
 </template>

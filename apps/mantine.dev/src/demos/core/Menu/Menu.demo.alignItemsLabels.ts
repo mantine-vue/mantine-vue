@@ -22,7 +22,7 @@ const columns = ref(['name', 'email'])
     </Menu.Target>
     <Menu.Dropdown>
       <Menu.Label>Visible columns</Menu.Label>
-      <Menu.CheckboxGroup :value="columns" @change="columns = $event">
+      <Menu.CheckboxGroup v-model="columns">
         <Menu.CheckboxItem value="name">Name</Menu.CheckboxItem>
         <Menu.CheckboxItem value="email">Email</Menu.CheckboxItem>
       </Menu.CheckboxGroup>
@@ -61,8 +61,8 @@ const Demo = defineComponent({
                 h(
                   Menu.CheckboxGroup,
                   {
-                    value: columns.value,
-                    onChange: (v: string[]) => {
+                    modelValue: columns.value,
+                    'onUpdate:modelValue': (v: string[]) => {
                       columns.value = v
                     },
                   },

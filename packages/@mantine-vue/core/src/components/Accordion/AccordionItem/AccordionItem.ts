@@ -1,42 +1,11 @@
-import { defineComponent, h, type PropType } from 'vue'
-import { withBoxProps, Box } from '../../../core'
-import { useAccordionContext } from '../Accordion.context'
-import { provideAccordionItemContext } from '../AccordionItem.context'
+import { withBoxProps } from '../../../core'
+import AccordionItemComponent from './AccordionItem.vue'
 
-export type AccordionItemStylesNames = 'item'
+export const AccordionItem = withBoxProps(AccordionItemComponent)
 
-export const AccordionItem = withBoxProps(
-  defineComponent({
-    name: 'AccordionItem',
-    inheritAttrs: false,
-    props: {
-      value: { type: String, required: true },
-      mod: { type: [Object, Array] as PropType<any>, default: undefined },
-      classNames: { type: [Object, Function], default: undefined },
-      styles: { type: [Object, Function], default: undefined },
-    },
-    setup(props, { attrs, slots }) {
-      const ctx = useAccordionContext()
-      provideAccordionItemContext({ value: props.value })
-
-      return () =>
-        h(
-          Box,
-          {
-            ...attrs,
-            ...ctx.getStyles('item', {
-              className: attrs.class,
-              style: attrs.style as any,
-              classNames: props.classNames,
-              styles: props.styles,
-              props,
-              variant: ctx.variant,
-            }),
-            variant: ctx.variant,
-            mod: [{ active: ctx.isItemActive(props.value) }, props.mod],
-          },
-          () => slots.default?.(),
-        )
-    },
-  }),
-)
+export type {
+  AccordionItemOwnProps,
+  AccordionItemProps,
+  AccordionItemSlots,
+  AccordionItemStylesNames,
+} from './AccordionItem.types'

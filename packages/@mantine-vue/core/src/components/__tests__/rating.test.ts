@@ -48,7 +48,7 @@ describe('@mantine-vue/core Rating', () => {
   it('does not render inputs in readOnly mode and supports custom symbols', () => {
     const wrapper = withProvider({
       readOnly: true,
-      value: 2,
+      modelValue: 2,
       fullSymbol: (value: number) => h('span', { class: 'full-symbol' }, `F${value}`),
       emptySymbol: 'E',
     })

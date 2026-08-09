@@ -161,7 +161,7 @@ You can control the dropdown max-height with the `maxDropdownHeight` prop:
 ## Control dropdown opened state
 
 You can control the dropdown opened state with the `dropdownOpened` prop. Additionally,
-you can use `onDropdownClose` and `onDropdownOpen` to listen to dropdown opened state changes.
+you can listen to the `dropdown-close` and `dropdown-open` events to react to dropdown opened state changes.
 
 <Demo data={TreeSelectDemos.dropdownOpened} />
 
@@ -242,7 +242,7 @@ You can control the expanded state of nodes:
 ## Read only
 
 Set `readOnly` to make the input read only. When `readOnly` is set,
-`TreeSelect` will not show suggestions and will not call the `onChange` function.
+`TreeSelect` will not show suggestions and will not emit the `change` event.
 
 <Demo data={TreeSelectDemos.readOnly} />
 

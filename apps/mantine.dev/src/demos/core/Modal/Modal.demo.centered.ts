@@ -12,7 +12,7 @@ const [opened, { open, close }] = useDisclosure(false)
 </script>
 
 <template>
-  <Modal :opened="opened" :on-close="close" title="Authentication" centered>
+  <Modal :opened="opened" @close="close" title="Authentication" centered>
     <!-- Modal content -->
   </Modal>
 

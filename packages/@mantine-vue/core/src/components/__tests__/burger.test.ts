@@ -22,6 +22,7 @@ describe('@mantine-vue/core Burger', () => {
       () => h(VisuallyHidden, null, () => 'Menu'),
     )
     const root = wrapper.find('button.mantine-Burger-root')
+    const burger = wrapper.find('.mantine-Burger-burger')
 
     expect(root.attributes('type')).toBe('button')
     expect(root.attributes('style')).toContain('--burger-color: var(--mantine-color-red-6)')
@@ -29,6 +30,7 @@ describe('@mantine-vue/core Burger', () => {
     expect(root.attributes('style')).toContain('--burger-line-size: 0.1875rem')
     expect(root.attributes('style')).toContain('--burger-transition-duration: 150ms')
     expect(root.attributes('style')).toContain('--burger-transition-timing-function: linear')
+    expect(burger.attributes('data-reduce-motion')).toBe('true')
     expect(wrapper.find('.mantine-VisuallyHidden-root').text()).toBe('Menu')
   })
 

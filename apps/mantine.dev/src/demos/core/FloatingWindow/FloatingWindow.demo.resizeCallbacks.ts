@@ -59,10 +59,10 @@ const resizing = ref(false)
     drag-handle-selector=".drag-handle"
     exclude-drag-handle-selector="button"
     :initial-position="{ top: 300, left: 60 }"
-    :on-size-change="(value: FloatingWindowSize) => (size = value)"
-    :on-resize-start="() => (resizing = true)"
-    :on-resize-end="() => (resizing = false)"
     :style="{ overflow: 'hidden' }"
+    @size-change="(value: FloatingWindowSize) => (size = value)"
+    @resize-start="() => (resizing = true)"
+    @resize-end="() => (resizing = false)"
   >
     <Group justify="space-between" px="md" py="sm" class="drag-handle">
       <Text fw="500" fz="sm">Resize callbacks</Text>

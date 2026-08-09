@@ -13,10 +13,37 @@ export type Vars<Payload = any> =
   | Record<string, Record<string, string | undefined>>
   | ((theme: MantineTheme, payload: Payload) => Record<string, Record<string, string | undefined>>)
 
+/**
+ * Styles API props shared by every Mantine Vue component.
+ *
+ */
 export interface StylesApiProps<Payload = any> {
+  /**
+   * Classes added to the component elements, key is a style name, value is a
+   * class name. Can be a function that receives the theme and the component
+   * props and returns the record.
+   */
   classNames?: ClassNames<Payload>
+
+  /**
+   * Inline styles added to the component elements, key is a style name, value
+   * is a style object. Can be a function that receives the theme and the
+   * component props and returns the record.
+   */
   styles?: Styles<Payload>
+
+  /**
+   * CSS variables added to the component elements, key is a style name, value
+   * is a record of CSS variables. Can be a function that receives the theme and
+   * the component props and returns the record.
+   */
   vars?: Vars<Payload>
+
+  /**
+   * If set, all Mantine classes are removed from the component elements. Static
+   * classes, class names from `classNames` and CSS variables are still applied.
+   * @default false
+   */
   unstyled?: boolean
 }
 

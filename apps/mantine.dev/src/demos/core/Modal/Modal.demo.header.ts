@@ -12,7 +12,7 @@ const [opened, { open, close }] = useDisclosure(false)
 </script>
 
 <template>
-  <Modal :opened="opened" :on-close="close" :with-close-button="false">
+  <Modal :opened="opened" @close="close" :with-close-button="false">
     Modal without header, press escape or click on overlay to close
   </Modal>
 

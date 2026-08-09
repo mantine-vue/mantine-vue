@@ -12,7 +12,7 @@ const [opened, { open, close }] = useDisclosure(false)
 </script>
 
 <template>
-  <Modal :opened="opened" :on-close="close" title="Focus demo">
+  <Modal :opened="opened" @close="close" title="Focus demo">
     <TextInput label="First input" placeholder="First input" />
     <TextInput
       data-autofocus

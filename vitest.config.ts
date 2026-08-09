@@ -9,7 +9,7 @@ export default defineConfig({
   test: {
     environment: 'jsdom',
     globals: true,
-    include: ['packages/**/*.test.ts', 'packages/**/*.test.tsx'],
+    include: ['packages/**/*.test.ts', 'packages/**/*.test.tsx', 'apps/*/src/**/*.test.ts'],
     execArgv: ['--no-experimental-webstorage'],
   },
   resolve: {

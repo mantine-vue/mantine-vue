@@ -18,7 +18,7 @@ const previousValue = usePrevious(value)
       label="Enter some text here"
       placeholder="Enter some text here"
       id="previous-demo-input"
-      :value="value"
+      :model-value="value"
       @input="setValue"
     />
     <Text mt="md">Current value: {{ value }}</Text>
@@ -39,7 +39,7 @@ const Demo = defineComponent({
           label: 'Enter some text here',
           placeholder: 'Enter some text here',
           id: 'previous-demo-input',
-          value: value.value,
+          modelValue: value.value,
           onInput: setValue,
         }),
         h(Text, { mt: 'md' }, { default: () => `Current value: ${value.value}` }),

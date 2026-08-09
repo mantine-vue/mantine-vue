@@ -13,6 +13,7 @@ export type {
 } from './get-render-slots'
 export type {
   RollingNumberCssVariables,
+  RollingNumberOwnProps,
   RollingNumberProps,
   RollingNumberStylesNames,
 } from './RollingNumber'

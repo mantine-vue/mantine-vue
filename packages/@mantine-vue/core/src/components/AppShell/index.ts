@@ -4,8 +4,19 @@ export { AppShellAside } from './AppShellAside/AppShellAside'
 export { AppShellFooter } from './AppShellFooter/AppShellFooter'
 export { AppShellHeader } from './AppShellHeader/AppShellHeader'
 export { AppShellMain } from './AppShellMain/AppShellMain'
+export type {
+  AppShellMainOwnProps,
+  AppShellMainProps,
+  AppShellMainSlots,
+  AppShellMainStylesNames,
+} from './AppShellMain/AppShellMain'
 export { AppShellNavbar } from './AppShellNavbar/AppShellNavbar'
 export { AppShellSection } from './AppShellSection/AppShellSection'
+export type {
+  AppShellSectionOwnProps,
+  AppShellSectionProps,
+  AppShellSectionSlots,
+} from './AppShellSection/AppShellSection'
 export { useAppShellContext } from './AppShell.context'
 export type { AppShellContextValue } from './AppShell.context'
 export type * from './AppShell.types'

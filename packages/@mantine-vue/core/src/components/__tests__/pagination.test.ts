@@ -40,7 +40,7 @@ describe('@mantine-vue/core Pagination', () => {
     const wrapper = withProvider(() =>
       h(Pagination, {
         total: 5,
-        value: 3,
+        modelValue: 3,
         getItemProps: (page: number) => ({ 'data-page': page, children: `Page ${page}` }),
       }),
     )

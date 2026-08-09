@@ -72,7 +72,7 @@ export const ColorsInput = defineComponent({
       return h('div', { class: classes.root }, [
         h('div', { class: classes.inputs }, [
           h(TextInput, {
-            value: inputState.value,
+            modelValue: inputState.value,
             onInput: handleInputChange,
             error: error.value,
             label: 'Enter base color',
@@ -81,7 +81,7 @@ export const ColorsInput = defineComponent({
             radius: 'md',
           }),
           h(ColorPicker, {
-            value: props.value,
+            modelValue: props.value,
             onChange: handleChange,
             onChangeEnd: updateQuery,
             size: 'lg',
@@ -91,7 +91,7 @@ export const ColorsInput = defineComponent({
             class: classes.switch,
             label: 'Display colors info',
             size: 'md',
-            checked: props.displayColorsInfo,
+            modelValue: props.displayColorsInfo,
             onChange: (checked: boolean) => props.setDisplayColorsInfo(checked),
             mt: 'xl',
           }),

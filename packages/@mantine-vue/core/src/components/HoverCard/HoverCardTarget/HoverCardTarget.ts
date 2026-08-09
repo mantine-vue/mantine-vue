@@ -11,6 +11,14 @@ function one(slots: any): VNode {
     )
   return children[0]
 }
+/**
+ * Kept as a render function deliberately.
+ *
+ * `HoverCard.Target` injects its hover listeners and a merged ref into whatever single
+ * element the consumer passes as children, using `cloneVNode`. A template cannot clone
+ * and re-prop an arbitrary child VNode, so this is one of the components the migration
+ * leaves as-is – the same reason `FocusTrap` and `Portal` keep theirs.
+ */
 export const HoverCardTarget = defineComponent({
   name: 'HoverCardTarget',
   inheritAttrs: false,

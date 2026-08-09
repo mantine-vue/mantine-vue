@@ -41,9 +41,9 @@ const onKeyDown = (event: KeyboardEvent) => {
 
 <template>
   <TextInput
-    :value="query"
+    v-model="query"
     placeholder="Search groceries"
-    @input="(e) => { query = e.target.value; hovered = -1 }"
+    @input="() => (hovered = -1)"
     @keydown="onKeyDown"
   />
   <ScrollArea :h="150" type="always" mt="md" :viewportProps="{ ref: viewport }">
@@ -126,7 +126,7 @@ const Demo = defineComponent({
 
     return () => [
       h(TextInput, {
-        value: query.value,
+        modelValue: query.value,
         placeholder: 'Search groceries',
         onInput: (e: Event) => {
           query.value = (e.target as HTMLInputElement).value

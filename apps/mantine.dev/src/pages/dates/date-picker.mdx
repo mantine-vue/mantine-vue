@@ -12,7 +12,7 @@ export default Layout(MDX_DATA.DatePicker)
 
 Set `allowDeselect` to allow users to deselect the currently selected date by clicking on it.
 `allowDeselect` is disregarded when the `type` prop is `range` or `multiple`. When a date is
-deselected, `onChange` is called with `null`.
+deselected, the `change` event is emitted with `null`.
 
 <Demo data={DatePickerDemos.deselect} />
 

@@ -23,6 +23,8 @@ export type {
 } from './CodeHighlightProvider/CodeHighlightProvider'
 export type {
   CodeHighlightCssVariables,
+  CodeHighlightEmits,
+  CodeHighlightExpandEmits,
   CodeHighlightFactory,
   CodeHighlightProps,
   CodeHighlightSettings,
@@ -30,7 +32,10 @@ export type {
   CodeHighlightStylesNames,
 } from './CodeHighlight/CodeHighlight'
 export type { CodeHighlightContextValue } from './CodeHighlight/CodeHighlight.context'
-export type { CodeHighlightControlProps } from './CodeHighlight/CodeHighlightControl/CodeHighlightControl'
+export type {
+  CodeHighlightControlEmits,
+  CodeHighlightControlProps,
+} from './CodeHighlight/CodeHighlightControl/CodeHighlightControl'
 export type {
   InlineCodeHighlightCssVariables,
   InlineCodeHighlightFactory,
@@ -40,6 +45,7 @@ export type {
 export type {
   CodeHighlightDefaultLanguage,
   CodeHighlightTabsCode,
+  CodeHighlightTabsEmits,
   CodeHighlightTabsFactory,
   CodeHighlightTabsProps,
   CodeHighlightTabsSlots,

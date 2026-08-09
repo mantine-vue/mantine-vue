@@ -1,11 +1,15 @@
 export { Popover, PopoverTarget, PopoverDropdown, PopoverContextMenu } from './Popover'
 export type {
-  PopoverProps,
-  PopoverStylesNames,
-  PopoverCssVariables,
-  PopoverTargetProps,
-  PopoverDropdownProps,
   PopoverContextMenuProps,
+  PopoverContextMenuSlots,
+  PopoverCssVariables,
+  PopoverDropdownProps,
+  PopoverDropdownSlots,
   PopoverMiddlewares,
+  PopoverProps,
+  PopoverSlots,
+  PopoverStylesNames,
+  PopoverTargetProps,
+  PopoverTargetSlots,
   PopoverWidth,
 } from './Popover'

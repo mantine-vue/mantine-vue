@@ -35,7 +35,7 @@ for example, `size="55%"` or `:size="200"`:
 
 ```vue
 <template>
-  <Drawer position="right" size="xl" :opened="true" :on-close="() => {}">
+  <Drawer position="right" size="xl" :opened="true" @close="() => {}">
     <!-- Drawer content -->
   </Drawer>
 </template>
@@ -133,7 +133,7 @@ Set `title` props to make component accessible, will add `aria-labelledby` to th
 
 ```vue
 <template>
-  <Drawer title="Drawer label" :opened="true" :on-close="() => {}" />
+  <Drawer title="Drawer label" :opened="true" @close="() => {}" />
 </template>
 ```
 
@@ -141,10 +141,6 @@ To set close button `aria-label` use `closeButtonProps`:
 
 ```vue
 <template>
-  <Drawer
-    :close-button-props="{ 'aria-label': 'Close drawer' }"
-    :opened="true"
-    :on-close="() => {}"
-  />
+  <Drawer :close-button-props="{ 'aria-label': 'Close drawer' }" :opened="true" @close="() => {}" />
 </template>
 ```

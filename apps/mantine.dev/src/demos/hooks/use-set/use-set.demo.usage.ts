@@ -27,9 +27,8 @@ const handleKeydown = (event: KeyboardEvent) => {
     label="Add new scope"
     placeholder="Enter scope"
     description="Duplicate scopes are not allowed"
-    :model-value="input"
+    v-model="input"
     :error="isDuplicate && 'Scope already exists'"
-    @input="(event) => (input = (event.target as HTMLInputElement).value)"
     @keydown="handleKeydown"
   />
 
@@ -59,7 +58,7 @@ const Demo = defineComponent({
         label: 'Add new scope',
         placeholder: 'Enter scope',
         description: 'Duplicate scopes are not allowed',
-        value: input.value,
+        modelValue: input.value,
         error: isDuplicate() ? 'Scope already exists' : undefined,
         onInput: (event: Event) => (input.value = (event.target as HTMLInputElement).value),
         onKeydown: handleKeydown,

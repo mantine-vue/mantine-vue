@@ -14,24 +14,25 @@ const groceryData: Record<string, { emoji: string; description: string }> = {
   Broccoli: { emoji: '🥦', description: 'Nutrient-rich green vegetable' },
 }
 
-const renderOptionFn = ({ option }) =>
-  h(Group, null, () => [
-    h(Text, { span: true, fz: 24 }, () => groceryData[option.value].emoji),
-    h('div', null, [
-      h(Text, null, () => option.value),
-      h(Text, { size: 'xs', opacity: 0.5 }, () => groceryData[option.value].description),
-    ]),
-  ])
 </script>
 
 <template>
   <TagsInput
     :data="['Apples', 'Bread', 'Bananas', 'Eggs', 'Broccoli']"
-    :render-option="renderOptionFn"
     label="Groceries"
     placeholder="Pick tag from list or type to add new"
     :max-dropdown-height="300"
-  />
+  >
+    <template #renderOption="{ option }">
+      <Group>
+        <Text span :fz="24">{{ groceryData[option.value].emoji }}</Text>
+        <div>
+          <Text>{{ option.value }}</Text>
+          <Text size="xs" :opacity="0.5">{{ groceryData[option.value].description }}</Text>
+        </div>
+      </Group>
+    </template>
+  </TagsInput>
 </template>
 `
 

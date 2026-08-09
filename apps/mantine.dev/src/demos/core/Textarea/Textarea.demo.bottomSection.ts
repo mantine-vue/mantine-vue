@@ -17,8 +17,8 @@ const value = ref('')
     placeholder="Type your message..."
     autosize
     :min-rows="4"
-    :value="value"
-    @change="(nextValue) => (value = nextValue.slice(0, maxLength))"
+    :model-value="value"
+    @update:model-value="(nextValue) => (value = nextValue.slice(0, maxLength))"
   >
     <template #bottomSection>
       <Text size="xs" c="dimmed">{{ value.length }}/{{ maxLength }} characters</Text>
@@ -38,8 +38,8 @@ const Demo = defineComponent({
         placeholder: 'Type your message...',
         autosize: true,
         minRows: 4,
-        value: value.value,
-        onChange: (nextValue: string) => {
+        modelValue: value.value,
+        'onUpdate:modelValue': (nextValue: string) => {
           value.value = nextValue.slice(0, maxLength)
         },
         bottomSection: h(

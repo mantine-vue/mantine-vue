@@ -29,26 +29,27 @@ const usersData: Record<string, { image: string; email: string }> = {
   },
 }
 
-const renderOptionFn = ({ option }: { option: { value: string } }) =>
-  h(Group, { gap: 'sm' }, () => [
-    h(Avatar, { src: usersData[option.value].image, size: 36, radius: 'xl' }),
-    h('div', null, [
-      h(Text, { size: 'sm' }, () => option.value),
-      h(Text, { size: 'xs', opacity: 0.5 }, () => usersData[option.value].email),
-    ]),
-  ])
 </script>
 
 <template>
   <MultiSelect
     :data="['Emily Johnson', 'Ava Rodriguez', 'Olivia Chen', 'Ethan Barnes', 'Mason Taylor']"
-    :render-option="renderOptionFn"
     :max-dropdown-height="300"
     label="Employees of the month"
     placeholder="Search for employee"
     hide-picked-options
     searchable
-  />
+  >
+    <template #renderOption="{ option }">
+      <Group gap="sm">
+        <Avatar :src="usersData[option.value].image" :size="36" radius="xl" />
+        <div>
+          <Text size="sm">{{ option.value }}</Text>
+          <Text size="xs" :opacity="0.5">{{ usersData[option.value].email }}</Text>
+        </div>
+      </Group>
+    </template>
+  </MultiSelect>
 </template>
 `
 

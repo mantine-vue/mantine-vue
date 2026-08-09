@@ -18,6 +18,11 @@ export {
 } from './Menu'
 export type {
   MenuProps,
+  MenuSlots,
+  MenuItemSlots,
+  MenuCheckIconSlotProps,
+  MenuCheckboxItemSlots,
+  MenuRadioItemSlots,
   MenuStylesNames,
   MenuItemProps,
   MenuLabelProps,

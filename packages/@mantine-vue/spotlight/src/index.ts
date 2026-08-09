@@ -11,34 +11,42 @@ export type { SpotlightState, SpotlightStore } from './spotlight.store'
 
 export { isActionsGroup } from './is-actions-group'
 
-export { Spotlight } from './Spotlight'
-export { SpotlightRoot } from './SpotlightRoot'
-export { SpotlightAction } from './SpotlightAction'
-export { SpotlightActionsGroup } from './SpotlightActionsGroup'
-export { SpotlightActionsList } from './SpotlightActionsList'
-export { SpotlightEmpty } from './SpotlightEmpty'
-export { SpotlightFooter } from './SpotlightFooter'
-export { SpotlightSearch } from './SpotlightSearch'
+export { Spotlight } from './components/Spotlight'
+export { SpotlightRoot } from './components/SpotlightRoot'
+export { SpotlightAction } from './components/SpotlightAction'
+export { SpotlightActionsGroup } from './components/SpotlightActionsGroup'
+export { SpotlightActionsList } from './components/SpotlightActionsList'
+export { SpotlightEmpty } from './components/SpotlightEmpty'
+export { SpotlightFooter } from './components/SpotlightFooter'
+export { SpotlightSearch } from './components/SpotlightSearch'
 
 export type {
   SpotlightActionData,
   SpotlightActionGroupData,
   SpotlightActions,
-  SpotlightActionProps,
-  SpotlightActionStylesNames,
+  SpotlightEmits,
+  SpotlightFilterFunction,
+  SpotlightProps,
+  SpotlightStylesNames,
+} from './components/Spotlight'
+export type { SpotlightActionProps, SpotlightActionStylesNames } from './components/SpotlightAction'
+export type {
   SpotlightActionsGroupProps,
   SpotlightActionsGroupStylesNames,
+} from './components/SpotlightActionsGroup'
+export type {
   SpotlightActionsListProps,
   SpotlightActionsListStylesNames,
-  SpotlightEmptyProps,
-  SpotlightEmptyStylesNames,
-  SpotlightFilterFunction,
-  SpotlightFooterProps,
-  SpotlightFooterStylesNames,
-  SpotlightProps,
+} from './components/SpotlightActionsList'
+export type { SpotlightEmptyProps, SpotlightEmptyStylesNames } from './components/SpotlightEmpty'
+export type { SpotlightFooterProps, SpotlightFooterStylesNames } from './components/SpotlightFooter'
+export type {
+  SpotlightRootEmits,
   SpotlightRootProps,
   SpotlightRootStylesNames,
+} from './components/SpotlightRoot'
+export type {
+  SpotlightSearchEmits,
   SpotlightSearchProps,
   SpotlightSearchStylesNames,
-  SpotlightStylesNames,
-} from './Spotlight'
+} from './components/SpotlightSearch'

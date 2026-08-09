@@ -13,7 +13,7 @@ const [count, { increment, decrement }] = useCounter(3, { min: 0 })
 </script>
 
 <template>
-  <Modal :opened="opened" :on-close="close" size="auto" title="Modal size auto">
+  <Modal :opened="opened" @close="close" size="auto" title="Modal size auto">
     <Text>Modal with size auto will fits its content</Text>
 
     <Group wrap="nowrap" mt="md">

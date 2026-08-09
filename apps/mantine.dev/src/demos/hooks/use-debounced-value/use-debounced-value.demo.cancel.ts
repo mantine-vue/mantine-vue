@@ -55,7 +55,7 @@ const Demo = defineComponent({
                   h(TextInput, {
                     label: 'Enter value to see debounce effect',
                     placeholder: 'Enter value to see debounce effect',
-                    value: value.value,
+                    modelValue: value.value,
                     style: { flex: 1 },
                     onInput: (event: Event) => {
                       value.value = (event.target as HTMLInputElement).value

@@ -161,7 +161,7 @@ const Demo = defineComponent({
                       withAsterisk: true,
                       label: 'Your password',
                       placeholder: 'Your password',
-                      value: value.value,
+                      modelValue: value.value,
                       onChange: (nextValue: string) => {
                         value.value = nextValue
                       },

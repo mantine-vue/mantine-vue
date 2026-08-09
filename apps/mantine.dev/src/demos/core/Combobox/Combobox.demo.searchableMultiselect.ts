@@ -46,12 +46,9 @@ const filteredOptions = computed(() =>
             <PillsInput.Field
               @focus="combobox.openDropdown()"
               @blur="combobox.closeDropdown()"
-              :value="search"
+              v-model="search"
               placeholder="Search values"
-              @input="(event) => {
-                combobox.updateSelectedOptionIndex()
-                search = event.currentTarget.value
-              }"
+              @input="() => combobox.updateSelectedOptionIndex()"
               @keydown="(event) => {
                 if (event.key === 'Backspace' && search.length === 0 && value.length > 0) {
                   event.preventDefault()
@@ -138,7 +135,7 @@ const Demo = defineComponent({
                               h(PillsInput.Field, {
                                 onFocus: () => combobox.openDropdown(),
                                 onBlur: () => combobox.closeDropdown(),
-                                value: search.value,
+                                modelValue: search.value,
                                 placeholder: 'Search values',
                                 onInput: (event: Event) => {
                                   combobox.updateSelectedOptionIndex()

@@ -72,6 +72,23 @@ describe('@mantine-vue/code-highlight', () => {
     expect(onExpandedChange).toHaveBeenCalledWith(true)
   })
 
+  it('expands uncontrolled code', async () => {
+    const wrapper = mountWithProvider(() =>
+      h(CodeHighlight, {
+        code: 'console.log(1);',
+        defaultExpanded: false,
+        withExpandButton: true,
+        withCopyButton: false,
+      }),
+    )
+
+    expect(wrapper.get('[data-collapsed]').exists()).toBe(true)
+    await wrapper.get('button[aria-label="Expand code"]').trigger('click')
+    await nextTick()
+    expect(wrapper.find('[data-collapsed]').exists()).toBe(false)
+    expect(wrapper.get('button[aria-label="Collapse code"]').exists()).toBe(true)
+  })
+
   it('renders tabs and changes active code', async () => {
     const wrapper = mountWithProvider(() =>
       h(CodeHighlightTabs, {

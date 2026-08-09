@@ -5,9 +5,13 @@ import { MantineProvider } from '@mantine-vue/core'
 import {
   Day,
   AmPmInput,
+  Calendar,
   DateInput,
   DatePicker,
+  DatesProvider,
+  InlineDateTimePicker,
   MiniCalendar,
+  Month,
   SpinInput,
   TimeGrid,
   TimeInput,
@@ -166,5 +170,119 @@ describe('@mantine-vue/dates render slots', () => {
     })
     expect(withProp.find('.day-prop').exists()).toBe(true)
     expect(withProp.find('.day-slot').exists()).toBe(false)
+  })
+})
+
+describe('@mantine-vue/dates SFC regressions', () => {
+  it('calls getDayProps event handlers once when a Calendar day is selected', async () => {
+    const dates = ref<string[]>([])
+    const wrapper = mount({
+      setup: () => () =>
+        h(MantineProvider, { env: 'test' }, () =>
+          h(Calendar, {
+            type: 'multiple',
+            value: dates.value,
+            defaultDate: '2024-01-01',
+            getDayProps: (date: string) => ({
+              selected: dates.value.includes(date),
+              onClick: () => {
+                dates.value = dates.value.includes(date)
+                  ? dates.value.filter((item) => item !== date)
+                  : [...dates.value, date]
+              },
+            }),
+          }),
+        ),
+    })
+
+    const day = wrapper.findAll('table button').find((button) => button.text() === '15')!
+    await day.trigger('click')
+
+    expect(dates.value).toEqual(['2024-01-15'])
+    expect(day.attributes('data-selected')).toBe('true')
+  })
+
+  it('uses the configured first weekday when calculating month row count', () => {
+    const wrapper = mount({
+      render: () =>
+        h(MantineProvider, { env: 'test' }, () =>
+          h(Month, { month: '2024-09-01', firstDayOfWeek: 1 }),
+        ),
+    })
+
+    expect(wrapper.findAll('tbody tr')).toHaveLength(6)
+  })
+
+  it('reactively updates nested components when provider settings change', async () => {
+    const settings = ref({ firstDayOfWeek: 1 })
+    const wrapper = mount({
+      components: { DatesProvider, MantineProvider, Month },
+      setup: () => ({ settings }),
+      template:
+        '<MantineProvider env="test"><DatesProvider :settings="settings"><Month month="2024-01-01" /></DatesProvider></MantineProvider>',
+    })
+
+    expect(wrapper.find('th').text()).toBe('Mo')
+    settings.value = { firstDayOfWeek: 0 }
+    await nextTick()
+    expect(wrapper.find('th').text()).toBe('Su')
+  })
+
+  it('offsets adjacent decade columns by ten years', () => {
+    const wrapper = mount({
+      render: () =>
+        h(MantineProvider, { env: 'test' }, () =>
+          h(Calendar, {
+            defaultLevel: 'decade',
+            defaultDate: '2024-01-01',
+            numberOfColumns: 2,
+          }),
+        ),
+    })
+    const headers = wrapper.findAll('[class*="calendarHeaderLevel"]')
+
+    expect(headers[0].text()).toContain('2020')
+    expect(headers[1].text()).toContain('2030')
+  })
+
+  it('renders InlineDateTimePicker inline instead of as another picker input', () => {
+    const wrapper = mount({
+      render: () => h(MantineProvider, { env: 'test' }, () => h(InlineDateTimePicker)),
+    })
+
+    expect(wrapper.find('table').exists()).toBe(true)
+    expect(wrapper.find('input[role="spinbutton"]').exists()).toBe(true)
+  })
+
+  it('does not update a read-only AM/PM input', async () => {
+    const wrapper = mount(AmPmInput, {
+      props: { modelValue: 'AM', readOnly: true },
+    })
+
+    await wrapper.get('select').setValue('PM')
+    expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+  })
+
+  it('previews date ranges in reverse chronological direction', async () => {
+    const wrapper = mount({
+      render: () =>
+        h(MantineProvider, { env: 'test' }, () =>
+          h(DatePicker, {
+            type: 'range',
+            modelValue: ['2024-03-15', null],
+            defaultDate: '2024-03-01',
+          }),
+        ),
+    })
+    const day = (value: string) =>
+      wrapper
+        .findAll('table button')
+        .find((button) => button.text() === String(Number(value.slice(-2))))!
+
+    await day('2024-03-10').trigger('mouseenter')
+
+    expect(day('2024-03-10').attributes('data-first-in-range')).toBe('true')
+    expect(day('2024-03-12').attributes('data-in-range')).toBe('true')
+    expect(day('2024-03-15').attributes('data-last-in-range')).toBe('true')
   })
 })

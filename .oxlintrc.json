@@ -88,5 +88,13 @@
   },
   "categories": {
     "correctness": "error"
-  }
+  },
+  "overrides": [
+    {
+      "files": ["packages/@mantine-vue/*/src/**/*.vue"],
+      "rules": {
+        "vue/no-reserved-component-names": "off"
+      }
+    }
+  ]
 }

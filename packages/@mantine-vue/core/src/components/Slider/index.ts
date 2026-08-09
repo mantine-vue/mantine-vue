@@ -1,6 +1,19 @@
 export { Slider } from './Slider/Slider'
+export type {
+  SliderCssVariables,
+  SliderEmits,
+  SliderOwnProps,
+  SliderProps,
+  SliderSlots,
+} from './Slider/Slider'
 export { RangeSlider } from './RangeSlider/RangeSlider'
-export type { SliderSlots } from './Slider/Slider'
-export type { RangeSliderSlots, RangeSliderValue } from './RangeSlider/RangeSlider'
+export type {
+  RangeSliderEmits,
+  RangeSliderOwnProps,
+  RangeSliderProps,
+  RangeSliderSlots,
+  RangeSliderStylesNames,
+  RangeSliderValue,
+} from './RangeSlider/RangeSlider'
 export type { SliderMark } from './SliderMark'
-export type { SliderCssVariables, SliderStylesNames } from './Slider.context'
+export type { SliderStylesNames } from './Slider.context'

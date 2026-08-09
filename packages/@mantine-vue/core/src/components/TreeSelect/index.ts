@@ -3,6 +3,7 @@ export type {
   CheckedStrategy,
   TreeSelectChevronAriaLabels,
   TreeSelectMode,
+  TreeSelectOptionProps,
   TreeSelectProps,
   TreeSelectRenderNodePayload,
   TreeSelectSlots,

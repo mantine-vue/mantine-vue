@@ -1,2 +1,1 @@
-export { Marquee } from './Marquee'
-export type { MarqueeStylesNames } from './Marquee'
+export * from './Marquee'

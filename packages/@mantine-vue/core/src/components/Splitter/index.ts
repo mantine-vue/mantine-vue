@@ -1,5 +1,7 @@
 export { Splitter } from './Splitter'
 export type {
+  SplitterEmits,
+  SplitterOwnProps,
   SplitterProps,
   SplitterSlots,
   SplitterStylesNames,

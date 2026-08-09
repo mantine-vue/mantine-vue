@@ -351,6 +351,10 @@ export const MDX_NAV_DATA: MdxNavCategory[] = [
         ],
       },
       {
+        title: 'Styles',
+        pages: [{ label: 'Style props', link: '/styles/style-props' }],
+      },
+      {
         title: 'Framework guides',
         pages: [
           { label: 'Usage with Nuxt', link: '/guides/nuxt' },

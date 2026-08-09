@@ -15,6 +15,7 @@
     "lib": ["ESNext", "DOM", "DOM.Iterable"],
     "paths": {
       "@/*": ["./src/*"],
+      "@docs/styles-api": ["../../packages/@docs/styles-api/src/index.ts"],
       "@mantine-vue/core": ["../../packages/@mantine-vue/core/src/index.ts"],
       "@mantine-vue/utils": ["../../packages/@mantine-vue/utils/src"],
       "@mantine-vue/hooks": ["../../packages/@mantine-vue/hooks/src"],
@@ -38,5 +39,5 @@
     }
   },
   "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue", "src/**/*.mdx", "env.d.ts"],
-  "exclude": ["node_modules", "dist"]
+  "exclude": ["node_modules", "dist", "src/**/*.test.ts", "src/**/*.test.tsx"]
 }

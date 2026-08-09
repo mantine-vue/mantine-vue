@@ -102,14 +102,21 @@ function openContextModalPayload(
 }
 
 export const modals = {
+  /** Opens a regular modal and returns its id. */
   open: (props: ModalSettings) => openModalAction(props),
+  /** Closes the modal with the given id. */
   close: (id: string) => closeModalAction(id),
+  /** Closes all opened modals. */
   closeAll: () => closeAllModalsAction(),
+  /** Opens a confirm modal and returns its id. */
   openConfirmModal: (props: OpenConfirmModal) => openConfirmModalAction(props),
+  /** Opens a predefined context modal and returns its id. */
   openContextModal: (payload: OpenContextModal & { modal: string }) =>
     openContextModalPayload(payload),
+  /** Dynamically updates the content and properties of a regular or confirm modal. */
   updateModal: (payload: { modalId: string } & Partial<OpenConfirmModal>) =>
     updateModalAction(payload),
+  /** Dynamically updates the content and properties of a context modal. */
   updateContextModal: (payload: { modalId: string } & Partial<OpenContextModal<any>>) =>
     updateContextModalAction(payload),
 } as const

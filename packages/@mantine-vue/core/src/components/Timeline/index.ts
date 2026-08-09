@@ -1,5 +1,9 @@
-export { Timeline } from './Timeline'
-export type { TimelineStylesNames } from './Timeline'
+export * from './Timeline'
 export { TimelineItem } from './TimelineItem/TimelineItem'
 export type { TimelineContextValue } from './Timeline.context'
-export type { TimelineItemStylesNames } from './TimelineItem/TimelineItem'
+export type {
+  TimelineItemOwnProps,
+  TimelineItemProps,
+  TimelineItemSlots,
+  TimelineItemStylesNames,
+} from './TimelineItem/TimelineItem'

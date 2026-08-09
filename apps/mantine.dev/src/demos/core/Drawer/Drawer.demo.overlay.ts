@@ -14,7 +14,7 @@ const [opened, { open, close }] = useDisclosure(false)
 <template>
   <Drawer
     :opened="opened"
-    :on-close="close"
+    @close="close"
     title="Authentication"
     :overlay-props="{ backgroundOpacity: 0.5, blur: 4 }"
   >

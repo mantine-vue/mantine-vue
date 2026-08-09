@@ -30,7 +30,7 @@ const Demo = defineComponent({
         label: 'Drag pills to reorder',
         description: 'Tags can be reordered by dragging pills',
         placeholder: 'Enter tag',
-        value: value.value,
+        modelValue: value.value,
         onChange: (v: string[]) => {
           value.value = v
         },

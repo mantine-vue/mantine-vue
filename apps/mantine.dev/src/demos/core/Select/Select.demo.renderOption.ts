@@ -21,18 +21,11 @@ const iconProps = {
 }
 
 const icons = {
-  left: h(PhTextAlignLeft, iconProps),
-  center: h(PhTextAlignCenter, iconProps),
-  right: h(PhTextAlignRight, iconProps),
-  justify: h(PhTextAlignJustify, iconProps),
+  left: PhTextAlignLeft,
+  center: PhTextAlignCenter,
+  right: PhTextAlignRight,
+  justify: PhTextAlignJustify,
 }
-
-const renderSelectOption = ({ option, checked }) =>
-  h(Group, { flex: '1', gap: 'xs' }, () => [
-    icons[option.value],
-    option.label,
-    checked ? h(PhCheck, { style: { marginInlineStart: 'auto' }, ...iconProps }) : null,
-  ])
 </script>
 
 <template>
@@ -45,8 +38,15 @@ const renderSelectOption = ({ option, checked }) =>
       { value: 'right', label: 'Right' },
       { value: 'justify', label: 'Justify' },
     ]"
-    :render-option="renderSelectOption"
-  />
+  >
+    <template #renderOption="{ option, checked }">
+      <Group flex="1" gap="xs">
+        <component :is="icons[option.value]" v-bind="iconProps" />
+        <span>{{ option.label }}</span>
+        <PhCheck v-if="checked" :style="{ marginInlineStart: 'auto' }" v-bind="iconProps" />
+      </Group>
+    </template>
+  </Select>
 </template>
 `
 

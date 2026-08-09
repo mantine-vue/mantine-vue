@@ -102,7 +102,7 @@ export const MVT_ShowHideColumnsMenuItems = defineComponent({
                     },
                     () =>
                       h(Switch, {
-                        checked,
+                        modelValue: checked,
                         class: classes.switch,
                         disabled: !column.getCanHide(),
                         label: def.header,

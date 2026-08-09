@@ -14,7 +14,7 @@ const [opened, { open, close }] = useDisclosure(false)
 <template>
   <Modal
     :opened="opened"
-    :on-close="close"
+    @close="close"
     title="This is a fullscreen modal"
     full-screen
     :radius="0"

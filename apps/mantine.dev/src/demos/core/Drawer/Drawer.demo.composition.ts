@@ -12,7 +12,7 @@ const [opened, { open, close }] = useDisclosure(false)
 </script>
 
 <template>
-  <Drawer.Root :opened="opened" :on-close="close">
+  <Drawer.Root :opened="opened" @close="close">
     <Drawer.Overlay />
     <Drawer.Content>
       <Drawer.Header>

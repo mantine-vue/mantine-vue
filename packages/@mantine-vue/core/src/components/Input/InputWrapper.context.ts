@@ -7,7 +7,14 @@ export interface InputWrapperContextValue {
   inputId?: string
   labelId?: string
   getStyles:
-    | ((selector: string, options?: { className?: any; style?: any; props?: any }) => any)
+    | ((
+        selector: string,
+        options?: {
+          className?: any
+          style?: any
+          props?: Record<string, any> | undefined
+        },
+      ) => any)
     | null
 }
 

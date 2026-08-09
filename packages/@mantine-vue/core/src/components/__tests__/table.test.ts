@@ -128,6 +128,31 @@ describe('@mantine-vue/core Table', () => {
     ).toContain('--table-overflow: auto')
   })
 
+  it('forwards native attributes and events to the scroll container root', async () => {
+    let clicks = 0
+    const wrapper = withProvider(() =>
+      h(
+        TableScrollContainer,
+        {
+          minWidth: 320,
+          type: 'native',
+          id: 'orders-scroll-container',
+          'aria-label': 'Scrollable orders',
+          onClick: () => {
+            clicks += 1
+          },
+        },
+        () => h(Table, { data: { body: [['Order']] } }),
+      ),
+    )
+
+    const root = wrapper.find('.mantine-TableScrollContainer-scrollContainer')
+    expect(root.attributes('id')).toBe('orders-scroll-container')
+    expect(root.attributes('aria-label')).toBe('Scrollable orders')
+    await root.trigger('click')
+    expect(clicks).toBe(1)
+  })
+
   it('exposes static components', () => {
     expect(Table.Thead).toBe(TableThead)
     expect(Table.Tbody).toBe(TableTbody)

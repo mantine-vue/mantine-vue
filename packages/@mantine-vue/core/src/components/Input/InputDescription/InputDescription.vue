@@ -1,0 +1,62 @@
+<script lang="ts">
+import { createVarsResolver, getFontSize, rem } from '../../../core'
+
+/** Module scope: created once, not per component instance. */
+const varsResolver = createVarsResolver<any>((_, { size }) => ({
+  description: {
+    '--input-description-size':
+      size === undefined ? undefined : `calc(${getFontSize(size)} - ${rem(2)})`,
+  },
+}))
+
+export { varsResolver }
+</script>
+
+<script setup lang="ts">
+import { computed, useAttrs } from 'vue'
+import { Box, useProps, useStyles } from '../../../core'
+import { useInputWrapperContext } from '../InputWrapper.context'
+import type { InputDescriptionOwnProps, InputDescriptionSlots } from './InputDescription.types'
+import classes from '../Input.module.css'
+
+defineOptions({
+  name: 'InputDescription',
+  inheritAttrs: false,
+})
+
+const rawProps = withDefaults(defineProps<InputDescriptionOwnProps>(), {
+  __inheritStyles: true,
+  unstyled: false,
+})
+
+defineSlots<InputDescriptionSlots>()
+
+const attrs = useAttrs()
+const props = useProps('InputDescription', null, rawProps)
+
+const wrapperCtx = useInputWrapperContext()
+
+const ownGetStyles = useStyles({
+  name: 'InputWrapper',
+  props,
+  classes,
+  className: attrs.class,
+  style: attrs.style as any,
+  classNames: props.classNames as any,
+  styles: props.styles as any,
+  unstyled: props.unstyled,
+  vars: props.vars as any,
+  varsResolver,
+})
+
+const descriptionStyles = computed(() => {
+  const getStyles = (props.__inheritStyles && wrapperCtx.getStyles) || ownGetStyles
+  return getStyles('description', { className: attrs.class, style: attrs.style as any, props })
+})
+</script>
+
+<template>
+  <Box v-bind="{ ...attrs, ...descriptionStyles }" component="p">
+    <slot />
+  </Box>
+</template>

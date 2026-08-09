@@ -1,19 +1,13 @@
-import { defineComponent, h } from 'vue'
-import { Box } from '../core'
+import { withBoxProps } from '../core'
+import InputsGroupFieldsetComponent from './InputsGroupFieldset.vue'
 
-export const InputsGroupFieldset = defineComponent({
-  name: 'InputsGroupFieldset',
-  inheritAttrs: false,
-  setup(_, { attrs, slots }) {
-    return () =>
-      h(
-        Box,
-        {
-          ...attrs,
-          component: 'fieldset',
-          style: [{ border: 0, padding: 0, margin: 0, minWidth: 0 }, attrs.style as any],
-        },
-        () => slots.default?.(),
-      )
-  },
-})
+/**
+ * Resets the browser's default `fieldset` styling. Used by the selection group
+ * components to associate a group of inputs with its label.
+ */
+export const InputsGroupFieldset = withBoxProps(InputsGroupFieldsetComponent)
+
+export type {
+  InputsGroupFieldsetProps,
+  InputsGroupFieldsetSlots,
+} from './InputsGroupFieldset.types'

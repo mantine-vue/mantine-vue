@@ -33,7 +33,12 @@ describe('@mantine-vue/core color sliders', () => {
     expect(ColorSlider).toBeDefined()
     const onChange = vi.fn()
     const onChangeEnd = vi.fn()
-    const wrapper = render(HueSlider, { value: 180, onChange, onChangeEnd, 'aria-label': 'Hue' })
+    const wrapper = render(HueSlider, {
+      modelValue: 180,
+      onChange,
+      onChangeEnd,
+      'aria-label': 'Hue',
+    })
     const slider = wrapper.find('[role="slider"]')
 
     expect(slider.attributes('aria-valuemax')).toBe('360')
@@ -45,7 +50,7 @@ describe('@mantine-vue/core color sliders', () => {
 
   it('rounds AlphaSlider values', async () => {
     const onChange = vi.fn()
-    const wrapper = render(AlphaSlider, { value: 0.5, color: '#ff0000', onChange })
+    const wrapper = render(AlphaSlider, { modelValue: 0.5, color: '#ff0000', onChange })
     await wrapper.find('[role="slider"]').trigger('keydown', { key: 'ArrowRight' })
     expect(onChange).toHaveBeenLastCalledWith(0.55)
     expect(wrapper.find('[data-alpha]').exists()).toBe(true)

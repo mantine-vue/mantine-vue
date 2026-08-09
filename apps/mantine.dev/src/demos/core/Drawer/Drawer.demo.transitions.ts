@@ -14,7 +14,7 @@ const [opened, { open, close }] = useDisclosure(false)
 <template>
   <Drawer
     :opened="opened"
-    :on-close="close"
+    @close="close"
     title="Authentication"
     :transition-props="{ transition: 'rotate-left', duration: 150, timingFunction: 'linear' }"
   >

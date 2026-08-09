@@ -857,7 +857,7 @@ onBeforeUnmount(() => {
 
     <Drawer
       :opened="drawerOpened"
-      :on-close="() => (drawerOpened = false)"
+      @close="() => (drawerOpened = false)"
       :z-index="2000"
       position="right"
       :with-close-button="false"

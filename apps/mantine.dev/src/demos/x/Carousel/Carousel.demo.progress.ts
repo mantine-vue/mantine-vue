@@ -35,8 +35,8 @@ function handleEmblaApi(api: EmblaCarouselType) {
       slideSize="50%"
       slideGap="md"
       :height="200"
-      :getEmblaApi="handleEmblaApi"
       :initialSlide="2"
+      @embla-api-ready="handleEmblaApi"
     >
       <!-- ...slides -->
     </Carousel>
@@ -74,8 +74,8 @@ const Demo = defineComponent({
             slideSize: '50%',
             slideGap: 'md',
             height: 200,
-            getEmblaApi: handleEmblaApi,
             initialSlide: 2,
+            onEmblaApiReady: handleEmblaApi,
           },
           () => h(Slides, { count: 12 }),
         ),

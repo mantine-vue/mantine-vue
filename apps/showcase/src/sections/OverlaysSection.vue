@@ -150,7 +150,7 @@ const spotlightActions: SpotlightActionData[] = [
       <Button @click="modalOpened = true">Open modal</Button>
       <Modal
         :opened="modalOpened"
-        :on-close="() => (modalOpened = false)"
+        @close="() => (modalOpened = false)"
         title="Authentication required"
         centered
       >
@@ -166,7 +166,7 @@ const spotlightActions: SpotlightActionData[] = [
       <Button variant="light" @click="drawerOpened = true">Open drawer</Button>
       <Drawer
         :opened="drawerOpened"
-        :on-close="() => (drawerOpened = false)"
+        @close="() => (drawerOpened = false)"
         title="Navigation"
         position="left"
       >
@@ -184,7 +184,7 @@ const spotlightActions: SpotlightActionData[] = [
         size="lg"
         radius="md"
         :position="{ bottom: 20, right: 20 }"
-        :on-close="() => (dialogOpened = false)"
+        @close="() => (dialogOpened = false)"
       >
         <Text size="sm" mb="xs" :fw="500">Subscribe to updates</Text>
         <Group align="flex-end">

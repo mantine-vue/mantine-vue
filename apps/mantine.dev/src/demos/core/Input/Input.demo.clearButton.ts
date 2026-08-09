@@ -29,7 +29,7 @@ const Wrapper = defineComponent({
     return () =>
       h(Input, {
         placeholder: 'Clearable input',
-        value: value.value,
+        modelValue: value.value,
         onInput: (e: Event) => {
           value.value = (e.target as HTMLInputElement).value
         },

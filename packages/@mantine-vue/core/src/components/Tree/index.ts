@@ -6,7 +6,9 @@ export { moveTreeNode } from './move-tree-node/move-tree-node'
 export { filterTreeData, defaultTreeNodeFilter } from './filter-tree-data/filter-tree-data'
 export { flattenTreeData } from './flatten-tree-data/flatten-tree-data'
 export type {
+  TreeOwnProps,
   TreeProps,
+  TreeDragState,
   TreeStylesNames,
   TreeFactory,
   TreeCssVariables,

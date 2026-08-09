@@ -56,7 +56,7 @@ describe('@mantine-vue/core Tabs', () => {
 
   it('supports controlled state', async () => {
     const onChange = vi.fn()
-    const wrapper = renderTabs({ value: 'tab-1', onChange })
+    const wrapper = renderTabs({ modelValue: 'tab-1', onChange })
 
     await getTabs(wrapper)[1].trigger('click')
 

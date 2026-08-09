@@ -18,7 +18,7 @@ export const ConfiguratorSegmentedControl = defineComponent({
       h(Input.Wrapper, { ...attrs, labelElement: 'div', label: getControlLabel(props.prop) }, () =>
         h(SegmentedControl, {
           data: props.transformLabel ? transformSelectData(props.data) : props.data,
-          value: props.value,
+          modelValue: props.value,
           onChange: props.onChange,
           fullWidth: true,
           transitionDuration: 150,

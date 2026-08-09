@@ -14,7 +14,7 @@ const slowTransitionOpened = ref(false)
 <template>
   <Modal
     :opened="slowTransitionOpened"
-    :on-close="() => (slowTransitionOpened = false)"
+    @close="() => (slowTransitionOpened = false)"
     title="Please consider this"
     :transition-props="{ transition: 'rotate-left' }"
   >
@@ -23,7 +23,7 @@ const slowTransitionOpened = ref(false)
 
   <Modal
     :opened="noTransitionOpened"
-    :on-close="() => (noTransitionOpened = false)"
+    @close="() => (noTransitionOpened = false)"
     title="Please consider this"
     :transition-props="{ transition: 'fade', duration: 600, timingFunction: 'linear' }"
   >

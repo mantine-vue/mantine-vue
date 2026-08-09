@@ -8,4 +8,13 @@ export {
   ModalOverlay,
   ModalTitle,
 } from './Modal'
-export type { ModalProps, ModalStylesNames, ModalCssVariables, ModalFactory } from './Modal'
+export type {
+  ModalCompoundProps,
+  ModalCssVariables,
+  ModalFactory,
+  ModalProps,
+  ModalRootProps,
+  ModalRootSlots,
+  ModalSlots,
+  ModalStylesNames,
+} from './Modal'

@@ -1,5 +1,6 @@
 export { DataList } from './DataList'
 export type {
+  DataListOwnProps,
   DataListProps,
   DataListSlots,
   DataListStylesNames,
@@ -8,6 +9,7 @@ export type {
 
 export { DataListItem } from './DataListItem/DataListItem'
 export type {
+  DataListItemOwnProps,
   DataListItemProps,
   DataListItemSlots,
   DataListItemStylesNames,
@@ -15,6 +17,7 @@ export type {
 
 export { DataListItemLabel } from './DataListItemLabel/DataListItemLabel'
 export type {
+  DataListItemLabelOwnProps,
   DataListItemLabelProps,
   DataListItemLabelSlots,
   DataListItemLabelStylesNames,
@@ -22,6 +25,7 @@ export type {
 
 export { DataListItemValue } from './DataListItemValue/DataListItemValue'
 export type {
+  DataListItemValueOwnProps,
   DataListItemValueProps,
   DataListItemValueSlots,
   DataListItemValueStylesNames,

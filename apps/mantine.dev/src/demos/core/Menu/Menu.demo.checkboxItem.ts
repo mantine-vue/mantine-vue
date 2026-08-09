@@ -18,10 +18,10 @@ const columns = reactive({ name: true, email: true, role: false, lastSeen: false
 
     <Menu.Dropdown>
       <Menu.Label>Visible columns</Menu.Label>
-      <Menu.CheckboxItem :checked="columns.name" @change="(v) => columns.name = v">Name</Menu.CheckboxItem>
-      <Menu.CheckboxItem :checked="columns.email" @change="(v) => columns.email = v">Email</Menu.CheckboxItem>
-      <Menu.CheckboxItem :checked="columns.role" @change="(v) => columns.role = v">Role</Menu.CheckboxItem>
-      <Menu.CheckboxItem :checked="columns.lastSeen" @change="(v) => columns.lastSeen = v">Last seen</Menu.CheckboxItem>
+      <Menu.CheckboxItem v-model:checked="columns.name">Name</Menu.CheckboxItem>
+      <Menu.CheckboxItem v-model:checked="columns.email">Email</Menu.CheckboxItem>
+      <Menu.CheckboxItem v-model:checked="columns.role">Role</Menu.CheckboxItem>
+      <Menu.CheckboxItem v-model:checked="columns.lastSeen">Last seen</Menu.CheckboxItem>
     </Menu.Dropdown>
   </Menu>
 </template>

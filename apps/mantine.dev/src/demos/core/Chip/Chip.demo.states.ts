@@ -9,7 +9,7 @@ import { Chip, ChipGroup, Group } from '@mantine-vue/core'
 
 <template>
   <div>
-    <ChipGroup multiple :value="['checked', 'checked-disabled']">
+    <ChipGroup multiple :model-value="['checked', 'checked-disabled']">
       <Group justify="center">
         <Chip value="default" variant="outline">Outline default</Chip>
         <Chip value="checked" variant="outline">Outline checked</Chip>
@@ -17,7 +17,7 @@ import { Chip, ChipGroup, Group } from '@mantine-vue/core'
       </Group>
     </ChipGroup>
 
-    <ChipGroup multiple :value="['checked', 'checked-disabled']">
+    <ChipGroup multiple :model-value="['checked', 'checked-disabled']">
       <Group justify="center" mt="md">
         <Chip value="default" variant="light">Light default</Chip>
         <Chip value="checked" variant="light">Light checked</Chip>
@@ -25,7 +25,7 @@ import { Chip, ChipGroup, Group } from '@mantine-vue/core'
       </Group>
     </ChipGroup>
 
-    <ChipGroup multiple :value="['checked', 'checked-disabled']">
+    <ChipGroup multiple :model-value="['checked', 'checked-disabled']">
       <Group justify="center" mt="md">
         <Chip value="default" variant="filled">Filled default</Chip>
         <Chip value="checked" variant="filled">Filled checked</Chip>
@@ -42,7 +42,7 @@ const Demo = defineComponent({
     h('div', null, [
       h(
         ChipGroup,
-        { multiple: true, value: ['checked', 'checked-disabled'] },
+        { multiple: true, modelValue: ['checked', 'checked-disabled'] },
         {
           default: () =>
             h(
@@ -72,7 +72,7 @@ const Demo = defineComponent({
       ),
       h(
         ChipGroup,
-        { multiple: true, value: ['checked', 'checked-disabled'] },
+        { multiple: true, modelValue: ['checked', 'checked-disabled'] },
         {
           default: () =>
             h(
@@ -102,7 +102,7 @@ const Demo = defineComponent({
       ),
       h(
         ChipGroup,
-        { multiple: true, value: ['checked', 'checked-disabled'] },
+        { multiple: true, modelValue: ['checked', 'checked-disabled'] },
         {
           default: () =>
             h(

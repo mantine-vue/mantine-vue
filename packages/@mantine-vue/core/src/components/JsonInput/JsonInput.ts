@@ -1,86 +1,11 @@
-import { defineComponent, h, ref, type PropType } from 'vue'
-import { useUncontrolled } from '@mantine-vue/hooks'
 import { InputBase } from '../InputBase'
-import { Textarea } from '../Textarea'
-import { validateJson } from './validate-json/validate-json'
+import JsonInputComponent from './JsonInput.vue'
 
-function callHandler(handler: any, event: Event) {
-  if (Array.isArray(handler)) {
-    handler.forEach((item) => item?.(event))
-  } else {
-    handler?.(event)
-  }
-}
+export const JsonInput = Object.assign(JsonInputComponent, { classes: InputBase.classes })
 
-export const JsonInput = defineComponent({
-  name: 'JsonInput',
-  inheritAttrs: false,
-  props: {
-    modelValue: { type: String, default: undefined },
-    value: { type: String, default: undefined },
-    defaultValue: { type: String, default: undefined },
-    onChange: { type: Function as PropType<(value: string) => void>, default: undefined },
-    formatOnBlur: { type: Boolean, default: false },
-    validationError: {
-      type: [String, Number, Object, Function, Boolean] as PropType<any>,
-      default: undefined,
-    },
-    serialize: { type: Function as PropType<typeof JSON.stringify>, default: JSON.stringify },
-    deserialize: { type: Function as PropType<typeof JSON.parse>, default: JSON.parse },
-    indentSpaces: { type: Number, default: 2 },
-    readOnly: { type: Boolean, default: false },
-    error: {
-      type: [String, Number, Object, Function, Boolean] as PropType<any>,
-      default: undefined,
-    },
-  },
-  emits: ['update:modelValue', 'change'],
-  setup(props, { attrs, slots, emit }) {
-    const [value, setValue] = useUncontrolled<string>({
-      value: () => (props.modelValue !== undefined ? props.modelValue : props.value),
-      defaultValue: props.defaultValue,
-      finalValue: '',
-      onChange: (nextValue) => {
-        emit('update:modelValue', nextValue)
-        emit('change', nextValue)
-      },
-    })
-    const valid = ref(validateJson(value.value, props.deserialize))
-
-    return () =>
-      h(
-        Textarea,
-        {
-          ...attrs,
-          value: value.value,
-          readOnly: props.readOnly,
-          autoComplete: 'off',
-          __staticSelector: 'JsonInput',
-          error: valid.value ? props.error : props.validationError || true,
-          'data-monospace': true,
-          onInput: (event: Event) => {
-            callHandler((attrs as any).onInput, event)
-            setValue((event.currentTarget as HTMLTextAreaElement).value)
-          },
-          onFocus: (event: FocusEvent) => {
-            callHandler((attrs as any).onFocus, event)
-            valid.value = true
-          },
-          onBlur: (event: FocusEvent) => {
-            callHandler((attrs as any).onBlur, event)
-            const target = event.currentTarget as HTMLTextAreaElement
-            const isValid = validateJson(target.value, props.deserialize)
-
-            if (props.formatOnBlur && !props.readOnly && isValid && target.value.trim() !== '') {
-              setValue(props.serialize(props.deserialize(target.value), null, props.indentSpaces))
-            }
-
-            valid.value = isValid
-          },
-        },
-        slots,
-      )
-  },
-})
-
-Object.assign(JsonInput, { classes: InputBase.classes })
+export type {
+  JsonInputOwnProps,
+  JsonInputProps,
+  JsonInputSlots,
+  JsonInputStylesNames,
+} from './JsonInput.types'

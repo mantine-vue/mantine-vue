@@ -94,6 +94,17 @@ describe('@mantine-vue/core Accordion', () => {
     expect(buttons(wrapper)[1].element).toBe(document.activeElement)
   })
 
+  it('moves focus to the first and last control with Home and End', async () => {
+    const wrapper = renderAccordion({ defaultValue: 'item-1' })
+
+    buttons(wrapper)[1].element.focus()
+    await buttons(wrapper)[1].trigger('keydown', { key: 'End' })
+    expect(buttons(wrapper)[2].element).toBe(document.activeElement)
+
+    await buttons(wrapper)[2].trigger('keydown', { key: 'Home' })
+    expect(buttons(wrapper)[0].element).toBe(document.activeElement)
+  })
+
   it('loops arrow key navigation by default', async () => {
     const wrapper = renderAccordion({ defaultValue: 'item-1' })
 

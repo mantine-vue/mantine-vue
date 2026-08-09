@@ -18,7 +18,7 @@ const sort = ref('newest')
 
     <Menu.Dropdown>
       <Menu.Label>Order</Menu.Label>
-      <Menu.RadioGroup :value="sort" @change="sort = $event">
+      <Menu.RadioGroup v-model="sort">
         <Menu.RadioItem value="newest">Newest first</Menu.RadioItem>
         <Menu.RadioItem value="oldest">Oldest first</Menu.RadioItem>
         <Menu.RadioItem value="popular">Most popular</Menu.RadioItem>
@@ -47,8 +47,8 @@ const Demo = defineComponent({
                 h(
                   Menu.RadioGroup,
                   {
-                    value: sort.value,
-                    onChange: (v: string) => {
+                    modelValue: sort.value,
+                    'onUpdate:modelValue': (v: string) => {
                       sort.value = v
                     },
                   },
