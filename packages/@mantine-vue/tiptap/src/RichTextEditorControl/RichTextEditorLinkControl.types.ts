@@ -18,6 +18,8 @@ export interface RichTextEditorLinkControlRuntimeProps {
   popoverProps?: Partial<PopoverProps>
   disableTooltips?: boolean
   initialExternal?: boolean
+
+  /** Icon displayed inside the link control. */
   icon?: Component
 }
 

@@ -49,10 +49,12 @@ export type RichTextEditorControlFactory = Factory<{
 }>
 
 export interface RichTextEditorControlBaseOwnProps extends RichTextEditorControlOwnProps {
+  /** Icon displayed inside the control. */
   icon?: Component
 }
 
 export interface RichTextEditorControlBaseRuntimeProps extends RichTextEditorControlRuntimeProps {
+  /** Icon displayed inside the control. */
   icon?: Component
 }
 
