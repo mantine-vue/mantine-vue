@@ -3,7 +3,10 @@ import { computed, useAttrs } from 'vue'
 import { useRichTextEditorContext } from '../RichTextEditor.context'
 import RichTextEditorControlBaseComponent from './RichTextEditorControlBase.vue'
 import { isSafeEditor, useEditorSelector } from './use-editor-selector'
-import type { RichTextEditorGeneratedControlRuntimeProps } from './RichTextEditorControl.types'
+import type {
+  RichTextEditorGeneratedControlRuntimeProps,
+  RichTextEditorGeneratedControlSlots,
+} from './RichTextEditorControl.types'
 
 defineOptions({ name: 'RichTextEditorGeneratedControl', inheritAttrs: false })
 
@@ -19,6 +22,7 @@ const props = withDefaults(defineProps<RichTextEditorGeneratedControlRuntimeProp
   vars: undefined,
   unstyled: undefined,
 })
+defineSlots<RichTextEditorGeneratedControlSlots>()
 
 const attrs = useAttrs()
 const ctx = useRichTextEditorContext()
@@ -55,9 +59,14 @@ function runOperation() {
     :variant="props.variant"
     :class-names="props.classNames"
     :styles="props.styles"
-    :icon="props.icon"
     :aria-label="label"
     :title="label"
     @click="runOperation"
-  />
+  >
+    <template #icon="iconProps">
+      <slot name="icon" v-bind="iconProps">
+        <component :is="props.icon" v-bind="iconProps" />
+      </slot>
+    </template>
+  </RichTextEditorControlBaseComponent>
 </template>

@@ -1,4 +1,4 @@
-import type { Component, VNodeChild } from 'vue'
+import type { Component, HTMLAttributes, VNodeChild } from 'vue'
 import type { Editor } from '@tiptap/vue-3'
 import type { BoxProps, Factory, StylesApiProps } from '@mantine-vue/core'
 import type { RichTextEditorLabels } from '../labels'
@@ -49,13 +49,20 @@ export type RichTextEditorControlFactory = Factory<{
 }>
 
 export interface RichTextEditorControlBaseOwnProps extends RichTextEditorControlOwnProps {
-  /** Icon displayed inside the control. */
+  /** Icon displayed inside the control. @deprecated Use the `icon` slot instead. */
   icon?: Component
 }
 
 export interface RichTextEditorControlBaseRuntimeProps extends RichTextEditorControlRuntimeProps {
-  /** Icon displayed inside the control. */
+  /** Icon displayed inside the control. @deprecated Use the `icon` slot instead. */
   icon?: Component
+}
+
+export type RichTextEditorControlIconSlotProps = HTMLAttributes
+
+export interface RichTextEditorControlBaseSlots {
+  /** Replaces the default control icon. */
+  icon?: (props: RichTextEditorControlIconSlotProps) => VNodeChild
 }
 
 export interface RichTextEditorControlBaseProps
@@ -65,6 +72,7 @@ export interface RichTextEditorControlBaseProps
 
 export type RichTextEditorControlBaseFactory = Factory<{
   props: RichTextEditorControlBaseProps
+  slots: RichTextEditorControlBaseSlots
   ref: HTMLButtonElement
   element: 'button'
   stylesNames: RichTextEditorControlStylesNames
@@ -95,6 +103,8 @@ export interface RichTextEditorGeneratedControlOwnProps
 export interface RichTextEditorGeneratedControlRuntimeProps
   extends RichTextEditorControlRuntimeProps, CreateControlProps {}
 
+export type RichTextEditorGeneratedControlSlots = RichTextEditorControlBaseSlots
+
 export interface RichTextEditorGeneratedControlProps
   extends
     Omit<RichTextEditorControlProps, keyof RichTextEditorGeneratedControlOwnProps>,
@@ -102,6 +112,7 @@ export interface RichTextEditorGeneratedControlProps
 
 export type RichTextEditorGeneratedControlFactory = Factory<{
   props: RichTextEditorGeneratedControlProps
+  slots: RichTextEditorGeneratedControlSlots
   ref: HTMLButtonElement
   element: 'button'
   stylesNames: RichTextEditorControlStylesNames

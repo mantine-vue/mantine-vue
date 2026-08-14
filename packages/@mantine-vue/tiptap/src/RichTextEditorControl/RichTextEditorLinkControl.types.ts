@@ -1,6 +1,9 @@
 import type { Component } from 'vue'
 import type { Factory, PopoverProps, StylesApiProps } from '@mantine-vue/core'
-import type { RichTextEditorControlBaseProps } from './RichTextEditorControl.types'
+import type {
+  RichTextEditorControlBaseProps,
+  RichTextEditorControlBaseSlots,
+} from './RichTextEditorControl.types'
 
 export type RichTextEditorLinkControlStylesNames =
   | 'control'
@@ -19,7 +22,7 @@ export interface RichTextEditorLinkControlRuntimeProps {
   disableTooltips?: boolean
   initialExternal?: boolean
 
-  /** Icon displayed inside the link control. */
+  /** Icon displayed inside the link control. @deprecated Use the `icon` slot instead. */
   icon?: Component
 }
 
@@ -39,8 +42,11 @@ export interface RichTextEditorLinkControlProps
     Omit<RichTextEditorControlBaseProps, keyof RichTextEditorLinkControlOwnProps>,
     RichTextEditorLinkControlOwnProps {}
 
+export type RichTextEditorLinkControlSlots = RichTextEditorControlBaseSlots
+
 export type RichTextEditorLinkControlFactory = Factory<{
   props: RichTextEditorLinkControlProps
+  slots: RichTextEditorLinkControlSlots
   ref: HTMLButtonElement
   element: 'button'
   stylesNames: RichTextEditorLinkControlStylesNames

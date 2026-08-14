@@ -6,7 +6,10 @@ import { IconExternalLink, IconLink } from '../icons/Icons'
 import { useRichTextEditorContext } from '../RichTextEditor.context'
 import RichTextEditorControlBaseComponent from './RichTextEditorControlBase.vue'
 import { isSafeEditor, useEditorSelector } from './use-editor-selector'
-import type { RichTextEditorLinkControlRuntimeProps } from './RichTextEditorLinkControl.types'
+import type {
+  RichTextEditorLinkControlRuntimeProps,
+  RichTextEditorLinkControlSlots,
+} from './RichTextEditorLinkControl.types'
 
 defineOptions({ name: 'RichTextEditorLinkControl', inheritAttrs: false })
 
@@ -20,6 +23,7 @@ const props = withDefaults(defineProps<RichTextEditorLinkControlRuntimeProps>(),
   vars: undefined,
   unstyled: undefined,
 })
+defineSlots<RichTextEditorLinkControlSlots>()
 
 const attrs = useAttrs()
 const ctx = useRichTextEditorContext()
@@ -94,7 +98,6 @@ onBeforeUnmount(() => window.removeEventListener('edit-link', open))
     <Popover.Target>
       <RichTextEditorControlBaseComponent
         v-bind="attrs"
-        :icon="props.icon || IconLink"
         :aria-label="ctx.labels.linkControlLabel"
         :title="ctx.labels.linkControlLabel"
         :active="active"
@@ -102,7 +105,13 @@ onBeforeUnmount(() => window.removeEventListener('edit-link', open))
         :styles="props.styles"
         :variant="ctx.variant"
         @click="open"
-      />
+      >
+        <template #icon="iconProps">
+          <slot name="icon" v-bind="iconProps">
+            <component :is="props.icon || IconLink" v-bind="iconProps" />
+          </slot>
+        </template>
+      </RichTextEditorControlBaseComponent>
     </Popover.Target>
 
     <Popover.Dropdown v-bind="ctx.getStyles('linkEditorDropdown', stylesApiProps)">

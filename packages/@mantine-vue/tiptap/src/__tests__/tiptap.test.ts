@@ -70,6 +70,37 @@ describe('@mantine-vue/tiptap', () => {
     expect(root.attributes('style')).toContain('color: rgb(1, 2, 3)')
   })
 
+  it('supports icon slots while preserving the icon prop fallback', () => {
+    const LegacyIcon = () => h('span', { 'data-testid': 'legacy-icon' })
+    const wrapper = mount(MantineProvider, {
+      props: { env: 'test' },
+      slots: {
+        default: () =>
+          h(RichTextEditor, { editor: null }, () =>
+            h(RichTextEditor.Toolbar, null, () =>
+              h(RichTextEditor.ControlsGroup, null, () => [
+                h(
+                  RichTextEditor.Bold,
+                  { icon: LegacyIcon },
+                  {
+                    icon: () => h('span', { 'data-testid': 'bold-slot-icon' }),
+                  },
+                ),
+                h(RichTextEditor.Italic, { icon: LegacyIcon }),
+                h(RichTextEditor.Link, null, {
+                  icon: () => h('span', { 'data-testid': 'link-slot-icon' }),
+                }),
+              ]),
+            ),
+          ),
+      },
+    })
+
+    expect(wrapper.find('[data-testid="bold-slot-icon"]').exists()).toBe(true)
+    expect(wrapper.find('[data-testid="link-slot-icon"]').exists()).toBe(true)
+    expect(wrapper.findAll('[data-testid="legacy-icon"]')).toHaveLength(1)
+  })
+
   it('renders built-in controls disabled when editor is not available', () => {
     const wrapper = mount(MantineProvider, {
       props: { env: 'test' },

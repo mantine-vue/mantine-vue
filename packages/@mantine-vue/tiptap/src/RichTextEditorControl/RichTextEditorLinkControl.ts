@@ -12,5 +12,6 @@ export type {
   RichTextEditorLinkControlFactory,
   RichTextEditorLinkControlOwnProps,
   RichTextEditorLinkControlProps,
+  RichTextEditorLinkControlSlots,
   RichTextEditorLinkControlStylesNames,
 } from './RichTextEditorLinkControl.types'
