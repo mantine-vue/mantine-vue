@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { Highlight, Table, Text } from '@mantine-vue/core'
+import { Anchor, Highlight, Table, Text } from '@mantine-vue/core'
+import { REPO_BASE } from '@/links'
 import HtmlText from '../HtmlText/HtmlText.vue'
 import TableInlineCode from '../TableInlineCode/TableInlineCode.vue'
 import { prepareType, type DocgenSlot } from './docgen-data'
@@ -28,6 +29,18 @@ defineProps<{ slotsList: DocgenSlot[]; query: string }>()
 
           <Table.Td>
             <TableInlineCode>{{ prepareType(slot.type.name) }}</TableInlineCode>
+            <div v-if="slot.typeReferences?.length" class="typeReferences">
+              <Anchor
+                v-for="reference in slot.typeReferences"
+                :key="`${reference.declaredIn}:${reference.line}`"
+                :href="`${REPO_BASE}/${reference.declaredIn}#L${reference.line}`"
+                target="_blank"
+                rel="noreferrer"
+                size="xs"
+              >
+                View {{ reference.name }} definition
+              </Anchor>
+            </div>
           </Table.Td>
 
           <Table.Td>
@@ -47,5 +60,12 @@ defineProps<{ slotsList: DocgenSlot[]; query: string }>()
   display: inline-block;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.typeReferences {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-top: var(--mantine-spacing-xs);
 }
 </style>

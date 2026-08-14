@@ -17,10 +17,17 @@ export interface DocgenSlot {
   type: { name: string }
   required: boolean
   description: string
+  typeReferences?: DocgenTypeReference[]
   /**
    * Repository-relative path of the file that declares the slot.
    */
   declaredIn?: string
+}
+
+export interface DocgenTypeReference {
+  name: string
+  declaredIn: string
+  line: number
 }
 
 export interface DocgenEmit {

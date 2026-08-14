@@ -29,11 +29,22 @@ export interface DocgenSlot {
   required: boolean
   /** JSDoc description of the slot, may contain inline markdown */
   description: string
+  /** Named payload types referenced by the slot callback. */
+  typeReferences?: DocgenTypeReference[]
   /**
    * Repository-relative path of the file that declares this slot, e.g.
    * `packages/@mantine-vue/core/src/components/Badge/Badge.types.ts`.
    */
   declaredIn?: string
+}
+
+export interface DocgenTypeReference {
+  /** Type name as it appears in the slot signature. */
+  name: string
+  /** Repository-relative path of the file that declares the type. */
+  declaredIn: string
+  /** One-based line number where the type is declared. */
+  line: number
 }
 
 export interface DocgenEmit {

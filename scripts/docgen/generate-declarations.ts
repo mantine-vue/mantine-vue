@@ -15,6 +15,7 @@ import type {
   DocgenEmit,
   DocgenProp,
   DocgenSlot,
+  DocgenTypeReference,
   GenerateDeclarationsOptions,
 } from './types'
 
@@ -196,6 +197,44 @@ interface CollectSlotsOptions {
   typesReplacement: Record<string, string>
 }
 
+function collectSlotTypeReferences(
+  slotType: ts.Type,
+  checker: ts.TypeChecker,
+  declaration: ts.Declaration,
+  includePaths: string[],
+): DocgenTypeReference[] {
+  const references = new Map<string, DocgenTypeReference>()
+  const callableType = checker.getNonNullableType(slotType)
+
+  for (const signature of checker.getSignaturesOfType(callableType, ts.SignatureKind.Call)) {
+    for (const parameter of signature.getParameters()) {
+      const parameterDeclaration = parameter.valueDeclaration ?? declaration
+      const parameterType = checker.getTypeOfSymbolAtLocation(parameter, parameterDeclaration)
+      const typeSymbol = parameterType.aliasSymbol ?? parameterType.getSymbol()
+      const typeDeclaration = typeSymbol?.declarations?.[0]
+
+      if (!typeSymbol || !typeDeclaration || typeSymbol.getName().startsWith('__')) {
+        continue
+      }
+
+      const sourceFile = typeDeclaration.getSourceFile()
+
+      if (!isWithinPaths(sourceFile.fileName, includePaths)) {
+        continue
+      }
+
+      const name = typeSymbol.getName()
+      references.set(name, {
+        name,
+        declaredIn: toRepositoryPath(sourceFile.fileName),
+        line: sourceFile.getLineAndCharacterOfPosition(typeDeclaration.getStart()).line + 1,
+      })
+    }
+  }
+
+  return [...references.values()].sort((a, b) => a.name.localeCompare(b.name))
+}
+
 function collectSlots({
   type,
   checker,
@@ -230,11 +269,14 @@ function collectSlots({
         ts.TypeFormatFlags.UseAliasDefinedOutsideCurrentScope,
     )
 
+    const typeReferences = collectSlotTypeReferences(slotType, checker, declaration, includePaths)
+
     slots[name] = {
       name,
       type: { name: cleanType(typeName, typesReplacement) },
       required: !(symbol.flags & ts.SymbolFlags.Optional),
       description: getDescription(symbol, checker),
+      ...(typeReferences.length > 0 && { typeReferences }),
       declaredIn: toRepositoryPath(declaration.getSourceFile().fileName),
     }
   }
