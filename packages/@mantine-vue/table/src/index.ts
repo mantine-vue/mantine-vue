@@ -75,6 +75,14 @@ export * from './components/toolbar/MVT_ToolbarDropZone'
 export * from './components/toolbar/MVT_ToolbarInternalButtons'
 export * from './components/toolbar/MVT_TopToolbar'
 
+export * from './server-grouping/createServerGroupingProvider'
+export * from './server-grouping/MVT_ServerGroupingBody'
+export * from './server-grouping/MVT_ServerGroupingGroupBy'
+export * from './server-grouping/serverGrouping.types'
+export * from './server-grouping/serverGrouping.utils'
+export * from './server-grouping/serverGroupingSelection'
+export * from './server-grouping/useMVT_ServerGrouping'
+
 //fns
 export * from './fns/aggregationFns'
 export * from './fns/filterFns'

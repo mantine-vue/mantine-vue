@@ -9,6 +9,13 @@ import {
   type MVT_RowData,
   type MVT_TableInstance,
 } from '../types'
+import type {
+  MVT_ServerGroupCellContext,
+  MVT_ServerGroupPathId,
+  MVT_ServerGroupPathItem,
+  MVT_ServerGroupRowContext,
+  MVT_ServerGroupingGroupByContext,
+} from '../server-grouping/serverGrouping.types'
 import { parseFromValuesOrFunc } from '../utils/utils'
 
 /**
@@ -60,6 +67,33 @@ export interface MVT_TableSlots<TData extends MVT_RowData = MVT_RowData> {
   globalFilterModeMenuItems?: (arg: {
     internalFilterOptions: MVT_InternalFilterOption[]
     onSelectFilterMode: (filterMode: string) => void
+    table: MVT_TableInstance<TData>
+  }) => VNodeChild
+  /**
+   * Replaces the built-in group-by toolbar control entirely (takes precedence
+   * over `serverGrouping.groupBy.renderControl`). Use the provided context to
+   * build your own UI; disable the default independently via
+   * `serverGrouping.groupBy.enabled: false`.
+   */
+  serverGroupByControl?: (arg: MVT_ServerGroupingGroupByContext) => VNodeChild
+  serverGroupCell?: (arg: MVT_ServerGroupCellContext) => VNodeChild
+  serverGroupCount?: (arg: MVT_ServerGroupRowContext) => VNodeChild
+  serverGroupEmpty?: (arg: {
+    field?: string
+    parentGroup?: MVT_ServerGroupPathItem
+    pathId: MVT_ServerGroupPathId
+    table: MVT_TableInstance<TData>
+  }) => VNodeChild
+  serverGroupError?: (arg: {
+    error: unknown
+    pathId: MVT_ServerGroupPathId
+    retry: () => void
+    table: MVT_TableInstance<TData>
+  }) => VNodeChild
+  serverGroupLabel?: (arg: MVT_ServerGroupRowContext) => VNodeChild
+  serverGroupLoading?: (arg: {
+    depth: number
+    pathId: MVT_ServerGroupPathId
     table: MVT_TableInstance<TData>
   }) => VNodeChild
   rowActionMenuItems?: (arg: {

@@ -1660,7 +1660,7 @@ export const MDX_DATA: Record<string, Frontmatter> = {
     source: '@mantine-vue/table/src/components/MantineVueTable.ts',
     docs: 'x/table.mdx',
     searchTags:
-      'table, data table, data grid, datagrid, tanstack table, mantine vue table, sorting, filtering, pagination, row selection, virtualization, editing',
+      'table, data table, data grid, datagrid, tanstack table, mantine react table, sorting, filtering, pagination, row selection, virtualization, editing, server-side grouping, lazy grouping, group by, tanstack query',
   },
   Carousel: {
     title: 'Carousel',

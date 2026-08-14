@@ -6,6 +6,12 @@ import {
   getMVT_RowSelectionHandler,
   getMVT_SelectAllHandler,
 } from '../../utils/row.utils'
+import {
+  getServerGroupingManager,
+  getServerGroupingSelectionSummary,
+  isServerGroupingRecordSelected,
+  toggleAllServerGroupingRecordsSelected,
+} from '../../server-grouping/serverGroupingSelection'
 import { parseFromValuesOrFunc } from '../../utils/utils'
 
 export const MVT_SelectCheckbox = defineComponent({
@@ -23,11 +29,23 @@ export const MVT_SelectCheckbox = defineComponent({
       const o = table.options
       const state = table.getState()
       const selectAll = !row
-      const checked = selectAll
-        ? o.selectAllMode === 'page'
-          ? table.getIsAllPageRowsSelected()
-          : table.getIsAllRowsSelected()
-        : getIsRowSelected({ row, table })
+      // Provider rows live outside TanStack's row model.
+      const anyTable = table as MVT_TableInstance<any>
+      const serverGroupingSummary =
+        selectAll && getServerGroupingManager(anyTable)
+          ? getServerGroupingSelectionSummary(anyTable)
+          : undefined
+      const isServerGrouping = !!getServerGroupingManager(anyTable)
+      const checked = serverGroupingSummary
+        ? serverGroupingSummary.isAll
+        : selectAll
+          ? o.selectAllMode === 'page'
+            ? table.getIsAllPageRowsSelected()
+            : table.getIsAllRowsSelected()
+          : //record rows honor exclude mode ("all matching records")
+            isServerGrouping && row
+            ? isServerGroupingRecordSelected(anyTable, row)
+            : getIsRowSelected({ row, table })
       const checkboxProps = {
         ...(selectAll
           ? parseFromValuesOrFunc(o.mantineSelectAllCheckboxProps, { table })
@@ -39,11 +57,23 @@ export const MVT_SelectCheckbox = defineComponent({
         (selectAll ? o.localization.toggleSelectAll : o.localization.toggleSelectRow)
       const selection = row
         ? getMVT_RowSelectionHandler({ renderedRowIndex: props.renderedRowIndex, row, table })
-        : getMVT_SelectAllHandler({ table })
+        : serverGroupingSummary
+          ? (event: Event) =>
+              toggleAllServerGroupingRecordsSelected(
+                anyTable,
+                (event.target as HTMLInputElement)?.checked ?? !serverGroupingSummary.isAll,
+              )
+          : getMVT_SelectAllHandler({ table })
       const common = {
         'aria-label': label,
         checked,
-        disabled: state.isLoading || (row && !row.getCanSelect()) || row?.id === 'mvt-row-create',
+        disabled:
+          state.isLoading ||
+          (row && !row.getCanSelect()) ||
+          row?.id === 'mvt-row-create' ||
+          // Keep the control enabled when it can clear an off-screen selection.
+          (serverGroupingSummary?.selectableCount === 0 &&
+            serverGroupingSummary.selectedRowIds.length === 0),
         size: state.density === 'xs' ? 'sm' : 'md',
         ...checkboxProps,
         title: undefined,
@@ -64,8 +94,9 @@ export const MVT_SelectCheckbox = defineComponent({
           : o.selectDisplayMode === 'radio' || o.enableMultiRowSelection === false
             ? h(Radio, common as any)
             : h(Checkbox, {
-                indeterminate:
-                  !checked && selectAll
+                indeterminate: serverGroupingSummary
+                  ? serverGroupingSummary.isSome
+                  : !checked && selectAll
                     ? table.getIsSomeRowsSelected()
                     : row?.getIsSomeSelected() && row.getCanSelectSubRows(),
                 ...common,

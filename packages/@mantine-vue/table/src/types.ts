@@ -67,6 +67,13 @@ import { type MVT_AggregationFns } from './fns/aggregationFns'
 import { type MVT_FilterFns } from './fns/filterFns'
 import { type MVT_SortingFns } from './fns/sortingFns'
 import { type MVT_Icons } from './icons'
+import type {
+  MVT_ColumnServerGroupingOptions,
+  MVT_ServerGroupingExpandedState,
+  MVT_ServerGroupingOptions,
+  MVT_ServerGroupingSelectAllState,
+  MVT_ServerGroupingTableApi,
+} from './server-grouping/serverGrouping.types'
 
 export type { MVT_Icons }
 
@@ -216,6 +223,31 @@ export interface MVT_Localization {
   goToNextPage: string
   goToPreviousPage: string
   grab: string
+  /** Optional (falls back to English) shown while a server-grouping level loads. */
+  loading?: string
+  /** Optional (falls back to English) server-grouping load failure message. */
+  errorLoadingData?: string
+  /** Optional (falls back to English) retry button of a failed server-grouping level. */
+  retry?: string
+  /** Optional (falls back to English) group-by toolbar button label. */
+  groupBy?: string
+  /** Optional (falls back to English) clear-grouping menu action. */
+  clearGrouping?: string
+  /** Optional (falls back to English) empty group-by menu message. */
+  noGroupableColumns?: string
+  /** Optional (falls back to English) reorder grouping level up. */
+  moveUp?: string
+  /** Optional (falls back to English) reorder grouping level down. */
+  moveDown?: string
+  /** Optional (falls back to English) select every record matching the filters. */
+  selectAllMatching?: string
+  /** Optional (falls back to English) shown while a query selection is active. */
+  allMatchingRecordsSelected?: string
+  /**
+   * Optional (falls back to English) selection count without a total — used
+   * while server grouping is active, where the row count refers to groups.
+   */
+  selectedCountRowsSelected?: string
   groupByColumn: string
   groupedBy: string
   hideAll: string
@@ -316,29 +348,32 @@ export type MVT_TableInstance<TData extends MVT_RowData> = {
   setShowColumnFilters: MVT_SetState<boolean>
   setShowGlobalFilter: MVT_SetState<boolean>
   setShowToolbarDropZone: MVT_SetState<boolean>
-} & Omit<
-  Table<TData>,
-  | 'getAllColumns'
-  | 'getAllFlatColumns'
-  | 'getAllLeafColumns'
-  | 'getBottomRows'
-  | 'getCenterLeafColumns'
-  | 'getCenterRows'
-  | 'getColumn'
-  | 'getExpandedRowModel'
-  | 'getFlatHeaders'
-  | 'getHeaderGroups'
-  | 'getLeftLeafColumns'
-  | 'getPaginationRowModel'
-  | 'getPreFilteredRowModel'
-  | 'getPrePaginationRowModel'
-  | 'getRightLeafColumns'
-  | 'getRowModel'
-  | 'getSelectedRowModel'
-  | 'getState'
-  | 'getTopRows'
-  | 'options'
->
+  /** @internal server-grouping engine, present when `serverGrouping.provider` is set */
+  _serverGrouping?: unknown
+} & MVT_ServerGroupingTableApi<TData> &
+  Omit<
+    Table<TData>,
+    | 'getAllColumns'
+    | 'getAllFlatColumns'
+    | 'getAllLeafColumns'
+    | 'getBottomRows'
+    | 'getCenterLeafColumns'
+    | 'getCenterRows'
+    | 'getColumn'
+    | 'getExpandedRowModel'
+    | 'getFlatHeaders'
+    | 'getHeaderGroups'
+    | 'getLeftLeafColumns'
+    | 'getPaginationRowModel'
+    | 'getPreFilteredRowModel'
+    | 'getPrePaginationRowModel'
+    | 'getRightLeafColumns'
+    | 'getRowModel'
+    | 'getSelectedRowModel'
+    | 'getState'
+    | 'getTopRows'
+    | 'options'
+  >
 
 export type MVT_DefinedTableOptions<TData extends MVT_RowData> = {
   icons: MVT_Icons
@@ -385,6 +420,8 @@ export type MVT_TableState<TData extends MVT_RowData> = Prettify<
     isFullScreen: boolean
     isLoading: boolean
     isSaving: boolean
+    serverGroupingExpanded: MVT_ServerGroupingExpandedState
+    serverGroupingSelectAll: MVT_ServerGroupingSelectAllState
     showAlertBanner: boolean
     showColumnFilters: boolean
     showGlobalFilter: boolean
@@ -395,7 +432,7 @@ export type MVT_TableState<TData extends MVT_RowData> = Prettify<
   } & TableState
 >
 
-export type MVT_ColumnDef<TData extends MVT_RowData, TValue = unknown> = {
+export type MVT_ColumnDef<TData extends MVT_RowData, TValue = unknown, TGroup = unknown> = {
   /**
    * Either an `accessorKey` or a combination of an `accessorFn` and `id` are required for a data column definition.
    * Specify a function here to point to the correct property in the data object.
@@ -637,6 +674,8 @@ export type MVT_ColumnDef<TData extends MVT_RowData, TValue = unknown> = {
     onSelectFilterMode: (filterMode: MVT_FilterOption) => void
     table: MVT_TableInstance<TData>
   }) => MVT_Node
+
+  serverGrouping?: MVT_ColumnServerGroupingOptions<TGroup>
   sortingFn?: MVT_SortingFn<TData>
   visibleInShowHideMenu?: boolean
 } & Omit<
@@ -1095,6 +1134,8 @@ export type MVT_TableOptions<TData extends MVT_RowData> = {
   onHoveredColumnChange?: OnChangeFn<null | Partial<MVT_Column<TData>>>
   onHoveredRowChange?: OnChangeFn<null | Partial<MVT_Row<TData>>>
   onIsFullScreenChange?: OnChangeFn<boolean>
+  onServerGroupingExpandedChange?: OnChangeFn<MVT_ServerGroupingExpandedState>
+  onServerGroupingSelectAllChange?: OnChangeFn<MVT_ServerGroupingSelectAllState>
   onShowAlertBannerChange?: OnChangeFn<boolean>
   onShowColumnFiltersChange?: OnChangeFn<boolean>
   onShowGlobalFilterChange?: OnChangeFn<boolean>
@@ -1178,6 +1219,7 @@ export type MVT_TableOptions<TData extends MVT_RowData> = {
     | Partial<VirtualizerOptions<HTMLDivElement, HTMLTableRowElement>>
   selectAllMode?: 'all' | 'page'
   selectDisplayMode?: 'checkbox' | 'radio' | 'switch'
+  serverGrouping?: MVT_ServerGroupingOptions<TData, any, any, any>
   /**
    * Manage state externally any way you want, then pass it back into MVT.
    */

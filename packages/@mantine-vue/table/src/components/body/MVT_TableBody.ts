@@ -14,6 +14,7 @@ import {
   type MVT_VirtualItem,
 } from '../../types'
 import { parseFromValuesOrFunc } from '../../utils/utils'
+import { MVT_ServerGroupingBody } from '../../server-grouping/MVT_ServerGroupingBody'
 import { MVT_TableBodyEmptyRow } from './MVT_TableBodyEmptyRow'
 import { MVT_TableBodyRow } from './MVT_TableBodyRow'
 import classes from './MVT_TableBody.module.css'
@@ -139,6 +140,9 @@ export const MVT_TableBody = defineComponent({
           } as any,
           () =>
             (tableBodyProps as any)?.children ??
+            ((table as any)._serverGrouping
+              ? h(MVT_ServerGroupingBody, { table, tableProps } as any)
+              : null) ??
             (!currentRows.length
               ? h(MVT_TableBodyEmptyRow, commonRowProps as any)
               : (virtualRows ?? currentRows).map((rowOrVirtualRow, renderedRowIndex) => {

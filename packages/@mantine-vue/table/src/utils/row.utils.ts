@@ -1,4 +1,9 @@
 import { rankGlobalFuzzy } from '../fns/sortingFns'
+import {
+  getServerGroupingManager,
+  isServerGroupingRecordSelected,
+  toggleServerGroupingRecordSelected,
+} from '../server-grouping/serverGroupingSelection'
 import { type MVT_Row, type MVT_RowData, type MVT_TableInstance } from '../types'
 import { parseFromValuesOrFunc } from './utils'
 
@@ -106,6 +111,14 @@ export const getIsRowSelected = <TData extends MVT_RowData>({
     options: { enableRowSelection },
   } = table
 
+  // Server-grouping records may be selected through an all-matching query.
+  if (getServerGroupingManager(table as MVT_TableInstance<any>)) {
+    return isServerGroupingRecordSelected(
+      table as MVT_TableInstance<any>,
+      row as MVT_Row<MVT_RowData>,
+    )
+  }
+
   return (
     row.getIsSelected() ||
     (parseFromValuesOrFunc(enableRowSelection, row) &&
@@ -143,6 +156,24 @@ export const getMVT_RowSelectionHandler =
     const paginationOffset = manualPagination ? 0 : pageSize * pageIndex
 
     const wasCurrentRowChecked = getIsRowSelected({ row, table })
+
+    // Provider rows require direct selection-state updates.
+    if (getServerGroupingManager(table as MVT_TableInstance<any>)) {
+      toggleServerGroupingRecordSelected(
+        table as MVT_TableInstance<any>,
+        row as MVT_Row<MVT_RowData>,
+        value ?? !wasCurrentRowChecked,
+        {
+          batch:
+            !!enableBatchRowSelection &&
+            enableMultiRowSelection !== false &&
+            (event as MouseEvent).shiftKey,
+          lastSelectedRowId: lastSelectedRowId.value,
+        },
+      )
+      lastSelectedRowId.value = row.id
+      return
+    }
 
     // toggle selection of this row
     row.toggleSelected(value ?? !wasCurrentRowChecked)

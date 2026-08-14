@@ -6,6 +6,7 @@ import clsx from 'clsx'
 
 import { type MVT_RowData, type MVT_TableInstance } from '../../types'
 import { parseFromValuesOrFunc } from '../../utils/utils'
+import { MVT_ServerGroupingGroupBy } from '../../server-grouping/MVT_ServerGroupingGroupBy'
 import { MVT_GlobalFilterTextInput } from '../inputs/MVT_GlobalFilterTextInput'
 import { MVT_ProgressBar } from './MVT_ProgressBar'
 import { MVT_TablePagination } from './MVT_TablePagination'
@@ -99,6 +100,7 @@ export const MVT_TopToolbar = defineComponent({
               enableGlobalFilter &&
                 positionGlobalFilter === 'left' &&
                 h(MVT_GlobalFilterTextInput, globalFilterProps as any),
+              (table as any)._serverGrouping && h(MVT_ServerGroupingGroupBy, { table } as any),
               parseFromValuesOrFunc(renderTopToolbarCustomActions, { table }) ?? h('span'),
               enableToolbarInternalActions
                 ? h(Flex, { justify: 'end', wrap: 'wrap-reverse' } as any, () => [

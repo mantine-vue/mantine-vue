@@ -2,6 +2,7 @@ import clsx from 'clsx'
 import { ActionIcon, Alert, Badge, Button, Collapse, Flex, Stack } from '@mantine-vue/core'
 import { defineComponent, h, type PropType } from 'vue'
 import type { MVT_RowData, MVT_TableInstance } from '../../types'
+import { MVT_SERVER_GROUPING_ROOT_PATH_ID } from '../../server-grouping/serverGrouping.types'
 import { getMVT_SelectAllHandler } from '../../utils/row.utils'
 import { parseFromValuesOrFunc } from '../../utils/utils'
 import { MVT_SelectCheckbox } from '../inputs/MVT_SelectCheckbox'
@@ -28,48 +29,104 @@ export const MVT_ToolbarAlertBanner = defineComponent({
       const selectedCount = o.manualPagination
         ? Object.values(state.rowSelection).filter(Boolean).length
         : table.getFilteredSelectedRowModel().rows.length
-      const selectedAlert = selectedCount
-        ? h(Flex, { align: 'center', gap: 'sm' }, () => [
-            o.localization.selectedCountOfRowCountRowsSelected
+      const serverGroupingSelection = o.serverGrouping?.selection
+      const serverGroupingSummary = (table as any)._serverGrouping
+        ? table.getServerGroupingSelectionSummary()
+        : undefined
+      const showSelectAllMatching =
+        !!serverGroupingSelection?.enableSelectAllMatching &&
+        ((serverGroupingSelection.selectAllMode ?? 'query') === 'query' ||
+          !!serverGroupingSelection.loadAllMatchingRowIds) &&
+        !!serverGroupingSummary?.isAll &&
+        !serverGroupingSummary.isSelectAllMatching
+
+      // In grouped mode, rowCount represents root groups rather than records.
+      const serverGroupingListsRecords =
+        !serverGroupingSummary ||
+        table.getServerGroupingPathState(MVT_SERVER_GROUPING_ROOT_PATH_ID)?.kind === 'records'
+      const selectedText = serverGroupingSummary?.isSelectAllMatching
+        ? (o.localization.allMatchingRecordsSelected ??
+            'All records matching the current filters are selected') +
+          (serverGroupingSummary.excludedRowIds.length
+            ? ` (${serverGroupingSummary.excludedRowIds.length} excluded)`
+            : '')
+        : serverGroupingListsRecords
+          ? o.localization.selectedCountOfRowCountRowsSelected
               .replace('{selectedCount}', String(selectedCount))
-              .replace('{rowCount}', String(total)),
-            h(
-              Button,
-              {
-                size: 'compact-xs',
-                variant: 'subtle',
-                onClick: (event: Event) => getMVT_SelectAllHandler({ table })(event, false, true),
-              },
-              () => o.localization.clearSelection,
-            ),
-          ])
-        : null
+              .replace('{rowCount}', String(total))
+          : (o.localization.selectedCountRowsSelected ?? '{selectedCount} row(s) selected').replace(
+              '{selectedCount}',
+              String(selectedCount),
+            )
+
+      const selectedAlert =
+        selectedCount || serverGroupingSummary?.isSelectAllMatching
+          ? h(Flex, { align: 'center', gap: 'sm' }, () => [
+              selectedText,
+              showSelectAllMatching &&
+                h(
+                  Button,
+                  {
+                    size: 'compact-xs',
+                    variant: 'subtle',
+                    onClick: () => void table.selectAllMatchingServerGroupingRecords(),
+                  },
+                  () => o.localization.selectAllMatching ?? 'Select all matching records',
+                ),
+              h(
+                Button,
+                {
+                  size: 'compact-xs',
+                  variant: 'subtle',
+                  onClick: (event: Event) => {
+                    if (serverGroupingSummary) {
+                      table.toggleAllServerGroupingRecordsSelected(false)
+                      return
+                    }
+                    getMVT_SelectAllHandler({ table })(event, false, true)
+                  },
+                },
+                () => o.localization.clearSelection,
+              ),
+            ])
+          : null
       const groupedAlert = state.grouping.length
         ? h(Flex, null, () => [
             `${o.localization.groupedBy} `,
-            ...state.grouping.flatMap((columnId, index) => [
-              index > 0 ? o.localization.thenBy : null,
-              h(
-                Badge,
-                {
-                  key: columnId,
-                  class: classes['alert-badge'],
-                  variant: 'filled',
-                  ...badgeProps,
-                  rightSection: h(
-                    ActionIcon,
-                    {
-                      color: 'white',
-                      size: 'xs',
-                      variant: 'subtle',
-                      onClick: () => table.getColumn(columnId).toggleGrouping(),
-                    },
-                    () => h(o.icons.IconX, { style: { transform: 'scale(0.8)' } }),
-                  ),
-                } as any,
-                () => `${table.getColumn(columnId).columnDef.header} `,
-              ),
-            ]),
+            ...state.grouping.flatMap((columnId, index) => {
+              // Backend grouping descriptors may not have a matching table column.
+              const column = table.getAllLeafColumns().find((col) => col.id === columnId)
+              const header = column?.columnDef.header
+              const label = typeof header === 'string' && header.length ? header : columnId
+              return [
+                index > 0 ? o.localization.thenBy : null,
+                h(
+                  Badge,
+                  {
+                    key: columnId,
+                    class: classes['alert-badge'],
+                    variant: 'filled',
+                    ...badgeProps,
+                    rightSection: h(
+                      ActionIcon,
+                      {
+                        color: 'white',
+                        size: 'xs',
+                        variant: 'subtle',
+                        onClick: () =>
+                          column
+                            ? column.toggleGrouping()
+                            : table.setGrouping((prev) =>
+                                prev.filter((field) => field !== columnId),
+                              ),
+                      },
+                      () => h(o.icons.IconX, { style: { transform: 'scale(0.8)' } }),
+                    ),
+                  } as any,
+                  () => `${label} `,
+                ),
+              ]
+            }),
           ])
         : null
       const custom =
