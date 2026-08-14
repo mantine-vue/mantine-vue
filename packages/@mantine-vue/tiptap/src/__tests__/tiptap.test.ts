@@ -5,6 +5,71 @@ import { MantineProvider } from '@mantine-vue/core'
 import { getTaskListExtension, Link, RichTextEditor } from '../index'
 
 describe('@mantine-vue/tiptap', () => {
+  it('exposes the complete compound component API', () => {
+    for (const key of [
+      'Content',
+      'Control',
+      'Toolbar',
+      'ControlsGroup',
+      'Bold',
+      'Italic',
+      'Strikethrough',
+      'Underline',
+      'ClearFormatting',
+      'H1',
+      'H2',
+      'H3',
+      'H4',
+      'H5',
+      'H6',
+      'BulletList',
+      'OrderedList',
+      'Link',
+      'Unlink',
+      'Blockquote',
+      'AlignLeft',
+      'AlignRight',
+      'AlignCenter',
+      'AlignJustify',
+      'Superscript',
+      'Subscript',
+      'Code',
+      'CodeBlock',
+      'ColorPicker',
+      'Color',
+      'Highlight',
+      'Hr',
+      'UnsetColor',
+      'Undo',
+      'Redo',
+      'TaskList',
+      'TaskListSink',
+      'TaskListLift',
+      'SourceCode',
+    ] as const) {
+      expect(RichTextEditor[key]).toBeTruthy()
+    }
+  })
+
+  it('merges root styles and forwards HTML attributes', () => {
+    const wrapper = mount(MantineProvider, {
+      props: { env: 'test' },
+      slots: {
+        default: () =>
+          h(RichTextEditor, {
+            editor: null,
+            class: 'custom-root',
+            style: { color: 'rgb(1, 2, 3)' },
+            'data-testid': 'editor',
+          }),
+      },
+    })
+
+    const root = wrapper.get('[data-testid="editor"]')
+    expect(root.classes()).toContain('custom-root')
+    expect(root.attributes('style')).toContain('color: rgb(1, 2, 3)')
+  })
+
   it('renders built-in controls disabled when editor is not available', () => {
     const wrapper = mount(MantineProvider, {
       props: { env: 'test' },
@@ -60,6 +125,18 @@ describe('@mantine-vue/tiptap', () => {
     expect(control.attributes('data-active')).toBeDefined()
     expect(control.attributes('disabled')).toBeUndefined()
     expect(editor.on).toHaveBeenCalledWith('transaction', expect.any(Function))
+  })
+
+  it('does not enter source mode without an editor instance', async () => {
+    const wrapper = mount(MantineProvider, {
+      props: { env: 'test' },
+      slots: {
+        default: () => h(RichTextEditor, { editor: null }, () => h(RichTextEditor.SourceCode)),
+      },
+    })
+
+    await wrapper.get('button').trigger('click')
+    expect(wrapper.get('button').attributes('data-active')).toBeUndefined()
   })
 
   it('exports Mantine Link extension with Mod-k edit-link shortcut', () => {

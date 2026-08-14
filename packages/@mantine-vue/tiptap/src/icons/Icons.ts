@@ -1,35 +1,16 @@
-import { defineComponent, h } from 'vue'
+import type { Component } from 'vue'
+import { RichTextEditorIcon } from './RichTextEditorIcon'
 
 export interface IconProps {
-  style?: any
-  class?: any
+  style?: unknown
+  class?: unknown
 }
 
-function createIcon(name: string, children: any[]) {
-  return defineComponent({
-    name,
-    inheritAttrs: false,
-    setup(_, { attrs }) {
-      return () =>
-        h(
-          'svg',
-          {
-            ...attrs,
-            xmlns: 'http://www.w3.org/2000/svg',
-            viewBox: '0 0 24 24',
-            strokeWidth: '1.5',
-            stroke: 'currentColor',
-            fill: 'none',
-            strokeLinecap: 'round',
-            strokeLinejoin: 'round',
-          },
-          [h('path', { stroke: 'none', d: 'M0 0h24v24H0z', fill: 'none' }), ...children],
-        )
-    },
-  })
+function createIcon(_name: string, paths: string[]) {
+  return RichTextEditorIcon.withProps({ paths }) as Component<IconProps>
 }
 
-const path = (d: string) => h('path', { d })
+const path = (d: string) => d
 
 export const IconBold = createIcon('IconBold', [
   path('M7 5h6a3.5 3.5 0 0 1 0 7h-6z'),
