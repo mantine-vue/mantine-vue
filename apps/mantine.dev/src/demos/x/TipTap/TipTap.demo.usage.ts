@@ -39,7 +39,7 @@ const editor = useEditor({
 
 <template>
   <RichTextEditor :editor="editor">
-    <RichTextEditor.Toolbar sticky sticky-offset="var(--docs-header-height)">
+    <RichTextEditor.Toolbar sticky>
       <RichTextEditor.ControlsGroup>
         <RichTextEditor.Bold />
         <RichTextEditor.Italic />
@@ -106,49 +106,45 @@ const Demo = defineComponent({
 
     return () =>
       h(RichTextEditor, { editor: editor.value }, () => [
-        h(
-          RichTextEditor.Toolbar,
-          { sticky: true, stickyOffset: 'var(--docs-header-height)' },
-          () => [
-            h(RichTextEditor.ControlsGroup, null, () => [
-              h(RichTextEditor.Bold),
-              h(RichTextEditor.Italic),
-              h(RichTextEditor.Underline),
-              h(RichTextEditor.Strikethrough),
-              h(RichTextEditor.ClearFormatting),
-              h(RichTextEditor.Highlight),
-              h(RichTextEditor.Code),
-            ]),
-            h(RichTextEditor.ControlsGroup, null, () => [
-              h(RichTextEditor.H1),
-              h(RichTextEditor.H2),
-              h(RichTextEditor.H3),
-              h(RichTextEditor.H4),
-            ]),
-            h(RichTextEditor.ControlsGroup, null, () => [
-              h(RichTextEditor.Blockquote),
-              h(RichTextEditor.Hr),
-              h(RichTextEditor.BulletList),
-              h(RichTextEditor.OrderedList),
-              h(RichTextEditor.Subscript),
-              h(RichTextEditor.Superscript),
-            ]),
-            h(RichTextEditor.ControlsGroup, null, () => [
-              h(RichTextEditor.Link),
-              h(RichTextEditor.Unlink),
-            ]),
-            h(RichTextEditor.ControlsGroup, null, () => [
-              h(RichTextEditor.AlignLeft),
-              h(RichTextEditor.AlignCenter),
-              h(RichTextEditor.AlignJustify),
-              h(RichTextEditor.AlignRight),
-            ]),
-            h(RichTextEditor.ControlsGroup, null, () => [
-              h(RichTextEditor.Undo),
-              h(RichTextEditor.Redo),
-            ]),
-          ],
-        ),
+        h(RichTextEditor.Toolbar, { sticky: true }, () => [
+          h(RichTextEditor.ControlsGroup, null, () => [
+            h(RichTextEditor.Bold),
+            h(RichTextEditor.Italic),
+            h(RichTextEditor.Underline),
+            h(RichTextEditor.Strikethrough),
+            h(RichTextEditor.ClearFormatting),
+            h(RichTextEditor.Highlight),
+            h(RichTextEditor.Code),
+          ]),
+          h(RichTextEditor.ControlsGroup, null, () => [
+            h(RichTextEditor.H1),
+            h(RichTextEditor.H2),
+            h(RichTextEditor.H3),
+            h(RichTextEditor.H4),
+          ]),
+          h(RichTextEditor.ControlsGroup, null, () => [
+            h(RichTextEditor.Blockquote),
+            h(RichTextEditor.Hr),
+            h(RichTextEditor.BulletList),
+            h(RichTextEditor.OrderedList),
+            h(RichTextEditor.Subscript),
+            h(RichTextEditor.Superscript),
+          ]),
+          h(RichTextEditor.ControlsGroup, null, () => [
+            h(RichTextEditor.Link),
+            h(RichTextEditor.Unlink),
+          ]),
+          h(RichTextEditor.ControlsGroup, null, () => [
+            h(RichTextEditor.AlignLeft),
+            h(RichTextEditor.AlignCenter),
+            h(RichTextEditor.AlignJustify),
+            h(RichTextEditor.AlignRight),
+          ]),
+          h(RichTextEditor.ControlsGroup, null, () => [
+            h(RichTextEditor.Undo),
+            h(RichTextEditor.Redo),
+          ]),
+        ]),
         h(RichTextEditor.Content),
       ])
   },

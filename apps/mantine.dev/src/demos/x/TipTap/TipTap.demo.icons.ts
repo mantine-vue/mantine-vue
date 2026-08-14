@@ -1,4 +1,4 @@
-import { defineComponent, h } from 'vue'
+import { defineComponent, h, type HTMLAttributes } from 'vue'
 import { useEditor } from '@tiptap/vue-3'
 import StarterKit from '@tiptap/starter-kit'
 import { RichTextEditor } from '@mantine-vue/tiptap'
@@ -11,14 +11,10 @@ import { useEditor } from '@tiptap/vue-3'
 import StarterKit from '@tiptap/starter-kit'
 import { RichTextEditor } from '@mantine-vue/tiptap'
 import { PhTextB, PhTextItalic } from '@phosphor-icons/vue'
-import { h } from 'vue'
-
-const BoldIcon = () => h(PhTextB, { size: 16 })
-const ItalicIcon = () => h(PhTextItalic, { size: 16 })
 
 const editor = useEditor({
   extensions: [StarterKit],
-  content: '<p>Customize icons with icon prop</p>',
+  content: '<p>Customize icons with the icon slot</p>',
 })
 </script>
 
@@ -26,8 +22,17 @@ const editor = useEditor({
   <RichTextEditor :editor="editor">
     <RichTextEditor.Toolbar>
       <RichTextEditor.ControlsGroup>
-        <RichTextEditor.Bold :icon="BoldIcon" />
-        <RichTextEditor.Italic :icon="ItalicIcon" />
+        <RichTextEditor.Bold>
+          <template #icon="iconProps">
+            <PhTextB v-bind="iconProps" :size="16" />
+          </template>
+        </RichTextEditor.Bold>
+
+        <RichTextEditor.Italic>
+          <template #icon="iconProps">
+            <PhTextItalic v-bind="iconProps" :size="16" />
+          </template>
+        </RichTextEditor.Italic>
       </RichTextEditor.ControlsGroup>
     </RichTextEditor.Toolbar>
 
@@ -36,23 +41,24 @@ const editor = useEditor({
 </template>
 `
 
-const BoldIcon = () => h(PhTextB, { size: 16 })
-const ItalicIcon = () => h(PhTextItalic, { size: 16 })
-
 const Demo = defineComponent({
   name: 'TipTapIconsDemo',
   setup() {
     const editor = useEditor({
       extensions: [StarterKit],
-      content: '<p>Customize icons with icon prop</p>',
+      content: '<p>Customize icons with the icon slot</p>',
     })
 
     return () =>
       h(RichTextEditor, { editor: editor.value }, () => [
         h(RichTextEditor.Toolbar, null, () =>
           h(RichTextEditor.ControlsGroup, null, () => [
-            h(RichTextEditor.Bold, { icon: BoldIcon }),
-            h(RichTextEditor.Italic, { icon: ItalicIcon }),
+            h(RichTextEditor.Bold, null, {
+              icon: (iconProps: HTMLAttributes) => h(PhTextB, { ...iconProps, size: 16 }),
+            }),
+            h(RichTextEditor.Italic, null, {
+              icon: (iconProps: HTMLAttributes) => h(PhTextItalic, { ...iconProps, size: 16 }),
+            }),
           ]),
         ),
         h(RichTextEditor.Content),
