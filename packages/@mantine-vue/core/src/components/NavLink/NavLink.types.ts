@@ -1,4 +1,5 @@
 import type { VNodeChild } from 'vue'
+import type { VueRefTarget } from '@mantine-vue/hooks'
 import type {
   BoxMod,
   BoxProps,
@@ -6,6 +7,8 @@ import type {
   MantineNode,
   MantineSpacing,
   StylesApiProps,
+  PolymorphicFactory,
+  MantineElementType,
 } from '../../core'
 
 export type NavLinkStylesNames =
@@ -21,12 +24,15 @@ export type NavLinkVariant = 'filled' | 'light' | 'subtle'
 
 /** Props declared by `NavLink` itself. See `NavLinkProps` for the full public type. */
 export interface NavLinkOwnProps extends StylesApiProps<NavLinkProps> {
+  /** Receives the root DOM node. The factory narrows this to the element the selected root renders. */
+  rootRef?: VueRefTarget<Element>
+
   /**
    * Root element or component rendered by `NavLink`.
    *
    * @default 'a'
    */
-  component?: string
+  component?: MantineElementType
 
   /** Main link label. Can also be set with the `label` slot – the slot takes precedence over the prop. */
   label?: MantineNode
@@ -124,3 +130,26 @@ export interface NavLinkSlots {
 }
 
 export interface NavLinkProps extends Omit<BoxProps, keyof NavLinkOwnProps>, NavLinkOwnProps {}
+
+export type NavLinkCssVariables = {
+  root: '--nl-color' | '--nl-bg' | '--nl-hover'
+  children: '--nl-offset'
+}
+export interface NavLinkEmits {
+  /** Emitted when the collapsible section is opened or closed. */
+  'update:opened': [opened: boolean]
+}
+
+/** Public contract of `NavLink`. `component` and `rootRef` come from the factory. */
+export type NavLinkFactory = PolymorphicFactory<{
+  props: Omit<NavLinkProps, 'component' | 'rootRef'>
+  slots: NavLinkSlots
+  emits: NavLinkEmits
+  ref: HTMLAnchorElement
+  exposed: { rootElement: Element | null }
+  defaultComponent: 'a'
+  defaultRef: HTMLAnchorElement
+  stylesNames: NavLinkStylesNames
+  vars: NavLinkCssVariables
+  variant: NavLinkVariant
+}>

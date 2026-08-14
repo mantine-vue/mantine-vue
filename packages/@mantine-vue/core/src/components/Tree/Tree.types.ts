@@ -1,5 +1,5 @@
 import type { Component, VNodeChild } from 'vue'
-import type { BoxProps, StylesApiProps } from '../../core'
+import type { BoxProps, StylesApiProps, Factory } from '../../core'
 import type { TreeAllowDrop, TreeDragHandleProps } from './use-tree-node-drag-drop'
 import type { TreeController } from './use-tree'
 
@@ -71,7 +71,14 @@ export interface TreeDragState {
   currentDropTarget: HTMLElement | null
 }
 
-export type TreeFactory = any
+export type TreeFactory = Factory<{
+  props: Omit<TreeProps, 'rootRef'>
+  ref: HTMLUListElement
+  slots: TreeSlots
+  element: 'ul'
+  stylesNames: TreeStylesNames
+  vars: TreeCssVariables
+}>
 
 export interface TreeSlots {
   /** Unused – nodes are generated from `data`. */
@@ -85,7 +92,10 @@ export interface TreeSlots {
 }
 
 /** Props declared by `Tree` itself. See `TreeProps` for the full public type. */
-export interface TreeOwnProps extends StylesApiProps<TreeProps> {
+export interface TreeOwnProps extends StylesApiProps<TreeFactory> {
+  /** Receives the root DOM node. */
+  rootRef?: VueRefTarget<Element>
+
   /**
    * Element or component rendered as the root.
    *
@@ -178,5 +188,6 @@ export interface TreeOwnProps extends StylesApiProps<TreeProps> {
    */
   withLines?: boolean
 }
+import type { VueRefTarget } from '@mantine-vue/hooks'
 
 export interface TreeProps extends Omit<BoxProps, keyof TreeOwnProps>, TreeOwnProps {}

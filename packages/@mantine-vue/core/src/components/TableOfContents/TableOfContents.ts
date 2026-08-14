@@ -1,11 +1,15 @@
-import { withBoxProps } from '../../core'
+import { factory } from '../../core'
+import type { TableOfContentsFactory } from './TableOfContents.types'
 import TableOfContentsComponent, { varsResolver } from './TableOfContents.vue'
 import classes from './TableOfContents.module.css'
-export const TableOfContents = withBoxProps(TableOfContentsComponent)
-Object.assign(TableOfContents, { classes, varsResolver })
+export const TableOfContents = factory<TableOfContentsFactory>(TableOfContentsComponent, {
+  classes,
+  varsResolver,
+})
 export type {
   InitialTableOfContentsData,
   TableOfContentsCssVariables,
+  TableOfContentsFactory,
   TableOfContentsOwnProps,
   TableOfContentsProps,
   TableOfContentsStylesNames,

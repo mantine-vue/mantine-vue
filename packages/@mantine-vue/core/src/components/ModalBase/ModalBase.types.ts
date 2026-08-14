@@ -1,5 +1,6 @@
+import type { VueRefTarget } from '@mantine-vue/hooks'
 import type { VNodeChild } from 'vue'
-import type { BoxProps } from '../../core'
+import type { BoxProps, Factory } from '../../core'
 
 export interface ModalBaseSlots {
   /** Modal parts, usually `ModalBase.Overlay` and `ModalBase.Content`. */
@@ -8,6 +9,9 @@ export interface ModalBaseSlots {
 
 /** Props declared by `ModalBase` itself. See `ModalBaseProps` for the full public type. */
 export interface ModalBaseOwnProps {
+  /** Receives the root DOM node. */
+  rootRef?: VueRefTarget<Element>
+
   /** Open state of the modal. */
   opened: boolean
 
@@ -106,3 +110,11 @@ export interface ModalBaseOwnProps {
 
 export interface ModalBaseProps
   extends Omit<BoxProps, keyof ModalBaseOwnProps>, ModalBaseOwnProps {}
+
+export type ModalBaseFactory = Factory<{
+  props: Omit<ModalBaseProps, 'rootRef'>
+  slots: ModalBaseSlots
+  ref: HTMLDivElement
+  exposed: { rootElement: Element | null }
+  element: 'div'
+}>

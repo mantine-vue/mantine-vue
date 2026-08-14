@@ -35,7 +35,6 @@ export const DOCGEN_EXCLUDE_PROPS = ['mie', 'mis', 'pie', 'pis']
  * Internal helper interfaces that end with `Props` but are not components.
  */
 export const DOCGEN_EXCLUDE_COMPONENTS = [
-  'WithBoxProps',
   'StylesApiProps',
   'ElementProps',
   // Shared style props interface – it is the source of the inherited style

@@ -1,6 +1,12 @@
-import { withBoxProps } from '../../core'
+import { factory } from '../../core'
+import type { ModalBaseFactory } from './ModalBase.types'
 import ModalBaseComponent from './ModalBase.vue'
 
-export const ModalBase = withBoxProps(ModalBaseComponent)
+export const ModalBase = factory<ModalBaseFactory>(ModalBaseComponent)
 
-export type { ModalBaseOwnProps, ModalBaseProps, ModalBaseSlots } from './ModalBase.types'
+export type {
+  ModalBaseFactory,
+  ModalBaseOwnProps,
+  ModalBaseProps,
+  ModalBaseSlots,
+} from './ModalBase.types'

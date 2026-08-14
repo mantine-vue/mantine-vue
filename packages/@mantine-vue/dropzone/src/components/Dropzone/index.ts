@@ -1,8 +1,9 @@
-import { withBoxProps } from '@mantine-vue/core'
+import { factory } from '@mantine-vue/core'
 import DropzoneComponent, { varsResolver } from './Dropzone.vue'
+import type { DropzoneFactory } from './Dropzone.types'
 import { DropzoneAccept, DropzoneIdle, DropzoneReject } from '../DropzoneStatus'
 import classes from '../../Dropzone.module.css'
-export const Dropzone = Object.assign(withBoxProps(DropzoneComponent), {
+export const Dropzone = factory<DropzoneFactory>(DropzoneComponent, {
   classes,
   varsResolver,
   Accept: DropzoneAccept,

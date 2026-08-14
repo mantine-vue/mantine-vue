@@ -23,7 +23,8 @@ export const varsResolver = createVarsResolver<any>(
 const defaultProps = { active: -1, align: 'left' } as const
 </script>
 <script setup lang="ts">
-import { cloneVNode, h, useAttrs, useSlots, type VNode } from 'vue'
+import { ref, cloneVNode, h, useAttrs, useSlots, type VNode } from 'vue'
+import { assignRef } from '@mantine-vue/hooks'
 import { Box, useProps, useStyles } from '../../core'
 import { provideTimelineContext } from './Timeline.context'
 import type { TimelineOwnProps, TimelineSlots } from './Timeline.types'
@@ -93,6 +94,7 @@ const renderTimeline = Object.assign(
       Box,
       {
         ...attrs,
+        rootRef: setRootRef,
         mod: [{ align: props.align, opposite: hasOpposite }, props.mod],
         ...getStyles('root', { className: attrs.class, style: attrs.style as any }),
       },
@@ -102,5 +104,14 @@ const renderTimeline = Object.assign(
   // Declared so the slot does not fall through onto the root element as an attribute.
   { props: { nodes: { type: Function, required: false } } },
 )
+
+const rootElement = ref<Element | null>(null)
+
+const setRootRef = (node: Element | null) => {
+  rootElement.value = node
+  assignRef(props.rootRef, node)
+}
+
+defineExpose({ rootElement })
 </script>
 <template><component :is="renderTimeline" :nodes="slots.default" /></template>

@@ -8,6 +8,7 @@ export const Autocomplete = Object.assign(AutocompleteComponent, {
 
 export type {
   AutocompleteOptionRenderPayload,
+  AutocompleteOwnProps,
   AutocompleteProps,
   AutocompleteSlots,
   AutocompleteStylesNames,

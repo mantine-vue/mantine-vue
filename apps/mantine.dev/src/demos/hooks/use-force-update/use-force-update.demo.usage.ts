@@ -8,12 +8,12 @@ const code = `
 import { Button, Group, Text } from '@mantine-vue/core'
 import { randomId, useForceUpdate } from '@mantine-vue/hooks'
 
-const forceUpdate = useForceUpdate()
+const [key, forceUpdate] = useForceUpdate()
 </script>
 
 <template>
   <Group justify="center">
-    <Text>{{ randomId() }}</Text>
+    <Text :key="key">{{ randomId() }}</Text>
     <Button @click="forceUpdate">Force update</Button>
   </Group>
 </template>
@@ -22,12 +22,12 @@ const forceUpdate = useForceUpdate()
 const Demo = defineComponent({
   name: 'UseForceUpdateUsageDemo',
   setup() {
-    const forceUpdate = useForceUpdate()
+    const [key, forceUpdate] = useForceUpdate()
 
     return () =>
       h(Group, { justify: 'center' }, () => [
-        h(Text, null, () => randomId()),
-        h(Button, { onClick: forceUpdate }, () => 'Force update'),
+        h(Text, { key: key.value }, () => randomId()),
+        h(Button<'button'>, { onClick: forceUpdate }, () => 'Force update'),
       ])
   },
 })

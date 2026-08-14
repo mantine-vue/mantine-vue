@@ -1,11 +1,14 @@
-import { withBoxProps } from '../../../core'
+import { factory } from '../../../core'
 import SplitterPaneComponent from './SplitterPane.vue'
+import type { SplitterPaneFactory } from './SplitterPane.types'
 import classes from '../Splitter.module.css'
 
-/** A single resizable pane of a `Splitter`. */
-export const SplitterPane = withBoxProps(Object.assign(SplitterPaneComponent, { classes }))
+export const SplitterPane = factory<SplitterPaneFactory>(SplitterPaneComponent, {
+  classes,
+})
 
 export type {
+  SplitterPaneFactory,
   SplitterPaneOwnProps,
   SplitterPaneProps,
   SplitterPaneSlots,

@@ -1,10 +1,13 @@
-import type { Component, VNodeChild } from 'vue'
+import type { VNodeChild } from 'vue'
+import type { VueRefTarget } from '@mantine-vue/hooks'
 import type {
   BoxMod,
   BoxProps,
+  MantineElementType,
   MantineNode,
   MantineRadius,
   MantineSize,
+  PolymorphicFactory,
   StylesApiProps,
 } from '../../core'
 import type { InputSlots } from '../Input/Input'
@@ -34,13 +37,13 @@ export interface InputBaseSlots extends InputSlots {
 }
 
 /** Props declared by `InputBase` itself. See `InputBaseProps` for the full public type. */
-export interface InputBaseOwnProps extends StylesApiProps<InputBaseProps> {
+export interface InputBaseOwnProps extends StylesApiProps<InputBaseFactory> {
   /**
    * Element or component rendered as the input.
    *
    * @default 'input'
    */
-  component?: string | Component
+  component?: MantineElementType
 
   /** Controlled value, bound with `v-model`. */
   modelValue?: any
@@ -254,8 +257,10 @@ export interface InputBaseOwnProps extends StylesApiProps<InputBaseProps> {
   /** Props passed down to the `__bottomSection` element. */
   __bottomSectionProps?: Record<string, any>
 
-  /** Ref assigned to the input root element. */
-  rootRef?: any
+  /**
+   * Receives the input element
+   */
+  rootRef?: VueRefTarget<Element>
 
   /** Element modifiers transformed into `data-` attributes, for example, `{ 'data-size': 'xl' }`, falsy values are removed */
   mod?: BoxMod
@@ -263,3 +268,13 @@ export interface InputBaseOwnProps extends StylesApiProps<InputBaseProps> {
 
 export interface InputBaseProps
   extends Omit<BoxProps, keyof InputBaseOwnProps>, InputBaseOwnProps {}
+
+export type InputBaseFactory = PolymorphicFactory<{
+  props: Omit<InputBaseProps, 'component' | 'rootRef'>
+  slots: InputBaseSlots
+  ref: HTMLInputElement
+  defaultComponent: 'input'
+  defaultRef: HTMLInputElement
+  stylesNames: InputBaseStylesNames
+  variant: InputBaseVariant
+}>

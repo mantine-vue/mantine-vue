@@ -6,7 +6,8 @@ export const varsResolver = createVarsResolver<any>((_, { padding }) => ({
 const defaultProps = { orientation: 'vertical' } as const
 </script>
 <script setup lang="ts">
-import { cloneVNode, h, useAttrs, useSlots, type VNode } from 'vue'
+import { ref, cloneVNode, h, useAttrs, useSlots, type VNode } from 'vue'
+import { assignRef } from '@mantine-vue/hooks'
 import { useProps, useStyles } from '../../core'
 import { Paper } from '../Paper'
 import { CardSection } from './CardSection/CardSection'
@@ -15,6 +16,7 @@ import type { CardOwnProps, CardSlots } from './Card.types'
 import classes from './Card.module.css'
 defineOptions({ name: 'Card', inheritAttrs: false })
 const rawProps = withDefaults(defineProps<CardOwnProps>(), {
+  rootRef: undefined,
   component: 'div',
   shadow: undefined,
   radius: undefined,
@@ -62,6 +64,7 @@ const renderCard = Object.assign(
     return h(
       Paper,
       {
+        rootRef: setRootRef,
         ...attrs,
         ...getStyles('root'),
         component: props.component,
@@ -76,5 +79,14 @@ const renderCard = Object.assign(
   },
   { props: { nodes: { type: Function, required: false } } },
 )
+
+const rootElement = ref<Element | null>(null)
+
+const setRootRef = (node: Element | null) => {
+  rootElement.value = node
+  assignRef(props.rootRef, node)
+}
+
+defineExpose({ rootElement })
 </script>
 <template><component :is="renderCard" :nodes="slots.default" /></template>

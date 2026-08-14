@@ -84,6 +84,7 @@ function onClick() {
 <template>
   <PaginationControl
     v-bind="attrs"
+    :root-ref="props.rootRef"
     :disabled="disabled"
     :with-padding="false"
     :aria-label="(attrs['aria-label'] as string) ?? edge.label"

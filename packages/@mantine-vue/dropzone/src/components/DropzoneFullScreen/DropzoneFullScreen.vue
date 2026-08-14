@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { onUnmounted, ref, useAttrs, watch } from 'vue'
+import { onUnmounted, ref, useAttrs, watch, type ComponentPublicInstance } from 'vue'
 import { getDefaultZIndex, OptionalPortal, useProps, useStyles } from '@mantine-vue/core'
-import { useDisclosure } from '@mantine-vue/hooks'
+import { assignRef, useDisclosure } from '@mantine-vue/hooks'
 import DropzoneComponent from '../Dropzone/Dropzone.vue'
 import type { DropzoneFullScreenEmits, DropzoneFullScreenProps } from './DropzoneFullScreen.types'
 import classes from '../../Dropzone.module.css'
@@ -71,6 +71,16 @@ watch(
   { immediate: true },
 )
 onUnmounted(detach)
+
+const rootElement = ref<Element | null>(null)
+
+const setRootRef = (node: Element | ComponentPublicInstance | null) => {
+  const element = (node && '$el' in node ? node.$el : node) as Element | null
+  rootElement.value = element
+  assignRef(props.rootRef, element)
+}
+
+defineExpose({ rootElement })
 const dropzoneAttrs = () => {
   const rest = Object.fromEntries(
     Object.entries(props).filter(
@@ -107,6 +117,7 @@ const dropzoneAttrs = () => {
 <template>
   <OptionalPortal v-bind="props.portalProps" :within-portal="props.withinPortal">
     <div
+      :ref="setRootRef"
       v-bind="
         getStyles('fullScreen', {
           style: {

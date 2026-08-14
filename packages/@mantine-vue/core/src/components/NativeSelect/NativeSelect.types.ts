@@ -1,5 +1,6 @@
+import type { VueRefTarget } from '@mantine-vue/hooks'
 import type { VNodeChild } from 'vue'
-import type { MantineNode, MantineRadius, MantineSize, StylesApiProps } from '../../core'
+import type { MantineNode, MantineRadius, MantineSize, StylesApiProps, Factory } from '../../core'
 import type { InputBaseOwnProps, InputBaseStylesNames } from '../InputBase'
 import type { NativeSelectData } from './get-parsed-data/get-parsed-data'
 
@@ -29,7 +30,10 @@ export interface NativeSelectSlots {
  * Props declared by `NativeSelect` itself.
  * See `NativeSelectProps` for the full public type.
  */
-export interface NativeSelectOwnProps extends StylesApiProps {
+export interface NativeSelectOwnProps extends StylesApiProps<NativeSelectFactory> {
+  /** Receives the input element */
+  rootRef?: VueRefTarget<Element>
+
   /** Data used to generate the `option` elements. Ignored when the default slot is used. */
   data?: NativeSelectData<any>
 
@@ -116,3 +120,19 @@ export interface NativeSelectProps
   extends
     Omit<InputBaseOwnProps, keyof NativeSelectOwnProps | 'component' | 'pointer'>,
     NativeSelectOwnProps {}
+
+export interface NativeSelectEmits {
+  /** Called with the selected value. */
+  'update:modelValue': [value: string]
+
+  /** Called with the selected value when it changes. */
+  change: [value: string]
+}
+
+export type NativeSelectFactory = Factory<{
+  props: Omit<NativeSelectProps, 'rootRef'>
+  slots: NativeSelectSlots
+  emits: NativeSelectEmits
+  ref: HTMLSelectElement
+  stylesNames: NativeSelectStylesNames
+}>

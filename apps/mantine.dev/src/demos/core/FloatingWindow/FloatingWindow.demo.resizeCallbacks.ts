@@ -1,4 +1,4 @@
-import { defineComponent, h, ref } from 'vue'
+import { defineComponent, h, ref, type CSSProperties } from 'vue'
 import { PhNotches } from '@phosphor-icons/vue'
 import { Button, CloseButton, FloatingWindow, Group, Text } from '@mantine-vue/core'
 import { useDisclosure } from '@mantine-vue/hooks'
@@ -24,7 +24,7 @@ const handleStyle = {
   alignItems: 'center',
   justifyContent: 'center',
   cursor: 'nwse-resize',
-}
+} satisfies CSSProperties
 
 const code = `
 <script setup lang="ts">

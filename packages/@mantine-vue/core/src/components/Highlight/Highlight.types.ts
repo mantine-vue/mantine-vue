@@ -1,5 +1,12 @@
 import type { CSSProperties, VNodeChild } from 'vue'
-import type { BoxProps, MantineColor, MantineTheme, StylesApiProps } from '../../core'
+import type {
+  BoxProps,
+  MantineColor,
+  MantineTheme,
+  StylesApiProps,
+  MantineElementType,
+  PolymorphicFactory,
+} from '../../core'
 
 export interface HighlightTerm {
   /** Text to highlight. */
@@ -10,7 +17,10 @@ export interface HighlightTerm {
 }
 
 /** Props declared by `Highlight` itself. See `HighlightProps` for the full public type. */
-export interface HighlightOwnProps extends StylesApiProps<HighlightProps> {
+export interface HighlightOwnProps extends StylesApiProps<HighlightFactory> {
+  /** Receives the root DOM node. */
+  rootRef?: VueRefTarget<Element>
+
   /**
    * Substring(s) to highlight in `children`. Can be:
    * - string: single term
@@ -60,7 +70,7 @@ export interface HighlightOwnProps extends StylesApiProps<HighlightProps> {
   accentInsensitive?: boolean
 
   /** Root element or component rendered by `Highlight`. */
-  component?: string
+  component?: MantineElementType
 
   /**
    * Shorthand for `component="span"`
@@ -77,3 +87,19 @@ export interface HighlightSlots {
   /** Plain-text content to search and highlight. */
   default?: () => VNodeChild
 }
+import type { VueRefTarget } from '@mantine-vue/hooks'
+import type { TextStylesNames, TextVariant } from '../Text'
+
+/**
+ * Public contract of `Highlight`.
+ */
+export type HighlightFactory = PolymorphicFactory<{
+  props: Omit<HighlightProps, 'component' | 'rootRef'>
+  slots: HighlightSlots
+  ref: HTMLParagraphElement
+  exposed: { rootElement: Element | null }
+  defaultComponent: 'p'
+  defaultRef: HTMLParagraphElement
+  stylesNames: TextStylesNames
+  variant: TextVariant
+}>

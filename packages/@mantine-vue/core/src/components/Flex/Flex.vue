@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { computed, useAttrs } from 'vue'
+import { ref, computed, useAttrs } from 'vue'
+import { assignRef } from '@mantine-vue/hooks'
 import {
   Box,
   filterProps,
@@ -18,6 +19,7 @@ import classes from './Flex.module.css'
 
 defineOptions({ name: 'Flex', inheritAttrs: false })
 const rawProps = withDefaults(defineProps<FlexOwnProps>(), {
+  rootRef: undefined,
   component: 'div',
   classNames: undefined,
   styles: undefined,
@@ -59,6 +61,15 @@ const responsiveClassName = computed(() =>
     ? hashStyleProps(parsedStyleProps.value.styles, parsedStyleProps.value.media)
     : randomClassName,
 )
+
+const rootElement = ref<Element | null>(null)
+
+const setRootRef = (node: Element | null) => {
+  rootElement.value = node
+  assignRef(props.rootRef, node)
+}
+
+defineExpose({ rootElement })
 </script>
 
 <template>
@@ -81,6 +92,7 @@ const responsiveClassName = computed(() =>
       }),
     }"
     :component="props.component"
+    :rootRef="setRootRef"
     ><slot
   /></Box>
 </template>

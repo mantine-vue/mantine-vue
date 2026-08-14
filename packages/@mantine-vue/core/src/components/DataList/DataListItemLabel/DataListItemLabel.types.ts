@@ -1,12 +1,15 @@
 import type { VNodeChild } from 'vue'
-import type { BoxProps, StylesApiProps } from '../../../core'
+import type { BoxProps, StylesApiProps, Factory } from '../../../core'
 
 export type DataListItemLabelStylesNames = 'itemLabel'
 
 /** Props declared by `DataListItemLabel` itself. See `DataListItemLabelProps` for the full public type. */
 export interface DataListItemLabelOwnProps {
+  /** Receives the root DOM node. */
+  rootRef?: VueRefTarget<Element>
+
   /** Class names applied to DataList elements. */
-  classNames?: StylesApiProps<DataListItemLabelProps>['classNames']
+  classNames?: StylesApiProps<DataListItemLabelFactory>['classNames']
 
   /** Inline styles applied to DataList elements. */
   styles?: StylesApiProps<DataListItemLabelProps>['styles']
@@ -22,3 +25,12 @@ export interface DataListItemLabelSlots {
   /** Label content. */
   default?: () => VNodeChild
 }
+
+export type DataListItemLabelFactory = Factory<{
+  props: Omit<DataListItemLabelProps, 'rootRef'>
+  ref: HTMLElement
+  slots: DataListItemLabelSlots
+  element: 'dt'
+  stylesNames: DataListItemLabelStylesNames
+}>
+import type { VueRefTarget } from '@mantine-vue/hooks'

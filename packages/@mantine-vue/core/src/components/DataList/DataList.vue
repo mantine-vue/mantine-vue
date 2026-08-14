@@ -22,7 +22,8 @@ export { defaultProps, varsResolver }
 </script>
 
 <script setup lang="ts">
-import { useAttrs } from 'vue'
+import { ref, useAttrs } from 'vue'
+import { assignRef } from '@mantine-vue/hooks'
 import { Box, useProps, useStyles } from '../../core'
 import { provideDataListContext } from './DataList.context'
 import type { DataListOwnProps, DataListSlots } from './DataList.types'
@@ -34,6 +35,7 @@ defineOptions({
 })
 
 const rawProps = withDefaults(defineProps<DataListOwnProps>(), {
+  rootRef: undefined,
   withDivider: undefined,
   unstyled: false,
 })
@@ -57,10 +59,20 @@ const getStyles = useStyles({
 })
 
 provideDataListContext({ getStyles })
+
+const rootElement = ref<Element | null>(null)
+
+const setRootRef = (node: Element | null) => {
+  rootElement.value = node
+  assignRef(props.rootRef, node)
+}
+
+defineExpose({ rootElement })
 </script>
 
 <template>
   <Box
+    :rootRef="setRootRef"
     v-bind="{ ...attrs, ...getStyles('root') }"
     component="dl"
     :mod="[{ orientation: props.orientation, 'with-divider': props.withDivider }, props.mod]"

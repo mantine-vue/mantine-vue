@@ -21,6 +21,7 @@ export { defaultProps, varsResolver }
 
 <script setup lang="ts">
 import { computed, ref, useAttrs, watch } from 'vue'
+import { assignRef } from '@mantine-vue/hooks'
 import { Box, useProps, useStyles } from '../../core'
 import { buildValue } from './build-value'
 import { DigitColumn } from './DigitColumn'
@@ -36,6 +37,7 @@ defineOptions({
 
 // Intentionally undefined to preserve downstream defaults.
 const rawProps = withDefaults(defineProps<RollingNumberOwnProps>(), {
+  rootRef: undefined,
   fixedDecimalScale: false,
   tabularNumbers: undefined,
   withLiveRegion: false,
@@ -107,10 +109,20 @@ const accessibleValue = computed(() =>
 const rootStyles = computed(() =>
   getStyles('root', { className: attrs.class, style: attrs.style as any }),
 )
+
+const rootElement = ref<Element | null>(null)
+
+const setRootRef = (node: Element | null) => {
+  rootElement.value = node
+  assignRef(props.rootRef, node)
+}
+
+defineExpose({ rootElement })
 </script>
 
 <template>
   <Box
+    :rootRef="setRootRef"
     v-bind="{ ...attrs, ...rootStyles }"
     :mod="[{ tabularNumbers: props.tabularNumbers }, props.mod]"
     :role="props.withLiveRegion ? 'status' : 'img'"

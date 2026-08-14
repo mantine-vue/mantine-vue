@@ -1,3 +1,4 @@
+import type { VueRefTarget } from '@mantine-vue/hooks'
 import type { VNodeChild } from 'vue'
 import type {
   BoxProps,
@@ -6,6 +7,7 @@ import type {
   MantineRadius,
   MantineSize,
   StylesApiProps,
+  Factory,
 } from '../../../core'
 import type { SliderStylesNames } from '../Slider.context'
 import type { SliderMark } from '../SliderMark'
@@ -25,7 +27,10 @@ export interface SliderSlots {
 }
 
 /** Props declared by `Slider` itself. See `SliderProps` for the full public type. */
-export interface SliderOwnProps extends StylesApiProps<SliderProps> {
+export interface SliderOwnProps extends StylesApiProps<SliderFactory> {
+  /** Receives the root DOM node. */
+  rootRef?: VueRefTarget<Element>
+
   /**
    * Key of `theme.colors` or any valid CSS color.
    *
@@ -192,3 +197,14 @@ export interface SliderEmits {
   /** Emitted with the final value when dragging or keyboard adjustment ends. */
   'change-end': [value: number]
 }
+
+export type SliderFactory = Factory<{
+  props: Omit<SliderProps, 'rootRef'>
+  slots: SliderSlots
+  emits: SliderEmits
+  ref: HTMLDivElement
+  exposed: { rootElement: Element | null }
+  element: 'div'
+  stylesNames: SliderStylesNames
+  vars: SliderCssVariables
+}>

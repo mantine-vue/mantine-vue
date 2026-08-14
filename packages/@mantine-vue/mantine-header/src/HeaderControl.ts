@@ -1,5 +1,6 @@
 import { Tooltip, UnstyledButton } from '@mantine-vue/core'
-import { defineComponent, h } from 'vue'
+import type { MantineElementType } from '@mantine-vue/core'
+import { defineComponent, h, type PropType } from 'vue'
 import classes from './HeaderControl.module.css'
 
 // Renders as a <button> by default, or as any element via the `component`
@@ -7,7 +8,7 @@ import classes from './HeaderControl.module.css'
 // polymorphic through its own `component` prop, so we forward it the same way.
 export interface HeaderControlProps {
   tooltip: string
-  component?: string
+  component?: MantineElementType
   'aria-label'?: string
 }
 
@@ -16,7 +17,10 @@ export const HeaderControl = defineComponent({
   inheritAttrs: false,
   props: {
     tooltip: { type: String, required: true },
-    component: { type: String, default: 'button' },
+    component: {
+      type: [String, Object, Function] as PropType<MantineElementType>,
+      default: 'button',
+    },
     'aria-label': { type: String, default: undefined },
   },
   setup(props, { attrs, slots }) {

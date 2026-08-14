@@ -1,4 +1,5 @@
 import type { VNodeChild } from 'vue'
+import type { VueRefTarget } from '@mantine-vue/hooks'
 import type {
   BoxProps,
   MantineColor,
@@ -9,6 +10,8 @@ import type {
   MantineVariant,
   SectionSlots,
   StylesApiProps,
+  PolymorphicFactory,
+  MantineElementType,
 } from '../../core'
 
 export type BadgeStylesNames = 'root' | 'section' | 'label'
@@ -46,11 +49,14 @@ export interface BadgeSlots extends SectionSlots {
  * fallthrough attributes rather than declaring at runtime.
  */
 export interface BadgeOwnProps extends StylesApiProps<BadgeProps> {
+  /** Receives the root DOM node. The factory narrows this to the element the selected root renders. */
+  rootRef?: VueRefTarget<Element>
+
   /**
    * Root element or component rendered by `Badge`.
    * @default 'div'
    */
-  component?: string
+  component?: MantineElementType
 
   /**
    * Controls `font-size`, `height` and horizontal `padding`.
@@ -114,3 +120,16 @@ export interface BadgeOwnProps extends StylesApiProps<BadgeProps> {
 }
 
 export interface BadgeProps extends Omit<BoxProps, keyof BadgeOwnProps>, BadgeOwnProps {}
+
+/** Public contract of `Badge`. `component` and `rootRef` come from the factory. */
+export type BadgeFactory = PolymorphicFactory<{
+  props: Omit<BadgeProps, 'component' | 'rootRef'>
+  slots: BadgeSlots
+  ref: HTMLDivElement
+  exposed: { rootElement: Element | null }
+  defaultComponent: 'div'
+  defaultRef: HTMLDivElement
+  stylesNames: BadgeStylesNames
+  vars: BadgeCssVariables
+  variant: BadgeVariant
+}>

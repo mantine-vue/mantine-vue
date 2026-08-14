@@ -36,7 +36,7 @@ export { defaultProps, varsResolver, flattenChildren }
 </script>
 
 <script setup lang="ts">
-import { cloneVNode, computed, h, shallowRef, useAttrs, useSlots, type VNodeChild } from 'vue'
+import { ref, cloneVNode, computed, h, shallowRef, useAttrs, useSlots, type VNodeChild } from 'vue'
 import { assignRef } from '@mantine-vue/hooks'
 import { Box, resolveNode, useDirection, useProps, useStyles } from '../../core'
 import { GripHorizontalIcon, GripVerticalIcon } from './GripIcon'
@@ -54,6 +54,7 @@ defineOptions({
  * Intentionally undefined to preserve downstream defaults.
  */
 const rawProps = withDefaults(defineProps<SplitterOwnProps>(), {
+  rootRef: undefined,
   withHandle: undefined,
   resetOnDoubleClick: undefined,
   handleIcon: undefined,
@@ -108,7 +109,6 @@ const splitter = useSplitter({
 })
 
 assignRef(props.splitterRef, splitter)
-defineExpose(splitter)
 
 const getStyles = useStyles({
   name: 'Splitter',
@@ -191,10 +191,24 @@ const renderItems = (): VNodeChild => {
 
   return items
 }
+
+const rootElement = ref<Element | null>(null)
+
+const setRootRef = (node: Element | null) => {
+  rootElement.value = node
+  assignRef(props.rootRef, node)
+}
+
+defineExpose({ ...splitter, rootElement })
 </script>
 
 <template>
-  <Box :ref="splitter.setContainer" v-bind="{ ...attrs, ...rootStyles }" :mod="rootMod">
+  <Box
+    :rootRef="setRootRef"
+    :ref="splitter.setContainer"
+    v-bind="{ ...attrs, ...rootStyles }"
+    :mod="rootMod"
+  >
     <component :is="renderItems" />
   </Box>
 </template>

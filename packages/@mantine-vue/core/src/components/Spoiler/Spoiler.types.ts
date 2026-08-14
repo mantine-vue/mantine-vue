@@ -1,5 +1,5 @@
 import type { VNodeChild } from 'vue'
-import type { BoxProps, MantineNode, StylesApiProps } from '../../core'
+import type { BoxProps, MantineNode, StylesApiProps, Factory } from '../../core'
 
 export type SpoilerStylesNames = 'root' | 'control' | 'content'
 
@@ -19,7 +19,10 @@ export interface SpoilerSlots {
 }
 
 /** Props declared by `Spoiler` itself. See `SpoilerProps` for the full public type. */
-export interface SpoilerOwnProps extends StylesApiProps<SpoilerProps> {
+export interface SpoilerOwnProps extends StylesApiProps<SpoilerFactory> {
+  /** Receives the root DOM node. */
+  rootRef?: VueRefTarget<Element>
+
   /**
    * Maximum height of visible content in px. When content exceeds this height,
    * the toggle control appears.
@@ -71,3 +74,14 @@ export interface SpoilerEmits {
   /** Emitted when expanded state changes, bound with `v-model:expanded`. */
   'update:expanded': [expanded: boolean]
 }
+
+export type SpoilerFactory = Factory<{
+  props: Omit<SpoilerProps, 'rootRef'>
+  ref: HTMLDivElement
+  slots: SpoilerSlots
+  emits: SpoilerEmits
+  element: 'div'
+  stylesNames: SpoilerStylesNames
+  vars: SpoilerCssVariables
+}>
+import type { VueRefTarget } from '@mantine-vue/hooks'

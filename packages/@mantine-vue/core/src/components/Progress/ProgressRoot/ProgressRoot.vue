@@ -14,7 +14,8 @@ export { varsResolver }
 </script>
 
 <script setup lang="ts">
-import { useAttrs } from 'vue'
+import { ref, useAttrs } from 'vue'
+import { assignRef } from '@mantine-vue/hooks'
 import { Box, useProps, useStyles } from '../../../core'
 import { provideProgressContext } from '../Progress.context'
 import type { ProgressRootOwnProps, ProgressRootSlots } from './ProgressRoot.types'
@@ -23,6 +24,7 @@ import classes from '../Progress.module.css'
 defineOptions({ name: 'ProgressRoot', inheritAttrs: false })
 
 const rawProps = withDefaults(defineProps<ProgressRootOwnProps>(), {
+  rootRef: undefined,
   size: undefined,
   radius: undefined,
   autoContrast: undefined,
@@ -52,10 +54,20 @@ const getStyles = useStyles({
 })
 
 provideProgressContext({ getStyles, autoContrast: props.autoContrast })
+
+const rootElement = ref<Element | null>(null)
+
+const setRootRef = (node: Element | null) => {
+  rootElement.value = node
+  assignRef(props.rootRef, node)
+}
+
+defineExpose({ rootElement })
 </script>
 
 <template>
   <Box
+    :rootRef="setRootRef"
     v-bind="{
       ...attrs,
       ...getStyles('root', { className: attrs.class, style: attrs.style as any }),

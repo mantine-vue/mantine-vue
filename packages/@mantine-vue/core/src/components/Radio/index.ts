@@ -1,6 +1,8 @@
 export { Radio } from './Radio'
 export type {
   RadioCssVariables,
+  RadioEmits,
+  RadioFactory,
   RadioIconSlotProps,
   RadioOwnProps,
   RadioProps,

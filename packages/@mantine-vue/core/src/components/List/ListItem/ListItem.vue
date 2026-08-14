@@ -1,10 +1,12 @@
 <script setup lang="ts">
-import { cloneVNode, isVNode, useAttrs, useSlots } from 'vue'
+import { ref, cloneVNode, isVNode, useAttrs, useSlots } from 'vue'
+import { assignRef } from '@mantine-vue/hooks'
 import { Box, hasNode, resolveNode, useProps } from '../../../core'
 import { useListContext } from '../List.context'
 import type { ListItemOwnProps, ListItemSlots } from './ListItem.types'
 defineOptions({ name: 'ListItem', inheritAttrs: false })
 const rawProps = withDefaults(defineProps<ListItemOwnProps>(), {
+  rootRef: undefined,
   icon: undefined,
   mod: undefined,
   classNames: undefined,
@@ -23,9 +25,19 @@ const getIcon = () => {
   return hasNode(ownIcon) ? ownIcon : renderListIcon(ctx.icon)
 }
 const styleOptions = () => ({ classNames: props.classNames, styles: props.styles }) as any
+
+const rootElement = ref<Element | null>(null)
+
+const setRootRef = (node: Element | null) => {
+  rootElement.value = node
+  assignRef(props.rootRef, node)
+}
+
+defineExpose({ rootElement })
 </script>
 <template>
   <Box
+    :rootRef="setRootRef"
     v-bind="{
       ...attrs,
       ...ctx.getStyles('item', {

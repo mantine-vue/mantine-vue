@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { computed, useAttrs } from 'vue'
+import { ref, computed, useAttrs } from 'vue'
+import { assignRef } from '@mantine-vue/hooks'
 import { Box } from '../../../core'
 import { useSplitterContext } from '../Splitter.context'
 import type { SplitterPaneOwnProps, SplitterPaneSlots } from './SplitterPane.types'
@@ -10,6 +11,7 @@ defineOptions({
 })
 
 const props = withDefaults(defineProps<SplitterPaneOwnProps>(), {
+  rootRef: undefined,
   min: undefined,
   max: undefined,
   collapsible: false,
@@ -35,10 +37,20 @@ const paneStyles = computed(() =>
     props,
   }),
 )
+
+const rootElement = ref<Element | null>(null)
+
+const setRootRef = (node: Element | null) => {
+  rootElement.value = node
+  assignRef(props.rootRef, node)
+}
+
+defineExpose({ rootElement })
 </script>
 
 <template>
   <Box
+    :rootRef="setRootRef"
     v-bind="{ ...attrs, ...paneStyles }"
     :mod="[{ collapsed: context.collapsed[index] || undefined }, props.mod]"
     :style="[paneStyles.style, sizeStyle, attrs.style]"

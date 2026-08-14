@@ -25,8 +25,8 @@ export { varsResolver }
 </script>
 
 <script setup lang="ts">
-import { computed, useAttrs, useSlots } from 'vue'
-import { useUncontrolled } from '@mantine-vue/hooks'
+import { ref, computed, useAttrs, useSlots } from 'vue'
+import { assignRef, useUncontrolled } from '@mantine-vue/hooks'
 import { Box, hasNode, resolveNode, useStyles } from '../../core'
 import { AccordionChevron } from '../Accordion'
 import { Collapse } from '../Collapse'
@@ -37,6 +37,7 @@ import classes from './NavLink.module.css'
 defineOptions({ name: 'NavLink', inheritAttrs: false })
 
 const props = withDefaults(defineProps<NavLinkOwnProps>(), {
+  rootRef: undefined,
   component: 'a',
   label: undefined,
   description: undefined,
@@ -126,6 +127,15 @@ function handleKeydown(event: KeyboardEvent) {
     toggle(event)
   }
 }
+
+const rootElement = ref<Element | null>(null)
+
+const setRootRef = (node: Element | null) => {
+  rootElement.value = node
+  assignRef(props.rootRef, node)
+}
+
+defineExpose({ rootElement })
 </script>
 
 <template>
@@ -140,6 +150,7 @@ function handleKeydown(event: KeyboardEvent) {
     :mod="[{ disabled: props.disabled, active: props.active, expanded: opened }, props.mod]"
     @click="handleClick"
     @keydown="handleKeydown"
+    :rootRef="setRootRef"
   >
     <Box
       v-if="hasNode(leftSection)"

@@ -1,3 +1,7 @@
+import type { CarouselSlide } from '../CarouselSlide'
+import type { Ref } from 'vue'
+import type { Factory } from '@mantine-vue/core'
+import type { VueRefTarget } from '@mantine-vue/hooks'
 import type { EmblaCarouselType, EmblaOptionsType, EmblaPluginType } from 'embla-carousel'
 
 export type CarouselStylesNames =
@@ -12,6 +16,9 @@ export type CarouselStylesNames =
 
 /** Props accepted by `Carousel`. */
 export interface CarouselProps {
+  /** Receives the root DOM node. */
+  rootRef?: VueRefTarget<Element>
+
   /** Options passed to Embla Carousel. */
   emblaOptions?: EmblaOptionsType
   /** Props passed down to next control. */
@@ -71,3 +78,24 @@ export interface CarouselEmits {
   /** Emitted with the Embla API instance once it becomes available. */
   'embla-api-ready': [embla: EmblaCarouselType]
 }
+
+export type CarouselCssVariables = {
+  root: '--carousel-height' | '--carousel-control-size' | '--carousel-controls-offset'
+}
+
+export type CarouselFactory = Factory<{
+  props: Omit<CarouselProps, 'rootRef'>
+  emits: CarouselEmits
+  ref: HTMLDivElement
+  exposed: {
+    /** The underlying Embla instance, once the carousel has mounted. */
+    embla: Ref<EmblaCarouselType | undefined>
+    rootElement: Element | null
+  }
+  element: 'div'
+  stylesNames: CarouselStylesNames
+  vars: CarouselCssVariables
+  staticComponents: {
+    Slide: typeof CarouselSlide
+  }
+}>

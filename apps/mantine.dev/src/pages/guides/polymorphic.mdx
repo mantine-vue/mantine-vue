@@ -1,0 +1,263 @@
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.GuidePolymorphic)
+
+# Polymorphic components
+
+A polymorphic component renders a different root element or component depending on its
+`component` prop, while keeping its own props, styles and behavior. Props of the selected root
+are inferred and type-checked alongside the component's own props.
+
+## The `component` prop
+
+```vue
+<script setup lang="ts">
+import { Button } from '@mantine-vue/core'
+</script>
+
+<template>
+  <!-- default root: a <button> -->
+  <Button type="submit">Submit</Button>
+
+  <!-- rendered as an <a>, so anchor attributes are available -->
+  <Button component="a" href="/docs" target="_blank">Documentation</Button>
+</template>
+```
+
+## Intrinsic elements
+
+Passing a tag name gives you that element's attributes, and only that element's attributes:
+
+```vue
+<Button component="a" href="/docs" rel="noreferrer">Documentation</Button>
+```
+
+`href` and `rel` are valid here because the root is an `a`. On the default `button` root they
+are rejected, because a button has no such attributes.
+
+## Custom Vue components
+
+Any Vue component can be the root. Its declared props are added to the component's own, and
+required props stay required:
+
+```vue
+<script setup lang="ts">
+import { RouterLink } from 'vue-router'
+import { Button } from '@mantine-vue/core'
+</script>
+
+<template>
+  <Button :component="RouterLink" to="/docs">Documentation</Button>
+</template>
+```
+
+Where a name is declared by both, the Mantine prop wins. `Button` defines `size`, so
+`size` always refers to the button size, never to a `size` prop on the root.
+
+## Usage with Vue Router
+
+`RouterLink` is the most common custom root. Bind it with `:component` — a string
+`component="RouterLink"` would be treated as an intrinsic tag name:
+
+```vue
+<Button :component="RouterLink" to="/docs" variant="light">Documentation</Button>
+```
+
+To avoid repeating the root at every call site, fix it once with [withProps](#withprops).
+
+## Root attribute inference
+
+Root props are inferred from the value of `component`, so the following are all type errors:
+
+```vue
+<!-- href is not a button attribute -->
+<Button href="/docs">Docs</Button>
+
+<!-- href must be a string -->
+<Button component="a" :href="123">Docs</Button>
+
+<!-- RouterLink requires `to` -->
+<Button :component="RouterLink">Docs</Button>
+```
+
+### Enable `strictTemplates`
+
+Vue permits any fallthrough attribute on a component unless `vueCompilerOptions.strictTemplates`
+is enabled in `tsconfig.json`. Without it, an attribute that does not exist on the selected root
+is accepted silently in templates. Turn it on to get the checks above:
+
+```json
+{
+  "vueCompilerOptions": {
+    "strictTemplates": true
+  }
+}
+```
+
+Wrong _types_ on known props are reported either way; it is unknown props that need
+`strictTemplates`.
+
+## Refs and `rootRef`
+
+Vue resolves a template `ref` on a component to that component's **public instance**, never to
+the DOM node it renders, and there is no supported way to change that. This is the main
+difference from Mantine React, where `ref` forwards to the element.
+
+Mantine Vue therefore accepts a `rootRef` prop, typed to the element the selected root renders
+— `HTMLButtonElement` by default, `HTMLAnchorElement` under `component="a"`.
+
+**In templates, use the callback form.** Vue unwraps refs when binding them, so `:rootRef="el"`
+would pass the current element instead of the ref object and could not be assigned to:
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue'
+import { Button } from '@mantine-vue/core'
+
+const el = ref<HTMLButtonElement | null>(null)
+</script>
+
+<template>
+  <Button :rootRef="(node) => (el = node as HTMLButtonElement | null)">Submit</Button>
+</template>
+```
+
+From render functions and `h()`, where no unwrapping happens, a ref object can be passed
+directly:
+
+```ts
+h(Button, { rootRef: el })
+```
+
+The root node is also exposed as `rootElement`, so a plain `ref` still reaches it:
+
+```ts
+const button = ref()
+// button.value.rootElement is the DOM node
+```
+
+## Usage in render functions
+
+In templates, props are checked against the component, so nothing special is needed.
+
+In `h()` calls, pin the root when the props include a value whose type is a **closed** literal
+union. `Button<'button'>` is an instantiation expression: it fixes the generic root, which makes
+the props type concrete so values are checked against it instead of being inferred from the
+object literal.
+
+```ts
+// ✅ no pin needed: Mantine props are open unions (`ButtonVariant | (string & {})`)
+h(Button, { variant: 'filled', mt: 'md' })
+
+// ✅ pinned: `type` is a closed union, 'button' | 'reset' | 'submit'
+h(Button<'button'>, { type: 'submit' }, () => 'Submit')
+
+// ✅ pinned: `pointerEvents` is a closed union too
+h(Button<'button'>, { style: { pointerEvents: 'all' } }, () => 'Select files')
+
+// ❌ unpinned: 'submit' widens to `string`, which the closed union rejects
+h(Button, { type: 'submit' }, () => 'Submit')
+```
+
+`h` infers its props type parameter _from the props argument_, so a bare `'submit'` widens to
+`string` before the component is ever consulted. Pinning the root sidesteps the inference while
+keeping full checking — `h(Button<'button'>, { type: 'nope' })` is still rejected.
+
+Which values are affected:
+
+- **Closed** — enum-only DOM attributes (`type`) and enum-only CSS properties
+  (`pointerEvents`, `textAlign`, `position`). These need the pin.
+- **Open** — Mantine props, and CSS properties that accept arbitrary values
+  (`borderRadius`, `color`, `display`, `fontStyle`), because `csstype` gives them a
+  `(string & {})` member. These do not.
+
+Non-polymorphic components are unaffected — they have a construct signature, so `h` takes their
+props type directly.
+
+## `withProps`
+
+`withProps` returns a new component with props pre-applied, keeping polymorphic behavior. A
+`component` fixed here becomes the new component's default root:
+
+```vue
+<script setup lang="ts">
+import { RouterLink } from 'vue-router'
+import { Button } from '@mantine-vue/core'
+
+const LinkButton = Button.withProps({
+  component: RouterLink,
+  variant: 'subtle',
+})
+</script>
+
+<template>
+  <LinkButton to="/docs">Documentation</LinkButton>
+</template>
+```
+
+Props passed at the call site take precedence over the fixed ones, so
+`<LinkButton variant="filled" />` renders a filled button.
+
+## `extend`
+
+`extend` builds a theme entry for the component, validated against its props and style names:
+
+```ts
+import { Button, createTheme } from '@mantine-vue/core'
+
+export const theme = createTheme({
+  components: {
+    Button: Button.extend({
+      defaultProps: { variant: 'light' },
+      classNames: { root: 'custom-root' },
+      styles: { root: { fontWeight: 600 } },
+      vars: () => ({ root: { '--button-height': '40px' } }),
+    }),
+  },
+})
+```
+
+## Getting the props type
+
+Polymorphic components are typed as generic function components so the root can be inferred.
+They have no construct signature, so `InstanceType<typeof Button>['$props']` does not work on
+them. Use `ComponentProps` instead:
+
+```ts
+import type { ComponentProps } from '@mantine-vue/core'
+import { Button } from '@mantine-vue/core'
+
+// props for the default root
+type ButtonProps = ComponentProps<typeof Button>
+
+// props for an explicit root
+type AnchorButtonProps = ComponentProps<typeof Button, 'a'>
+```
+
+### Migrating from `InstanceType`
+
+If you previously wrote:
+
+```ts
+type ButtonProps = InstanceType<typeof Button>['$props']
+```
+
+replace it with:
+
+```ts
+type ButtonProps = ComponentProps<typeof Button>
+```
+
+Non-polymorphic components are unaffected: they keep a construct signature, so `InstanceType`
+continues to work for them.
+
+## Differences from Mantine React
+
+|                         | Mantine React                  | Mantine Vue                                                              |
+| ----------------------- | ------------------------------ | ------------------------------------------------------------------------ |
+| Root element ref        | `ref` forwards to the DOM node | `ref` resolves to the component instance; use `rootRef` or `rootElement` |
+| Invalid root attributes | Always an error                | An error only when `strictTemplates` is enabled                          |
+| Props type              | `ButtonProps`                  | `ComponentProps<typeof Button>`                                          |
+| Render override         | `renderRoot`                   | Not implemented; use `component`                                         |
+| Closed-union attributes | `createElement` needs nothing  | `h()` needs `as const`; templates need nothing                           |

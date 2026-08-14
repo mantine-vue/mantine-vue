@@ -72,7 +72,7 @@ const Demo = defineComponent({
                 {
                   default: () =>
                     h(
-                      Flex,
+                      Flex<'span'>,
                       { component: 'span', gap: 'md', align: 'center', wrap: 'nowrap' },
                       {
                         default: () => [

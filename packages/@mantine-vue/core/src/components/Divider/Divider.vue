@@ -18,13 +18,15 @@ export { varsResolver }
 </script>
 
 <script setup lang="ts">
-import { computed, useAttrs, useSlots } from 'vue'
+import { ref, computed, useAttrs, useSlots } from 'vue'
+import { assignRef } from '@mantine-vue/hooks'
 import { Box, hasNode, resolveNode, useProps, useStyles } from '../../core'
 import type { DividerOwnProps, DividerSlots } from './Divider.types'
 import classes from './Divider.module.css'
 
 defineOptions({ name: 'Divider', inheritAttrs: false })
 const rawProps = withDefaults(defineProps<DividerOwnProps>(), {
+  rootRef: undefined,
   color: undefined,
   label: undefined,
   labelPosition: undefined,
@@ -57,10 +59,24 @@ const rootMod = computed(() => [
   { orientation: props.orientation, withLabel: hasNode(label.value) },
   (attrs as any).mod,
 ])
+
+const rootElement = ref<Element | null>(null)
+
+const setRootRef = (node: Element | null) => {
+  rootElement.value = node
+  assignRef(props.rootRef, node)
+}
+
+defineExpose({ rootElement })
 </script>
 
 <template>
-  <Box v-bind="{ ...attrs, ...getStyles('root') }" role="separator" :mod="rootMod">
+  <Box
+    :rootRef="setRootRef"
+    v-bind="{ ...attrs, ...getStyles('root') }"
+    role="separator"
+    :mod="rootMod"
+  >
     <Box
       v-if="hasNode(label)"
       component="span"

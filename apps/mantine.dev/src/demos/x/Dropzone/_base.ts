@@ -40,7 +40,7 @@ export const BaseDemo = defineComponent({
           onReject: (files: any) => console.log('rejected files', files),
           maxSize: 5 * 1024 ** 2,
           accept: IMAGE_MIME_TYPE,
-          ...(attrs as Partial<DropzoneProps>),
+          ...(attrs as Partial<Omit<DropzoneProps, 'rootRef'>>),
         },
         () => h(DropzoneDemoChildren),
       )

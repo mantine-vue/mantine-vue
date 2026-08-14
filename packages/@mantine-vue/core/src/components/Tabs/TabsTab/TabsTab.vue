@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { computed, useAttrs, useSlots } from 'vue'
+import { ref, computed, useAttrs, useSlots } from 'vue'
+import { assignRef } from '@mantine-vue/hooks'
 import {
   createScopedKeydownHandler,
   getThemeColor,
@@ -20,6 +21,7 @@ defineOptions({
 })
 
 const rawProps = withDefaults(defineProps<TabsTabOwnProps>(), {
+  rootRef: undefined,
   // Intentionally undefined to preserve downstream defaults.
   rightSection: undefined,
   leftSection: undefined,
@@ -98,10 +100,20 @@ const onKeydown = computed(() =>
  * keeps Vue from merging the two and invoking the consumer handler twice.
  */
 const forwardedAttrs = computed(() => omitAttrs(attrs, ['onClick', 'onKeydown', 'onKeyDown']))
+
+const rootElement = ref<Element | null>(null)
+
+const setRootRef = (node: Element | null) => {
+  rootElement.value = node
+  assignRef(props.rootRef, node)
+}
+
+defineExpose({ rootElement })
 </script>
 
 <template>
   <UnstyledButton
+    :rootRef="setRootRef"
     v-bind="{ ...forwardedAttrs, ...rootStyles }"
     :disabled="props.disabled"
     :unstyled="ctx.unstyled"

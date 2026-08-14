@@ -6,7 +6,9 @@ import {
   DrawerOverlay,
   DrawerTitle,
 } from './Drawer.compound'
+import { factory } from '../../core'
 import DrawerComponent from './Drawer.vue'
+import type { DrawerFactory } from './Drawer.types'
 import DrawerRootComponent, { varsResolver } from './DrawerRoot.vue'
 import DrawerStackComponent from './DrawerStack.vue'
 import classes from './Drawer.module.css'
@@ -17,7 +19,7 @@ export const DrawerStack = DrawerStackComponent
 export { DrawerBody, DrawerCloseButton, DrawerContent, DrawerHeader, DrawerOverlay, DrawerTitle }
 export { useDrawersStack } from './use-drawers-stack'
 
-export const Drawer = Object.assign(DrawerComponent, {
+export const Drawer = factory<DrawerFactory>(DrawerComponent, {
   classes,
   varsResolver,
   Root: DrawerRoot,
@@ -35,6 +37,7 @@ export type { UseDrawersStackReturnType } from './use-drawers-stack'
 export type {
   DrawerCompoundProps,
   DrawerCssVariables,
+  DrawerEmits,
   DrawerFactory,
   DrawerPosition,
   DrawerProps,

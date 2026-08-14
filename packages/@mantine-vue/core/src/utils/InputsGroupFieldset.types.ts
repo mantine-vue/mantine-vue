@@ -1,3 +1,4 @@
+import type { Factory } from '../core'
 import type { VNodeChild } from 'vue'
 import type { BoxProps } from '../core'
 
@@ -11,3 +12,9 @@ export interface InputsGroupFieldsetSlots {
  * the `fieldset` element – so its public type is `BoxProps`.
  */
 export type InputsGroupFieldsetProps = BoxProps
+
+export type InputsGroupFieldsetFactory = Factory<{
+  props: InputsGroupFieldsetProps
+  slots: InputsGroupFieldsetSlots
+  element: 'fieldset'
+}>

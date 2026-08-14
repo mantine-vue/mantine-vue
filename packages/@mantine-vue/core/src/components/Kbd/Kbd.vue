@@ -10,7 +10,8 @@ export { varsResolver }
 </script>
 
 <script setup lang="ts">
-import { useAttrs } from 'vue'
+import { ref, useAttrs } from 'vue'
+import { assignRef } from '@mantine-vue/hooks'
 import { Box, useProps, useStyles } from '../../core'
 import type { KbdOwnProps, KbdSlots } from './Kbd.types'
 import classes from './Kbd.module.css'
@@ -21,6 +22,7 @@ defineOptions({
 })
 
 const rawProps = withDefaults(defineProps<KbdOwnProps>(), {
+  rootRef: undefined,
   size: undefined,
   classNames: undefined,
   styles: undefined,
@@ -45,10 +47,19 @@ const getStyles = useStyles({
   varsResolver,
   unstyled: props.unstyled,
 })
+
+const rootElement = ref<Element | null>(null)
+
+const setRootRef = (node: Element | null) => {
+  rootElement.value = node
+  assignRef(props.rootRef, node)
+}
+
+defineExpose({ rootElement })
 </script>
 
 <template>
-  <Box v-bind="{ ...attrs, ...getStyles('root') }" component="kbd">
+  <Box :rootRef="setRootRef" v-bind="{ ...attrs, ...getStyles('root') }" component="kbd">
     <slot />
   </Box>
 </template>

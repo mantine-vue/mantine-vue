@@ -212,7 +212,7 @@ export const MonthView = defineComponent({
                 return h('div', { class: classes.monthViewWeek }, [
                   props.withWeekNumbers
                     ? h(
-                        UnstyledButton,
+                        UnstyledButton<'button'>,
                         {
                           type: 'button',
                           class: classes.monthViewWeekNumber,
@@ -255,7 +255,7 @@ export const MonthView = defineComponent({
                       },
                       [
                         h(
-                          UnstyledButton,
+                          UnstyledButton<'button'>,
                           {
                             type: 'button',
                             ...dayProps,

@@ -73,7 +73,9 @@ const Demo = defineComponent({
             placeholder: 'Your password',
             ...form.getInputProps('password'),
           }),
-          h(Group, { justify: 'flex-end' }, () => h(Button, { type: 'submit' }, () => 'Submit')),
+          h(Group, { justify: 'flex-end' }, () =>
+            h(Button<'button'>, { type: 'submit' }, () => 'Submit'),
+          ),
         ]),
       )
   },

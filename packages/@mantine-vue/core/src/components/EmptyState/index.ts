@@ -1,10 +1,11 @@
 export { EmptyState } from './EmptyState'
 export type {
+  EmptyStateCssVariables,
+  EmptyStateFactory,
   EmptyStateOwnProps,
   EmptyStateProps,
   EmptyStateSlots,
   EmptyStateStylesNames,
-  EmptyStateCssVariables,
   EmptyStateVariant,
 } from './EmptyState'
 

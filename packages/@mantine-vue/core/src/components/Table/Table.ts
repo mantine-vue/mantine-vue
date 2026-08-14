@@ -1,5 +1,6 @@
-import { withBoxProps } from '../../core'
+import { factory } from '../../core'
 import TableComponent, { varsResolver } from './Table.vue'
+import type { TableFactory } from './Table.types'
 import {
   TableCaption,
   TableTbody,
@@ -13,21 +14,19 @@ import { TableDataRenderer } from './TableDataRenderer'
 import { TableScrollContainer } from './TableScrollContainer'
 import classes from './Table.module.css'
 
-export const Table = withBoxProps(
-  Object.assign(TableComponent, {
-    classes,
-    varsResolver,
-    Thead: TableThead,
-    Tbody: TableTbody,
-    Tfoot: TableTfoot,
-    Td: TableTd,
-    Th: TableTh,
-    Tr: TableTr,
-    Caption: TableCaption,
-    ScrollContainer: TableScrollContainer,
-    DataRenderer: TableDataRenderer,
-  }),
-)
+export const Table = factory<TableFactory>(TableComponent, {
+  classes,
+  varsResolver,
+  Thead: TableThead,
+  Tbody: TableTbody,
+  Tfoot: TableTfoot,
+  Td: TableTd,
+  Th: TableTh,
+  Tr: TableTr,
+  Caption: TableCaption,
+  ScrollContainer: TableScrollContainer,
+  DataRenderer: TableDataRenderer,
+})
 
 export type {
   TableCssVariables,
@@ -37,4 +36,5 @@ export type {
   TableSlots,
   TableStylesNames,
   TableVariant,
+  TableFactory,
 } from './Table.types'

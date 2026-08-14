@@ -18,8 +18,8 @@ export { defaultProps, varsResolver }
 </script>
 
 <script setup lang="ts">
-import { computed, useAttrs, useSlots } from 'vue'
-import { useElementSize, useId, useUncontrolled } from '@mantine-vue/hooks'
+import { ref, computed, useAttrs, useSlots } from 'vue'
+import { assignRef, useElementSize, useId, useUncontrolled } from '@mantine-vue/hooks'
 import { Box, hasNode, rem, resolveNode, useProps, useStyles } from '../../core'
 import { Anchor } from '../Anchor'
 import type { SpoilerEmits, SpoilerOwnProps, SpoilerSlots } from './Spoiler.types'
@@ -31,6 +31,7 @@ defineOptions({
 })
 
 const rawProps = withDefaults(defineProps<SpoilerOwnProps>(), {
+  rootRef: undefined,
   maxHeight: undefined,
   // Intentionally undefined to preserve downstream defaults
   showLabel: undefined,
@@ -101,10 +102,20 @@ const contentStyle = computed(() => ({
 function toggle() {
   setShowState(!show.value)
 }
+
+const rootElement = ref<Element | null>(null)
+
+const setRootRef = (node: Element | null) => {
+  rootElement.value = node
+  assignRef(props.rootRef, node)
+}
+
+defineExpose({ rootElement })
 </script>
 
 <template>
   <Box
+    :rootRef="setRootRef"
     v-bind="{
       ...attrs,
       ...getStyles('root', { className: attrs.class, style: attrs.style as any }),

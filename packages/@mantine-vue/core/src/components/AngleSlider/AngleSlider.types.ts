@@ -1,5 +1,5 @@
 import type { VNodeChild } from 'vue'
-import type { BoxProps, StylesApiProps } from '../../core'
+import type { BoxProps, StylesApiProps, Factory } from '../../core'
 
 export type AngleSliderStylesNames = 'root' | 'thumb' | 'label' | 'marks' | 'mark'
 
@@ -16,7 +16,7 @@ export interface AngleSliderMark {
 }
 
 /** Props declared by `AngleSlider` itself. See `AngleSliderProps` for the full public type. */
-export interface AngleSliderOwnProps extends StylesApiProps<AngleSliderProps> {
+export interface AngleSliderOwnProps extends StylesApiProps<AngleSliderFactory> {
   /**
    * Number of degrees the value changes by with each arrow key press.
    *
@@ -72,3 +72,10 @@ export interface AngleSliderOwnProps extends StylesApiProps<AngleSliderProps> {
 
 export interface AngleSliderProps
   extends Omit<BoxProps, keyof AngleSliderOwnProps>, AngleSliderOwnProps {}
+
+export type AngleSliderFactory = Factory<{
+  props: AngleSliderProps
+  element: 'div'
+  stylesNames: AngleSliderStylesNames
+  vars: AngleSliderCssVariables
+}>

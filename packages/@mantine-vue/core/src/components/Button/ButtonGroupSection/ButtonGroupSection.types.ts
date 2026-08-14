@@ -5,6 +5,7 @@ import type {
   MantineGradient,
   MantineRadius,
   StylesApiProps,
+  Factory,
 } from '../../../core'
 import type { ButtonSize, ButtonVariant } from '../Button'
 
@@ -21,7 +22,10 @@ export type ButtonGroupSectionCssVariables = {
 }
 
 /** Props declared by `ButtonGroupSection` itself. See `ButtonGroupSectionProps` for the full public type. */
-export interface ButtonGroupSectionOwnProps extends StylesApiProps<ButtonGroupSectionProps> {
+export interface ButtonGroupSectionOwnProps extends StylesApiProps<ButtonGroupSectionFactory> {
+  /** Receives the root DOM node. */
+  rootRef?: VueRefTarget<Element>
+
   /** Controls section `height`, `font-size` and horizontal `padding`. @default 'sm' */
   size?: ButtonSize
 
@@ -48,3 +52,13 @@ export interface ButtonGroupSectionSlots {
   /** Section content. */
   default?: () => VNodeChild
 }
+
+export type ButtonGroupSectionFactory = Factory<{
+  props: Omit<ButtonGroupSectionProps, 'rootRef'>
+  ref: HTMLDivElement
+  slots: ButtonGroupSectionSlots
+  element: 'div'
+  stylesNames: ButtonGroupSectionStylesNames
+  vars: ButtonGroupSectionCssVariables
+}>
+import type { VueRefTarget } from '@mantine-vue/hooks'

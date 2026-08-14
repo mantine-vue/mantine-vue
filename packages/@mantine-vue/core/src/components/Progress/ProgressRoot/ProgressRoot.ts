@@ -1,11 +1,16 @@
-import { withBoxProps } from '../../../core'
+import { factory } from '../../../core'
 import ProgressRootComponent, { varsResolver } from './ProgressRoot.vue'
+import type { ProgressRootFactory } from './ProgressRoot.types'
 import classes from '../Progress.module.css'
 
-export const ProgressRoot = withBoxProps(ProgressRootComponent)
-Object.assign(ProgressRoot, { classes, varsResolver })
+export const ProgressRoot = factory<ProgressRootFactory>(ProgressRootComponent, {
+  classes,
+  varsResolver,
+})
 
 export type {
+  ProgressRootCssVariables,
+  ProgressRootFactory,
   ProgressRootOwnProps,
   ProgressRootProps,
   ProgressRootSlots,

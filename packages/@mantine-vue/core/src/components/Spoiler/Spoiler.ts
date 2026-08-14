@@ -1,16 +1,17 @@
-import { withBoxProps } from '../../core'
+import { factory } from '../../core'
 import SpoilerComponent, { varsResolver } from './Spoiler.vue'
+import type { SpoilerFactory } from './Spoiler.types'
 import classes from './Spoiler.module.css'
 
-export const Spoiler = withBoxProps(SpoilerComponent)
-
-// Static properties kept from the previous implementation: theme extensions and
-// the styles API validator read them off the component.
-Object.assign(Spoiler, { classes, varsResolver })
+export const Spoiler = factory<SpoilerFactory>(SpoilerComponent, {
+  classes,
+  varsResolver,
+})
 
 export type {
   SpoilerCssVariables,
   SpoilerEmits,
+  SpoilerFactory,
   SpoilerOwnProps,
   SpoilerProps,
   SpoilerSlots,

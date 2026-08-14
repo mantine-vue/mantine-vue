@@ -132,7 +132,7 @@ const eyeSupported = computed(() => typeof window !== 'undefined' && 'EyeDropper
 const eye = computed(() =>
   props.withEyeDropper && eyeSupported.value && !disabled.value && !readOnly.value
     ? h(
-        ActionIcon,
+        ActionIcon<'button'>,
         {
           ...props.eyeDropperButtonProps,
           type: 'button',

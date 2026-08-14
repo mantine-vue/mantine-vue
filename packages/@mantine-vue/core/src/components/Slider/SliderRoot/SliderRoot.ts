@@ -1,7 +1,13 @@
-import { withBoxProps } from '../../../core'
+import { factory } from '../../../core'
 import SliderRootComponent from './SliderRoot.vue'
+import type { SliderRootFactory } from './SliderRoot.types'
 
-/** Root element of `Slider` and `RangeSlider`, styled through the Slider context. */
-export const SliderRoot = withBoxProps(SliderRootComponent)
+export const SliderRoot = factory<SliderRootFactory>(SliderRootComponent)
 
-export type { SliderRootOwnProps, SliderRootProps, SliderRootSlots } from './SliderRoot.types'
+export type {
+  SliderRootFactory,
+  SliderRootOwnProps,
+  SliderRootProps,
+  SliderRootSlots,
+  SliderRootStylesNames,
+} from './SliderRoot.types'

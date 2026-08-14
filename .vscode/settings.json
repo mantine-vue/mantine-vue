@@ -24,5 +24,7 @@
   },
   "[json]": {
     "editor.defaultFormatter": "oxc.oxc-vscode"
-  }
+  },
+  "typescript.tsdk": ".yarn/sdks/typescript/lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true
 }

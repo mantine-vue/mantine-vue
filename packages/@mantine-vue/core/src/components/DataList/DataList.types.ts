@@ -1,5 +1,15 @@
+import type { DataListItemValue } from './DataListItemValue/DataListItemValue'
+import type { DataListItemLabel } from './DataListItemLabel/DataListItemLabel'
+import type { DataListItem } from './DataListItem/DataListItem'
 import type { VNodeChild } from 'vue'
-import type { BoxMod, BoxProps, MantineSize, MantineSpacing, StylesApiProps } from '../../core'
+import type {
+  BoxMod,
+  BoxProps,
+  MantineSize,
+  MantineSpacing,
+  StylesApiProps,
+  Factory,
+} from '../../core'
 
 export type DataListStylesNames = 'root' | 'item' | 'itemLabel' | 'itemValue'
 
@@ -13,7 +23,10 @@ export interface DataListSlots {
 }
 
 /** Props declared by `DataList` itself. See `DataListProps` for the full public type. */
-export interface DataListOwnProps extends StylesApiProps<DataListProps> {
+export interface DataListOwnProps extends StylesApiProps<DataListFactory> {
+  /** Receives the root DOM node. */
+  rootRef?: VueRefTarget<Element>
+
   /** Controls the `font-size` and `line-height` of the list. */
   size?: MantineSize | (string & {})
 
@@ -38,3 +51,18 @@ export interface DataListOwnProps extends StylesApiProps<DataListProps> {
 }
 
 export interface DataListProps extends Omit<BoxProps, keyof DataListOwnProps>, DataListOwnProps {}
+
+export type DataListFactory = Factory<{
+  props: Omit<DataListProps, 'rootRef'>
+  ref: HTMLElement
+  slots: DataListSlots
+  element: 'dl'
+  stylesNames: DataListStylesNames
+  vars: DataListCssVariables
+  staticComponents: {
+    Item: typeof DataListItem
+    ItemLabel: typeof DataListItemLabel
+    ItemValue: typeof DataListItemValue
+  }
+}>
+import type { VueRefTarget } from '@mantine-vue/hooks'

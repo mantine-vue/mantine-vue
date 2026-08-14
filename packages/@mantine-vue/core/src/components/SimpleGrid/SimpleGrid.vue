@@ -3,7 +3,8 @@ const defaultProps = { cols: 1, spacing: 'md', type: 'media' } as const
 </script>
 
 <script setup lang="ts">
-import { computed, useAttrs } from 'vue'
+import { ref, computed, useAttrs } from 'vue'
+import { assignRef } from '@mantine-vue/hooks'
 import { Box, useProps, useRandomClassName, useStyles } from '../../core'
 import { SimpleGridContainerVariables, SimpleGridMediaVariables } from './SimpleGridVariables'
 import type { SimpleGridOwnProps, SimpleGridSlots } from './SimpleGrid.types'
@@ -51,6 +52,15 @@ const variablesProps = computed(() => ({
   minColWidth: props.minColWidth,
   autoRows: props.autoRows,
 }))
+
+const rootElement = ref<Element | null>(null)
+
+const setRootRef = (node: Element | null) => {
+  rootElement.value = node
+  assignRef(props.rootRef, node)
+}
+
+defineExpose({ rootElement })
 </script>
 
 <template>
@@ -58,6 +68,7 @@ const variablesProps = computed(() => ({
     <SimpleGridContainerVariables v-bind="variablesProps" />
     <div v-bind="getStyles('container')">
       <Box
+        :rootRef="setRootRef"
         v-bind="{ ...attrs, ...getStyles('root', { className: responsiveClassName }) }"
         :data-auto-cols="autoColsAttr"
       >
@@ -68,6 +79,7 @@ const variablesProps = computed(() => ({
   <template v-else>
     <SimpleGridMediaVariables v-bind="variablesProps" />
     <Box
+      :rootRef="setRootRef"
       v-bind="{ ...attrs, ...getStyles('root', { className: responsiveClassName }) }"
       :data-auto-cols="autoColsAttr"
     >

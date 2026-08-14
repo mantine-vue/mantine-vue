@@ -41,6 +41,7 @@ export { defaultProps, varsResolver, toOffsetScrollbars }
 
 <script setup lang="ts">
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, useAttrs, watch } from 'vue'
+import { assignRef } from '@mantine-vue/hooks'
 import { useProps, useStyles } from '../../core'
 import { ScrollAreaCorner } from './ScrollAreaCorner/ScrollAreaCorner'
 import { ScrollAreaRoot } from './ScrollAreaRoot/ScrollAreaRoot'
@@ -269,10 +270,20 @@ const viewportBindings = computed(() => ({
   'data-scrollbars': props.scrollbars || undefined,
   'data-vertical-scrollbar-position': props.verticalScrollbarPosition,
 }))
+
+const rootElement = ref<Element | null>(null)
+
+const setRootRef = (node: Element | null) => {
+  rootElement.value = node
+  assignRef(props.rootRef, node)
+}
+
+defineExpose({ rootElement })
 </script>
 
 <template>
   <ScrollAreaRoot
+    :root-ref="setRootRef"
     v-bind="{ ...attrs, ...getStyles('root') }"
     :get-styles="getStyles"
     :type="rootType"

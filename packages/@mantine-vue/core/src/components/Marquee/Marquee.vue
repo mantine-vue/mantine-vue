@@ -22,7 +22,8 @@ const defaultProps = {
 </script>
 
 <script setup lang="ts">
-import { useAttrs } from 'vue'
+import { ref, useAttrs } from 'vue'
+import { assignRef } from '@mantine-vue/hooks'
 import { Box, useProps, useStyles } from '../../core'
 import type { MarqueeOwnProps, MarqueeSlots } from './Marquee.types'
 import classes from './Marquee.module.css'
@@ -30,6 +31,7 @@ import classes from './Marquee.module.css'
 defineOptions({ name: 'Marquee', inheritAttrs: false })
 
 const rawProps = withDefaults(defineProps<MarqueeOwnProps>(), {
+  rootRef: undefined,
   reverse: false,
   pauseOnHover: false,
   orientation: undefined,
@@ -61,10 +63,20 @@ const getStyles = useStyles({
   vars: props.vars as any,
   varsResolver,
 })
+
+const rootElement = ref<Element | null>(null)
+
+const setRootRef = (node: Element | null) => {
+  rootElement.value = node
+  assignRef(props.rootRef, node)
+}
+
+defineExpose({ rootElement })
 </script>
 
 <template>
   <Box
+    :rootRef="setRootRef"
     v-bind="{
       ...attrs,
       ...getStyles('root', { className: attrs.class, style: attrs.style as any }),

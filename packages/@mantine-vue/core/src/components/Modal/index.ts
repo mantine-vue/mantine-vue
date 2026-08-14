@@ -11,6 +11,7 @@ export {
 export type {
   ModalCompoundProps,
   ModalCssVariables,
+  ModalEmits,
   ModalFactory,
   ModalProps,
   ModalRootProps,

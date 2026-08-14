@@ -1,4 +1,5 @@
 import type { VNodeChild } from 'vue'
+import type { VueRefTarget } from '@mantine-vue/hooks'
 import type {
   BoxProps,
   MantineColor,
@@ -6,7 +7,11 @@ import type {
   MantineRadius,
   MantineSize,
   StylesApiProps,
+  PolymorphicFactory,
+  MantineElementType,
 } from '../../core'
+import type { ActionIconGroup } from './ActionIconGroup/ActionIconGroup'
+import type { ActionIconGroupSection } from './ActionIconGroupSection/ActionIconGroupSection'
 
 export type ActionIconVariant =
   | 'filled'
@@ -20,12 +25,15 @@ export type ActionIconVariant =
 
 /** Props declared by `ActionIcon` itself. See `ActionIconProps` for the full public type. */
 export interface ActionIconOwnProps extends StylesApiProps<ActionIconProps> {
+  /** Receives the root DOM node. The factory narrows this to the element the selected root renders. */
+  rootRef?: VueRefTarget<Element>
+
   /**
    * Root element or component rendered by `ActionIcon`.
    *
    * @default 'button'
    */
-  component?: string
+  component?: MantineElementType
 
   /**
    * If set, `Loader` component is displayed instead of the `children`
@@ -103,3 +111,20 @@ export type ActionIconCssVariables = {
     | '--ai-color'
     | '--ai-bd'
 }
+
+/** Public contract of `ActionIcon`. `component` and `rootRef` come from the factory. */
+export type ActionIconFactory = PolymorphicFactory<{
+  props: Omit<ActionIconProps, 'component' | 'rootRef'>
+  slots: ActionIconSlots
+  ref: HTMLButtonElement
+  exposed: { rootElement: Element | null }
+  defaultComponent: 'button'
+  defaultRef: HTMLButtonElement
+  stylesNames: ActionIconStylesNames
+  vars: ActionIconCssVariables
+  variant: ActionIconVariant
+  staticComponents: {
+    Group: typeof ActionIconGroup
+    GroupSection: typeof ActionIconGroupSection
+  }
+}>

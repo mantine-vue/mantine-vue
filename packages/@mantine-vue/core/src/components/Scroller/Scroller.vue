@@ -19,8 +19,8 @@ export { varsResolver }
 </script>
 
 <script setup lang="ts">
-import { computed, useAttrs } from 'vue'
-import { useScroller } from '@mantine-vue/hooks'
+import { ref, computed, useAttrs } from 'vue'
+import { assignRef, useScroller } from '@mantine-vue/hooks'
 import { Box, hasNode, resolveNode, useProps, useStyles } from '../../core'
 import { AccordionChevron } from '../Accordion'
 import { UnstyledButton } from '../UnstyledButton'
@@ -30,6 +30,7 @@ import classes from './Scroller.module.css'
 defineOptions({ name: 'Scroller', inheritAttrs: false })
 
 const rawProps = withDefaults(defineProps<ScrollerOwnProps>(), {
+  rootRef: undefined,
   scrollAmount: undefined,
   controlSize: undefined,
   edgeGradientColor: undefined,
@@ -71,10 +72,20 @@ const startIcon = computed(() => resolveNode(props.startControlIcon, slots.start
 const endIcon = computed(() => resolveNode(props.endControlIcon, slots.endControlIcon))
 const renderStartIcon = () => startIcon.value
 const renderEndIcon = () => endIcon.value
+
+const rootElement = ref<Element | null>(null)
+
+const setRootRef = (node: Element | null) => {
+  rootElement.value = node
+  assignRef(props.rootRef, node)
+}
+
+defineExpose({ rootElement })
 </script>
 
 <template>
   <Box
+    :rootRef="setRootRef"
     v-bind="{
       ...attrs,
       ...getStyles('root', { className: attrs.class, style: attrs.style as any }),

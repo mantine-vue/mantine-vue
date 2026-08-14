@@ -1,8 +1,16 @@
-import { withBoxProps } from '../../../core'
+import { factory } from '../../../core'
 import ButtonGroupComponent, { varsResolver } from './ButtonGroup.vue'
+import type { ButtonGroupFactory } from './ButtonGroup.types'
 import classes from '../Button.module.css'
 
-export const ButtonGroup = withBoxProps(ButtonGroupComponent)
-Object.assign(ButtonGroup, { classes, varsResolver })
+export const ButtonGroup = factory<ButtonGroupFactory>(ButtonGroupComponent, {
+  classes,
+  varsResolver,
+})
 
-export type { ButtonGroupOwnProps, ButtonGroupProps, ButtonGroupSlots } from './ButtonGroup.types'
+export type {
+  ButtonGroupOwnProps,
+  ButtonGroupProps,
+  ButtonGroupSlots,
+  ButtonGroupFactory,
+} from './ButtonGroup.types'

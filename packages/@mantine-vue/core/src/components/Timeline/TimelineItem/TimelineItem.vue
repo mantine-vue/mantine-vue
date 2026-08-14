@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { computed, useAttrs, useSlots } from 'vue'
+import { ref, computed, useAttrs, useSlots } from 'vue'
+import { assignRef } from '@mantine-vue/hooks'
 import {
   Box,
   getRadius,
@@ -18,6 +19,7 @@ defineOptions({
 })
 
 const rawProps = withDefaults(defineProps<TimelineItemOwnProps>(), {
+  rootRef: undefined,
   __active: false,
   __lineActive: false,
   __align: undefined,
@@ -90,10 +92,20 @@ const rootStyles = computed(() =>
     },
   }),
 )
+
+const rootElement = ref<Element | null>(null)
+
+const setRootRef = (node: Element | null) => {
+  rootElement.value = node
+  assignRef(props.rootRef, node)
+}
+
+defineExpose({ rootElement })
 </script>
 
 <template>
   <Box
+    :rootRef="setRootRef"
     v-bind="{ ...attrs, ...rootStyles }"
     :mod="[{ lineActive, active, alternate: props.alternate }, props.mod]"
   >

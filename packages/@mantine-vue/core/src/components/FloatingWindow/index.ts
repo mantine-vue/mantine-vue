@@ -8,6 +8,7 @@ export type {
 export type { FloatingWindowDimensions, FloatingWindowSize } from './FloatingWindow.context'
 export { FloatingWindowResizeHandle } from './FloatingWindowResizeHandle'
 export type {
+  FloatingWindowResizeHandleFactory,
   FloatingWindowResizeHandleOwnProps,
   FloatingWindowResizeHandleProps,
   FloatingWindowResizeHandleSlots,

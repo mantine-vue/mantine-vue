@@ -24,7 +24,8 @@ export { defaultProps, varsResolver }
 </script>
 
 <script setup lang="ts">
-import { useAttrs } from 'vue'
+import { ref, useAttrs } from 'vue'
+import { assignRef } from '@mantine-vue/hooks'
 import { Box, useProps, useStyles } from '../../core'
 import type { OverlayOwnProps } from './Overlay.types'
 import classes from './Overlay.module.css'
@@ -33,6 +34,7 @@ defineOptions({
   inheritAttrs: false,
 })
 const rawProps = withDefaults(defineProps<OverlayOwnProps>(), {
+  rootRef: undefined,
   component: 'div',
   backgroundOpacity: undefined,
   color: undefined,
@@ -57,6 +59,15 @@ const getStyles = useStyles({
   varsResolver,
   unstyled: props.unstyled,
 })
+
+const rootElement = ref<Element | null>(null)
+
+const setRootRef = (node: Element | null) => {
+  rootElement.value = node
+  assignRef(props.rootRef, node)
+}
+
+defineExpose({ rootElement })
 </script>
 <template>
   <Box
@@ -66,6 +77,7 @@ const getStyles = useStyles({
     }"
     :component="props.component"
     :mod="{ center: props.center, fixed: props.fixed }"
+    :rootRef="setRootRef"
   >
     <slot />
   </Box>

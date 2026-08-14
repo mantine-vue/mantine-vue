@@ -1,13 +1,16 @@
-import { withBoxProps } from '../../../core'
+import { factory } from '../../../core'
 import EmptyStateActionsComponent from './EmptyStateActions.vue'
+import type { EmptyStateActionsFactory } from './EmptyStateActions.types'
 import classes from '../EmptyState.module.css'
 
-export const EmptyStateActions = withBoxProps(EmptyStateActionsComponent)
-Object.assign(EmptyStateActions, { classes })
+export const EmptyStateActions = factory<EmptyStateActionsFactory>(EmptyStateActionsComponent, {
+  classes,
+})
 
 export type {
   EmptyStateActionsOwnProps,
   EmptyStateActionsProps,
   EmptyStateActionsSlots,
   EmptyStateActionsStylesNames,
+  EmptyStateActionsFactory,
 } from './EmptyStateActions.types'

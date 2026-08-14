@@ -1,11 +1,14 @@
 import type { VNodeChild } from 'vue'
-import type { BoxProps, MantineNode, MantineRadius, StylesApiProps } from '../../core'
+import type { BoxProps, MantineNode, MantineRadius, StylesApiProps, Factory } from '../../core'
 
 export type FieldsetStylesNames = 'root' | 'legend'
 export type FieldsetVariant = 'default' | 'filled' | 'unstyled'
 
 /** Props declared by `Fieldset` itself. See `FieldsetProps` for the full public type. */
-export interface FieldsetOwnProps extends StylesApiProps<FieldsetProps> {
+export interface FieldsetOwnProps extends StylesApiProps<FieldsetFactory> {
+  /** Receives the root DOM node. */
+  rootRef?: VueRefTarget<Element>
+
   /** Fieldset legend */
   legend?: MantineNode
 
@@ -32,3 +35,18 @@ export interface FieldsetSlots {
 }
 
 export interface FieldsetProps extends Omit<BoxProps, keyof FieldsetOwnProps>, FieldsetOwnProps {}
+
+export type FieldsetCssVariables = {
+  root: '--fieldset-radius'
+}
+
+export type FieldsetFactory = Factory<{
+  props: Omit<FieldsetProps, 'rootRef'>
+  ref: HTMLFieldSetElement
+  slots: FieldsetSlots
+  element: 'fieldset'
+  stylesNames: FieldsetStylesNames
+  vars: FieldsetCssVariables
+  variant: FieldsetVariant
+}>
+import type { VueRefTarget } from '@mantine-vue/hooks'

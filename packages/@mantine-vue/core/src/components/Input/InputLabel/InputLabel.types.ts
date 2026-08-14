@@ -1,5 +1,5 @@
 import type { VNodeChild } from 'vue'
-import type { BoxMod, BoxProps, MantineFontSize, StylesApiProps } from '../../../core'
+import type { BoxMod, BoxProps, MantineFontSize, StylesApiProps, Factory } from '../../../core'
 
 export type InputLabelStylesNames = 'label' | 'required'
 
@@ -13,7 +13,10 @@ export interface InputLabelSlots {
 }
 
 /** Props declared by `InputLabel` itself. See `InputLabelProps` for the full public type. */
-export interface InputLabelOwnProps extends StylesApiProps<InputLabelProps> {
+export interface InputLabelOwnProps extends StylesApiProps<InputLabelFactory> {
+  /** Receives the root DOM node. */
+  rootRef?: VueRefTarget<Element>
+
   /**
    * If set, the required asterisk is displayed next to the label.
    *
@@ -44,3 +47,13 @@ export interface InputLabelOwnProps extends StylesApiProps<InputLabelProps> {
 
 export interface InputLabelProps
   extends Omit<BoxProps, keyof InputLabelOwnProps>, InputLabelOwnProps {}
+
+export type InputLabelFactory = Factory<{
+  props: Omit<InputLabelProps, 'rootRef'>
+  ref: HTMLLabelElement
+  slots: InputLabelSlots
+  element: 'label'
+  stylesNames: InputLabelStylesNames
+  vars: InputLabelCssVariables
+}>
+import type { VueRefTarget } from '@mantine-vue/hooks'

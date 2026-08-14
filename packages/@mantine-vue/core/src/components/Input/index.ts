@@ -1,6 +1,7 @@
 export { Input } from './Input'
 export type {
   InputCssVariables,
+  InputFactory,
   InputOwnProps,
   InputProps,
   InputSlots,

@@ -50,6 +50,11 @@ const routes: RouteRecordRaw[] = [
     component: mdxRoute(() => import('./pages/styles/style-props.mdx')),
   },
   {
+    path: '/guides/polymorphic',
+    name: 'guides-polymorphic',
+    component: mdxRoute(() => import('./pages/guides/polymorphic.mdx')),
+  },
+  {
     path: '/guides/vite',
     name: 'guide-vite',
     component: mdxRoute(() => import('./pages/guides/vite.mdx')),

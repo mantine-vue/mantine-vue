@@ -1,5 +1,5 @@
 import type { Component, VNodeChild } from 'vue'
-import type { BoxMod, BoxProps } from '../../../core'
+import type { BoxMod, BoxProps, PolymorphicFactory } from '../../../core'
 
 /** Props declared by `AppShellSection` itself. See `AppShellSectionProps` for the full public type. */
 export interface AppShellSectionOwnProps {
@@ -28,3 +28,16 @@ export interface AppShellSectionSlots {
   /** Section content. */
   default?: () => VNodeChild
 }
+
+export type AppShellSectionStylesNames = 'section'
+
+export type AppShellSectionFactory = PolymorphicFactory<{
+  props: Omit<AppShellSectionProps, 'component' | 'rootRef'>
+  slots: AppShellSectionSlots
+  ref: HTMLDivElement
+  exposed: { rootElement: Element | null }
+  defaultComponent: 'div'
+  defaultRef: HTMLDivElement
+  stylesNames: AppShellSectionStylesNames
+  compound: true
+}>

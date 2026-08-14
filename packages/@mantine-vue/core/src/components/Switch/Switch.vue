@@ -35,7 +35,7 @@ export { mergedClasses, varsResolver, defaultProps, DEFAULT_SIZE }
 </script>
 
 <script setup lang="ts">
-import { computed, useAttrs, useSlots } from 'vue'
+import { ref, computed, useAttrs, useSlots } from 'vue'
 import { assignRef, useId, useUncontrolled } from '@mantine-vue/hooks'
 import { Box, omitAttrs, resolveNode, useProps, useStyles } from '../../core'
 import { InlineInput } from '../../utils'
@@ -130,9 +130,15 @@ const disabled = computed(() => groupContext?.isDisabled?.(value.value) || props
 
 const size = computed(() => props.size ?? groupContext?.size ?? DEFAULT_SIZE)
 
+const rootElement = ref<Element | null>(null)
+
 function setRootRef(node: any) {
-  assignRef(props.rootRef, node?.$el ?? node ?? null)
+  const element = (node?.$el ?? node ?? null) as Element | null
+  rootElement.value = element
+  assignRef(props.rootRef, element)
 }
+
+defineExpose({ rootElement })
 
 function onInputChange(event: Event) {
   if (props.readOnly) {

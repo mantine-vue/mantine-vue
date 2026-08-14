@@ -1,5 +1,5 @@
 import type { VNodeChild } from 'vue'
-import type { BoxMod, BoxProps } from '../../../core'
+import type { BoxMod, BoxProps, Factory } from '../../../core'
 
 export interface PaginationControlSlots {
   /** Control content, usually a page number or an edge icon. */
@@ -11,6 +11,9 @@ export interface PaginationControlSlots {
  * See `PaginationControlProps` for the full public type.
  */
 export interface PaginationControlOwnProps {
+  /** Receives the root DOM node. */
+  rootRef?: VueRefTarget<Element>
+
   /**
    * If set, the control is marked as the current page.
    *
@@ -45,3 +48,14 @@ export interface PaginationControlOwnProps {
 
 export interface PaginationControlProps
   extends Omit<BoxProps, keyof PaginationControlOwnProps>, PaginationControlOwnProps {}
+
+export type PaginationControlStylesNames = 'control'
+
+export type PaginationControlFactory = Factory<{
+  props: Omit<PaginationControlProps, 'rootRef'>
+  ref: HTMLButtonElement
+  slots: PaginationControlSlots
+  element: 'button'
+  stylesNames: PaginationControlStylesNames
+}>
+import type { VueRefTarget } from '@mantine-vue/hooks'

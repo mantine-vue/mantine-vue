@@ -1,5 +1,12 @@
 import type { VNodeChild } from 'vue'
-import type { BoxProps, MantineColor, MantineNode, MantineSize, StylesApiProps } from '../../core'
+import type {
+  BoxProps,
+  MantineColor,
+  MantineNode,
+  MantineSize,
+  StylesApiProps,
+  Factory,
+} from '../../core'
 
 export type RatingStylesNames =
   | 'root'
@@ -22,7 +29,7 @@ export interface RatingSlots {
 }
 
 /** Props declared by `Rating` itself. See `RatingProps` for the full public type. */
-export interface RatingOwnProps extends StylesApiProps<RatingProps> {
+export interface RatingOwnProps extends StylesApiProps<RatingFactory> {
   /** Selected value, bound with `v-model`. */
   modelValue?: number
 
@@ -105,3 +112,11 @@ export interface RatingOwnProps extends StylesApiProps<RatingProps> {
 }
 
 export interface RatingProps extends Omit<BoxProps, keyof RatingOwnProps>, RatingOwnProps {}
+
+export type RatingFactory = Factory<{
+  props: RatingProps
+  slots: RatingSlots
+  element: 'div'
+  stylesNames: RatingStylesNames
+  vars: RatingCssVariables
+}>

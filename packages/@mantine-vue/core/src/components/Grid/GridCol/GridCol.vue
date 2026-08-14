@@ -3,7 +3,8 @@ const defaultProps = { span: 12 } as const
 </script>
 
 <script setup lang="ts">
-import { useAttrs } from 'vue'
+import { ref, useAttrs } from 'vue'
+import { assignRef } from '@mantine-vue/hooks'
 import { Box, useProps, useRandomClassName } from '../../../core'
 import { useGridContext } from '../Grid.context'
 import { GridColVariables } from './GridColVariables'
@@ -26,6 +27,15 @@ const attrs = useAttrs()
 const props = useProps('GridCol', defaultProps, rawProps)
 const ctx = useGridContext()
 const responsiveClassName = useRandomClassName()
+
+const rootElement = ref<Element | null>(null)
+
+const setRootRef = (node: Element | null) => {
+  rootElement.value = node
+  assignRef(props.rootRef, node)
+}
+
+defineExpose({ rootElement })
 </script>
 
 <template>
@@ -37,6 +47,7 @@ const responsiveClassName = useRandomClassName()
     :align="props.align"
   />
   <Box
+    :rootRef="setRootRef"
     v-bind="{
       ...attrs,
       ...ctx.getStyles('col', {

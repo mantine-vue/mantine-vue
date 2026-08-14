@@ -1,4 +1,4 @@
-import type { BoxMod, BoxProps, StylesApiProps } from '../../../core'
+import type { BoxMod, BoxProps, StylesApiProps, Factory } from '../../../core'
 
 export type PillsInputFieldStylesNames = 'field'
 
@@ -6,7 +6,10 @@ export type PillsInputFieldStylesNames = 'field'
  * Props declared by `PillsInputField` itself.
  * See `PillsInputFieldProps` for the full public type.
  */
-export interface PillsInputFieldOwnProps extends StylesApiProps<PillsInputFieldProps> {
+export interface PillsInputFieldOwnProps extends StylesApiProps<PillsInputFieldFactory> {
+  /** Receives the root DOM node. */
+  rootRef?: VueRefTarget<Element>
+
   /** Controlled value, bound with `v-model`. */
   modelValue?: string
 
@@ -48,3 +51,11 @@ export interface PillsInputFieldOwnProps extends StylesApiProps<PillsInputFieldP
 
 export interface PillsInputFieldProps
   extends Omit<BoxProps, keyof PillsInputFieldOwnProps>, PillsInputFieldOwnProps {}
+
+export type PillsInputFieldFactory = Factory<{
+  props: Omit<PillsInputFieldProps, 'rootRef'>
+  ref: HTMLInputElement
+  element: 'input'
+  stylesNames: PillsInputFieldStylesNames
+}>
+import type { VueRefTarget } from '@mantine-vue/hooks'

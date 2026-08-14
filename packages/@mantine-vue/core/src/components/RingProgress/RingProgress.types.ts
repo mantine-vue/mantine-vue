@@ -1,5 +1,5 @@
 import type { VNodeChild } from 'vue'
-import type { BoxProps, MantineColor, MantineNode, StylesApiProps } from '../../core'
+import type { BoxProps, MantineColor, MantineNode, StylesApiProps, Factory } from '../../core'
 
 export type RingProgressStylesNames = 'root' | 'svg' | 'label' | 'curve'
 
@@ -26,7 +26,10 @@ export interface RingProgressSlots {
 }
 
 /** Props declared by `RingProgress` itself. See `RingProgressProps` for the full public type. */
-export interface RingProgressOwnProps extends StylesApiProps<RingProgressProps> {
+export interface RingProgressOwnProps extends StylesApiProps<RingProgressFactory> {
+  /** Receives the root DOM node. */
+  rootRef?: VueRefTarget<Element>
+
   /**
    * Content rendered in the middle of the ring.
    * Can also be set with the `label` slot – the slot takes precedence.
@@ -76,3 +79,13 @@ export interface RingProgressOwnProps extends StylesApiProps<RingProgressProps> 
 
 export interface RingProgressProps
   extends Omit<BoxProps, keyof RingProgressOwnProps>, RingProgressOwnProps {}
+
+export type RingProgressFactory = Factory<{
+  props: Omit<RingProgressProps, 'rootRef'>
+  ref: HTMLDivElement
+  slots: RingProgressSlots
+  element: 'div'
+  stylesNames: RingProgressStylesNames
+  vars: RingProgressCssVariables
+}>
+import type { VueRefTarget } from '@mantine-vue/hooks'

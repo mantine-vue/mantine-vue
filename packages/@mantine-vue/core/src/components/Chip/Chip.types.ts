@@ -1,3 +1,5 @@
+import type { VueRefTarget } from '@mantine-vue/hooks'
+import type { ChipGroup } from './ChipGroup/ChipGroup'
 import type { VNodeChild } from 'vue'
 import type {
   BoxMod,
@@ -6,6 +8,7 @@ import type {
   MantineRadius,
   MantineSize,
   StylesApiProps,
+  Factory,
 } from '../../core'
 
 export type ChipStylesNames = 'root' | 'input' | 'iconWrapper' | 'checkIcon' | 'label'
@@ -44,7 +47,7 @@ export interface ChipSlots {
 }
 
 /** Props declared by `Chip` itself. See `ChipProps` for the full public type. */
-export interface ChipOwnProps extends StylesApiProps<ChipProps> {
+export interface ChipOwnProps extends StylesApiProps<ChipFactory> {
   /** `id` shared by the input and its label. Generated automatically when not set. */
   id?: string
 
@@ -105,8 +108,8 @@ export interface ChipOwnProps extends StylesApiProps<ChipProps> {
    */
   icon?: any
 
-  /** Ref assigned to the root element. */
-  rootRef?: any
+  /** Receives the root DOM node. */
+  rootRef?: VueRefTarget<Element>
 
   /**
    * If set, adjusts text color based on background color.
@@ -126,3 +129,17 @@ export interface ChipOwnProps extends StylesApiProps<ChipProps> {
 }
 
 export interface ChipProps extends Omit<BoxProps, keyof ChipOwnProps>, ChipOwnProps {}
+
+export type ChipFactory = Factory<{
+  props: Omit<ChipProps, 'rootRef'>
+  slots: ChipSlots
+  ref: HTMLDivElement
+  exposed: { rootElement: Element | null }
+  element: 'div'
+  stylesNames: ChipStylesNames
+  vars: ChipCssVariables
+  variant: ChipVariant
+  staticComponents: {
+    Group: typeof ChipGroup
+  }
+}>

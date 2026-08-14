@@ -1,4 +1,5 @@
 import { Fragment, defineComponent, h, ref, type Component, type PropType } from 'vue'
+import { assignRef, type VueRefTarget } from '@mantine-vue/hooks'
 import { camelToKebabCase, filterProps, isNumberLike } from '@mantine-vue/utils'
 import { InlineStyles } from '../InlineStyles'
 import { useSafeMantineTheme } from '../MantineProvider'
@@ -25,6 +26,15 @@ export interface BoxProps extends MantineStyleProps {
   darkHidden?: boolean
   /** Element modifiers transformed into `data-` attributes, for example, `{ 'data-size': 'xl' }`, falsy values are removed */
   mod?: BoxMod
+
+  /**
+   * Receives the root DOM node rendered by `Box`.
+   *
+   * Vue resolves a template `ref` on a component to the component instance rather than the
+   * node it renders, so this prop is how a parent reaches the real element. When `component`
+   * is a Vue component, the component's own root node (`$el`) is assigned.
+   */
+  rootRef?: VueRefTarget<Element>
 }
 
 function styleProp<Key extends keyof MantineStyleProps>() {
@@ -179,11 +189,23 @@ export const Box = defineComponent({
     /** Flex */
     flex: styleProp<'flex'>(),
     mod: [Object, Array] as PropType<BoxProps['mod']>,
+    rootRef: {
+      type: [Object, Function] as PropType<VueRefTarget<Element>>,
+      default: undefined,
+    },
   },
   setup(props, { attrs, slots }) {
     const theme = useSafeMantineTheme()
     const elementRef = ref<Element | null>(null)
     useForwardedRef(elementRef)
+
+    // Vue passes a component's public instance rather than a node when `component` is a
+    // component, so `$el` is unwrapped to keep `rootRef` a DOM node in every case.
+    const setRootRef = (value: unknown) => {
+      const node = (value as { $el?: Element } | null)?.$el ?? (value as Element | null) ?? null
+      elementRef.value = node
+      assignRef(props.rootRef, node)
+    }
 
     return () => {
       const styleProps = Object.keys(STYLE_PROPS_DATA).reduce<Record<string, any>>((acc, key) => {
@@ -217,7 +239,7 @@ export const Box = defineComponent({
           'data-size':
             (attrs as any)['data-size'] ?? (isNumberLike(props.size) ? undefined : props.size),
           style: [filterProps(parsed.inlineStyles), attrs.style],
-          ref: elementRef,
+          ref: setRootRef,
         },
         isVueComponent(props.component) && children ? { default: children } : children?.(),
       )

@@ -1,3 +1,5 @@
+import type { SwitchGroup } from './SwitchGroup/SwitchGroup'
+import type { VueRefTarget } from '@mantine-vue/hooks'
 import type { VNodeChild } from 'vue'
 import type {
   BoxMod,
@@ -7,6 +9,7 @@ import type {
   MantineRadius,
   MantineSize,
   StylesApiProps,
+  Factory,
 } from '../../core'
 
 export type SwitchStylesNames =
@@ -53,7 +56,7 @@ export interface SwitchSlots {
 }
 
 /** Props declared by `Switch` itself. See `SwitchProps` for the full public type. */
-export interface SwitchOwnProps extends StylesApiProps<SwitchProps> {
+export interface SwitchOwnProps extends StylesApiProps<SwitchFactory> {
   /** `id` shared by the input and its label. Generated automatically when not set. */
   id?: string
 
@@ -126,7 +129,7 @@ export interface SwitchOwnProps extends StylesApiProps<SwitchProps> {
   error?: MantineNode | boolean
 
   /** Ref assigned to the root element. */
-  rootRef?: any
+  rootRef?: VueRefTarget<Element>
 
   /**
    * If set, the thumb displays an indicator when the switch is unchecked.
@@ -164,3 +167,28 @@ export interface SwitchOwnProps extends StylesApiProps<SwitchProps> {
 }
 
 export interface SwitchProps extends Omit<BoxProps, keyof SwitchOwnProps>, SwitchOwnProps {}
+
+export interface SwitchEmits {
+  /** Called with the new checked state. */
+  'update:modelValue': [checked: boolean]
+
+  /** Called with the new checked state. */
+  'update:checked': [checked: boolean]
+
+  /** Called with the new checked state when the user toggles the control. */
+  change: [checked: boolean]
+}
+
+export type SwitchFactory = Factory<{
+  props: Omit<SwitchProps, 'rootRef'>
+  slots: SwitchSlots
+  emits: SwitchEmits
+  ref: HTMLDivElement
+  exposed: { rootElement: Element | null }
+  element: 'div'
+  stylesNames: SwitchStylesNames
+  vars: SwitchCssVariables
+  staticComponents: {
+    Group: typeof SwitchGroup
+  }
+}>

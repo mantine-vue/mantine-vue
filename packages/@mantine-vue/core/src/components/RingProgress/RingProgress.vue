@@ -40,7 +40,8 @@ export { defaultProps, varsResolver, RingLabel, getClampedThickness }
 </script>
 
 <script setup lang="ts">
-import { computed, useAttrs, useSlots } from 'vue'
+import { ref, computed, useAttrs, useSlots } from 'vue'
+import { assignRef } from '@mantine-vue/hooks'
 import { Box, useProps, useStyles } from '../../core'
 import { Curve } from './Curve/Curve'
 import { getCurves } from './get-curves/get-curves'
@@ -57,6 +58,7 @@ defineOptions({
 })
 
 const rawProps = withDefaults(defineProps<RingProgressOwnProps>(), {
+  rootRef: undefined,
   label: undefined,
   roundCaps: false,
   unstyled: false,
@@ -120,10 +122,19 @@ const curves = computed(() =>
 const rootStyles = computed(() =>
   getStyles('root', { className: attrs.class, style: attrs.style as any }),
 )
+
+const rootElement = ref<Element | null>(null)
+
+const setRootRef = (node: Element | null) => {
+  rootElement.value = node
+  assignRef(props.rootRef, node)
+}
+
+defineExpose({ rootElement })
 </script>
 
 <template>
-  <Box v-bind="{ ...attrs, ...rootStyles }" :size="size">
+  <Box :rootRef="setRootRef" v-bind="{ ...attrs, ...rootStyles }" :size="size">
     <svg v-bind="getStyles('svg')" :viewBox="`0 0 ${size} ${size}`">
       <Curve
         v-for="curve in curves"

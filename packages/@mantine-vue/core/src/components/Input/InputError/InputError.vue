@@ -12,7 +12,8 @@ export { varsResolver }
 </script>
 
 <script setup lang="ts">
-import { computed, useAttrs } from 'vue'
+import { ref, computed, useAttrs } from 'vue'
+import { assignRef } from '@mantine-vue/hooks'
 import { Box, useProps, useStyles } from '../../../core'
 import { useInputWrapperContext } from '../InputWrapper.context'
 import type { InputErrorOwnProps, InputErrorSlots } from './InputError.types'
@@ -24,6 +25,7 @@ defineOptions({
 })
 
 const rawProps = withDefaults(defineProps<InputErrorOwnProps>(), {
+  rootRef: undefined,
   __inheritStyles: true,
   unstyled: false,
 })
@@ -52,10 +54,19 @@ const errorStyles = computed(() => {
   const getStyles = (props.__inheritStyles && wrapperCtx.getStyles) || ownGetStyles
   return getStyles('error', { className: attrs.class, style: attrs.style as any, props })
 })
+
+const rootElement = ref<Element | null>(null)
+
+const setRootRef = (node: Element | null) => {
+  rootElement.value = node
+  assignRef(props.rootRef, node)
+}
+
+defineExpose({ rootElement })
 </script>
 
 <template>
-  <Box v-bind="{ ...attrs, ...errorStyles }" component="p">
+  <Box :rootRef="setRootRef" v-bind="{ ...attrs, ...errorStyles }" component="p">
     <slot />
   </Box>
 </template>

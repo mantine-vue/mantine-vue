@@ -1,6 +1,17 @@
-import { withBoxProps } from '../../core'
-import SkeletonComponent from './Skeleton.vue'
+import { factory } from '../../core'
+import SkeletonComponent, { varsResolver } from './Skeleton.vue'
+import type { SkeletonFactory } from './Skeleton.types'
+import classes from './Skeleton.module.css'
 
-export const Skeleton = withBoxProps(SkeletonComponent)
+export const Skeleton = factory<SkeletonFactory>(SkeletonComponent, {
+  classes,
+  varsResolver,
+})
 
-export type { SkeletonOwnProps, SkeletonProps } from './Skeleton.types'
+export type {
+  SkeletonCssVariables,
+  SkeletonFactory,
+  SkeletonOwnProps,
+  SkeletonProps,
+  SkeletonStylesNames,
+} from './Skeleton.types'

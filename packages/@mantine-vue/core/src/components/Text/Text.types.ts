@@ -5,15 +5,20 @@ import type {
   MantineFontSize,
   MantineLineHeight,
   StylesApiProps,
+  MantineElementType,
+  PolymorphicFactory,
 } from '../../core'
 
 export type TextTruncate = 'end' | 'start' | boolean
 export type TextVariant = 'text' | 'gradient'
 
 /** Props declared by `Text` itself. See `TextProps` for the full public type. */
-export interface TextOwnProps extends StylesApiProps<TextProps> {
+export interface TextOwnProps extends StylesApiProps<TextFactory> {
+  /** Receives the root DOM node. See the polymorphic components guide. */
+  rootRef?: VueRefTarget<Element>
+
   /** Root element or component rendered by `Text`. */
-  component?: string
+  component?: MantineElementType
 
   /**
    * Static selector used to build the component classes. Internal prop, not part of the public API.
@@ -81,3 +86,16 @@ export type TextStylesNames = 'root'
 export type TextCssVariables = {
   root: '--text-gradient' | '--text-line-clamp' | '--text-fz' | '--text-lh' | '--text-text-wrap'
 }
+import type { VueRefTarget } from '@mantine-vue/hooks'
+
+export type TextFactory = PolymorphicFactory<{
+  props: Omit<TextProps, 'component' | 'rootRef'>
+  slots: TextSlots
+  ref: HTMLParagraphElement
+  exposed: { rootElement: Element | null }
+  defaultComponent: 'p'
+  defaultRef: HTMLParagraphElement
+  stylesNames: TextStylesNames
+  vars: TextCssVariables
+  variant: TextVariant
+}>

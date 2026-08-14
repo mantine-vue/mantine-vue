@@ -1,15 +1,14 @@
-import { withBoxProps } from '../../core'
+import { factory } from '../../core'
 import SplitterComponent, { varsResolver } from './Splitter.vue'
+import type { SplitterFactory } from './Splitter.types'
 import { SplitterPane } from './SplitterPane/SplitterPane'
 import classes from './Splitter.module.css'
 
-export const Splitter = withBoxProps(
-  Object.assign(SplitterComponent, {
-    classes,
-    varsResolver,
-    Pane: SplitterPane,
-  }),
-)
+export const Splitter = factory<SplitterFactory>(SplitterComponent, {
+  classes,
+  varsResolver,
+  Pane: SplitterPane,
+})
 
 export type {
   SplitterCssVariables,
@@ -18,4 +17,5 @@ export type {
   SplitterProps,
   SplitterSlots,
   SplitterStylesNames,
+  SplitterFactory,
 } from './Splitter.types'

@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
-import { h, ref } from 'vue'
+import { h, nextTick, ref } from 'vue'
 import { mount } from '@vue/test-utils'
 import {
   Input,
@@ -116,12 +116,32 @@ describe('@mantine-vue/core Input', () => {
     expect(onClick).toHaveBeenCalledTimes(1)
   })
 
-  it('assigns rootRef to the wrapper element', () => {
+  it('assigns rootRef to the input element', () => {
     const rootRef = ref<HTMLElement | null>(null)
 
     withProvider(() => h(Input, { rootRef }))
 
-    expect(rootRef.value?.className).toContain('mantine-Input-wrapper')
+    expect(rootRef.value?.tagName).toBe('INPUT')
+    expect(rootRef.value?.className).toContain('mantine-Input-input')
+  })
+
+  it('follows the component prop with rootRef', () => {
+    const rootRef = ref<HTMLElement | null>(null)
+
+    withProvider(() => h(Input<'textarea'>, { component: 'textarea', rootRef }))
+
+    expect(rootRef.value?.tagName).toBe('TEXTAREA')
+  })
+
+  it('exposes the wrapper separately as wrapperElement', async () => {
+    const wrapper = withProvider(() => h(Input))
+    await nextTick()
+
+    const instance = wrapper.findComponent(Input as any)
+    const { rootElement, wrapperElement } = instance.vm as any
+
+    expect((rootElement as Element).tagName).toBe('INPUT')
+    expect((wrapperElement as Element).className).toContain('mantine-Input-wrapper')
   })
 
   it('exposes compound components', () => {

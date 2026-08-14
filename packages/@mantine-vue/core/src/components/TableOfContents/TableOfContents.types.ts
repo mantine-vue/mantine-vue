@@ -1,9 +1,20 @@
-import type { BoxProps, MantineColor, MantineRadius, MantineSize, StylesApiProps } from '../../core'
+import type { VueRefTarget } from '@mantine-vue/hooks'
+import type {
+  BoxProps,
+  MantineColor,
+  MantineRadius,
+  MantineSize,
+  StylesApiProps,
+  Factory,
+} from '../../core'
 import type { UseScrollSpyHeadingData, UseScrollSpyOptions } from '@mantine-vue/hooks'
 import type { Ref } from 'vue'
 
 /** Props declared by `TableOfContents` itself. See `TableOfContentsProps` for the full public type. */
-export interface TableOfContentsOwnProps extends StylesApiProps<TableOfContentsProps> {
+export interface TableOfContentsOwnProps extends StylesApiProps<TableOfContentsFactory> {
+  /** Receives the root DOM node. */
+  rootRef?: VueRefTarget<Element>
+
   /**
    * Key of `theme.colors` or any valid CSS color value
    *
@@ -78,3 +89,13 @@ export interface InitialTableOfContentsData {
   /** Unique heading id. */
   id?: string
 }
+
+export type TableOfContentsFactory = Factory<{
+  props: Omit<TableOfContentsProps, 'rootRef'>
+  ref: HTMLDivElement
+  exposed: { rootElement: Element | null }
+  element: 'div'
+  stylesNames: TableOfContentsStylesNames
+  vars: TableOfContentsCssVariables
+  variant: TableOfContentsVariant
+}>

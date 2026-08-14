@@ -1,5 +1,6 @@
-import { withBoxProps } from '../../core'
+import { factory } from '../../core'
 import AppShellComponent, { varsResolver } from './AppShell.vue'
+import type { AppShellFactory } from './AppShell.types'
 import { AppShellAside } from './AppShellAside/AppShellAside'
 import { AppShellFooter } from './AppShellFooter/AppShellFooter'
 import { AppShellHeader } from './AppShellHeader/AppShellHeader'
@@ -17,15 +18,13 @@ export type AppShellStylesNames =
   | 'aside'
   | 'section'
 
-export const AppShell = withBoxProps(
-  Object.assign(AppShellComponent, {
-    classes,
-    varsResolver,
-    Navbar: AppShellNavbar,
-    Header: AppShellHeader,
-    Main: AppShellMain,
-    Aside: AppShellAside,
-    Footer: AppShellFooter,
-    Section: AppShellSection,
-  }),
-)
+export const AppShell = factory<AppShellFactory>(AppShellComponent, {
+  classes,
+  varsResolver,
+  Navbar: AppShellNavbar,
+  Header: AppShellHeader,
+  Main: AppShellMain,
+  Aside: AppShellAside,
+  Footer: AppShellFooter,
+  Section: AppShellSection,
+})

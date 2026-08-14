@@ -1,17 +1,18 @@
-import { withBoxProps } from '../../core'
+import { factory } from '../../core'
 import { SwitchGroup } from './SwitchGroup/SwitchGroup'
+import type { SwitchFactory } from './Switch.types'
 import SwitchComponent, { mergedClasses, varsResolver } from './Switch.vue'
 
-export const Switch = withBoxProps(
-  Object.assign(SwitchComponent, {
-    classes: mergedClasses,
-    varsResolver,
-    Group: SwitchGroup,
-  }),
-)
+export const Switch = factory<SwitchFactory>(SwitchComponent, {
+  classes: mergedClasses,
+  varsResolver,
+  Group: SwitchGroup,
+})
 
 export type {
   SwitchCssVariables,
+  SwitchEmits,
+  SwitchFactory,
   SwitchOwnProps,
   SwitchProps,
   SwitchSlots,

@@ -1,8 +1,11 @@
-import { withBoxProps } from '../../../core'
+import { factory } from '../../../core'
 import TabsListComponent from './TabsList.vue'
+import type { TabsListFactory } from './TabsList.types'
 
-export const TabsList = withBoxProps(TabsListComponent)
+export const TabsList = factory<TabsListFactory>(TabsListComponent)
+
 export type {
+  TabsListFactory,
   TabsListOwnProps,
   TabsListProps,
   TabsListSlots,

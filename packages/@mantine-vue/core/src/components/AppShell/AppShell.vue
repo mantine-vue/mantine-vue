@@ -31,7 +31,8 @@ export { appShellId, defaults, varsResolver }
 </script>
 
 <script setup lang="ts">
-import { computed, useAttrs } from 'vue'
+import { ref, computed, useAttrs } from 'vue'
+import { assignRef } from '@mantine-vue/hooks'
 import { Box, useProps, useStyles } from '../../core'
 import { provideAppShellContext } from './AppShell.context'
 import { AppShellMediaStyles } from './AppShellMediaStyles/AppShellMediaStyles'
@@ -46,6 +47,7 @@ defineOptions({
 
 // Intentionally undefined to preserve downstream defaults.
 const rawProps = withDefaults(defineProps<AppShellOwnProps>(), {
+  rootRef: undefined,
   withBorder: undefined,
   offsetScrollbars: undefined,
   layout: 'default',
@@ -111,10 +113,19 @@ const rootMod = computed(() => [
 
 /** `fixed` shells share one global stylesheet; `static` ones are scoped to the root. */
 const mediaSelector = computed(() => (props.mode === 'static' ? `#${id}` : undefined))
+
+const rootElement = ref<Element | null>(null)
+
+const setRootRef = (node: Element | null) => {
+  rootElement.value = node
+  assignRef(props.rootRef, node)
+}
+
+defineExpose({ rootElement })
 </script>
 
 <template>
-  <Box v-bind="{ ...attrs, ...rootStyles }" :id="id" :mod="rootMod">
+  <Box :rootRef="setRootRef" v-bind="{ ...attrs, ...rootStyles }" :id="id" :mod="rootMod">
     <AppShellMediaStyles
       :navbar="props.navbar"
       :aside="props.aside"

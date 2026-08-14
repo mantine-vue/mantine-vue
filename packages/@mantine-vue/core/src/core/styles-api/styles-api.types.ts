@@ -1,17 +1,65 @@
 import type { CSSProperties } from 'vue'
+import type { FactoryPayload } from '../factory/factory-payload'
+import type {
+  FactoryClassNames,
+  FactoryPartialVarsResolver,
+  FactoryStyles,
+} from '../factory/factory-styles-api'
 import type { MantineTheme } from '../MantineProvider'
 
-export type ClassNames<Payload = any> =
+/**
+ * Pre-payload form, where the type argument is a component's *props* interface and the record is
+ * unkeyed.
+ *
+ * Kept so components can move to payloads one at a time: the types below select this form unless
+ * the argument is an actual `FactoryPayload`. Only payload interfaces declare a `props` member,
+ * which is what makes that discrimination reliable.
+ *
+ * @deprecated Pass a `*Factory` payload instead, which keys these records by `stylesNames`.
+ */
+export type LegacyClassNames<Payload = any> =
   | Record<string, string>
   | ((theme: MantineTheme, payload: Payload) => Record<string, string>)
 
-export type Styles<Payload = any> =
+/** @deprecated See {@link LegacyClassNames}. */
+export type LegacyStyles<Payload = any> =
   | Record<string, CSSProperties>
   | ((theme: MantineTheme, payload: Payload) => Record<string, CSSProperties>)
 
-export type Vars<Payload = any> =
+/** @deprecated See {@link LegacyClassNames}. */
+export type LegacyVars<Payload = any> =
   | Record<string, Record<string, string | undefined>>
   | ((theme: MantineTheme, payload: Payload) => Record<string, Record<string, string | undefined>>)
+
+/**
+ * Selects the payload-keyed form for a `FactoryPayload` and the legacy form otherwise.
+ *
+ * `any` is special-cased first, and the check is wrapped in a tuple, because a naked conditional
+ * distributes over `any` and would yield *both* branches as a union -- which is not assignable to
+ * either one, breaking every component that forwards `classNames` to a child.
+ */
+type IsAnyType<T> = 0 extends 1 & T ? true : false
+
+type SelectStylesApi<Payload, Keyed, Legacy> =
+  IsAnyType<Payload> extends true ? Legacy : [Payload] extends [FactoryPayload] ? Keyed : Legacy
+
+export type ClassNames<Payload = any> = SelectStylesApi<
+  Payload,
+  FactoryClassNames<Payload & FactoryPayload>,
+  LegacyClassNames<Payload>
+>
+
+export type Styles<Payload = any> = SelectStylesApi<
+  Payload,
+  FactoryStyles<Payload & FactoryPayload>,
+  LegacyStyles<Payload>
+>
+
+export type Vars<Payload = any> = SelectStylesApi<
+  Payload,
+  FactoryPartialVarsResolver<Payload & FactoryPayload>,
+  LegacyVars<Payload>
+>
 
 /**
  * Styles API props shared by every Mantine Vue component.
@@ -54,9 +102,9 @@ export interface UseStylesInput<Payload = any> {
   stylesCtx?: Record<string, any>
   className?: any
   style?: CSSProperties | CSSProperties[]
-  classNames?: ClassNames<Payload>
-  styles?: Styles<Payload>
-  vars?: Vars<Payload>
+  classNames?: LegacyClassNames<Payload>
+  styles?: LegacyStyles<Payload>
+  vars?: LegacyVars<Payload>
   varsResolver?: (
     theme: MantineTheme,
     props: Record<string, any>,

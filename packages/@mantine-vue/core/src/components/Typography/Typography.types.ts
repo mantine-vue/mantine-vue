@@ -1,9 +1,15 @@
-import type { BoxProps, StylesApiProps } from '../../core'
+import type { BoxProps, StylesApiProps, Factory } from '../../core'
 
 export type TypographyStylesNames = 'root'
 
 /** Props declared by `Typography` itself. See `TypographyProps` for the full public type. */
-export type TypographyOwnProps = StylesApiProps<TypographyProps>
+export type TypographyOwnProps = StylesApiProps<TypographyFactory>
 
 export interface TypographyProps
   extends Omit<BoxProps, keyof TypographyOwnProps>, TypographyOwnProps {}
+
+export type TypographyFactory = Factory<{
+  props: TypographyProps
+  element: 'div'
+  stylesNames: TypographyStylesNames
+}>

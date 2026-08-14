@@ -1,8 +1,11 @@
 import type { VNodeChild } from 'vue'
-import type { BoxMod, BoxProps, MantineSpacing, StylesApiProps } from '../../core'
+import type { BoxMod, BoxProps, MantineSpacing, StylesApiProps, Factory } from '../../core'
 
 /** Props declared by `Marquee` itself. See `MarqueeProps` for the full public type. */
-export interface MarqueeOwnProps extends StylesApiProps<MarqueeProps> {
+export interface MarqueeOwnProps extends StylesApiProps<MarqueeFactory> {
+  /** Receives the root DOM node. */
+  rootRef?: VueRefTarget<Element>
+
   /**
    * Reverses animation direction
    *
@@ -87,3 +90,13 @@ export type MarqueeCssVariables = {
     | '--marquee-fade-color'
     | '--marquee-fade-size'
 }
+
+export type MarqueeFactory = Factory<{
+  props: Omit<MarqueeProps, 'rootRef'>
+  ref: HTMLDivElement
+  slots: MarqueeSlots
+  element: 'div'
+  stylesNames: MarqueeStylesNames
+  vars: MarqueeCssVariables
+}>
+import type { VueRefTarget } from '@mantine-vue/hooks'

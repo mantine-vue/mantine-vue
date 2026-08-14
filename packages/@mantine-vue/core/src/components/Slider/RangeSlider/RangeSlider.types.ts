@@ -1,6 +1,7 @@
+import type { VueRefTarget } from '@mantine-vue/hooks'
 import type { VNodeChild } from 'vue'
-import type { BoxProps, MantineNode, StylesApiProps } from '../../../core'
-import type { SliderOwnProps, SliderStylesNames } from '../Slider/Slider.types'
+import type { BoxProps, MantineNode, StylesApiProps, Factory } from '../../../core'
+import type { SliderCssVariables, SliderOwnProps, SliderStylesNames } from '../Slider/Slider.types'
 
 export type RangeSliderValue = [number, number]
 
@@ -36,7 +37,10 @@ export interface RangeSliderOwnProps
       | 'thumbProps'
       | 'startPointValue'
     >,
-    StylesApiProps<RangeSliderProps> {
+    StylesApiProps<RangeSliderFactory> {
+  /** Receives the root DOM node. */
+  rootRef?: VueRefTarget<Element>
+
   /** Selected range, bound with `v-model`. */
   modelValue?: RangeSliderValue
 
@@ -90,3 +94,14 @@ export interface RangeSliderEmits {
   /** Emitted with the final range when dragging or keyboard adjustment ends. */
   'change-end': [value: RangeSliderValue]
 }
+
+export type RangeSliderFactory = Factory<{
+  props: Omit<RangeSliderProps, 'rootRef'>
+  slots: RangeSliderSlots
+  emits: RangeSliderEmits
+  ref: HTMLDivElement
+  exposed: { rootElement: Element | null }
+  element: 'div'
+  stylesNames: RangeSliderStylesNames
+  vars: SliderCssVariables
+}>

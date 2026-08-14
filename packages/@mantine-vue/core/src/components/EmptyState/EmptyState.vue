@@ -1,5 +1,6 @@
 <script lang="ts">
-import { Fragment, type VNode, type VNodeChild } from 'vue'
+import { ref, Fragment, type VNode, type VNodeChild } from 'vue'
+import { assignRef } from '@mantine-vue/hooks'
 import { createVarsResolver, getSize } from '../../core'
 
 const defaultProps = {
@@ -79,6 +80,7 @@ defineOptions({
 
 // Intentionally undefined to preserve downstream defaults.
 const rawProps = withDefaults(defineProps<EmptyStateOwnProps>(), {
+  rootRef: undefined,
   title: undefined,
   description: undefined,
   icon: undefined,
@@ -167,10 +169,24 @@ const renderBody = (): VNodeChild => {
     bodyChildren,
   ])
 }
+
+const rootElement = ref<Element | null>(null)
+
+const setRootRef = (node: Element | null) => {
+  rootElement.value = node
+  assignRef(props.rootRef, node)
+}
+
+defineExpose({ rootElement })
 </script>
 
 <template>
-  <Box v-bind="{ ...attrs, ...rootStyles }" :variant="props.variant" :mod="rootMod">
+  <Box
+    :rootRef="setRootRef"
+    v-bind="{ ...attrs, ...rootStyles }"
+    :variant="props.variant"
+    :mod="rootMod"
+  >
     <component :is="renderIndicator" />
     <component :is="renderBody" />
   </Box>

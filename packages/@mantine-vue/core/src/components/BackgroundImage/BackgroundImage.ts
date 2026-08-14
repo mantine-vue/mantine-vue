@@ -1,6 +1,21 @@
-import { withBoxProps } from '../../core'
-import BackgroundImageComponent from './BackgroundImage.vue'
+import { polymorphicFactory } from '../../core'
+import BackgroundImageComponent, { varsResolver } from './BackgroundImage.vue'
+import type { BackgroundImageFactory } from './BackgroundImage.types'
+import classes from './BackgroundImage.module.css'
 
-export const BackgroundImage = withBoxProps(BackgroundImageComponent)
+export const BackgroundImage = polymorphicFactory<BackgroundImageFactory>(
+  BackgroundImageComponent,
+  {
+    classes,
+    varsResolver,
+  },
+)
 
-export type { BackgroundImageOwnProps, BackgroundImageProps } from './BackgroundImage.types'
+export type {
+  BackgroundImageCssVariables,
+  BackgroundImageFactory,
+  BackgroundImageOwnProps,
+  BackgroundImageProps,
+  BackgroundImageSlots,
+  BackgroundImageStylesNames,
+} from './BackgroundImage.types'

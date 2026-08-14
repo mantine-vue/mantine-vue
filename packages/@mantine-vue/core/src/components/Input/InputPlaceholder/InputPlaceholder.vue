@@ -1,11 +1,13 @@
 <script setup lang="ts">
-import { useAttrs } from 'vue'
+import { ref, useAttrs } from 'vue'
+import { assignRef } from '@mantine-vue/hooks'
 import { Box, useStyles } from '../../../core'
 import type { InputPlaceholderOwnProps, InputPlaceholderSlots } from './InputPlaceholder.types'
 import classes from '../Input.module.css'
 
 defineOptions({ name: 'InputPlaceholder', inheritAttrs: false })
 const props = withDefaults(defineProps<InputPlaceholderOwnProps>(), {
+  rootRef: undefined,
   error: undefined,
   mod: undefined,
   classNames: undefined,
@@ -23,10 +25,20 @@ const getStyles = useStyles({
   styles: props.styles as any,
   unstyled: props.unstyled,
 })
+
+const rootElement = ref<Element | null>(null)
+
+const setRootRef = (node: Element | null) => {
+  rootElement.value = node
+  assignRef(props.rootRef, node)
+}
+
+defineExpose({ rootElement })
 </script>
 
 <template>
   <Box
+    :rootRef="setRootRef"
     v-bind="{
       ...attrs,
       ...getStyles('placeholder', { className: attrs.class, style: attrs.style as any }),

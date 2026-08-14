@@ -1,8 +1,12 @@
-import { withBoxProps } from '../../core'
+import { factory } from '../../core'
 import TreeComponent, { varsResolver } from './Tree.vue'
+import type { TreeFactory } from './Tree.types'
 import classes from './Tree.module.css'
 
-export const Tree = withBoxProps(Object.assign(TreeComponent, { classes, varsResolver }))
+export const Tree = factory<TreeFactory>(TreeComponent, {
+  classes,
+  varsResolver,
+})
 
 export type {
   RenderNode,

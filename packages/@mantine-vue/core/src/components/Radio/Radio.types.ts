@@ -1,3 +1,7 @@
+import type { RadioCard } from './RadioCard/RadioCard'
+import type { RadioIndicator } from './RadioIndicator/RadioIndicator'
+import type { RadioGroup } from './RadioGroup/RadioGroup'
+import type { VueRefTarget } from '@mantine-vue/hooks'
 import type { Component, VNodeChild } from 'vue'
 import type {
   BoxMod,
@@ -7,6 +11,7 @@ import type {
   MantineRadius,
   MantineSize,
   StylesApiProps,
+  Factory,
 } from '../../core'
 
 export type RadioVariant = 'filled' | 'outline'
@@ -54,7 +59,7 @@ export interface RadioSlots {
 }
 
 /** Props declared by `Radio` itself. See `RadioProps` for the full public type. */
-export interface RadioOwnProps extends StylesApiProps<RadioProps> {
+export interface RadioOwnProps extends StylesApiProps<RadioFactory> {
   /** `id` shared by the input and its label. Generated automatically when not set. */
   id?: string
 
@@ -115,7 +120,7 @@ export interface RadioOwnProps extends StylesApiProps<RadioProps> {
   radius?: MantineRadius
 
   /** Ref assigned to the root element. */
-  rootRef?: any
+  rootRef?: VueRefTarget<Element>
 
   /** Key of `theme.colors` or any valid CSS color used for the icon. */
   iconColor?: MantineColor
@@ -168,3 +173,31 @@ export interface RadioOwnProps extends StylesApiProps<RadioProps> {
 }
 
 export interface RadioProps extends Omit<BoxProps, keyof RadioOwnProps>, RadioOwnProps {}
+
+export interface RadioEmits {
+  /** Called with the new checked state. */
+  'update:modelValue': [checked: boolean]
+
+  /** Called with the new checked state. */
+  'update:checked': [checked: boolean]
+
+  /** Called with the new checked state when the user toggles the control. */
+  change: [checked: boolean]
+}
+
+export type RadioFactory = Factory<{
+  props: Omit<RadioProps, 'rootRef'>
+  slots: RadioSlots
+  emits: RadioEmits
+  ref: HTMLDivElement
+  exposed: { rootElement: Element | null }
+  element: 'div'
+  stylesNames: RadioStylesNames
+  vars: RadioCssVariables
+  variant: RadioVariant
+  staticComponents: {
+    Group: typeof RadioGroup
+    Indicator: typeof RadioIndicator
+    Card: typeof RadioCard
+  }
+}>

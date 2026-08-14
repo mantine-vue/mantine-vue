@@ -1,5 +1,5 @@
 import type { VNodeChild } from 'vue'
-import type { BoxMod, BoxProps } from '../../../core'
+import type { BoxMod, BoxProps, Factory } from '../../../core'
 
 export type SplitterPaneStylesNames = 'pane'
 
@@ -10,6 +10,9 @@ export interface SplitterPaneSlots {
 
 /** Props declared by `SplitterPane` itself. See `SplitterPaneProps` for the full public type. */
 export interface SplitterPaneOwnProps {
+  /** Receives the root DOM node. */
+  rootRef?: VueRefTarget<Element>
+
   /** Size the pane starts at, as a percentage of the splitter. */
   defaultSize: number
 
@@ -47,3 +50,12 @@ export interface SplitterPaneOwnProps {
 
 export interface SplitterPaneProps
   extends Omit<BoxProps, keyof SplitterPaneOwnProps>, SplitterPaneOwnProps {}
+
+export type SplitterPaneFactory = Factory<{
+  props: Omit<SplitterPaneProps, 'rootRef'>
+  ref: HTMLDivElement
+  slots: SplitterPaneSlots
+  element: 'div'
+  stylesNames: SplitterPaneStylesNames
+}>
+import type { VueRefTarget } from '@mantine-vue/hooks'

@@ -31,6 +31,7 @@ export const varsResolver = createVarsResolver<any>(
 </script>
 <script setup lang="ts">
 import { computed, ref, useAttrs, watch } from 'vue'
+import { assignRef } from '@mantine-vue/hooks'
 import { Box, useProps, useStyles } from '../../core'
 import { useAvatarGroupContext } from './AvatarGroup/AvatarGroup'
 import { AvatarPlaceholderIcon } from './AvatarPlaceholderIcon'
@@ -39,6 +40,7 @@ import type { AvatarOwnProps, AvatarSlots } from './Avatar.types'
 import classes from './Avatar.module.css'
 defineOptions({ name: 'Avatar', inheritAttrs: false })
 const rawProps = withDefaults(defineProps<AvatarOwnProps>(), {
+  rootRef: undefined,
   component: 'div',
   size: undefined,
   radius: undefined,
@@ -88,12 +90,22 @@ const handleImageError = (event: Event) => {
   imageError.value = true
   rawProps.imageProps?.onError?.(event)
 }
+
+const rootElement = ref<Element | null>(null)
+
+const setRootRef = (node: Element | null) => {
+  rootElement.value = node
+  assignRef(props.rootRef, node)
+}
+
+defineExpose({ rootElement })
 </script>
 <template>
   <Box
     v-bind="{ ...attrs, ...getStyles('root') }"
     :component="props.component"
     :mod="[{ withinGroup: groupCtx.withinGroup }, props.mod]"
+    :rootRef="setRootRef"
   >
     <span
       v-if="imageError || !rawProps.src"

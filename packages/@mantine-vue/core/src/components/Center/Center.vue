@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { useAttrs } from 'vue'
+import { ref, useAttrs } from 'vue'
+import { assignRef } from '@mantine-vue/hooks'
 import { Box, useProps, useStyles } from '../../core'
 import type { CenterOwnProps, CenterSlots } from './Center.types'
 import classes from './Center.module.css'
@@ -10,6 +11,7 @@ defineOptions({
 })
 
 const rawProps = withDefaults(defineProps<CenterOwnProps>(), {
+  rootRef: undefined,
   component: 'div',
   classNames: undefined,
   styles: undefined,
@@ -33,6 +35,15 @@ const getStyles = useStyles({
   vars: props.vars as any,
   unstyled: props.unstyled,
 })
+
+const rootElement = ref<Element | null>(null)
+
+const setRootRef = (node: Element | null) => {
+  rootElement.value = node
+  assignRef(props.rootRef, node)
+}
+
+defineExpose({ rootElement })
 </script>
 
 <template>
@@ -40,6 +51,7 @@ const getStyles = useStyles({
     v-bind="{ ...attrs, ...getStyles('root') }"
     :component="props.component"
     :mod="[{ inline: props.inline }, (attrs as any).mod]"
+    :rootRef="setRootRef"
   >
     <slot />
   </Box>

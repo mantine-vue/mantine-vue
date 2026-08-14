@@ -1,11 +1,13 @@
-import { withBoxProps } from '../../../core'
+import { factory } from '../../../core'
 import ScrollAreaViewportComponent from './ScrollAreaViewport.vue'
+import type { ScrollAreaViewportFactory } from './ScrollAreaViewport.types'
 
-/** Scrollable viewport of a `ScrollArea`, wrapping the content element. */
-export const ScrollAreaViewport = withBoxProps(ScrollAreaViewportComponent)
+export const ScrollAreaViewport = factory<ScrollAreaViewportFactory>(ScrollAreaViewportComponent)
 
 export type {
+  ScrollAreaViewportFactory,
   ScrollAreaViewportOwnProps,
   ScrollAreaViewportProps,
   ScrollAreaViewportSlots,
+  ScrollAreaViewportStylesNames,
 } from './ScrollAreaViewport.types'

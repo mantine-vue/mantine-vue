@@ -1,11 +1,14 @@
-import { withBoxProps } from '../../../core'
+import { factory } from '../../../core'
 import ProgressSectionComponent from './ProgressSection.vue'
+import type { ProgressSectionFactory } from './ProgressSection.types'
 import classes from '../Progress.module.css'
 
-export const ProgressSection = withBoxProps(ProgressSectionComponent)
-Object.assign(ProgressSection, { classes })
+export const ProgressSection = factory<ProgressSectionFactory>(ProgressSectionComponent, {
+  classes,
+})
 
 export type {
+  ProgressSectionFactory,
   ProgressSectionOwnProps,
   ProgressSectionProps,
   ProgressSectionSlots,

@@ -1,6 +1,16 @@
-import { withBoxProps } from '../../core'
+import { polymorphicFactory } from '../../core'
 import CenterComponent from './Center.vue'
+import type { CenterFactory } from './Center.types'
+import classes from './Center.module.css'
 
-export const Center = withBoxProps(CenterComponent)
+export const Center = polymorphicFactory<CenterFactory>(CenterComponent, {
+  classes,
+})
 
-export type { CenterOwnProps, CenterProps, CenterSlots, CenterStylesNames } from './Center.types'
+export type {
+  CenterFactory,
+  CenterOwnProps,
+  CenterProps,
+  CenterSlots,
+  CenterStylesNames,
+} from './Center.types'

@@ -1,9 +1,9 @@
-import { withBoxProps } from '../../core'
+import { factory } from '../../core'
 import MarqueeComponent, { varsResolver } from './Marquee.vue'
+import type { MarqueeFactory } from './Marquee.types'
 import classes from './Marquee.module.css'
 
-export const Marquee = withBoxProps(MarqueeComponent)
-Object.assign(Marquee, { classes, varsResolver })
+export const Marquee = factory<MarqueeFactory>(MarqueeComponent, { classes, varsResolver })
 
 export type {
   MarqueeCssVariables,
@@ -11,4 +11,5 @@ export type {
   MarqueeProps,
   MarqueeSlots,
   MarqueeStylesNames,
+  MarqueeFactory,
 } from './Marquee.types'

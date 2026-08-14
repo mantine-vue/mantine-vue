@@ -21,7 +21,8 @@ export { varsResolver }
 </script>
 
 <script setup lang="ts">
-import { useAttrs } from 'vue'
+import { ref, useAttrs } from 'vue'
+import { assignRef } from '@mantine-vue/hooks'
 import { Box, useProps, useStyles } from '../../core'
 import { OptionalPortal } from '../Portal'
 import type { AffixOwnProps, AffixSlots } from './Affix.types'
@@ -55,11 +56,21 @@ const getStyles = useStyles({
   vars: props.vars as any,
   varsResolver,
 })
+
+const rootElement = ref<Element | null>(null)
+
+const setRootRef = (node: Element | null) => {
+  rootElement.value = node
+  assignRef(props.rootRef, node)
+}
+
+defineExpose({ rootElement })
 </script>
 
 <template>
   <OptionalPortal v-bind="props.portalProps" :within-portal="props.withinPortal">
     <Box
+      :rootRef="setRootRef"
       v-bind="{
         ...attrs,
         ...getStyles('root', { className: attrs.class, style: attrs.style as any }),

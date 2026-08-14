@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { useAttrs } from 'vue'
+import { ref, useAttrs } from 'vue'
+import { assignRef } from '@mantine-vue/hooks'
 import { Box } from '../../../core'
 import { Collapse } from '../../Collapse'
 import { useAccordionContext } from '../Accordion.context'
@@ -21,10 +22,20 @@ const emit = defineEmits<{
 const attrs = useAttrs()
 const { value } = useAccordionItemContext()
 const ctx = useAccordionContext()
+
+const rootElement = ref<Element | null>(null)
+
+const setRootRef = (node: Element | null) => {
+  rootElement.value = node
+  assignRef(props.rootRef, node)
+}
+
+defineExpose({ rootElement })
 </script>
 
 <template>
   <Collapse
+    :root-ref="setRootRef"
     v-bind="{
       ...attrs,
       ...ctx.getStyles('panel', {

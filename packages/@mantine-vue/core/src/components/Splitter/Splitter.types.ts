@@ -1,6 +1,7 @@
+import type { SplitterPane } from './SplitterPane/SplitterPane'
 import type { VNodeChild } from 'vue'
 import type { VueRefTarget } from '@mantine-vue/hooks'
-import type { BoxMod, BoxProps, StylesApiProps } from '../../core'
+import type { BoxMod, BoxProps, StylesApiProps, Factory } from '../../core'
 import type { UseSplitterRedistributeFn, UseSplitterReturnValue } from './use-splitter'
 
 export type SplitterStylesNames = 'root' | 'handle' | 'thumb' | 'pane'
@@ -16,7 +17,10 @@ export interface SplitterSlots {
 }
 
 /** Props declared by `Splitter` itself. See `SplitterProps` for the full public type. */
-export interface SplitterOwnProps extends StylesApiProps<SplitterProps> {
+export interface SplitterOwnProps extends StylesApiProps<SplitterFactory> {
+  /** Receives the root DOM node. */
+  rootRef?: VueRefTarget<Element>
+
   /**
    * Direction the panes are laid out in.
    *
@@ -105,3 +109,16 @@ export interface SplitterEmits {
   /** Emitted when a collapsible pane is collapsed or expanded. */
   'collapse-change': [panelIndex: number, collapsed: boolean]
 }
+
+export type SplitterFactory = Factory<{
+  props: Omit<SplitterProps, 'rootRef'>
+  ref: HTMLDivElement
+  slots: SplitterSlots
+  emits: SplitterEmits
+  element: 'div'
+  stylesNames: SplitterStylesNames
+  vars: { root: SplitterCssVariables }
+  staticComponents: {
+    Pane: typeof SplitterPane
+  }
+}>

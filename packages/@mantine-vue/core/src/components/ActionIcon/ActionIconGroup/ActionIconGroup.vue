@@ -9,13 +9,15 @@ export { varsResolver }
 </script>
 
 <script setup lang="ts">
-import { useAttrs } from 'vue'
+import { ref, useAttrs } from 'vue'
+import { assignRef } from '@mantine-vue/hooks'
 import { Box, useProps, useStyles } from '../../../core'
 import type { ActionIconGroupOwnProps, ActionIconGroupSlots } from './ActionIconGroup.types'
 import classes from '../ActionIcon.module.css'
 
 defineOptions({ name: 'ActionIconGroup', inheritAttrs: false })
 const rawProps = withDefaults(defineProps<ActionIconGroupOwnProps>(), {
+  rootRef: undefined,
   orientation: undefined,
   classNames: undefined,
   styles: undefined,
@@ -36,10 +38,20 @@ const getStyles = useStyles({
   varsResolver,
   unstyled: props.unstyled,
 })
+
+const rootElement = ref<Element | null>(null)
+
+const setRootRef = (node: Element | null) => {
+  rootElement.value = node
+  assignRef(props.rootRef, node)
+}
+
+defineExpose({ rootElement })
 </script>
 
 <template>
   <Box
+    :rootRef="setRootRef"
     v-bind="{ ...attrs, ...getStyles('group') }"
     role="group"
     :mod="[{ orientation: props.orientation }, (attrs as any).mod]"

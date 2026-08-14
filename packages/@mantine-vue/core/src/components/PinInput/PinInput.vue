@@ -275,9 +275,15 @@ function handlePaste(event: ClipboardEvent) {
   }
 }
 
+const rootElement = ref<Element | null>(null)
+
 function setRootRef(node: any) {
-  assignRef(props.rootRef, node?.$el ?? node ?? null)
+  const element = (node?.$el ?? node ?? null) as HTMLDivElement | null
+  rootElement.value = element
+  assignRef(props.rootRef, element)
 }
+
+defineExpose({ rootElement })
 
 function setInputRef(node: any, index: number) {
   const input = getInputElement(node)
@@ -351,9 +357,9 @@ function onFieldFocus(event: FocusEvent, index: number) {
         :unstyled="props.unstyled"
         :aria-label="props.ariaLabel"
         :readonly="props.readOnly"
-        :class-names="props.classNames"
-        :styles="props.styles"
-        :vars="props.vars"
+        :class-names="props.classNames as any"
+        :styles="props.styles as any"
+        :vars="props.vars as any"
         :size="props.size"
         @input="(event: Event) => handleInput(event, index)"
         @keydown="(event: KeyboardEvent) => handleKeyDown(event, index)"

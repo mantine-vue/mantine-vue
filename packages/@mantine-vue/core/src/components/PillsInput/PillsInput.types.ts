@@ -1,5 +1,14 @@
+import type { PillsInputField } from './PillsInputField/PillsInputField'
+import type { VueRefTarget } from '@mantine-vue/hooks'
 import type { VNodeChild } from 'vue'
-import type { BoxMod, MantineNode, MantineRadius, MantineSize, StylesApiProps } from '../../core'
+import type {
+  BoxMod,
+  MantineNode,
+  MantineRadius,
+  MantineSize,
+  StylesApiProps,
+  Factory,
+} from '../../core'
 import type { InputBaseOwnProps, InputBaseStylesNames } from '../InputBase'
 
 export type PillsInputStylesNames = InputBaseStylesNames
@@ -25,7 +34,10 @@ export interface PillsInputSlots {
 }
 
 /** Props declared by `PillsInput` itself. See `PillsInputProps` for the full public type. */
-export interface PillsInputOwnProps extends StylesApiProps {
+export interface PillsInputOwnProps extends StylesApiProps<PillsInputFactory> {
+  /** Receives the input element */
+  rootRef?: VueRefTarget<Element>
+
   /**
    * Controls input height and horizontal padding.
    *
@@ -107,3 +119,13 @@ export interface PillsInputProps
   extends
     Omit<InputBaseOwnProps, keyof PillsInputOwnProps | 'component' | 'multiline' | 'withAria'>,
     PillsInputOwnProps {}
+
+export type PillsInputFactory = Factory<{
+  props: Omit<PillsInputProps, 'rootRef'>
+  slots: PillsInputSlots
+  ref: HTMLDivElement
+  stylesNames: PillsInputStylesNames
+  staticComponents: {
+    Field: typeof PillsInputField
+  }
+}>

@@ -56,7 +56,7 @@ const popoverValue = ref<string | null>(null)
               :right-section="h(Combobox.Chevron)"
               right-section-pointer-events="none"
               placeholder="Search a grocery"
-              :value="search"
+              :modelValue="search"
               @click="combobox.openDropdown()"
               @focus="combobox.openDropdown()"
               @input="
@@ -96,10 +96,9 @@ const popoverValue = ref<string | null>(null)
       <Stack gap="xs" style="max-width: 340px">
         <ComboboxPopover
           :data="['React', 'Angular', 'Vue', 'Svelte']"
-          :value="popoverValue"
+          v-model="popoverValue"
           searchable
           nothing-found-message="Nothing found..."
-          @change="popoverValue = $event"
         >
           <ComboboxPopover.Target>
             <Button variant="default" :miw="200">{{ popoverValue || 'Select framework' }}</Button>

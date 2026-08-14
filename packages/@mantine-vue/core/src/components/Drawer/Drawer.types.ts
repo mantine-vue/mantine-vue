@@ -1,6 +1,15 @@
 import type { VNodeChild } from 'vue'
-import type { MantineNode, StylesApiProps } from '../../core'
+import type { MantineNode, StylesApiProps, Factory } from '../../core'
 import type { ModalBaseOwnProps } from '../ModalBase/ModalBase.types'
+import type {
+  DrawerBody,
+  DrawerCloseButton,
+  DrawerContent,
+  DrawerHeader,
+  DrawerOverlay,
+  DrawerTitle,
+} from './Drawer.compound'
+import type { DrawerRoot, DrawerStack } from './Drawer'
 
 export type DrawerPosition = 'top' | 'bottom' | 'left' | 'right'
 
@@ -24,7 +33,29 @@ export type DrawerCssVariables = {
     | '--drawer-offset'
 }
 
-export type DrawerFactory = any
+export interface DrawerEmits {
+  /** Called when the drawer is closed. */
+  close: []
+}
+
+export type DrawerFactory = Factory<{
+  props: DrawerProps
+  slots: DrawerSlots
+  emits: DrawerEmits
+  element: 'div'
+  stylesNames: DrawerStylesNames
+  vars: DrawerCssVariables
+  staticComponents: {
+    Root: typeof DrawerRoot
+    Overlay: typeof DrawerOverlay
+    Content: typeof DrawerContent
+    Body: typeof DrawerBody
+    Header: typeof DrawerHeader
+    Title: typeof DrawerTitle
+    CloseButton: typeof DrawerCloseButton
+    Stack: typeof DrawerStack
+  }
+}>
 
 export interface DrawerSlots {
   /** Content of the drawer, rendered inside `Drawer.Body`. */

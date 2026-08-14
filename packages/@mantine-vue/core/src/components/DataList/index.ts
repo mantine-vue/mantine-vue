@@ -1,10 +1,11 @@
 export { DataList } from './DataList'
 export type {
+  DataListCssVariables,
+  DataListFactory,
   DataListOwnProps,
   DataListProps,
   DataListSlots,
   DataListStylesNames,
-  DataListCssVariables,
 } from './DataList'
 
 export { DataListItem } from './DataListItem/DataListItem'

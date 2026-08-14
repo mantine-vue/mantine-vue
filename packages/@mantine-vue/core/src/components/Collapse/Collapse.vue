@@ -9,14 +9,15 @@ const defaultProps = {
 </script>
 
 <script setup lang="ts">
-import { computed, useAttrs } from 'vue'
-import { useCollapse, useHorizontalCollapse, useReducedMotion } from '@mantine-vue/hooks'
+import { ref, computed, useAttrs } from 'vue'
+import { assignRef, useCollapse, useHorizontalCollapse, useReducedMotion } from '@mantine-vue/hooks'
 import { Box, useMantineEnv, useMantineTheme } from '../../core'
 import type { CollapseOwnProps, CollapseSlots } from './Collapse.types'
 
 defineOptions({ name: 'Collapse', inheritAttrs: false })
 
 const props = withDefaults(defineProps<CollapseOwnProps>(), {
+  rootRef: undefined,
   orientation: undefined,
   transitionDuration: undefined,
   transitionTimingFunction: undefined,
@@ -84,10 +85,23 @@ const animatedProps = computed(() => ({
     },
   }),
 }))
+
+const rootElement = ref<Element | null>(null)
+
+const setRootRef = (node: Element | null) => {
+  rootElement.value = node
+  assignRef(props.rootRef, node)
+}
+
+defineExpose({ rootElement })
 </script>
 
 <template>
-  <Box v-if="duration === 0 && shouldRenderZeroDuration" v-bind="zeroDurationProps">
+  <Box
+    :rootRef="setRootRef"
+    v-if="duration === 0 && shouldRenderZeroDuration"
+    v-bind="zeroDurationProps"
+  >
     <slot />
   </Box>
   <Box v-else-if="duration !== 0 && shouldRenderAnimated" v-bind="animatedProps">

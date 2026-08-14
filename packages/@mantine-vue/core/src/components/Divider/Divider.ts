@@ -1,8 +1,14 @@
-import { withBoxProps } from '../../core'
+import { factory } from '../../core'
 import DividerComponent, { varsResolver } from './Divider.vue'
+import type { DividerFactory } from './Divider.types'
 import classes from './Divider.module.css'
 
-export const Divider = withBoxProps(DividerComponent)
-Object.assign(Divider, { classes, varsResolver })
+export const Divider = factory<DividerFactory>(DividerComponent, { classes, varsResolver })
 
-export type { DividerOwnProps, DividerProps, DividerSlots, DividerVariant } from './Divider.types'
+export type {
+  DividerOwnProps,
+  DividerProps,
+  DividerSlots,
+  DividerVariant,
+  DividerFactory,
+} from './Divider.types'

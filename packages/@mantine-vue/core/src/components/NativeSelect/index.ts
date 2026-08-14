@@ -11,6 +11,8 @@ export type {
   NativeSelectPrimitive,
 } from './get-parsed-data/get-parsed-data'
 export type {
+  NativeSelectEmits,
+  NativeSelectFactory,
   NativeSelectOwnProps,
   NativeSelectProps,
   NativeSelectSlots,

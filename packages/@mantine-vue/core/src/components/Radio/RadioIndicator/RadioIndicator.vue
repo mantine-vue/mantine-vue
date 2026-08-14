@@ -30,7 +30,8 @@ export { varsResolver }
 </script>
 
 <script setup lang="ts">
-import { computed, useAttrs } from 'vue'
+import { ref, computed, useAttrs } from 'vue'
+import { assignRef } from '@mantine-vue/hooks'
 import { Box, useStyles } from '../../../core'
 import { RadioIcon } from '../RadioIcon'
 import { useRadioCardContext } from '../RadioCard/RadioCard'
@@ -39,6 +40,7 @@ import classes from './RadioIndicator.module.css'
 
 defineOptions({ name: 'RadioIndicator', inheritAttrs: false })
 const props = withDefaults(defineProps<RadioIndicatorOwnProps>(), {
+  rootRef: undefined,
   color: undefined,
   size: 'sm',
   radius: undefined,
@@ -71,10 +73,20 @@ const iconStyles = computed(() => getStyles('icon'))
 const checked = computed(() =>
   typeof props.checked === 'boolean' ? props.checked : cardContext?.checked || false,
 )
+
+const rootElement = ref<Element | null>(null)
+
+const setRootRef = (node: Element | null) => {
+  rootElement.value = node
+  assignRef(props.rootRef, node)
+}
+
+defineExpose({ rootElement })
 </script>
 
 <template>
   <Box
+    :rootRef="setRootRef"
     v-bind="{
       ...attrs,
       ...getStyles('indicator', { className: attrs.class, style: attrs.style as any }),

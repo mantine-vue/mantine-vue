@@ -1,11 +1,16 @@
-import { withBoxProps } from '../../core'
+import { factory } from '../../core'
+import type { LoadingOverlayFactory } from './LoadingOverlay.types'
 import LoadingOverlayComponent, { varsResolver } from './LoadingOverlay.vue'
 import classes from './LoadingOverlay.module.css'
 
-export const LoadingOverlay = withBoxProps(LoadingOverlayComponent)
-Object.assign(LoadingOverlay, { classes, varsResolver })
+export const LoadingOverlay = factory<LoadingOverlayFactory>(LoadingOverlayComponent, {
+  classes,
+  varsResolver,
+})
 
 export type {
+  LoadingOverlayCssVariables,
+  LoadingOverlayFactory,
   LoadingOverlayOwnProps,
   LoadingOverlayProps,
   LoadingOverlayStylesNames,

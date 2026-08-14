@@ -1,10 +1,11 @@
-import { withBoxProps } from '../../../core'
+import { factory } from '../../../core'
 import ScrollAreaRootComponent from './ScrollAreaRoot.vue'
+import type { ScrollAreaRootFactory } from './ScrollAreaRoot.types'
 
-/** Owns the scroll area context that every other part of the component reads. */
-export const ScrollAreaRoot = withBoxProps(ScrollAreaRootComponent)
+export const ScrollAreaRoot = factory<ScrollAreaRootFactory>(ScrollAreaRootComponent)
 
 export type {
+  ScrollAreaRootFactory,
   ScrollAreaRootOwnProps,
   ScrollAreaRootProps,
   ScrollAreaRootSlots,

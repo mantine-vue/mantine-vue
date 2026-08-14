@@ -1,5 +1,6 @@
 export { PillsInput } from './PillsInput'
 export type {
+  PillsInputFactory,
   PillsInputOwnProps,
   PillsInputProps,
   PillsInputSlots,

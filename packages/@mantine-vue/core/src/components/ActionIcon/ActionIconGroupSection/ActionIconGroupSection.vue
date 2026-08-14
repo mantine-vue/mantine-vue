@@ -29,7 +29,8 @@ export { varsResolver }
 </script>
 
 <script setup lang="ts">
-import { useAttrs } from 'vue'
+import { ref, useAttrs } from 'vue'
+import { assignRef } from '@mantine-vue/hooks'
 import { Box, useProps, useStyles } from '../../../core'
 import type {
   ActionIconGroupSectionOwnProps,
@@ -40,6 +41,7 @@ import classes from '../ActionIcon.module.css'
 defineOptions({ name: 'ActionIconGroupSection', inheritAttrs: false })
 
 const rawProps = withDefaults(defineProps<ActionIconGroupSectionOwnProps>(), {
+  rootRef: undefined,
   size: undefined,
   color: undefined,
   radius: undefined,
@@ -67,10 +69,23 @@ const getStyles = useStyles({
   varsResolver,
   unstyled: props.unstyled,
 })
+
+const rootElement = ref<Element | null>(null)
+
+const setRootRef = (node: Element | null) => {
+  rootElement.value = node
+  assignRef(props.rootRef, node)
+}
+
+defineExpose({ rootElement })
 </script>
 
 <template>
-  <Box v-bind="{ ...attrs, ...getStyles('groupSection') }" :variant="props.variant">
+  <Box
+    :rootRef="setRootRef"
+    v-bind="{ ...attrs, ...getStyles('groupSection') }"
+    :variant="props.variant"
+  >
     <slot />
   </Box>
 </template>

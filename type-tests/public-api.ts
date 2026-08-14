@@ -13,6 +13,7 @@ import type {
   ActionIconProps,
   AlignItems,
   BadgeVariant,
+  ComponentProps,
   ButtonVariant,
   FlexWrap,
   JustifyContent,
@@ -33,13 +34,15 @@ import type {
   ShowContextMenuFunction,
 } from '@mantine-vue/contextmenu'
 
-type ButtonProps = InstanceType<typeof Button>['$props']
+type ButtonProps = ComponentProps<typeof Button>
 type AutocompleteProps = InstanceType<typeof Autocomplete>['$props']
 type BoxPublicProps = InstanceType<typeof Box>['$props']
-type BadgeProps = InstanceType<typeof Badge>['$props']
+// Polymorphic components are generic function components with no construct signature, so
+// `ComponentProps` is the accessor for them rather than `InstanceType<…>['$props']`.
+type BadgeProps = ComponentProps<typeof Badge>
 type ThemeIconProps = InstanceType<typeof ThemeIcon>['$props']
 type PinInputProps = InstanceType<typeof PinInput>['$props']
-type AvatarProps = InstanceType<typeof Avatar>['$props']
+type AvatarProps = ComponentProps<typeof Avatar>
 type GroupProps = InstanceType<typeof Group>['$props']
 type StackProps = InstanceType<typeof Stack>['$props']
 type ContextMenuProviderPublicProps = InstanceType<typeof ContextMenuProvider>['$props']

@@ -73,7 +73,7 @@ const Demo = defineComponent({
               ),
           },
         ),
-        h(Button, { type: 'submit', mt: 'md' }, { default: () => 'Submit' }),
+        h(Button<'button'>, { type: 'submit', mt: 'md' }, { default: () => 'Submit' }),
       ])
   },
 })

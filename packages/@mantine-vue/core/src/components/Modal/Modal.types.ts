@@ -1,6 +1,15 @@
 import type { VNodeChild } from 'vue'
-import type { ClassNames, MantineNode, Styles, Vars } from '../../core'
+import type { ClassNames, Factory, MantineNode, Styles, Vars } from '../../core'
 import type { ModalBaseOwnProps } from '../ModalBase/ModalBase.types'
+import type {
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalHeader,
+  ModalOverlay,
+  ModalTitle,
+} from './Modal.compound'
+import type { ModalRoot } from './Modal'
 
 export type ModalStylesNames =
   | 'root'
@@ -16,11 +25,28 @@ export type ModalCssVariables = {
   root: '--modal-size' | '--modal-radius' | '--modal-y-offset' | '--modal-x-offset'
 }
 
-export type ModalFactory = {
+export interface ModalEmits {
+  /** Called when the modal is closed. */
+  close: []
+}
+
+export type ModalFactory = Factory<{
   props: ModalProps
+  slots: ModalSlots
+  emits: ModalEmits
+  element: 'div'
   stylesNames: ModalStylesNames
   vars: ModalCssVariables
-}
+  staticComponents: {
+    Root: typeof ModalRoot
+    Overlay: typeof ModalOverlay
+    Content: typeof ModalContent
+    Body: typeof ModalBody
+    Header: typeof ModalHeader
+    Title: typeof ModalTitle
+    CloseButton: typeof ModalCloseButton
+  }
+}>
 
 export interface ModalSlots {
   /** Content of the modal, rendered inside `Modal.Body`. */

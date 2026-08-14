@@ -37,7 +37,7 @@ export { defaultProps, varsResolver }
 
 <script setup lang="ts">
 import { computed, ref, useAttrs, useSlots, watch } from 'vue'
-import { useMove, useUncontrolled } from '@mantine-vue/hooks'
+import { assignRef, useMove, useUncontrolled } from '@mantine-vue/hooks'
 import { useDirection, useProps, useStyles } from '../../../core'
 import { provideSliderContext } from '../Slider.context'
 import type { SliderMark } from '../SliderMark'
@@ -263,10 +263,20 @@ function labelAt(index: number) {
 /** Stable functional component: thumb content is arbitrary renderable content. */
 const renderThumbChildren = (index: number) => () =>
   props.thumbChildren !== undefined ? props.thumbChildren[index] : slots.thumbChildren?.({ index })
+
+const rootElement = ref<Element | null>(null)
+
+const setRootRef = (node: Element | null) => {
+  rootElement.value = node
+  assignRef(props.rootRef, node)
+}
+
+defineExpose({ rootElement })
 </script>
 
 <template>
   <SliderRoot
+    :root-ref="setRootRef"
     v-bind="attrs"
     :size="props.size"
     :disabled="props.disabled"

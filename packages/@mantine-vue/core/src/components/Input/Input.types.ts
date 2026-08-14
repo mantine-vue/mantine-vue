@@ -1,13 +1,22 @@
-import type { Component, VNodeChild } from 'vue'
+import type { VNodeChild } from 'vue'
+import type { VueRefTarget } from '@mantine-vue/hooks'
 import type {
   BoxMod,
   BoxProps,
+  MantineElementType,
   MantineNode,
   MantineRadius,
   MantineSize,
+  PolymorphicFactory,
   SectionSlots,
   StylesApiProps,
 } from '../../core'
+import type { InputClearButton } from './InputClearButton/InputClearButton'
+import type { InputDescription } from './InputDescription/InputDescription'
+import type { InputError } from './InputError/InputError'
+import type { InputLabel } from './InputLabel/InputLabel'
+import type { InputPlaceholder } from './InputPlaceholder/InputPlaceholder'
+import type { InputWrapper } from './InputWrapper/InputWrapper'
 import type { ClearSectionMode } from './InputClearSection/InputClearSection'
 
 export type InputStylesNames = 'input' | 'wrapper' | 'section' | 'bottomSection'
@@ -47,13 +56,13 @@ export interface InputSlots extends SectionSlots {
  * callbacks down, and a callback typed for one component is not assignable to a
  * callback typed for another.
  */
-export interface InputOwnProps extends StylesApiProps {
+export interface InputOwnProps extends StylesApiProps<InputFactory> {
   /**
    * Element or component rendered as the input.
    *
    * @default 'input'
    */
-  component?: string | Component
+  component?: MantineElementType
 
   /** Controlled value, bound with `v-model`. */
   modelValue?: any
@@ -220,11 +229,39 @@ export interface InputOwnProps extends StylesApiProps {
   /** Props passed down to the wrapper element. */
   wrapperProps?: Record<string, any>
 
-  /** Ref assigned to the wrapper element. */
-  rootRef?: any
+  /**
+   * Receives the input element -- the node `component` selects,
+   */
+  rootRef?: VueRefTarget<Element>
 
   /** Element modifiers transformed into `data-` attributes, for example, `{ 'data-size': 'xl' }`, falsy values are removed */
   mod?: BoxMod
 }
 
 export interface InputProps extends Omit<BoxProps, keyof InputOwnProps>, InputOwnProps {}
+
+export type InputFactory = PolymorphicFactory<{
+  props: Omit<InputProps, 'component' | 'rootRef'>
+  slots: InputSlots
+  ref: HTMLInputElement
+  exposed: {
+    /** The element `component` selected. */
+    rootElement: Element | null
+    /** The wrapper that holds the input and its sections. */
+    wrapperElement: Element | null
+  }
+  defaultComponent: 'input'
+  defaultRef: HTMLInputElement
+  stylesNames: InputStylesNames
+  vars: InputCssVariables
+  variant: InputVariant
+  ctx: InputStylesCtx
+  staticComponents: {
+    Wrapper: typeof InputWrapper
+    Label: typeof InputLabel
+    Error: typeof InputError
+    Description: typeof InputDescription
+    Placeholder: typeof InputPlaceholder
+    ClearButton: typeof InputClearButton
+  }
+}>

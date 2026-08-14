@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { computed, useAttrs, useSlots } from 'vue'
+import { ref, computed, useAttrs, useSlots } from 'vue'
+import { assignRef } from '@mantine-vue/hooks'
 import { resolveNode, useMantineEnv, useProps } from '../../core'
 import { InputBase } from '../InputBase'
 import { TextareaAutosize } from './Autosize'
@@ -46,17 +47,30 @@ const autosizeProps = computed(() =>
 )
 
 const bottomSection = computed(() => resolveNode(props.bottomSection, slots.bottomSection))
+
+const dataNoOverflow = computed(() =>
+  props.autosize && props.maxRows === undefined ? true : undefined,
+)
+
+const rootElement = ref<Element | null>(null)
+
+const setRootRef = (node: Element | null) => {
+  rootElement.value = node
+  assignRef(props.rootRef, node)
+}
+
+defineExpose({ rootElement })
 </script>
 
 <template>
   <InputBase
-    v-bind="{ ...attrs, ...autosizeProps }"
+    :root-ref="setRootRef"
+    v-bind="{ ...attrs, ...autosizeProps, 'data-no-overflow': dataNoOverflow }"
     :model-value="props.modelValue"
     :default-value="props.defaultValue"
     :component="shouldAutosize ? TextareaAutosize : 'textarea'"
     :__static-selector="props.__staticSelector || 'Textarea'"
     multiline
-    :data-no-overflow="props.autosize && props.maxRows === undefined ? true : undefined"
     :__bottom-section="bottomSection"
     :__bottom-section-props="props.bottomSectionProps"
     :style="[{ '--input-resize': props.resize }, (attrs as any).style]"

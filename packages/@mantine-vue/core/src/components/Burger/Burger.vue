@@ -16,7 +16,8 @@ export const varsResolver = createVarsResolver<any>(
 </script>
 
 <script setup lang="ts">
-import { computed, useAttrs } from 'vue'
+import { ref, computed, useAttrs } from 'vue'
+import { assignRef } from '@mantine-vue/hooks'
 import { Box, useProps, useStyles } from '../../core'
 import { UnstyledButton } from '../UnstyledButton'
 import type { BurgerOwnProps, BurgerSlots } from './Burger.types'
@@ -25,6 +26,7 @@ import classes from './Burger.module.css'
 defineOptions({ name: 'Burger', inheritAttrs: false })
 
 const rawProps = withDefaults(defineProps<BurgerOwnProps>(), {
+  rootRef: undefined,
   size: undefined,
   lineSize: undefined,
   color: undefined,
@@ -53,10 +55,23 @@ const getStyles = useStyles({
   unstyled: props.unstyled,
 })
 const burgerMod = computed(() => [{ 'reduce-motion': true }, { opened: props.opened }])
+
+const rootElement = ref<Element | null>(null)
+
+const setRootRef = (node: Element | null) => {
+  rootElement.value = node
+  assignRef(props.rootRef, node)
+}
+
+defineExpose({ rootElement })
 </script>
 
 <template>
-  <UnstyledButton v-bind="{ ...attrs, ...getStyles('root') }" :unstyled="props.unstyled">
+  <UnstyledButton
+    :rootRef="setRootRef"
+    v-bind="{ ...attrs, ...getStyles('root') }"
+    :unstyled="props.unstyled"
+  >
     <Box v-bind="getStyles('burger')" :mod="burgerMod" />
     <slot />
   </UnstyledButton>

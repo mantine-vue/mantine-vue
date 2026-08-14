@@ -15,7 +15,8 @@ export { varsResolver }
 </script>
 
 <script setup lang="ts">
-import { computed, useAttrs } from 'vue'
+import { ref, computed, useAttrs } from 'vue'
+import { assignRef } from '@mantine-vue/hooks'
 import { Box, useMantineTheme, useProps, useStyles } from '../../core'
 import { Loader } from '../Loader'
 import { Overlay } from '../Overlay'
@@ -64,6 +65,15 @@ const transitionProps = computed(() => ({
   ...defaultProps.transitionProps,
   ...props.transitionProps,
 }))
+
+const rootElement = ref<Element | null>(null)
+
+const setRootRef = (node: Element | null) => {
+  rootElement.value = node
+  assignRef(props.rootRef, node)
+}
+
+defineExpose({ rootElement })
 </script>
 
 <template>
@@ -81,6 +91,7 @@ const transitionProps = computed(() => ({
     <template #default="transitionStyles">
       <Box
         v-if="props.visible"
+        :rootRef="setRootRef"
         v-bind="{ ...attrs, ...getStyles('root', { style: transitionStyles }) }"
       >
         <Loader

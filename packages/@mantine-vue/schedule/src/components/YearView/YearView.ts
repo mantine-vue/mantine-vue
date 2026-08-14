@@ -107,7 +107,7 @@ export const YearView = defineComponent({
                 },
                 [
                   h(
-                    UnstyledButton,
+                    UnstyledButton<'button'>,
                     {
                       type: 'button',
                       class: classes.yearViewMonthCaption,
@@ -134,7 +134,7 @@ export const YearView = defineComponent({
                     h('div', { class: classes.yearViewWeek }, [
                       props.withWeekNumbers
                         ? h(
-                            UnstyledButton,
+                            UnstyledButton<'button'>,
                             {
                               type: 'button',
                               class: classes.yearViewWeekNumber,
@@ -159,7 +159,7 @@ export const YearView = defineComponent({
                           })
                         }
                         return h(
-                          UnstyledButton,
+                          UnstyledButton<'button'>,
                           {
                             type: 'button',
                             ...extra,

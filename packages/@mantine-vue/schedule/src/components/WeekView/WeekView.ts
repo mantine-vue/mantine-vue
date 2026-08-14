@@ -239,7 +239,7 @@ export const WeekView = defineComponent({
                     ]),
                     ...days.map((date, dayIndex) =>
                       h(
-                        UnstyledButton,
+                        UnstyledButton<'button'>,
                         {
                           type: 'button',
                           class: classes.weekViewDayLabel,
@@ -327,7 +327,7 @@ export const WeekView = defineComponent({
                             ),
                           ),
                           ...days.map((date, dayIndex) =>
-                            h(UnstyledButton, {
+                            h(UnstyledButton<'button'>, {
                               type: 'button',
                               class: classes.weekViewDaySlot,
                               disabled: props.mode === 'static',
@@ -470,7 +470,7 @@ export const WeekView = defineComponent({
                                 highlightBusinessHours: props.highlightBusinessHours,
                                 dayOfWeek: start.day() as DayOfWeek,
                               })
-                              return h(UnstyledButton, {
+                              return h(UnstyledButton<'button'>, {
                                 type: 'button',
                                 class: classes.weekViewDaySlot,
                                 'data-week-day-index': dayIndex,

@@ -1,5 +1,5 @@
 import type { VNodeChild } from 'vue'
-import type { BoxMod, BoxProps, MantineRadius, StylesApiProps } from '../../../core'
+import type { BoxMod, BoxProps, MantineRadius, StylesApiProps, Factory } from '../../../core'
 
 export type CheckboxCardStylesNames = 'card'
 
@@ -18,7 +18,10 @@ export interface CheckboxCardSlots {
 }
 
 /** Props declared by `CheckboxCard` itself. See `CheckboxCardProps` for the full public type. */
-export interface CheckboxCardOwnProps extends StylesApiProps<CheckboxCardProps> {
+export interface CheckboxCardOwnProps extends StylesApiProps<CheckboxCardFactory> {
+  /** Receives the root DOM node. */
+  rootRef?: VueRefTarget<Element>
+
   /** Checked state, bound with `v-model`. */
   modelValue?: boolean
 
@@ -51,3 +54,13 @@ export interface CheckboxCardOwnProps extends StylesApiProps<CheckboxCardProps> 
 
 export interface CheckboxCardProps
   extends Omit<BoxProps, keyof CheckboxCardOwnProps>, CheckboxCardOwnProps {}
+
+export type CheckboxCardFactory = Factory<{
+  props: Omit<CheckboxCardProps, 'rootRef'>
+  ref: HTMLButtonElement
+  slots: CheckboxCardSlots
+  element: 'button'
+  stylesNames: CheckboxCardStylesNames
+  vars: CheckboxCardCssVariables
+}>
+import type { VueRefTarget } from '@mantine-vue/hooks'

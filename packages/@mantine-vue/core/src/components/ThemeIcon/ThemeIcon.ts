@@ -1,10 +1,16 @@
-import { withBoxProps } from '../../core'
-import ThemeIconComponent from './ThemeIcon.vue'
+import { factory } from '../../core'
+import ThemeIconComponent, { varsResolver } from './ThemeIcon.vue'
+import type { ThemeIconFactory } from './ThemeIcon.types'
+import classes from './ThemeIcon.module.css'
 
-export const ThemeIcon = withBoxProps(ThemeIconComponent)
+export const ThemeIcon = factory<ThemeIconFactory>(ThemeIconComponent, {
+  classes,
+  varsResolver,
+})
 
 export type {
   ThemeIconCssVariables,
+  ThemeIconFactory,
   ThemeIconOwnProps,
   ThemeIconProps,
   ThemeIconSlots,

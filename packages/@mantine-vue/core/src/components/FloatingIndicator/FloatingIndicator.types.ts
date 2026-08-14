@@ -1,8 +1,11 @@
 import type { VNodeChild } from 'vue'
-import type { BoxMod, BoxProps, StylesApiProps } from '../../core'
+import type { BoxMod, BoxProps, StylesApiProps, MantineElementType, Factory } from '../../core'
 
 /** Props declared by `FloatingIndicator` itself. See `FloatingIndicatorProps` for the full public type. */
-export interface FloatingIndicatorOwnProps extends StylesApiProps<FloatingIndicatorProps> {
+export interface FloatingIndicatorOwnProps extends StylesApiProps<FloatingIndicatorFactory> {
+  /** Receives the root DOM node. */
+  rootRef?: VueRefTarget<Element>
+
   /**
    * Target element over which the indicator is displayed.
    * The indicator will be positioned to match the target's size and position.
@@ -36,7 +39,7 @@ export interface FloatingIndicatorOwnProps extends StylesApiProps<FloatingIndica
    *
    * @default 'div'
    */
-  component?: string
+  component?: MantineElementType
 
   /** Element modifiers transformed into `data-` attributes, for example, `{ 'data-size': 'xl' }`, falsy values are removed */
   mod?: BoxMod
@@ -55,3 +58,13 @@ export type FloatingIndicatorStylesNames = 'root'
 export type FloatingIndicatorCssVariables = {
   root: '--transition-duration'
 }
+
+export type FloatingIndicatorFactory = Factory<{
+  props: Omit<FloatingIndicatorProps, 'rootRef'>
+  ref: HTMLDivElement
+  slots: FloatingIndicatorSlots
+  element: 'div'
+  stylesNames: FloatingIndicatorStylesNames
+  vars: FloatingIndicatorCssVariables
+}>
+import type { VueRefTarget } from '@mantine-vue/hooks'

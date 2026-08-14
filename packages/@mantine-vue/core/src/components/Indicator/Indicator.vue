@@ -28,13 +28,15 @@ export { varsResolver }
 </script>
 
 <script setup lang="ts">
-import { computed, useAttrs, useSlots } from 'vue'
+import { ref, computed, useAttrs, useSlots } from 'vue'
+import { assignRef } from '@mantine-vue/hooks'
 import { Box, hasNode, resolveNode, useProps, useStyles } from '../../core'
 import type { IndicatorOwnProps, IndicatorSlots } from './Indicator.types'
 import classes from './Indicator.module.css'
 
 defineOptions({ name: 'Indicator', inheritAttrs: false })
 const rawProps = withDefaults(defineProps<IndicatorOwnProps>(), {
+  rootRef: undefined,
   position: undefined,
   offset: undefined,
   label: undefined,
@@ -71,10 +73,23 @@ const formattedLabel = computed(() =>
     : labelContent.value,
 )
 const renderLabel = () => formattedLabel.value
+
+const rootElement = ref<Element | null>(null)
+
+const setRootRef = (node: Element | null) => {
+  rootElement.value = node
+  assignRef(props.rootRef, node)
+}
+
+defineExpose({ rootElement })
 </script>
 
 <template>
-  <Box v-bind="{ ...attrs, ...getStyles('root') }" :mod="[{ inline: props.inline }, props.mod]">
+  <Box
+    :rootRef="setRootRef"
+    v-bind="{ ...attrs, ...getStyles('root') }"
+    :mod="[{ inline: props.inline }, props.mod]"
+  >
     <Box
       v-if="!props.disabled && !shouldHideZero"
       v-bind="getStyles('indicator')"

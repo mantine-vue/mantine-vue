@@ -13,7 +13,8 @@ export const varsResolver = createVarsResolver<any>((theme, { size, color }) => 
 }))
 </script>
 <script setup lang="ts">
-import { computed, useAttrs } from 'vue'
+import { ref, computed, useAttrs } from 'vue'
+import { assignRef } from '@mantine-vue/hooks'
 import { Box, useProps, useStyles } from '../../core'
 import type { LoaderOwnProps, LoaderSlots } from './Loader.types'
 import classes from './Loader.module.css'
@@ -46,11 +47,22 @@ const getStyles = useStyles({
 const selectedLoader = computed(
   () => (props.loaders ?? defaultLoaders)[props.type ?? 'oval'] ?? defaultLoaders.oval,
 )
+
+const rootElement = ref<Element | null>(null)
+
+const setRootRef = (node: Element | null) => {
+  rootElement.value = node
+  assignRef(props.rootRef, node)
+}
+
+defineExpose({ rootElement })
 </script>
 <template>
-  <Box v-if="slots.default" v-bind="{ ...attrs, ...getStyles('root') }"><slot /></Box
+  <Box v-if="slots.default" :rootRef="setRootRef" v-bind="{ ...attrs, ...getStyles('root') }"
+    ><slot /></Box
   ><Box
     v-else
+    :rootRef="setRootRef"
     v-bind="{ ...attrs, ...getStyles('root') }"
     :component="selectedLoader"
     :size="props.size"

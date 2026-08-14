@@ -1,7 +1,10 @@
-import type { BoxProps, StylesApiProps } from '../../core'
+import type { BoxProps, StylesApiProps, Factory } from '../../core'
 
 /** Props declared by `Skeleton` itself. See `SkeletonProps` for the full public type. */
-export interface SkeletonOwnProps extends StylesApiProps<SkeletonProps> {
+export interface SkeletonOwnProps extends StylesApiProps<SkeletonFactory> {
+  /** Receives the root DOM node. */
+  rootRef?: VueRefTarget<Element>
+
   /**
    * Determines whether Skeleton overlay should be displayed
    *
@@ -46,3 +49,18 @@ export interface SkeletonOwnProps extends StylesApiProps<SkeletonProps> {
 }
 
 export interface SkeletonProps extends Omit<BoxProps, keyof SkeletonOwnProps>, SkeletonOwnProps {}
+
+export type SkeletonStylesNames = 'root'
+
+export type SkeletonCssVariables = {
+  root: '--skeleton-height' | '--skeleton-width' | '--skeleton-radius'
+}
+
+export type SkeletonFactory = Factory<{
+  props: Omit<SkeletonProps, 'rootRef'>
+  ref: HTMLDivElement
+  element: 'div'
+  stylesNames: SkeletonStylesNames
+  vars: SkeletonCssVariables
+}>
+import type { VueRefTarget } from '@mantine-vue/hooks'

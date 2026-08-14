@@ -1,5 +1,6 @@
 <script lang="ts">
-import { Comment, Fragment, type VNode } from 'vue'
+import { ref, Comment, Fragment, type VNode } from 'vue'
+import { assignRef } from '@mantine-vue/hooks'
 import {
   createVarsResolver,
   getAutoContrastValue,
@@ -76,6 +77,7 @@ defineOptions({
 
 // Intentionally undefined to preserve downstream defaults.
 const rawProps = withDefaults(defineProps<StepperOwnProps>(), {
+  rootRef: undefined,
   allowNextStepsSelect: undefined,
   wrap: undefined,
   autoContrast: undefined,
@@ -269,10 +271,24 @@ const renderContents = Object.assign(
   },
   { props: { nodes: { type: Function, required: false } } },
 )
+
+const rootElement = ref<Element | null>(null)
+
+const setRootRef = (node: Element | null) => {
+  rootElement.value = node
+  assignRef(props.rootRef, node)
+}
+
+defineExpose({ rootElement })
 </script>
 
 <template>
-  <Box v-bind="{ ...attrs, ...rootStyles }" :mod="props.mod" :size="props.size">
+  <Box
+    :rootRef="setRootRef"
+    v-bind="{ ...attrs, ...rootStyles }"
+    :mod="props.mod"
+    :size="props.size"
+  >
     <Box v-bind="getStyles('steps')" :mod="stepsMod">
       <component :is="renderItems" :nodes="slots.default" />
     </Box>

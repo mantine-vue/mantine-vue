@@ -18,7 +18,8 @@ export { defaultProps, varsResolver }
 </script>
 
 <script setup lang="ts">
-import { useAttrs } from 'vue'
+import { ref, useAttrs } from 'vue'
+import { assignRef } from '@mantine-vue/hooks'
 import { Box, useProps, useStyles } from '../../core'
 import type { MarkOwnProps, MarkSlots } from './Mark.types'
 import classes from './Mark.module.css'
@@ -29,6 +30,7 @@ defineOptions({
 })
 
 const rawProps = withDefaults(defineProps<MarkOwnProps>(), {
+  rootRef: undefined,
   color: undefined,
   classNames: undefined,
   styles: undefined,
@@ -53,10 +55,19 @@ const getStyles = useStyles({
   varsResolver,
   unstyled: props.unstyled,
 })
+
+const rootElement = ref<Element | null>(null)
+
+const setRootRef = (node: Element | null) => {
+  rootElement.value = node
+  assignRef(props.rootRef, node)
+}
+
+defineExpose({ rootElement })
 </script>
 
 <template>
-  <Box v-bind="{ ...attrs, ...getStyles('root') }" component="mark">
+  <Box :rootRef="setRootRef" v-bind="{ ...attrs, ...getStyles('root') }" component="mark">
     <slot />
   </Box>
 </template>

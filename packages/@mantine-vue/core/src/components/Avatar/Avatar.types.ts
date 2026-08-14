@@ -1,4 +1,5 @@
 import type { VNodeChild } from 'vue'
+import type { VueRefTarget } from '@mantine-vue/hooks'
 import type {
   BoxMod,
   BoxProps,
@@ -7,7 +8,10 @@ import type {
   MantineRadius,
   MantineSize,
   StylesApiProps,
+  PolymorphicFactory,
+  MantineElementType,
 } from '../../core'
+import type { AvatarGroup } from './AvatarGroup/AvatarGroup'
 
 export type AvatarVariant =
   | 'filled'
@@ -20,12 +24,15 @@ export type AvatarVariant =
 
 /** Props declared by `Avatar` itself. See `AvatarProps` for the full public type. */
 export interface AvatarOwnProps extends StylesApiProps<AvatarProps> {
+  /** Receives the root DOM node. The factory narrows this to the element the selected root renders. */
+  rootRef?: VueRefTarget<Element>
+
   /**
    * Root element or component rendered by `Avatar`.
    *
    * @default 'div'
    */
-  component?: string
+  component?: MantineElementType
 
   /**
    * Width and height of the avatar, numbers are converted to rem
@@ -89,3 +96,19 @@ export type AvatarStylesNames = 'root' | 'placeholder' | 'image'
 export type AvatarCssVariables = {
   root: '--avatar-size' | '--avatar-radius' | '--avatar-bg' | '--avatar-color' | '--avatar-bd'
 }
+
+/** Public contract of `Avatar`. `component` and `rootRef` come from the factory. */
+export type AvatarFactory = PolymorphicFactory<{
+  props: Omit<AvatarProps, 'component' | 'rootRef'>
+  slots: AvatarSlots
+  ref: HTMLDivElement
+  exposed: { rootElement: Element | null }
+  defaultComponent: 'div'
+  defaultRef: HTMLDivElement
+  stylesNames: AvatarStylesNames
+  vars: AvatarCssVariables
+  variant: AvatarVariant
+  staticComponents: {
+    Group: typeof AvatarGroup
+  }
+}>

@@ -37,6 +37,15 @@ export const MDX_DATA: Record<string, Frontmatter> = {
     searchTags: 'nuxt, ssr, vue, setup, guide',
     hideHeader: true,
   },
+  GuidePolymorphic: {
+    title: 'Polymorphic components',
+    package: '@mantine-vue/core',
+    slug: '/guides/polymorphic',
+    description: 'Learn how to change the root element of Mantine Vue components',
+    docs: 'guides/polymorphic.mdx',
+    searchTags: 'polymorphic, component prop, as prop, root element, rootRef, withProps',
+    hideHeader: true,
+  },
   GuideVueRouter: {
     title: 'Usage with Vue Router',
     package: '@mantine-vue/core',
@@ -685,6 +694,7 @@ export const MDX_DATA: Record<string, Frontmatter> = {
       'InputClearButton',
     ],
     styles: ['Input', 'InputWrapper'],
+    polymorphic: true,
     source: '@mantine-vue/core/src/components/Input/Input.ts',
     docs: 'core/input.mdx',
     searchTags: 'form, text, base, wrapper, label, description, error',

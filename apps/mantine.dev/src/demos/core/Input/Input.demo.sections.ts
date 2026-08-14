@@ -44,9 +44,6 @@ const Demo = defineComponent({
         h(Input, {
           placeholder: 'Clearable input',
           modelValue: value.value,
-          onChange: (v: string) => {
-            value.value = v
-          },
           onInput: (e: Event) => {
             value.value = (e.target as HTMLInputElement).value
           },

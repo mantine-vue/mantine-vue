@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { computed, useAttrs } from 'vue'
+import { ref, computed, useAttrs } from 'vue'
+import { assignRef } from '@mantine-vue/hooks'
 import { UnstyledButton } from '../../UnstyledButton'
 import { usePaginationContext } from '../Pagination.context'
 import type { PaginationControlOwnProps, PaginationControlSlots } from './PaginationControl.types'
@@ -10,6 +11,7 @@ defineOptions({
 })
 
 const props = withDefaults(defineProps<PaginationControlOwnProps>(), {
+  rootRef: undefined,
   active: false,
   disabled: false,
   // Tri-state: `undefined` resolves to `true`, so an edge control can pass `false`.
@@ -30,10 +32,20 @@ const controlStyles = computed(() =>
     style: props.style ?? attrs.style,
   }),
 )
+
+const rootElement = ref<Element | null>(null)
+
+const setRootRef = (node: Element | null) => {
+  rootElement.value = node
+  assignRef(props.rootRef, node)
+}
+
+defineExpose({ rootElement })
 </script>
 
 <template>
   <UnstyledButton
+    :rootRef="setRootRef"
     v-bind="{ ...attrs, ...controlStyles }"
     :disabled="disabled"
     :aria-disabled="disabled || undefined"

@@ -1,11 +1,14 @@
-import { withBoxProps } from '../../../core'
+import { factory } from '../../../core'
 import PillsInputFieldComponent from './PillsInputField.vue'
+import type { PillsInputFieldFactory } from './PillsInputField.types'
 import classes from '../PillsInput.module.css'
 
-/** Text field rendered alongside the pills inside a `PillsInput`. */
-export const PillsInputField = withBoxProps(Object.assign(PillsInputFieldComponent, { classes }))
+export const PillsInputField = factory<PillsInputFieldFactory>(PillsInputFieldComponent, {
+  classes,
+})
 
 export type {
+  PillsInputFieldFactory,
   PillsInputFieldOwnProps,
   PillsInputFieldProps,
   PillsInputFieldStylesNames,

@@ -15,7 +15,8 @@ export { PassThrough }
 </script>
 
 <script setup lang="ts">
-import { computed, useAttrs, useSlots } from 'vue'
+import { ref, computed, useAttrs, useSlots } from 'vue'
+import { assignRef } from '@mantine-vue/hooks'
 import {
   Box,
   createScopedKeydownHandler,
@@ -35,6 +36,7 @@ defineOptions({
 })
 
 const rawProps = withDefaults(defineProps<AccordionControlOwnProps>(), {
+  rootRef: undefined,
   disabled: false,
   // Intentionally undefined to preserve downstream defaults
   chevron: undefined,
@@ -120,11 +122,21 @@ const onKeydown = computed(() =>
 )
 
 const forwardedAttrs = computed(() => omitAttrs(attrs, ['onClick', 'onKeydown', 'onKeyDown']))
+
+const rootElement = ref<Element | null>(null)
+
+const setRootRef = (node: Element | null) => {
+  rootElement.value = node
+  assignRef(props.rootRef, node)
+}
+
+defineExpose({ rootElement })
 </script>
 
 <template>
   <component :is="headingTag" v-bind="headingAttrs">
     <UnstyledButton
+      :rootRef="setRootRef"
       v-bind="{ ...forwardedAttrs, ...controlStyles }"
       :unstyled="ctx.unstyled"
       :variant="ctx.variant"

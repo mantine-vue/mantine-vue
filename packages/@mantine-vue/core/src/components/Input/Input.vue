@@ -40,7 +40,7 @@ export { varsResolver, renderContent, defaultProps }
 </script>
 
 <script setup lang="ts">
-import { computed, h, reactive, useAttrs, useSlots, watchEffect } from 'vue'
+import { computed, h, reactive, ref, useAttrs, useSlots, watchEffect } from 'vue'
 import { assignRef, useUncontrolled } from '@mantine-vue/hooks'
 import { Box, omitAttrs, resolveNode, useProps, useStyles } from '../../core'
 import { Loader } from '../Loader'
@@ -179,9 +179,19 @@ const ariaAttributes = computed(() =>
     : {},
 )
 
-function setRootRef(node: any) {
-  assignRef(props.rootRef, node?.$el ?? node ?? null)
+const rootElement = ref<Element | null>(null)
+const wrapperElement = ref<Element | null>(null)
+
+const setRootRef = (node: Element | null) => {
+  rootElement.value = node
+  assignRef(props.rootRef, node)
 }
+
+const setWrapperRef = (node: Element | null) => {
+  wrapperElement.value = node
+}
+
+defineExpose({ rootElement, wrapperElement })
 
 /** Fallthrough listeners arrive as a handler or an array of handlers. */
 function callHandler(handler: unknown, event: Event) {
@@ -220,7 +230,7 @@ const inputValue = computed(() =>
 
 <template>
   <Box
-    :ref="setRootRef"
+    :rootRef="setWrapperRef"
     v-bind="{ ...props.wrapperProps, ...getStyles('wrapper') }"
     :mod="[
       {
@@ -252,6 +262,7 @@ const inputValue = computed(() =>
     </div>
 
     <Box
+      :rootRef="setRootRef"
       v-bind="{ ...inputAttrs, ...ariaAttributes, ...getStyles('input') }"
       :value="inputValue"
       :component="props.component"

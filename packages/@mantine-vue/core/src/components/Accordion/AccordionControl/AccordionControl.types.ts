@@ -1,5 +1,5 @@
 import type { VNodeChild } from 'vue'
-import type { BoxMod, BoxProps, MantineNode, StylesApiProps } from '../../../core'
+import type { BoxMod, BoxProps, MantineNode, StylesApiProps, Factory } from '../../../core'
 
 export type AccordionControlStylesNames = 'control' | 'chevron' | 'label' | 'itemTitle' | 'icon'
 
@@ -18,7 +18,10 @@ export interface AccordionControlSlots {
  * Props declared by `AccordionControl` itself.
  * See `AccordionControlProps` for the full public type.
  */
-export interface AccordionControlOwnProps extends StylesApiProps<AccordionControlProps> {
+export interface AccordionControlOwnProps extends StylesApiProps<AccordionControlFactory> {
+  /** Receives the root DOM node. */
+  rootRef?: VueRefTarget<Element>
+
   /**
    * Sets the `disabled` attribute, prevents interactions.
    *
@@ -44,3 +47,12 @@ export interface AccordionControlOwnProps extends StylesApiProps<AccordionContro
 
 export interface AccordionControlProps
   extends Omit<BoxProps, keyof AccordionControlOwnProps>, AccordionControlOwnProps {}
+
+export type AccordionControlFactory = Factory<{
+  props: Omit<AccordionControlProps, 'rootRef'>
+  ref: HTMLButtonElement
+  slots: AccordionControlSlots
+  element: 'button'
+  stylesNames: AccordionControlStylesNames
+}>
+import type { VueRefTarget } from '@mantine-vue/hooks'

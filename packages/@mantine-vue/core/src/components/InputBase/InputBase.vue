@@ -92,7 +92,7 @@ const [value, setValue] = useUncontrolled<any>({
   },
 })
 
-const wrapperProps = computed(() => ({
+const wrapperProps = computed<Record<string, any>>(() => ({
   class: attrs.class,
   style: attrs.style,
   ...props.wrapperProps,
@@ -118,7 +118,7 @@ const wrapperProps = computed(() => ({
   ...wrapperStyleProps.value,
 }))
 
-const inputProps = computed(() => ({
+const inputProps = computed<Record<string, any>>(() => ({
   ...inputAttrs.value,
   component: props.component,
   __staticSelector: props.__staticSelector,

@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { useAttrs } from 'vue'
+import { ref, useAttrs } from 'vue'
+import { assignRef } from '@mantine-vue/hooks'
 import { Box, useProps } from '../../../core'
 import { useEmptyStateContext } from '../EmptyState.context'
 import type {
@@ -10,6 +11,7 @@ import type {
 defineOptions({ name: 'EmptyStateDescription', inheritAttrs: false })
 
 const rawProps = withDefaults(defineProps<EmptyStateDescriptionOwnProps>(), {
+  rootRef: undefined,
   classNames: undefined,
   styles: undefined,
   mod: undefined,
@@ -19,10 +21,20 @@ defineSlots<EmptyStateDescriptionSlots>()
 const attrs = useAttrs()
 const props = useProps('EmptyStateDescription', null, rawProps)
 const ctx = useEmptyStateContext()
+
+const rootElement = ref<Element | null>(null)
+
+const setRootRef = (node: Element | null) => {
+  rootElement.value = node
+  assignRef(props.rootRef, node)
+}
+
+defineExpose({ rootElement })
 </script>
 
 <template>
   <Box
+    :rootRef="setRootRef"
     v-bind="{
       ...attrs,
       ...ctx.getStyles('description', {
