@@ -1,139 +1,74 @@
 /* oxlint-disable no-console */
-import fs from 'node:fs'
-import path from 'node:path'
-import { getPath } from '../utils/get-path'
+import * as stylesData from '../../packages/@docs/styles-api/src/index'
+import type { StylesApiData } from '../../packages/@docs/styles-api/src/types'
+import { getComponentSourceData, getDocumentedStylesComponents } from './source-data'
 
-/**
- * Cross-checks `packages/@docs/styles-api` against the components it documents.
- *
- * Styles API data is hand-authored, so it drifts silently when a component gains
- * a selector or a CSS variable. This script catches that drift:
- *
- * - **selectors** – every `getStyles('<name>')` call must be documented, and
- *   every documented selector must exist in the component
- * - **CSS variables** every variable produced by `createVarsResolver` must be
- *   documented, and vice versa
- *
- * Data attributes are reported for information only: sibling components often
- * share one `*.module.css` file, so attributes cannot be attributed to a single
- * component reliably.
- *
- * Run with `yarn styles-api:validate`.
- */
-
-const DATA_DIR = getPath('packages/@docs/styles-api/src/data')
-const PACKAGES_DIR = getPath('packages/@mantine-vue')
-
-interface DocumentedComponent {
-  component: string
-  file: string
-  selectors: string[]
-  vars: string[]
-}
-
-function readDocumentedComponents(): DocumentedComponent[] {
-  const result: DocumentedComponent[] = []
-
-  for (const fileName of fs.readdirSync(DATA_DIR).sort()) {
-    if (!fileName.endsWith('.styles-api.ts')) {
-      continue
-    }
-
-    const source = fs.readFileSync(path.join(DATA_DIR, fileName), 'utf8')
-    const blocks = source.matchAll(/export const (\w+)StylesApi[^=]*=\s*\{([\s\S]*?)\n\}/g)
-
-    for (const block of blocks) {
-      const [, component, body] = block
-      const selectorsBlock = body.match(/selectors:\s*\{([\s\S]*?)\n {2}\}/)
-
-      result.push({
-        component,
-        file: fileName,
-        selectors: selectorsBlock
-          ? [...selectorsBlock[1].matchAll(/^\s+(\w+):/gm)].map((m) => m[1])
-          : [],
-        vars: [...body.matchAll(/'(--[\w-]+)':/g)].map((m) => m[1]),
-      })
-    }
-  }
-
-  return result
-}
-
-/**
- * Finds the sources of `<Component>` anywhere under `packages/@mantine-vue`.
- *
- * Components keep a thin `<Component>.ts`
- * entry point while `getStyles()` calls and the vars resolver live in
- * `<Component>.vue`, so both files are collected and scanned together.
- */
-function findComponentSources(component: string): string[] {
-  const stack = [PACKAGES_DIR]
-  const found: string[] = []
-
-  while (stack.length > 0) {
-    const directory = stack.pop()!
-
-    for (const entry of fs.readdirSync(directory, { withFileTypes: true })) {
-      const entryPath = path.posix.join(directory, entry.name)
-
-      if (entry.isDirectory()) {
-        if (entry.name !== 'node_modules' && entry.name !== '__tests__') {
-          stack.push(entryPath)
-        }
-      } else if (entry.name === `${component}.ts` || entry.name === `${component}.vue`) {
-        found.push(entryPath)
-      }
-    }
-  }
-
-  return found
-}
-
+const records = stylesData as unknown as Record<string, StylesApiData<string>>
 const errors: string[] = []
-const warnings: string[] = []
-const documented = readDocumentedComponents()
+const documentedComponents = getDocumentedStylesComponents()
 
-for (const entry of documented) {
-  const sourcePaths = findComponentSources(entry.component)
+function compare(
+  component: string,
+  label: string,
+  actual: Iterable<string>,
+  documented: Iterable<string>,
+  exact = false,
+) {
+  const actualSet = new Set(actual)
+  const documentedSet = new Set(documented)
+  const missing = [...actualSet].filter((item) => !documentedSet.has(item))
+  const stale = exact ? [...documentedSet].filter((item) => !actualSet.has(item)) : []
 
-  if (sourcePaths.length === 0) {
-    warnings.push(`${entry.component}: no ${entry.component}.ts/.vue found – skipped`)
+  if (missing.length > 0) {
+    errors.push(`${component}: undocumented ${label}: ${missing.join(', ')}`)
+  }
+
+  if (stale.length > 0) {
+    errors.push(`${component}: documented ${label} not found in source: ${stale.join(', ')}`)
+  }
+}
+
+for (const component of documentedComponents) {
+  const record = records[`${component}StylesApi`]
+
+  if (!record) {
+    errors.push(`${component}: Styles API tab is declared but no data record is exported`)
     continue
   }
 
-  const source = sourcePaths.map((sourcePath) => fs.readFileSync(sourcePath, 'utf8')).join('\n')
+  const source = getComponentSourceData(component)
+  const selectorNames = Object.keys(record.selectors)
+  const variableNames = Object.values(record.vars).flatMap((variables) =>
+    Object.keys(variables ?? {}),
+  )
 
-  const actualSelectors = new Set([...source.matchAll(/getStyles\('(\w+)'/g)].map((m) => m[1]))
-  const actualVars = new Set([...source.matchAll(/'(--[\w-]+)':/g)].map((m) => m[1]))
+  if (selectorNames.length === 0) {
+    errors.push(`${component}: Styles API record does not contain selectors`)
+  }
 
-  const documentedSelectors = new Set(entry.selectors)
-  const documentedVars = new Set(entry.vars)
+  compare(component, 'selectors', source.selectors, selectorNames, source.selectorsAreComplete)
+  compare(component, 'CSS variables', source.vars, variableNames, source.varsAreComplete)
 
-  const compare = (label: string, actual: Set<string>, docs: Set<string>) => {
-    const undocumented = [...actual].filter((item) => !docs.has(item))
-    const stale = [...docs].filter((item) => !actual.has(item))
+  for (const modifier of record.modifiers ?? []) {
+    const selectors = Array.isArray(modifier.selector) ? modifier.selector : [modifier.selector]
+    const invalid = selectors.filter((selector) => !selectorNames.includes(selector))
 
-    if (undocumented.length > 0) {
+    if (invalid.length > 0) {
       errors.push(
-        `${entry.component} (${entry.file}): undocumented ${label}: ${undocumented.join(', ')}`,
-      )
-    }
-
-    if (stale.length > 0) {
-      errors.push(
-        `${entry.component} (${entry.file}): documented ${label} not found in source: ${stale.join(', ')}`,
+        `${component}: ${modifier.modifier} references unknown selectors: ${invalid.join(', ')}`,
       )
     }
   }
 
-  compare('selectors', actualSelectors, documentedSelectors)
-  compare('CSS variables', actualVars, documentedVars)
+  compare(
+    component,
+    'data attributes',
+    source.modifiers.map((modifier) => modifier.modifier),
+    (record.modifiers ?? []).map((modifier) => modifier.modifier),
+  )
 }
 
-console.log(`Checked ${documented.length} documented components.`)
-
-warnings.forEach((warning) => console.log(`warning: ${warning}`))
+console.log(`Checked Styles API coverage for ${documentedComponents.length} components.`)
 
 if (errors.length > 0) {
   errors.forEach((error) => console.error(`error: ${error}`))
@@ -141,4 +76,4 @@ if (errors.length > 0) {
   process.exit(1)
 }
 
-console.log('Styles API data matches component sources.')
+console.log('Styles API data covers all documentation tabs and matches component sources.')

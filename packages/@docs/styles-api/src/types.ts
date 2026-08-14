@@ -21,9 +21,8 @@ export interface Modifier<StylesNames extends string = string> {
  * it explicitly keeps `vars` and `modifiers` honest: they can only reference
  * selectors that actually exist.
  *
- * React Mantine derives this union from the component's `Factory` payload.
- * Mantine Vue components do not carry factory types, so the union is declared
- * per data file and verified against the component's `*.module.css`.
+ * Generated records serialize this union explicitly so TypeScript verifies
+ * selector references in variables and modifiers.
  */
 export interface StylesApiData<StylesNames extends string = string> {
   /** Selector -> description of the element it targets */
