@@ -3,8 +3,14 @@ import { computed, ref } from 'vue'
 import { Text, TextInput, Title } from '@mantine-vue/core'
 import { useMediaQuery } from '@mantine-vue/hooks'
 import { PhMagnifyingGlass } from '@phosphor-icons/vue'
-import { filterProps, getComponentProps, getComponentSlots } from './filter-props'
+import {
+  filterProps,
+  getComponentEmits,
+  getComponentProps,
+  getComponentSlots,
+} from './filter-props'
 import { getComponentName } from './get-component-name'
+import EmitsTable from './EmitsTable.vue'
 import PropsTable from './PropsTable.vue'
 import SlotsTable from './SlotsTable.vue'
 
@@ -20,22 +26,22 @@ const sections = computed(() =>
   props.components.map((component) => {
     const componentProps = getComponentProps(component)
     const componentSlots = getComponentSlots(component)
+    const componentEmits = getComponentEmits(component)
 
-    // A component whose only props are inherited ones, and that declares no
-    // `*Slots` interface at all – the "does not have any props" fallback
-    // should only show up in that case, not just because a search matched
-    // nothing in props but something in slots (or vice versa).
+    // Show the no-props fallback only when the component also has no slots or emits.
     const emptyProps = componentProps !== null && componentProps.length === 0
     const emptySlots = componentSlots === null || componentSlots.length === 0
+    const emptyEmits = componentEmits === null || componentEmits.length === 0
 
     return {
       component,
       // `null` means the component is missing from docgen.json PropsTable
       // renders an error for it, so the section must stay visible.
       missing: componentProps === null,
-      empty: emptyProps && emptySlots,
+      empty: emptyProps && emptySlots && emptyEmits,
       props: componentProps ? filterProps(componentProps, query.value) : [],
       slots: componentSlots ? filterProps(componentSlots, query.value) : [],
+      emits: componentEmits ? filterProps(componentEmits, query.value) : [],
     }
   }),
 )
@@ -46,6 +52,7 @@ const visibleSections = computed(() =>
       section.missing ||
       section.props.length > 0 ||
       section.slots.length > 0 ||
+      section.emits.length > 0 ||
       (section.empty && !query.value.trim()),
   ),
 )
@@ -58,7 +65,7 @@ const nothingFound = computed(() => visibleSections.value.length === 0)
     <TextInput
       v-model="query"
       class="search"
-      placeholder="Search props and slots"
+      placeholder="Search props, slots, and emits"
       radius="md"
       size="lg"
       :pt="7"
@@ -89,6 +96,11 @@ const nothingFound = computed(() => visibleSections.value.length === 0)
       <template v-if="section.slots.length > 0">
         <Title :order="3" class="subtitle">Slots</Title>
         <SlotsTable :slots-list="section.slots" :query="query" />
+      </template>
+
+      <template v-if="section.emits.length > 0">
+        <Title :order="3" class="subtitle">Emits</Title>
+        <EmitsTable :emits-list="section.emits" :query="query" />
       </template>
     </div>
 

@@ -21,6 +21,7 @@ const PROPS_SUFFIX = 'Props'
 const OWN_PROPS_SUFFIX = 'OwnProps'
 
 const SLOTS_SUFFIX = 'Slots'
+const EMITS_SUFFIX = 'Emits'
 
 /**
  * Ranks two declarations of the same component so the most canonical one wins:
@@ -138,6 +139,16 @@ export function findSlotsDeclarations(
   const excluded = new Set(excludeComponents)
 
   return findSuffixedDeclarations(files, SLOTS_SUFFIX, (name) => excluded.has(name))
+}
+
+/** Finds every exported `*Emits` interface or type alias. */
+export function findEmitsDeclarations(
+  files: string[],
+  excludeComponents: string[] = [],
+): PropsDeclaration[] {
+  const excluded = new Set(excludeComponents)
+
+  return findSuffixedDeclarations(files, EMITS_SUFFIX, (name) => excluded.has(name))
 }
 
 /** Groups declarations into batches of at most `size` distinct files. */

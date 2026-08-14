@@ -37,6 +37,7 @@ export interface ImageProps extends Omit<BoxProps, keyof ImageOwnProps>, ImageOw
 export type ImageStylesNames = 'root'
 export type ImageCssVariables = { root: '--image-radius' | '--image-object-fit' }
 export interface ImageEmits {
+  /** Emitted when the image cannot be loaded. */
   error: [event: Event]
 }
 

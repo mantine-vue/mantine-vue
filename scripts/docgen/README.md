@@ -1,9 +1,9 @@
 # docgen
 
 Generates `apps/mantine.dev/src/.docgen/docgen.json`, the data behind the
-**Props** tab of every component page. For each component it also collects
-its `*Slots` interface (e.g. `BadgeSlots`), when one exists, into a sibling
-`slots` field – same shape as `props`, minus `defaultValue`.
+**Props** tab of every component page. For each component it also collects its
+`*Slots` and `*Emits` interfaces, when they exist, into sibling `slots` and
+`emits` fields.
 
 ```bash
 yarn docgen                          # all packages
@@ -13,4 +13,4 @@ yarn docgen --chunk-size=5           # lower memory ceiling, slower
 ```
 
 The file is gitignored – run `yarn setup` once after cloning, and again after
-changing component props or slots. `yarn docs:build` runs it automatically.
+changing component props, slots, or emits. `yarn docs:build` runs it automatically.

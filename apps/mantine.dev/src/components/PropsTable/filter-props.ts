@@ -1,5 +1,5 @@
 import Fuse from 'fuse.js'
-import { PROPS_DATA, type DocgenProp, type DocgenSlot } from './docgen-data'
+import { PROPS_DATA, type DocgenEmit, type DocgenProp, type DocgenSlot } from './docgen-data'
 import { isComponentSpecificProp } from './inherited-props'
 
 export { isComponentSpecificProp }
@@ -41,13 +41,24 @@ export function getComponentSlots(component: string): DocgenSlot[] | null {
   return data.slots ? Object.values(data.slots) : []
 }
 
+/** Emits of a component, or `null` when it is missing from docgen.json. */
+export function getComponentEmits(component: string): DocgenEmit[] | null {
+  const data = PROPS_DATA[component]
+
+  if (!data) {
+    return null
+  }
+
+  return data.emits ? Object.values(data.emits) : []
+}
+
 interface Searchable {
   name: string
   description: string
   type: { name: string }
 }
 
-/** Fuzzy-filters props (or slots) by name, description and type. */
+/** Fuzzy-filters props, slots, or emits by name, description and type. */
 export function filterProps<T extends Searchable>(props: T[], query: string): T[] {
   if (!query.trim()) {
     return props
