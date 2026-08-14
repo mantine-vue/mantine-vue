@@ -1,6 +1,8 @@
 export { Switch } from './Switch'
 export type {
   SwitchCssVariables,
+  SwitchEmits,
+  SwitchFactory,
   SwitchOwnProps,
   SwitchProps,
   SwitchSlots,

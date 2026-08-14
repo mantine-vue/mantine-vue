@@ -1,5 +1,7 @@
+import type { ScrollAreaAutosize } from './ScrollArea'
+import type { VueRefTarget } from '@mantine-vue/hooks'
 import type { VNodeChild } from 'vue'
-import type { BoxProps, StylesApiProps } from '../../core'
+import type { BoxProps, StylesApiProps, Factory } from '../../core'
 
 export type ScrollAreaStylesNames =
   | 'root'
@@ -23,7 +25,10 @@ export interface ScrollAreaSlots {
 }
 
 /** Props declared by `ScrollArea` itself. See `ScrollAreaProps` for the full public type. */
-export interface ScrollAreaOwnProps extends StylesApiProps<ScrollAreaProps> {
+export interface ScrollAreaOwnProps extends StylesApiProps<ScrollAreaFactory> {
+  /** Receives the root DOM node. */
+  rootRef?: VueRefTarget<Element>
+
   /** Width of the scrollbars in px. */
   scrollbarSize?: number | string
 
@@ -84,3 +89,27 @@ export interface ScrollAreaEmits {
   /** Emitted the first time the viewport reaches the right edge. */
   'right-reached': []
 }
+
+export type ScrollAreaFactory = Factory<{
+  props: ScrollAreaProps
+  slots: ScrollAreaSlots
+  emits: ScrollAreaEmits
+  ref: HTMLDivElement
+  exposed: { rootElement: Element | null }
+  element: 'div'
+  stylesNames: ScrollAreaStylesNames
+  vars: ScrollAreaCssVariables
+  staticComponents: {
+    Autosize: typeof ScrollAreaAutosize
+  }
+}>
+
+export type ScrollAreaAutosizeFactory = Factory<{
+  props: ScrollAreaProps
+  slots: ScrollAreaSlots
+  emits: ScrollAreaEmits
+  ref: HTMLDivElement
+  element: 'div'
+  stylesNames: ScrollAreaStylesNames
+  vars: ScrollAreaCssVariables
+}>

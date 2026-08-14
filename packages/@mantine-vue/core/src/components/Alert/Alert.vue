@@ -24,8 +24,8 @@ export { varsResolver }
 </script>
 
 <script setup lang="ts">
-import { computed, useAttrs, useSlots } from 'vue'
-import { useId } from '@mantine-vue/hooks'
+import { ref, computed, useAttrs, useSlots } from 'vue'
+import { assignRef, useId } from '@mantine-vue/hooks'
 import { Box, hasNode, resolveNode, useProps, useStyles } from '../../core'
 import { CloseButton } from '../CloseButton'
 import type { AlertOwnProps, AlertSlots } from './Alert.types'
@@ -37,6 +37,7 @@ defineOptions({
 })
 
 const rawProps = withDefaults(defineProps<AlertOwnProps>(), {
+  rootRef: undefined,
   id: undefined,
   radius: undefined,
   color: undefined,
@@ -88,10 +89,20 @@ const renderIcon = () => icon.value
 const id = computed(() => rootId.value || undefined)
 const titleId = computed(() => (hasNode(title.value) && id.value ? `${id.value}-title` : undefined))
 const bodyId = computed(() => (id.value ? `${id.value}-body` : undefined))
+
+const rootElement = ref<Element | null>(null)
+
+const setRootRef = (node: Element | null) => {
+  rootElement.value = node
+  assignRef(props.rootRef, node)
+}
+
+defineExpose({ rootElement })
 </script>
 
 <template>
   <Box
+    :rootRef="setRootRef"
     v-bind="{ ...attrs, ...getStyles('root') }"
     :id="id"
     :variant="props.variant"

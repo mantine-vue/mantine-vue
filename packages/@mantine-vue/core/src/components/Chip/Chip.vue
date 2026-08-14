@@ -35,7 +35,7 @@ export { varsResolver, defaultProps }
 </script>
 
 <script setup lang="ts">
-import { computed, h, useAttrs, useSlots } from 'vue'
+import { ref, computed, h, useAttrs, useSlots } from 'vue'
 import { assignRef, useId, useUncontrolled } from '@mantine-vue/hooks'
 import { Box, omitAttrs, useProps, useStyles } from '../../core'
 import { CheckIcon } from '../Checkbox'
@@ -125,9 +125,15 @@ const renderIcon = () => {
   return typeof icon.value === 'function' ? icon.value(iconProps) : icon.value
 }
 
+const rootElement = ref<Element | null>(null)
+
 function setRootRef(node: any) {
-  assignRef(props.rootRef, node?.$el ?? node ?? null)
+  const element = (node?.$el ?? node ?? null) as Element | null
+  rootElement.value = element
+  assignRef(props.rootRef, element)
 }
+
+defineExpose({ rootElement })
 
 function onChange(event: Event) {
   const nextChecked = (event.currentTarget as HTMLInputElement).checked

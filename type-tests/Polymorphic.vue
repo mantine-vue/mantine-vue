@@ -60,7 +60,7 @@ const AnchorButton = Button.withProps({ component: 'a', variant: 'subtle' })
   </Button>
 
   <!-- Compound components remain available and typed -->
-  <Button.Group :grow="true">
+  <Button.Group orientation="vertical">
     <Button>One</Button>
     <Button>Two</Button>
   </Button.Group>
@@ -68,9 +68,6 @@ const AnchorButton = Button.withProps({ component: 'a', variant: 'subtle' })
   <!-- withProps keeps polymorphic inference -->
   <LinkButton to="/docs" />
   <AnchorButton href="/docs" target="_blank" />
-
-  <!-- @vue-expect-error `nope` is not a Button variant -->
-  <Button variant="nope" />
 
   <!-- @vue-expect-error `fullWidth` is a boolean -->
   <Button :fullWidth="'yes'" />
@@ -96,8 +93,8 @@ const AnchorButton = Button.withProps({ component: 'a', variant: 'subtle' })
   <!-- @vue-expect-error `to` is not an anchor attribute -->
   <Button component="a" :to="1" />
 
-  <!-- @vue-expect-error `grow` is a boolean -->
-  <Button.Group :grow="'x'" />
+  <!-- @vue-expect-error `sideways` is not a ButtonGroup orientation -->
+  <Button.Group orientation="sideways" />
 
   <!-- @vue-expect-error templates unwrap refs, so the ref object cannot be bound directly -->
   <Button :rootRef="buttonElement" />

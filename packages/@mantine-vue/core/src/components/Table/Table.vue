@@ -45,7 +45,8 @@ export { defaultProps, varsResolver }
 </script>
 
 <script setup lang="ts">
-import { computed, useAttrs, useSlots } from 'vue'
+import { ref, computed, useAttrs, useSlots } from 'vue'
+import { assignRef } from '@mantine-vue/hooks'
 import { Box, useProps, useStyles } from '../../core'
 import { provideTableContext } from './Table.context'
 import { TableDataRenderer } from './TableDataRenderer'
@@ -61,6 +62,7 @@ defineOptions({
  * Intentionally undefined to preserve downstream defaults.
  */
 const rawProps = withDefaults(defineProps<TableOwnProps>(), {
+  rootRef: undefined,
   withTableBorder: false,
   withColumnBorders: false,
   withRowBorders: undefined,
@@ -120,10 +122,20 @@ provideTableContext({
 const tableStyles = computed(() =>
   getStyles('table', { className: attrs.class, style: attrs.style as any }),
 )
+
+const rootElement = ref<Element | null>(null)
+
+const setRootRef = (node: Element | null) => {
+  rootElement.value = node
+  assignRef(props.rootRef, node)
+}
+
+defineExpose({ rootElement })
 </script>
 
 <template>
   <Box
+    :rootRef="setRootRef"
     v-bind="{ ...attrs, ...tableStyles }"
     component="table"
     :variant="props.variant"

@@ -13,6 +13,7 @@ export { callHandler }
 
 <script setup lang="ts">
 import { computed, ref, useAttrs, useSlots } from 'vue'
+import { assignRef } from '@mantine-vue/hooks'
 import { omitAttrs } from '../../core'
 import { InputBase } from '../InputBase'
 import { providePillsInputContext } from './PillsInput.context'
@@ -89,10 +90,20 @@ function onClick(event: MouseEvent) {
  * copies are dropped to keep Vue from calling them a second time.
  */
 const forwardedAttrs = computed(() => omitAttrs(attrs, ['onMousedown', 'onMouseDown', 'onClick']))
+
+const rootElement = ref<Element | null>(null)
+
+const setRootRef = (node: Element | null) => {
+  rootElement.value = node
+  assignRef(props.rootRef, node)
+}
+
+defineExpose({ rootElement })
 </script>
 
 <template>
   <InputBase
+    :root-ref="setRootRef"
     v-bind="forwardedAttrs"
     :size="props.size"
     :error="props.error"

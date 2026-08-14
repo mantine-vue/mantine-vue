@@ -1,4 +1,4 @@
-import { defineComponent, h, ref, type PropType } from 'vue'
+import { defineComponent, h, ref, type CSSProperties, type PropType } from 'vue'
 import { Button, Group, Paper, Text } from '@mantine-vue/core'
 import { useDrag } from '@mantine-vue/hooks'
 import type { MantineDemo } from '@/demo'
@@ -165,7 +165,7 @@ const SwipeNotification = defineComponent({
             cursor: active.value ? 'grabbing' : 'grab',
             touchAction: 'pan-y',
             userSelect: 'none',
-          },
+          } satisfies CSSProperties,
         },
         { default: () => props.notification.text },
       )

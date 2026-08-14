@@ -1,8 +1,20 @@
+import type { TimelineItem } from './TimelineItem/TimelineItem'
+import type { VueRefTarget } from '@mantine-vue/hooks'
 import type { VNodeChild } from 'vue'
-import type { BoxMod, BoxProps, MantineColor, MantineRadius, StylesApiProps } from '../../core'
+import type {
+  BoxMod,
+  BoxProps,
+  MantineColor,
+  MantineRadius,
+  StylesApiProps,
+  Factory,
+} from '../../core'
 
 /** Props declared by `Timeline` itself. See `TimelineProps` for the full public type. */
-export interface TimelineOwnProps extends StylesApiProps<TimelineProps> {
+export interface TimelineOwnProps extends StylesApiProps<TimelineFactory> {
+  /** Receives the root DOM node. */
+  rootRef?: VueRefTarget<Element>
+
   /**
    * Index of the active element
    *
@@ -71,3 +83,16 @@ export type TimelineStylesNames =
 export type TimelineCssVariables = {
   root: '--tl-bullet-size' | '--tl-line-width' | '--tl-radius' | '--tl-color' | '--tl-icon-color'
 }
+
+export type TimelineFactory = Factory<{
+  props: Omit<TimelineProps, 'rootRef'>
+  slots: TimelineSlots
+  ref: HTMLDivElement
+  exposed: { rootElement: Element | null }
+  element: 'div'
+  stylesNames: TimelineStylesNames
+  vars: TimelineCssVariables
+  staticComponents: {
+    Item: typeof TimelineItem
+  }
+}>

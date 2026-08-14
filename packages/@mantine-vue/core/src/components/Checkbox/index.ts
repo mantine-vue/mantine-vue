@@ -1,6 +1,8 @@
 export { Checkbox } from './Checkbox'
 export type {
   CheckboxCssVariables,
+  CheckboxEmits,
+  CheckboxFactory,
   CheckboxIconSlotProps,
   CheckboxOwnProps,
   CheckboxProps,

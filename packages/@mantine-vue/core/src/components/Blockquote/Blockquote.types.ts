@@ -1,8 +1,18 @@
 import type { VNodeChild } from 'vue'
-import type { BoxProps, MantineColor, MantineNode, MantineRadius, StylesApiProps } from '../../core'
+import type {
+  BoxProps,
+  MantineColor,
+  MantineNode,
+  MantineRadius,
+  StylesApiProps,
+  Factory,
+} from '../../core'
 
 /** Props declared by `Blockquote` itself. See `BlockquoteProps` for the full public type. */
-export interface BlockquoteOwnProps extends StylesApiProps<BlockquoteProps> {
+export interface BlockquoteOwnProps extends StylesApiProps<BlockquoteFactory> {
+  /** Receives the root DOM node. */
+  rootRef?: VueRefTarget<Element>
+
   /** Blockquote icon, displayed at the top left side */
   icon?: MantineNode
 
@@ -45,3 +55,24 @@ export interface BlockquoteSlots {
 
 export interface BlockquoteProps
   extends Omit<BoxProps, keyof BlockquoteOwnProps>, BlockquoteOwnProps {}
+
+export type BlockquoteStylesNames = 'root' | 'icon' | 'cite'
+
+export type BlockquoteCssVariables = {
+  root:
+    | '--bq-bg-light'
+    | '--bq-bg-dark'
+    | '--bq-bd'
+    | '--bq-icon-size'
+    | '--bq-radius'
+    | '--bq-text-wrap'
+}
+
+export type BlockquoteFactory = Factory<{
+  props: Omit<BlockquoteProps, 'rootRef'>
+  ref: HTMLQuoteElement
+  slots: BlockquoteSlots
+  element: 'blockquote'
+  stylesNames: BlockquoteStylesNames
+}>
+import type { VueRefTarget } from '@mantine-vue/hooks'

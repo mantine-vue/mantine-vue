@@ -47,7 +47,7 @@ export { mergedClasses, varsResolver, defaultProps, DEFAULT_SIZE }
 </script>
 
 <script setup lang="ts">
-import { computed, useAttrs, useSlots } from 'vue'
+import { ref, computed, useAttrs, useSlots } from 'vue'
 import { assignRef, useId, useUncontrolled } from '@mantine-vue/hooks'
 import { Box, omitAttrs, resolveNode, useProps, useStyles } from '../../core'
 import { InlineInput } from '../../utils'
@@ -139,9 +139,15 @@ const size = computed(() => props.size ?? groupContext?.size ?? DEFAULT_SIZE)
 const iconStyles = computed(() => getStyles('icon'))
 const IconComponent = computed(() => props.icon || RadioIcon)
 
+const rootElement = ref<Element | null>(null)
+
 function setRootRef(node: any) {
-  assignRef(props.rootRef, node?.$el ?? node ?? null)
+  const element = (node?.$el ?? node ?? null) as Element | null
+  rootElement.value = element
+  assignRef(props.rootRef, element)
 }
+
+defineExpose({ rootElement })
 
 function onInputChange(event: Event) {
   if (props.readOnly) {

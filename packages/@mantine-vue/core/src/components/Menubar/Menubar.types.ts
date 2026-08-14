@@ -1,5 +1,8 @@
+import type { MenubarDropdown } from './MenubarDropdown/MenubarDropdown'
+import type { MenubarTarget } from './MenubarTarget/MenubarTarget'
+import type { MenubarMenu } from './MenubarMenu/MenubarMenu'
 import type { VNodeChild } from 'vue'
-import type { BoxMod, BoxProps, StylesApiProps } from '../../core'
+import type { BoxMod, BoxProps, StylesApiProps, Factory } from '../../core'
 
 export type MenubarStylesNames = 'root' | 'target'
 
@@ -9,7 +12,7 @@ export interface MenubarSlots {
 }
 
 /** Props declared by `Menubar` itself. See `MenubarProps` for the full public type. */
-export interface MenubarOwnProps extends StylesApiProps<MenubarProps> {
+export interface MenubarOwnProps extends StylesApiProps<MenubarFactory> {
   /** Index of the controlled opened menu; `null` closes all menus. Bound with `v-model:openIndex`. */
   openIndex?: number | null
 
@@ -47,3 +50,15 @@ export interface MenubarOwnProps extends StylesApiProps<MenubarProps> {
 }
 
 export interface MenubarProps extends Omit<BoxProps, keyof MenubarOwnProps>, MenubarOwnProps {}
+
+export type MenubarFactory = Factory<{
+  props: MenubarProps
+  slots: MenubarSlots
+  element: 'div'
+  stylesNames: MenubarStylesNames
+  staticComponents: {
+    Menu: typeof MenubarMenu
+    Target: typeof MenubarTarget
+    Dropdown: typeof MenubarDropdown
+  }
+}>

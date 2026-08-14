@@ -1,11 +1,14 @@
 import type { VNodeChild } from 'vue'
-import type { BoxMod, BoxProps, MantineNode, StylesApiProps } from '../../../core'
+import type { BoxMod, BoxProps, MantineNode, StylesApiProps, Factory } from '../../../core'
 
 /** Props declared by `ListItem` itself. See `ListItemProps` for the full public type. */
 export interface ListItemOwnProps extends Pick<
-  StylesApiProps<ListItemProps>,
+  StylesApiProps<ListItemFactory>,
   'classNames' | 'styles' | 'vars'
 > {
+  /** Receives the root DOM node. */
+  rootRef?: VueRefTarget<Element>
+
   /** Icon to replace item bullet */
   icon?: MantineNode
 
@@ -23,3 +26,12 @@ export interface ListItemSlots {
 export interface ListItemProps extends Omit<BoxProps, keyof ListItemOwnProps>, ListItemOwnProps {}
 
 export type ListItemStylesNames = 'item' | 'itemWrapper' | 'itemIcon' | 'itemLabel'
+
+export type ListItemFactory = Factory<{
+  props: Omit<ListItemProps, 'rootRef'>
+  ref: HTMLLIElement
+  slots: ListItemSlots
+  element: 'li'
+  stylesNames: ListItemStylesNames
+}>
+import type { VueRefTarget } from '@mantine-vue/hooks'

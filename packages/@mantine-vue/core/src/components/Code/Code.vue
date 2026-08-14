@@ -12,7 +12,8 @@ export { varsResolver }
 </script>
 
 <script setup lang="ts">
-import { useAttrs } from 'vue'
+import { ref, useAttrs } from 'vue'
+import { assignRef } from '@mantine-vue/hooks'
 import { Box, useProps, useStyles } from '../../core'
 import type { CodeOwnProps, CodeSlots } from './Code.types'
 import classes from './Code.module.css'
@@ -23,6 +24,7 @@ defineOptions({
 })
 
 const rawProps = withDefaults(defineProps<CodeOwnProps>(), {
+  rootRef: undefined,
   color: undefined,
   classNames: undefined,
   styles: undefined,
@@ -47,10 +49,20 @@ const getStyles = useStyles({
   varsResolver,
   unstyled: props.unstyled,
 })
+
+const rootElement = ref<Element | null>(null)
+
+const setRootRef = (node: Element | null) => {
+  rootElement.value = node
+  assignRef(props.rootRef, node)
+}
+
+defineExpose({ rootElement })
 </script>
 
 <template>
   <Box
+    :rootRef="setRootRef"
     v-bind="{ ...attrs, ...getStyles('root') }"
     :component="props.block ? 'pre' : 'code'"
     :mod="[{ block: props.block }, (attrs as any).mod]"

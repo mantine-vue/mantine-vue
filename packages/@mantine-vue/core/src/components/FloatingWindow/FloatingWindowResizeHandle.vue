@@ -33,7 +33,8 @@ export { KEYBOARD_STEP, clampDimension }
 </script>
 
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, useAttrs } from 'vue'
+import { ref, computed, onBeforeUnmount, onMounted, useAttrs } from 'vue'
+import { assignRef } from '@mantine-vue/hooks'
 import { Box } from '../../core'
 import { useFloatingWindowContext } from './FloatingWindow.context'
 import type {
@@ -47,6 +48,7 @@ defineOptions({
 })
 
 const props = withDefaults(defineProps<FloatingWindowResizeHandleOwnProps>(), {
+  rootRef: undefined,
   ariaLabel: 'Resize window',
   tabindex: 0,
 })
@@ -276,10 +278,20 @@ function setHandleRef(node: any) {
 const ariaLabel = computed(() => (attrs as any)['aria-label'] ?? props.ariaLabel)
 
 const handleStyle = computed(() => [{ touchAction: 'none' }, attrs.style])
+
+const rootElement = ref<Element | null>(null)
+
+const setRootRef = (node: Element | null) => {
+  rootElement.value = node
+  assignRef(props.rootRef, node)
+}
+
+defineExpose({ rootElement })
 </script>
 
 <template>
   <Box
+    :rootRef="setRootRef"
     :ref="setHandleRef"
     v-bind="attrs"
     role="separator"

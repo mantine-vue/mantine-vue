@@ -11,14 +11,14 @@ import {
 } from '../Combobox'
 import { Combobox } from '../Combobox'
 import { InputBase } from '../InputBase'
-import type { AutocompleteProps, AutocompleteSlots } from './Autocomplete.types'
+import type { AutocompleteOwnProps, AutocompleteSlots } from './Autocomplete.types'
 
 defineOptions({
   name: 'Autocomplete',
   inheritAttrs: false,
 })
 
-const props = withDefaults(defineProps<AutocompleteProps>(), {
+const props = withDefaults(defineProps<AutocompleteOwnProps>(), {
   modelValue: undefined,
   defaultValue: '',
   data: () => [],

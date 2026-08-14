@@ -7,7 +7,8 @@ export const varsResolver = createVarsResolver<any>((_, { gap }, ctx) => ({
 </script>
 
 <script setup lang="ts">
-import { provide, useAttrs } from 'vue'
+import { ref, provide, useAttrs } from 'vue'
+import { assignRef } from '@mantine-vue/hooks'
 import { Box, useProps, useStyles } from '../../../core'
 import { usePillsInputContext } from '../../PillsInput/PillsInput.context'
 import { PillGroupContextKey } from './PillGroup.context'
@@ -17,6 +18,7 @@ import classes from '../Pill.module.css'
 defineOptions({ name: 'PillGroup', inheritAttrs: false })
 
 const rawProps = withDefaults(defineProps<PillGroupOwnProps>(), {
+  rootRef: undefined,
   gap: undefined,
   size: undefined,
   disabled: undefined,
@@ -58,10 +60,24 @@ provide(PillGroupContextKey, {
     return props.disabled
   },
 })
+
+const rootElement = ref<Element | null>(null)
+
+const setRootRef = (node: Element | null) => {
+  rootElement.value = node
+  assignRef(props.rootRef, node)
+}
+
+defineExpose({ rootElement })
 </script>
 
 <template>
-  <Box v-bind="{ ...attrs, ...getStyles('group') }" component="div" :data-size="getSizeValue()">
+  <Box
+    :rootRef="setRootRef"
+    v-bind="{ ...attrs, ...getStyles('group') }"
+    component="div"
+    :data-size="getSizeValue()"
+  >
     <slot />
   </Box>
 </template>

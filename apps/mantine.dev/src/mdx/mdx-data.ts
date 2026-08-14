@@ -694,6 +694,7 @@ export const MDX_DATA: Record<string, Frontmatter> = {
       'InputClearButton',
     ],
     styles: ['Input', 'InputWrapper'],
+    polymorphic: true,
     source: '@mantine-vue/core/src/components/Input/Input.ts',
     docs: 'core/input.mdx',
     searchTags: 'form, text, base, wrapper, label, description, error',

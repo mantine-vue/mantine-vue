@@ -16,3 +16,4 @@ export type { MenubarDropdownProps, MenubarDropdownSlots } from './MenubarDropdo
 
 export { useMenubarContext, useMenubarMenuContext } from './Menubar.context'
 export type { MenubarContextValue, MenubarMenuContextValue } from './Menubar.context'
+export type { MenubarFactory } from './Menubar'

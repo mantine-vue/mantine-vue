@@ -1,10 +1,20 @@
 import type { VNodeChild } from 'vue'
-import type { BoxMod, BoxProps, MantineRadius, MantineSize, StylesApiProps } from '../../../core'
+import type {
+  BoxMod,
+  BoxProps,
+  MantineRadius,
+  MantineSize,
+  StylesApiProps,
+  Factory,
+} from '../../../core'
 
 export type ProgressRootStylesNames = 'root' | 'section' | 'label'
 
 /** Props declared by `ProgressRoot` itself. See `ProgressRootProps` for the full public type. */
-export interface ProgressRootOwnProps extends StylesApiProps<ProgressRootProps> {
+export interface ProgressRootOwnProps extends StylesApiProps<ProgressRootFactory> {
+  /** Receives the root DOM node. */
+  rootRef?: VueRefTarget<Element>
+
   /**
    * Controls track height
    *
@@ -47,3 +57,17 @@ export interface ProgressRootSlots {
   /** Progress sections. */
   default?: () => VNodeChild
 }
+
+export type ProgressRootCssVariables = {
+  root: '--progress-size' | '--progress-radius' | '--progress-transition-duration'
+}
+
+export type ProgressRootFactory = Factory<{
+  props: Omit<ProgressRootProps, 'rootRef'>
+  ref: HTMLDivElement
+  slots: ProgressRootSlots
+  element: 'div'
+  stylesNames: ProgressRootStylesNames
+  vars: ProgressRootCssVariables
+}>
+import type { VueRefTarget } from '@mantine-vue/hooks'

@@ -13,6 +13,7 @@ export {
 export type {
   DrawerCompoundProps,
   DrawerCssVariables,
+  DrawerEmits,
   DrawerFactory,
   DrawerPosition,
   DrawerProps,

@@ -1,10 +1,16 @@
-import { withBoxProps } from '../../core'
+import { polymorphicFactory } from '../../core'
 import TextComponent, { varsResolver } from './Text.vue'
+import type { TextFactory } from './Text.types'
 import classes from './Text.module.css'
-export const Text = withBoxProps(TextComponent)
-Object.assign(Text, { classes, varsResolver })
+
+export const Text = polymorphicFactory<TextFactory>(TextComponent, {
+  classes,
+  varsResolver,
+})
+
 export type {
   TextCssVariables,
+  TextFactory,
   TextOwnProps,
   TextProps,
   TextSlots,

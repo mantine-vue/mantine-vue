@@ -1,5 +1,11 @@
 import type { VNodeChild } from 'vue'
-import type { BoxMod, BoxProps, StylesApiProps, MantineElementType } from '../../../core'
+import type {
+  BoxMod,
+  BoxProps,
+  StylesApiProps,
+  MantineElementType,
+  PolymorphicFactory,
+} from '../../../core'
 
 /** Props declared by `CardSection` itself. See `CardSectionProps` for the full public type. */
 export interface CardSectionOwnProps {
@@ -28,13 +34,13 @@ export interface CardSectionOwnProps {
   mod?: BoxMod
 
   /** Class names applied to Card elements. */
-  classNames?: StylesApiProps<CardSectionProps>['classNames']
+  classNames?: StylesApiProps<CardSectionFactory>['classNames']
 
   /** Inline styles applied to Card elements. */
-  styles?: StylesApiProps<CardSectionProps>['styles']
+  styles?: StylesApiProps<CardSectionFactory>['styles']
 
   /** CSS variables applied to Card elements. */
-  vars?: StylesApiProps<CardSectionProps>['vars']
+  vars?: StylesApiProps<CardSectionFactory>['vars']
 }
 
 export interface CardSectionSlots {
@@ -44,3 +50,16 @@ export interface CardSectionSlots {
 
 export interface CardSectionProps
   extends Omit<BoxProps, keyof CardSectionOwnProps>, CardSectionOwnProps {}
+
+export type CardSectionStylesNames = 'section'
+
+export type CardSectionFactory = PolymorphicFactory<{
+  props: Omit<CardSectionProps, 'component' | 'rootRef'>
+  slots: CardSectionSlots
+  ref: HTMLDivElement
+  exposed: { rootElement: Element | null }
+  defaultComponent: 'div'
+  defaultRef: HTMLDivElement
+  stylesNames: CardSectionStylesNames
+  compound: true
+}>

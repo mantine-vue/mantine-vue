@@ -9,13 +9,15 @@ export { varsResolver }
 </script>
 
 <script setup lang="ts">
-import { computed, useAttrs, useSlots } from 'vue'
+import { ref, computed, useAttrs, useSlots } from 'vue'
+import { assignRef } from '@mantine-vue/hooks'
 import { Box, hasNode, resolveNode, useProps, useStyles } from '../../core'
 import type { FieldsetOwnProps, FieldsetSlots } from './Fieldset.types'
 import classes from './Fieldset.module.css'
 
 defineOptions({ name: 'Fieldset', inheritAttrs: false })
 const rawProps = withDefaults(defineProps<FieldsetOwnProps>(), {
+  rootRef: undefined,
   legend: undefined,
   radius: undefined,
   variant: undefined,
@@ -41,10 +43,20 @@ const getStyles = useStyles({
 })
 const legend = computed(() => resolveNode(props.legend, slots.legend))
 const renderLegend = () => legend.value
+
+const rootElement = ref<Element | null>(null)
+
+const setRootRef = (node: Element | null) => {
+  rootElement.value = node
+  assignRef(props.rootRef, node)
+}
+
+defineExpose({ rootElement })
 </script>
 
 <template>
   <Box
+    :rootRef="setRootRef"
     v-bind="{
       ...attrs,
       ...getStyles('root', { className: attrs.class, style: attrs.style as any }),

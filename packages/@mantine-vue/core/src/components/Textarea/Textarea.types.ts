@@ -1,5 +1,6 @@
+import type { VueRefTarget } from '@mantine-vue/hooks'
 import type { VNodeChild } from 'vue'
-import type { BoxProps, MantineNode } from '../../core'
+import type { BoxProps, MantineNode, Factory } from '../../core'
 import type { InputBaseOwnProps, InputBaseSlots, InputBaseStylesNames } from '../InputBase'
 
 export type TextareaStylesNames = InputBaseStylesNames
@@ -11,6 +12,9 @@ export interface TextareaSlots extends InputBaseSlots {
 
 /** Props declared by `Textarea` itself. See `TextareaProps` for the full public type. */
 export interface TextareaOwnProps {
+  /** Receives the input element */
+  rootRef?: VueRefTarget<Element>
+
   /** Controlled value, bound with `v-model`. */
   modelValue?: string
 
@@ -62,3 +66,19 @@ export interface TextareaProps
     Omit<BoxProps, keyof TextareaOwnProps | keyof InputBaseOwnProps>,
     Omit<InputBaseOwnProps, keyof TextareaOwnProps | 'component' | 'multiline'>,
     TextareaOwnProps {}
+
+export interface TextareaEmits {
+  /** Called with the current value. */
+  'update:modelValue': [value: string]
+
+  /** Called with the current value when it changes. */
+  change: [value: string]
+}
+
+export type TextareaFactory = Factory<{
+  props: Omit<TextareaProps, 'rootRef'>
+  slots: TextareaSlots
+  emits: TextareaEmits
+  ref: HTMLTextAreaElement
+  stylesNames: TextareaStylesNames
+}>

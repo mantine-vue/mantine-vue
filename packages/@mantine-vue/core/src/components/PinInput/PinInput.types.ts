@@ -5,6 +5,7 @@ import type {
   MantineSize,
   MantineSpacing,
   StylesApiProps,
+  Factory,
 } from '../../core'
 
 export type PinInputStylesNames = 'root' | 'pinInput' | 'input'
@@ -46,7 +47,7 @@ export type PinInputMode =
   | 'search'
 
 /** Props declared by `PinInput` itself. See `PinInputProps` for the full public type. */
-export interface PinInputOwnProps extends StylesApiProps<PinInputProps> {
+export interface PinInputOwnProps extends StylesApiProps<PinInputFactory> {
   /** `name` of the hidden input, used when the input is part of a form. */
   name?: string
 
@@ -180,3 +181,24 @@ export interface PinInputOwnProps extends StylesApiProps<PinInputProps> {
 }
 
 export interface PinInputProps extends Omit<BoxProps, keyof PinInputOwnProps>, PinInputOwnProps {}
+
+export interface PinInputEmits {
+  /** Called with the combined value whenever any field changes. */
+  'update:modelValue': [value: string]
+
+  /** Called with the combined value whenever any field changes. */
+  change: [value: string]
+
+  /** Called with the combined value once every field is filled. */
+  complete: [value: string]
+}
+
+export type PinInputFactory = Factory<{
+  props: Omit<PinInputProps, 'rootRef'>
+  ref: HTMLDivElement
+  exposed: { rootElement: Element | null }
+  emits: PinInputEmits
+  element: 'div'
+  stylesNames: PinInputStylesNames
+  vars: PinInputCssVariables
+}>

@@ -5,13 +5,15 @@ export const varsResolver = createVarsResolver<any>((_, { spacing }) => ({
 }))
 </script>
 <script setup lang="ts">
-import { provide, useAttrs } from 'vue'
+import { ref, provide, useAttrs } from 'vue'
+import { assignRef } from '@mantine-vue/hooks'
 import { Box, useProps, useStyles } from '../../../core'
 import { AvatarGroupContextKey } from './AvatarGroup.context'
 import type { AvatarGroupOwnProps, AvatarGroupSlots } from './AvatarGroup.types'
 import classes from '../Avatar.module.css'
 defineOptions({ name: 'AvatarGroup', inheritAttrs: false })
 const rawProps = withDefaults(defineProps<AvatarGroupOwnProps>(), {
+  rootRef: undefined,
   spacing: undefined,
   classNames: undefined,
   styles: undefined,
@@ -35,7 +37,16 @@ const getStyles = useStyles({
   rootSelector: 'group',
 })
 provide(AvatarGroupContextKey, { withinGroup: true })
+
+const rootElement = ref<Element | null>(null)
+
+const setRootRef = (node: Element | null) => {
+  rootElement.value = node
+  assignRef(props.rootRef, node)
+}
+
+defineExpose({ rootElement })
 </script>
 <template>
-  <Box v-bind="{ ...attrs, ...getStyles('group') }"><slot /></Box>
+  <Box :rootRef="setRootRef" v-bind="{ ...attrs, ...getStyles('group') }"><slot /></Box>
 </template>

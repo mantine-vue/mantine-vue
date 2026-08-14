@@ -39,21 +39,8 @@ export interface PolymorphicComponentWithProps<Payload extends PolymorphicFactor
 }
 
 /**
- * Public type of a polymorphic factory component.
- *
- * A generic function component, which is what lets `vue-tsc` infer the root from
- * `component` in templates. The `C extends MantineElementType` constraint is essential:
- * without it a static `component="a"` widens to `string`, the root's props resolve to `{}`
- * and every root attribute silently stops being checked.
- *
- * Slots are declared on the second parameter, which is where `vue-tsc` reads them from for
- * function components.
- *
- * `emit` uses Vue's own `EmitFn` -- a *function* derived from the payload's `emits` map, not the
- * map itself. The `ctx` parameter is checked contravariantly against the context Vue passes, so
- * declaring the raw map here makes the component unassignable to `FunctionalComponent` and
- * breaks every `h(Component, …)` call for any component that declares emits. Typed events still
- * reach consumers through the `onEvent` props `EmitsToProps` adds.
+ * Generic function component used to infer the root from `component`. Slots and Vue's `EmitFn`
+ * are declared on the context parameter to remain compatible with `FunctionalComponent`.
  */
 export type MantinePolymorphicComponent<
   Payload extends PolymorphicFactoryPayload,
@@ -69,12 +56,7 @@ export type MantinePolymorphicComponent<
   PolymorphicComponentWithProps<Payload> &
   StaticComponents<Payload['staticComponents']>
 
-/**
- * Attaches the Mantine static API to a polymorphic component implementation.
- *
- * As with `factory`, the implementation stays an ordinary SFC; only the statics and the
- * exported type change.
- */
+/** Attaches the Mantine static API to a polymorphic component implementation. */
 export function polymorphicFactory<Payload extends PolymorphicFactoryPayload>(
   ui: Component,
   statics?: Payload['staticComponents'] & {

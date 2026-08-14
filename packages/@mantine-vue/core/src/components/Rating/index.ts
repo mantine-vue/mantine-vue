@@ -1,6 +1,7 @@
 export { Rating } from './Rating'
 export type {
   RatingCssVariables,
+  RatingFactory,
   RatingOwnProps,
   RatingProps,
   RatingSlots,

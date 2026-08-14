@@ -1,4 +1,4 @@
-import { defineComponent, h } from 'vue'
+import { defineComponent, h, type CSSProperties } from 'vue'
 import { Paper, Stack, Text } from '@mantine-vue/core'
 
 export const ContextMenuTarget = defineComponent({
@@ -27,7 +27,7 @@ export const ContextMenuTarget = defineComponent({
             background: `light-dark(var(--mantine-color-${props.color}-0), var(--mantine-color-dark-6))`,
             borderColor: `var(--mantine-color-${props.color}-3)`,
             textAlign: 'center',
-          },
+          } satisfies CSSProperties,
         },
         () =>
           h(Stack, { gap: 4, align: 'center' }, () => [

@@ -15,7 +15,8 @@ export { varsResolver, defaultProps }
 </script>
 
 <script setup lang="ts">
-import { computed, useAttrs } from 'vue'
+import { ref, computed, useAttrs } from 'vue'
+import { assignRef } from '@mantine-vue/hooks'
 import { Box, omitAttrs, useProps, useStyles } from '../../../core'
 import { useInputWrapperContext } from '../InputWrapper.context'
 import type { InputLabelOwnProps, InputLabelSlots } from './InputLabel.types'
@@ -27,6 +28,7 @@ defineOptions({
 })
 
 const rawProps = withDefaults(defineProps<InputLabelOwnProps>(), {
+  rootRef: undefined,
   required: false,
   unstyled: false,
 })
@@ -66,10 +68,20 @@ function onMousedown(event: MouseEvent) {
 }
 
 const forwardedAttrs = computed(() => omitAttrs(attrs, ['onMousedown']))
+
+const rootElement = ref<Element | null>(null)
+
+const setRootRef = (node: Element | null) => {
+  rootElement.value = node
+  assignRef(props.rootRef, node)
+}
+
+defineExpose({ rootElement })
 </script>
 
 <template>
   <Box
+    :rootRef="setRootRef"
     v-bind="{ ...forwardedAttrs, ...labelStyles }"
     :component="props.labelElement"
     :for="props.labelElement === 'label' ? props.htmlFor : undefined"

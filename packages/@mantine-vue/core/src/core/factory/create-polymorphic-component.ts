@@ -1,4 +1,6 @@
 import type { Component, IntrinsicElementAttributes, ReservedProps } from 'vue'
+import type { DataAttributes, EmitsToProps } from './factory-payload'
+import type { RootRefProps } from './factory'
 
 /** Every value the `component` prop accepts: an intrinsic tag name or a Vue component. */
 export type MantineElementType = keyof IntrinsicElementAttributes | Component
@@ -45,8 +47,17 @@ export interface PolymorphicMarker<Payload, Default> {
  */
 export type ComponentProps<C, Root = void> =
   C extends PolymorphicMarker<infer Payload, infer Default>
-    ? Payload extends { props: any }
-      ? PolymorphicComponentProps<Root extends void ? Default : Root, Payload['props']>
+    ? // `emits?: infer Emits` rather than a `extends { emits: any }` guard: a guard that yields
+      // `never` for payloads without emits would distribute through `EmitsToProps` and collapse
+      // the whole props type to `never`.
+      Payload extends { props: any; emits?: infer Emits }
+      ? // `RootRefProps` is part of the call signature (`PolymorphicProps`), so it belongs here
+        // too -- otherwise this accessor describes props the component accepts but omits `rootRef`.
+        PolymorphicComponentProps<
+          Root extends void ? Default : Root,
+          Payload['props'] & EmitsToProps<Emits>
+        > &
+          RootRefProps<PolymorphicRef<Root extends void ? Default : Root>>
       : PropsOf<C>
     : C extends abstract new (...args: any[]) => { $props: infer Props }
       ? Props
@@ -66,6 +77,7 @@ export type PolymorphicRef<C> = C extends keyof HTMLElementTagNameMap
  */
 export type PolymorphicComponentProps<C, Props = EmptyProps> = Props &
   Omit<PropsOf<C>, keyof Props> &
+  DataAttributes &
   ReservedProps & {
     /**
      * Root element or component rendered by this component.

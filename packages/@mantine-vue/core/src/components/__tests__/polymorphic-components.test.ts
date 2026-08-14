@@ -10,16 +10,18 @@ import {
   Button,
   Card,
   Center,
+  CloseButton,
   ColorSwatch,
   Flex,
+  Highlight,
   Image,
   MantineProvider,
   NavLink,
   Overlay,
+  Paper,
+  Text,
   UnstyledButton,
 } from '../../index'
-
-/** Runtime contract shared by every component migrated to `polymorphicFactory`. */
 
 const RouterLinkStub = defineComponent({
   name: 'RouterLinkStub',
@@ -35,107 +37,205 @@ function render(component: any, props: Record<string, any> = {}, children?: any)
   })
 }
 
-/** component, selector, default root tag, required props */
-const CASES: [string, any, string, string, Record<string, any>][] = [
-  ['Overlay', Overlay, '.mantine-Overlay-root', 'DIV', {}],
-  ['ActionIcon', ActionIcon, '.mantine-ActionIcon-root', 'BUTTON', {}],
-  ['Flex', Flex, '.mantine-Flex-root', 'DIV', {}],
-  ['NavLink', NavLink, '.mantine-NavLink-root', 'A', { label: 'Docs' }],
-  ['Anchor', Anchor, '.mantine-Anchor-root', 'A', {}],
-  ['Avatar', Avatar, '.mantine-Avatar-root', 'DIV', {}],
-  ['UnstyledButton', UnstyledButton, '.mantine-UnstyledButton-root', 'BUTTON', {}],
-  ['Center', Center, '.mantine-Center-root', 'DIV', {}],
-  ['Badge', Badge, '.mantine-Badge-root', 'DIV', {}],
-  ['BackgroundImage', BackgroundImage, '.mantine-BackgroundImage-root', 'DIV', { src: '/i.png' }],
-  ['Card', Card, '.mantine-Card-root', 'DIV', {}],
-  ['ColorSwatch', ColorSwatch, '.mantine-ColorSwatch-root', 'DIV', { color: 'red' }],
-  ['Image', Image, '.mantine-Image-root', 'IMG', { src: '/i.png' }],
-  ['Button', Button, '.mantine-Button-root', 'BUTTON', {}],
+interface PolymorphicCase {
+  name: string
+  component: any
+  selector: string
+  tag: string
+  required: Record<string, any>
+}
+
+const CASES: PolymorphicCase[] = [
+  {
+    name: 'Overlay',
+    component: Overlay,
+    selector: '.mantine-Overlay-root',
+    tag: 'DIV',
+    required: {},
+  },
+  {
+    name: 'ActionIcon',
+    component: ActionIcon,
+    selector: '.mantine-ActionIcon-root',
+    tag: 'BUTTON',
+    required: {},
+  },
+  { name: 'Flex', component: Flex, selector: '.mantine-Flex-root', tag: 'DIV', required: {} },
+  {
+    name: 'NavLink',
+    component: NavLink,
+    selector: '.mantine-NavLink-root',
+    tag: 'A',
+    required: { label: 'Docs' },
+  },
+  { name: 'Anchor', component: Anchor, selector: '.mantine-Anchor-root', tag: 'A', required: {} },
+  { name: 'Avatar', component: Avatar, selector: '.mantine-Avatar-root', tag: 'DIV', required: {} },
+  {
+    name: 'UnstyledButton',
+    component: UnstyledButton,
+    selector: '.mantine-UnstyledButton-root',
+    tag: 'BUTTON',
+    required: {},
+  },
+  { name: 'Center', component: Center, selector: '.mantine-Center-root', tag: 'DIV', required: {} },
+  { name: 'Badge', component: Badge, selector: '.mantine-Badge-root', tag: 'DIV', required: {} },
+  {
+    name: 'BackgroundImage',
+    component: BackgroundImage,
+    selector: '.mantine-BackgroundImage-root',
+    tag: 'DIV',
+    required: { src: '/i.png' },
+  },
+  { name: 'Card', component: Card, selector: '.mantine-Card-root', tag: 'DIV', required: {} },
+  {
+    name: 'ColorSwatch',
+    component: ColorSwatch,
+    selector: '.mantine-ColorSwatch-root',
+    tag: 'DIV',
+    required: { color: 'red' },
+  },
+  {
+    name: 'Image',
+    component: Image,
+    selector: '.mantine-Image-root',
+    tag: 'IMG',
+    required: { src: '/i.png' },
+  },
+  {
+    name: 'Button',
+    component: Button,
+    selector: '.mantine-Button-root',
+    tag: 'BUTTON',
+    required: {},
+  },
+  { name: 'Text', component: Text, selector: '.mantine-Text-root', tag: 'P', required: {} },
+  { name: 'Paper', component: Paper, selector: '.mantine-Paper-root', tag: 'DIV', required: {} },
+  {
+    name: 'CloseButton',
+    component: CloseButton,
+    selector: '.mantine-CloseButton-root',
+    tag: 'BUTTON',
+    required: {},
+  },
+  {
+    // Renders `Text`, so the root is a <p>, but keeps its own static selector.
+    name: 'Highlight',
+    component: Highlight,
+    selector: '.mantine-Highlight-root',
+    tag: 'P',
+    required: { highlight: 'ig' },
+  },
 ]
 
 describe('@mantine-vue/core polymorphic components', () => {
-  it.each(CASES)('%s renders its documented default root', (_name, comp, sel, tag, required) => {
-    const root = render(comp, required).find(sel)
+  it.each(CASES)(
+    '$name renders its documented default root',
+    ({ component, selector, tag, required }: PolymorphicCase) => {
+      const root = render(component, required).find(selector)
 
-    expect(root.exists()).toBe(true)
-    expect(root.element.tagName).toBe(tag)
+      expect(root.exists()).toBe(true)
+      expect(root.element.tagName).toBe(tag)
+    },
+  )
+
+  it.each(CASES)(
+    '$name renders an anchor when component="a"',
+    ({ component, selector, required }: PolymorphicCase) => {
+      const root = render(component, { ...required, component: 'a', href: '/docs' }).find(selector)
+
+      expect(root.element.tagName).toBe('A')
+      expect(root.attributes('href')).toBe('/docs')
+    },
+  )
+
+  it.each(CASES)(
+    '$name renders a custom Vue component as the root',
+    ({ component, selector, required }: PolymorphicCase) => {
+      const wrapper = render(component, { ...required, component: RouterLinkStub, to: '/docs' })
+
+      expect(wrapper.find(selector).attributes('data-router-link')).toBe('true')
+      expect(wrapper.findComponent(RouterLinkStub).exists()).toBe(true)
+    },
+  )
+
+  it.each(CASES)(
+    '$name forwards root attributes to the selected root',
+    ({ component, selector, required }: PolymorphicCase) => {
+      const root = render(component, { ...required, id: 'poly-root', 'aria-label': 'Root' }).find(
+        selector,
+      )
+
+      expect(root.attributes('id')).toBe('poly-root')
+      expect(root.attributes('aria-label')).toBe('Root')
+    },
+  )
+
+  it.each(CASES)(
+    '$name applies style props to the selected root',
+    ({ component, selector, required }: PolymorphicCase) => {
+      const style =
+        render(component, { ...required, mt: 'md' })
+          .find(selector)
+          .attributes('style') ?? ''
+
+      expect(style).toContain('margin-top: var(--mantine-spacing-md)')
+    },
+  )
+
+  it.each(CASES)(
+    '$name assigns the root DOM node to rootRef',
+    async ({ component, selector, required }: PolymorphicCase) => {
+      const rootRef = ref<Element | null>(null)
+      render(component, { ...required, rootRef })
+      await nextTick()
+
+      expect(rootRef.value).toBeInstanceOf(Element)
+      expect(rootRef.value?.matches(selector)).toBe(true)
+    },
+  )
+
+  it.each(CASES)(
+    '$name follows the selected root for rootRef',
+    async ({ component, required }: PolymorphicCase) => {
+      const rootRef = ref<Element | null>(null)
+      render(component, { ...required, component: 'a', href: '/docs', rootRef })
+      await nextTick()
+
+      expect(rootRef.value).toBeInstanceOf(HTMLAnchorElement)
+    },
+  )
+
+  it.each(CASES)('$name exposes the static factory API', ({ component }: PolymorphicCase) => {
+    expect(typeof component.extend).toBe('function')
+    expect(typeof component.withProps).toBe('function')
+    expect(component.classes).toBeTruthy()
+    expect(component.classes.root).toBeTruthy()
   })
 
-  it.each(CASES)('%s renders an anchor when component="a"', (_name, comp, sel, _tag, required) => {
-    const root = render(comp, { ...required, component: 'a', href: '/docs' }).find(sel)
+  it.each(CASES)(
+    '$name does not leak Mantine props as DOM attributes',
+    ({ component, selector, required }: PolymorphicCase) => {
+      const root = render(component, {
+        ...required,
+        mt: 'md',
+        classNames: {},
+        styles: {},
+        unstyled: false,
+      }).find(selector)
 
-    expect(root.element.tagName).toBe('A')
-    expect(root.attributes('href')).toBe('/docs')
-  })
-
-  it.each(CASES)('%s renders a custom Vue component as the root', (_n, comp, sel, _t, required) => {
-    const wrapper = render(comp, { ...required, component: RouterLinkStub, to: '/docs' })
-
-    expect(wrapper.find(sel).attributes('data-router-link')).toBe('true')
-    expect(wrapper.findComponent(RouterLinkStub).exists()).toBe(true)
-  })
-
-  it.each(CASES)('%s forwards root attributes to the selected root', (_n, comp, sel, _t, req) => {
-    const root = render(comp, { ...req, id: 'poly-root', 'aria-label': 'Root' }).find(sel)
-
-    expect(root.attributes('id')).toBe('poly-root')
-    expect(root.attributes('aria-label')).toBe('Root')
-  })
-
-  it.each(CASES)('%s applies style props to the selected root', (_n, comp, sel, _t, required) => {
-    const style =
-      render(comp, { ...required, mt: 'md' })
-        .find(sel)
-        .attributes('style') ?? ''
-
-    expect(style).toContain('margin-top: var(--mantine-spacing-md)')
-  })
-
-  it.each(CASES)('%s assigns the root DOM node to rootRef', async (_n, comp, sel, _t, required) => {
-    const rootRef = ref<Element | null>(null)
-    render(comp, { ...required, rootRef })
-    await nextTick()
-
-    expect(rootRef.value).toBeInstanceOf(Element)
-    expect(rootRef.value?.matches(sel)).toBe(true)
-  })
-
-  it.each(CASES)('%s follows the selected root for rootRef', async (_n, comp, _s, _t, required) => {
-    const rootRef = ref<Element | null>(null)
-    render(comp, { ...required, component: 'a', href: '/docs', rootRef })
-    await nextTick()
-
-    expect(rootRef.value).toBeInstanceOf(HTMLAnchorElement)
-  })
-
-  it.each(CASES)('%s exposes the static factory API', (_name, comp) => {
-    expect(typeof comp.extend).toBe('function')
-    expect(typeof comp.withProps).toBe('function')
-    expect(comp.classes).toBeTruthy()
-    expect(comp.classes.root).toBeTruthy()
-  })
-
-  it.each(CASES)('%s does not leak Mantine props as DOM attributes', (_n, comp, sel, _t, req) => {
-    const root = render(comp, {
-      ...req,
-      mt: 'md',
-      classNames: {},
-      styles: {},
-      unstyled: false,
-    }).find(sel)
-
-    for (const leaked of [
-      'classnames',
-      'styles',
-      'vars',
-      'unstyled',
-      'component',
-      'rootref',
-      'mt',
-    ]) {
-      expect(root.attributes(leaked)).toBeUndefined()
-    }
-  })
+      for (const leaked of [
+        'classnames',
+        'styles',
+        'vars',
+        'unstyled',
+        'component',
+        'rootref',
+        'mt',
+      ]) {
+        expect(root.attributes(leaked)).toBeUndefined()
+      }
+    },
+  )
 
   it('keeps compound components available after migration', () => {
     expect(ActionIcon.Group).toBeTruthy()
@@ -147,7 +247,7 @@ describe('@mantine-vue/core polymorphic components', () => {
   })
 
   it('exposes varsResolver exactly where the payload declares CSS variables', () => {
-    for (const comp of [
+    const withVars = [
       Overlay,
       ActionIcon,
       NavLink,
@@ -158,11 +258,15 @@ describe('@mantine-vue/core polymorphic components', () => {
       ColorSwatch,
       Image,
       Anchor,
-    ]) {
-      expect(typeof (comp as any).varsResolver).toBe('function')
+      Text,
+      Paper,
+    ]
+
+    for (const component of withVars) {
+      expect(typeof (component as any).varsResolver).toBe('function')
     }
-    for (const comp of [Flex, UnstyledButton, Center]) {
-      expect((comp as any).varsResolver).toBeUndefined()
+    for (const component of [Flex, UnstyledButton, Center]) {
+      expect((component as any).varsResolver).toBeUndefined()
     }
   })
 

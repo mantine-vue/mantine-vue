@@ -1,3 +1,7 @@
+import type { CheckboxCard } from './CheckboxCard/CheckboxCard'
+import type { CheckboxIndicator } from './CheckboxIndicator/CheckboxIndicator'
+import type { CheckboxGroup } from './CheckboxGroup/CheckboxGroup'
+import type { VueRefTarget } from '@mantine-vue/hooks'
 import type { Component, VNodeChild } from 'vue'
 import type {
   BoxMod,
@@ -7,6 +11,7 @@ import type {
   MantineRadius,
   MantineSize,
   StylesApiProps,
+  Factory,
 } from '../../core'
 
 export type CheckboxVariant = 'filled' | 'outline'
@@ -52,7 +57,7 @@ export interface CheckboxSlots {
 }
 
 /** Props declared by `Checkbox` itself. See `CheckboxProps` for the full public type. */
-export interface CheckboxOwnProps extends StylesApiProps<CheckboxProps> {
+export interface CheckboxOwnProps extends StylesApiProps<CheckboxFactory> {
   /** `id` shared by the input and its label. Generated automatically when not set. */
   id?: string
 
@@ -120,7 +125,7 @@ export interface CheckboxOwnProps extends StylesApiProps<CheckboxProps> {
   icon?: Component
 
   /** Ref assigned to the root element. */
-  rootRef?: any
+  rootRef?: VueRefTarget<Element>
 
   /** Key of `theme.colors` or any valid CSS color used for the icon. */
   iconColor?: MantineColor
@@ -173,3 +178,31 @@ export interface CheckboxOwnProps extends StylesApiProps<CheckboxProps> {
 }
 
 export interface CheckboxProps extends Omit<BoxProps, keyof CheckboxOwnProps>, CheckboxOwnProps {}
+
+export interface CheckboxEmits {
+  /** Called with the new checked state. */
+  'update:modelValue': [checked: boolean]
+
+  /** Called with the new checked state. */
+  'update:checked': [checked: boolean]
+
+  /** Called with the new checked state when the user toggles the control. */
+  change: [checked: boolean]
+}
+
+export type CheckboxFactory = Factory<{
+  props: Omit<CheckboxProps, 'rootRef'>
+  slots: CheckboxSlots
+  emits: CheckboxEmits
+  ref: HTMLDivElement
+  exposed: { rootElement: Element | null }
+  element: 'div'
+  stylesNames: CheckboxStylesNames
+  vars: CheckboxCssVariables
+  variant: CheckboxVariant
+  staticComponents: {
+    Group: typeof CheckboxGroup
+    Indicator: typeof CheckboxIndicator
+    Card: typeof CheckboxCard
+  }
+}>

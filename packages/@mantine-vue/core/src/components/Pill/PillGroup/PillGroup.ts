@@ -1,10 +1,10 @@
-import { withBoxProps } from '../../../core'
+import { factory } from '../../../core'
 import { usePillGroupContext } from './PillGroup.context'
 import PillGroupComponent, { varsResolver } from './PillGroup.vue'
+import type { PillGroupFactory } from './PillGroup.types'
 import classes from '../Pill.module.css'
 
-export const PillGroup = withBoxProps(PillGroupComponent)
-Object.assign(PillGroup, { classes, varsResolver })
+export const PillGroup = factory<PillGroupFactory>(PillGroupComponent, { classes, varsResolver })
 
 export { usePillGroupContext }
 export type {
@@ -14,4 +14,5 @@ export type {
   PillGroupProps,
   PillGroupSlots,
   PillGroupStylesNames,
+  PillGroupFactory,
 } from './PillGroup.types'

@@ -1,5 +1,12 @@
 import type { VNodeChild } from 'vue'
-import type { BoxProps, MantineColor, MantineNode, MantineRadius, StylesApiProps } from '../../core'
+import type {
+  BoxProps,
+  MantineColor,
+  MantineNode,
+  MantineRadius,
+  StylesApiProps,
+  Factory,
+} from '../../core'
 
 export type AlertStylesNames =
   | 'root'
@@ -29,7 +36,10 @@ export interface AlertSlots {
 }
 
 /** Props declared by `Alert` itself. See `AlertProps` for the full public type. */
-export interface AlertOwnProps extends StylesApiProps<AlertProps> {
+export interface AlertOwnProps extends StylesApiProps<AlertFactory> {
+  /** Receives the root DOM node. */
+  rootRef?: VueRefTarget<Element>
+
   /**
    * Id used to connect the root element with its title and message through
    * `aria-labelledby` and `aria-describedby`. Generated automatically when not set.
@@ -89,3 +99,14 @@ export interface AlertOwnProps extends StylesApiProps<AlertProps> {
 }
 
 export interface AlertProps extends Omit<BoxProps, keyof AlertOwnProps>, AlertOwnProps {}
+
+export type AlertFactory = Factory<{
+  props: Omit<AlertProps, 'rootRef'>
+  ref: HTMLDivElement
+  slots: AlertSlots
+  element: 'div'
+  stylesNames: AlertStylesNames
+  vars: AlertCssVariables
+  variant: AlertVariant
+}>
+import type { VueRefTarget } from '@mantine-vue/hooks'

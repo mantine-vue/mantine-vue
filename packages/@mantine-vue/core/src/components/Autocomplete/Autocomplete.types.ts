@@ -1,5 +1,6 @@
 import type { VNodeChild } from 'vue'
 import type { ComboboxGenericData, OptionsFilter } from '../Combobox'
+import type { InputBaseProps } from '../InputBase'
 
 export type AutocompleteStylesNames = string
 
@@ -42,7 +43,7 @@ export interface AutocompleteSlots {
  *
  * Every prop of `InputBase` is also accepted and forwarded to the underlying input.
  */
-export interface AutocompleteProps {
+export interface AutocompleteOwnProps {
   /** Input value, bound with `v-model`. */
   modelValue?: string
 
@@ -132,7 +133,8 @@ export interface AutocompleteProps {
    * @default true
    */
   openOnFocus?: boolean
-
-  /** Any other prop is forwarded to the underlying `InputBase`. */
-  [key: string]: any
 }
+
+/** Every prop `Autocomplete` does not declare is forwarded to `InputBase`. */
+export interface AutocompleteProps
+  extends Omit<InputBaseProps, keyof AutocompleteOwnProps | 'component'>, AutocompleteOwnProps {}

@@ -1,7 +1,12 @@
-import { withBoxProps } from '../../core'
-import CodeComponent from './Code.vue'
+import { factory } from '../../core'
+import CodeComponent, { varsResolver } from './Code.vue'
+import type { CodeFactory } from './Code.types'
+import classes from './Code.module.css'
 
-export const Code = withBoxProps(CodeComponent)
+export const Code = factory<CodeFactory>(CodeComponent, {
+  classes,
+  varsResolver,
+})
 
 export type {
   CodeCssVariables,
@@ -9,4 +14,5 @@ export type {
   CodeProps,
   CodeSlots,
   CodeStylesNames,
+  CodeFactory,
 } from './Code.types'

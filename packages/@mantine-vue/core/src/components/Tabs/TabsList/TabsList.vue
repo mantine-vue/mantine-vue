@@ -1,11 +1,13 @@
 <script setup lang="ts">
-import { useAttrs } from 'vue'
+import { ref, useAttrs } from 'vue'
+import { assignRef } from '@mantine-vue/hooks'
 import { Box } from '../../../core'
 import { useTabsContext } from '../Tabs.context'
 import type { TabsListOwnProps, TabsListSlots } from './TabsList.types'
 
 defineOptions({ name: 'TabsList', inheritAttrs: false })
 const props = withDefaults(defineProps<TabsListOwnProps>(), {
+  rootRef: undefined,
   justify: undefined,
   mod: undefined,
   classNames: undefined,
@@ -14,10 +16,20 @@ const props = withDefaults(defineProps<TabsListOwnProps>(), {
 defineSlots<TabsListSlots>()
 const attrs = useAttrs()
 const ctx = useTabsContext()
+
+const rootElement = ref<Element | null>(null)
+
+const setRootRef = (node: Element | null) => {
+  rootElement.value = node
+  assignRef(props.rootRef, node)
+}
+
+defineExpose({ rootElement })
 </script>
 
 <template>
   <Box
+    :rootRef="setRootRef"
     v-bind="{
       ...attrs,
       ...ctx.getStyles('list', {

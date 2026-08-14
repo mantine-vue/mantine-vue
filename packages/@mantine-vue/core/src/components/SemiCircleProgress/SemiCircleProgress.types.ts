@@ -1,5 +1,5 @@
 import type { VNodeChild } from 'vue'
-import type { BoxProps, MantineNode, StylesApiProps } from '../../core'
+import type { BoxProps, MantineNode, StylesApiProps, Factory } from '../../core'
 
 export type SemiCircleProgressStylesNames =
   | 'root'
@@ -9,7 +9,10 @@ export type SemiCircleProgressStylesNames =
   | 'label'
 
 /** Props declared by `SemiCircleProgress` itself. See `SemiCircleProgressProps` for the full public type. */
-export interface SemiCircleProgressOwnProps extends StylesApiProps<SemiCircleProgressProps> {
+export interface SemiCircleProgressOwnProps extends StylesApiProps<SemiCircleProgressFactory> {
+  /** Receives the root DOM node. */
+  rootRef?: VueRefTarget<Element>
+
   /** Progress value from `0` to `100` */
   value: number
 
@@ -80,3 +83,17 @@ export interface SemiCircleProgressSlots {
 
 export interface SemiCircleProgressProps
   extends Omit<BoxProps, keyof SemiCircleProgressOwnProps>, SemiCircleProgressOwnProps {}
+
+export type SemiCircleProgressCssVariables = {
+  root: '--scp-filled-segment-color' | '--scp-empty-segment-color' | '--scp-rotation'
+}
+
+export type SemiCircleProgressFactory = Factory<{
+  props: Omit<SemiCircleProgressProps, 'rootRef'>
+  ref: HTMLDivElement
+  slots: SemiCircleProgressSlots
+  element: 'div'
+  stylesNames: SemiCircleProgressStylesNames
+  vars: SemiCircleProgressCssVariables
+}>
+import type { VueRefTarget } from '@mantine-vue/hooks'

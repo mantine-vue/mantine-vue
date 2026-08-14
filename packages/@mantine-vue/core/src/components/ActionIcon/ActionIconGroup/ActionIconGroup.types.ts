@@ -1,8 +1,11 @@
 import type { VNodeChild } from 'vue'
-import type { BoxProps, StylesApiProps } from '../../../core'
+import type { BoxProps, StylesApiProps, Factory } from '../../../core'
 
 /** Props declared by `ActionIconGroup` itself. See `ActionIconGroupProps` for the full public type. */
-export interface ActionIconGroupOwnProps extends StylesApiProps<ActionIconGroupProps> {
+export interface ActionIconGroupOwnProps extends StylesApiProps<ActionIconGroupFactory> {
+  /** Receives the root DOM node. */
+  rootRef?: VueRefTarget<Element>
+
   /**
    * Group orientation
    *
@@ -25,3 +28,19 @@ export interface ActionIconGroupSlots {
   /** Grouped action icons. */
   default?: () => VNodeChild
 }
+
+export type ActionIconGroupStylesNames = 'group'
+
+export type ActionIconGroupCssVariables = {
+  group: '--ai-border-width'
+}
+
+export type ActionIconGroupFactory = Factory<{
+  props: Omit<ActionIconGroupProps, 'rootRef'>
+  ref: HTMLDivElement
+  slots: ActionIconGroupSlots
+  element: 'div'
+  stylesNames: ActionIconGroupStylesNames
+  vars: ActionIconGroupCssVariables
+}>
+import type { VueRefTarget } from '@mantine-vue/hooks'

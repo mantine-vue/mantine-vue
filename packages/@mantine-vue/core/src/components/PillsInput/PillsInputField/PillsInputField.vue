@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, useAttrs } from 'vue'
+import { ref, computed, useAttrs } from 'vue'
 import { assignRef, useUncontrolled } from '@mantine-vue/hooks'
 import { Box, omitAttrs, useProps, useStyles } from '../../../core'
 import { useInputWrapperContext } from '../../Input'
@@ -13,6 +13,7 @@ defineOptions({
 })
 
 const rawProps = withDefaults(defineProps<PillsInputFieldOwnProps>(), {
+  rootRef: undefined,
   type: 'visible',
   pointer: false,
   disabled: false,
@@ -85,10 +86,20 @@ function onMousedown(event: MouseEvent) {
  * Vue from calling a consumer handler twice.
  */
 const forwardedAttrs = computed(() => omitAttrs(attrs, ['onInput']))
+
+const rootElement = ref<Element | null>(null)
+
+const setRootRef = (node: Element | null) => {
+  rootElement.value = node
+  assignRef(props.rootRef, node)
+}
+
+defineExpose({ rootElement })
 </script>
 
 <template>
   <Box
+    :rootRef="setRootRef"
     :ref="setFieldRef"
     v-bind="{ ...forwardedAttrs, ...fieldStyles }"
     component="input"

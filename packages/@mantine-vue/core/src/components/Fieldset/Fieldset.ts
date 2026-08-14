@@ -1,9 +1,9 @@
-import { withBoxProps } from '../../core'
+import { factory } from '../../core'
 import FieldsetComponent, { varsResolver } from './Fieldset.vue'
+import type { FieldsetFactory } from './Fieldset.types'
 import classes from './Fieldset.module.css'
 
-export const Fieldset = withBoxProps(FieldsetComponent)
-Object.assign(Fieldset, { classes, varsResolver })
+export const Fieldset = factory<FieldsetFactory>(FieldsetComponent, { classes, varsResolver })
 
 export type {
   FieldsetOwnProps,
@@ -11,4 +11,5 @@ export type {
   FieldsetSlots,
   FieldsetStylesNames,
   FieldsetVariant,
+  FieldsetFactory,
 } from './Fieldset.types'

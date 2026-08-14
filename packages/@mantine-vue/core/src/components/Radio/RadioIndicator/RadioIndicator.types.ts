@@ -6,12 +6,16 @@ import type {
   MantineRadius,
   MantineSize,
   StylesApiProps,
+  Factory,
 } from '../../../core'
 
 export type RadioIndicatorVariant = 'filled' | 'outline'
 
 /** Props declared by `RadioIndicator` itself. See `RadioIndicatorProps` for the full public type. */
-export interface RadioIndicatorOwnProps extends StylesApiProps<RadioIndicatorProps> {
+export interface RadioIndicatorOwnProps extends StylesApiProps<RadioIndicatorFactory> {
+  /** Receives the root DOM node. */
+  rootRef?: VueRefTarget<Element>
+
   /**
    * Key of theme.colors or any valid CSS color to set indicator background color in checked state
    *
@@ -70,3 +74,20 @@ export interface RadioIndicatorSlots {
 
 export interface RadioIndicatorProps
   extends Omit<BoxProps, keyof RadioIndicatorOwnProps>, RadioIndicatorOwnProps {}
+
+export type RadioIndicatorStylesNames = 'icon' | 'indicator'
+
+export type RadioIndicatorCssVariables = {
+  indicator: '--radio-size' | '--radio-radius' | '--radio-color' | '--radio-icon-size'
+}
+
+export type RadioIndicatorFactory = Factory<{
+  props: Omit<RadioIndicatorProps, 'rootRef'>
+  ref: HTMLDivElement
+  slots: RadioIndicatorSlots
+  element: 'div'
+  stylesNames: RadioIndicatorStylesNames
+  vars: RadioIndicatorCssVariables
+  variant: RadioIndicatorVariant
+}>
+import type { VueRefTarget } from '@mantine-vue/hooks'

@@ -1,7 +1,12 @@
+import type { VueRefTarget } from '@mantine-vue/hooks'
 import type { VNodeChild } from 'vue'
-import type { BoxProps, StylesApiProps } from '../../core'
+import type { BoxProps, StylesApiProps, Factory } from '../../core'
 
 export type AffixStylesNames = 'root'
+
+export type AffixCssVariables = {
+  root: '--affix-z-index' | '--affix-top' | '--affix-left' | '--affix-bottom' | '--affix-right'
+}
 
 export interface AffixPosition {
   top?: string | number
@@ -11,7 +16,10 @@ export interface AffixPosition {
 }
 
 /** Props declared by `Affix` itself. See `AffixProps` for the full public type. */
-export interface AffixOwnProps extends StylesApiProps<AffixProps> {
+export interface AffixOwnProps extends StylesApiProps<AffixFactory> {
+  /** Receives the root DOM node. */
+  rootRef?: VueRefTarget<Element>
+
   /**
    * Root element `z-index` property
    *
@@ -43,3 +51,13 @@ export interface AffixSlots {
   /** Fixed-position content. */
   default?: () => VNodeChild
 }
+
+export type AffixFactory = Factory<{
+  props: Omit<AffixProps, 'rootRef'>
+  slots: AffixSlots
+  ref: HTMLDivElement
+  exposed: { rootElement: Element | null }
+  element: 'div'
+  stylesNames: AffixStylesNames
+  vars: AffixCssVariables
+}>

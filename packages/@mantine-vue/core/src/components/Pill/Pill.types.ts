@@ -1,11 +1,22 @@
+import type { PillGroup } from './PillGroup/PillGroup'
 import type { VNodeChild } from 'vue'
-import type { BoxMod, BoxProps, MantineRadius, MantineSize, StylesApiProps } from '../../core'
+import type {
+  BoxMod,
+  BoxProps,
+  MantineRadius,
+  MantineSize,
+  StylesApiProps,
+  Factory,
+} from '../../core'
 
 export type PillStylesNames = 'root' | 'label' | 'remove'
 export type PillVariant = 'default' | 'contrast'
 
 /** Props declared by `Pill` itself. See `PillProps` for the full public type. */
-export interface PillOwnProps extends StylesApiProps<PillProps> {
+export interface PillOwnProps extends StylesApiProps<PillFactory> {
+  /** Receives the root DOM node. */
+  rootRef?: VueRefTarget<Element>
+
   /**
    * Controls pill `font-size` and `padding`
    *
@@ -54,3 +65,21 @@ export interface PillSlots {
   /** Pill label. */
   default?: () => VNodeChild
 }
+
+export type PillCssVariables = {
+  root: '--pill-fz' | '--pill-height' | '--pill-radius'
+}
+
+export type PillFactory = Factory<{
+  props: Omit<PillProps, 'rootRef'>
+  ref: HTMLSpanElement
+  slots: PillSlots
+  element: 'span'
+  stylesNames: PillStylesNames
+  vars: PillCssVariables
+  variant: PillVariant
+  staticComponents: {
+    Group: typeof PillGroup
+  }
+}>
+import type { VueRefTarget } from '@mantine-vue/hooks'

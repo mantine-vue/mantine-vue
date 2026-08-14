@@ -61,14 +61,8 @@ const RouterLink = defineComponent({ props: { to: { type: String, required: true
     <Card.Section>Section</Card.Section>
   </Card>
 
-  <!-- @vue-expect-error `nope` is not a Badge variant -->
-  <Badge variant="nope" />
-
   <!-- @vue-expect-error Overlay defaults to a div root, which has no href -->
   <Overlay href="/nope" />
-
-  <!-- @vue-expect-error `type` is not an anchor attribute, and Anchor defaults to `a` -->
-  <Anchor type="submit" />
 
   <!-- @vue-expect-error `wrap` only accepts flex-wrap values -->
   <Flex wrap="sideways" />

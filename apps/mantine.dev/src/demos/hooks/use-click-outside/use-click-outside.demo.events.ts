@@ -1,4 +1,4 @@
-import { defineComponent, h, ref } from 'vue'
+import { defineComponent, h, ref, type CSSProperties } from 'vue'
 import { Button, Group, Paper } from '@mantine-vue/core'
 import { useClickOutside } from '@mantine-vue/hooks'
 import type { MantineDemo } from '@/demo'
@@ -77,7 +77,7 @@ const Demo = defineComponent({
                   alignItems: 'center',
                   justifyContent: 'center',
                   zIndex: 1,
-                },
+                } satisfies CSSProperties,
               },
               { default: () => h('span', 'Click outside to close') },
             )

@@ -1,5 +1,12 @@
 import type { VNodeChild } from 'vue'
-import type { BoxMod, BoxProps, MantineColor, MantineNode, StylesApiProps } from '../../../core'
+import type {
+  BoxMod,
+  BoxProps,
+  MantineColor,
+  MantineNode,
+  StylesApiProps,
+  Factory,
+} from '../../../core'
 
 export interface StepperStepFragmentSlotProps {
   /** Zero-based step index. */
@@ -24,6 +31,9 @@ export type StepperStepStylesNames =
 
 /** Props declared by `StepperStep` itself. See `StepperStepProps` for the full public type. */
 export interface StepperStepOwnProps {
+  /** Receives the root DOM node. */
+  rootRef?: VueRefTarget<Element>
+
   /** 0-based step index, automatically set by Stepper component */
   step?: number
 
@@ -89,7 +99,7 @@ export interface StepperStepOwnProps {
   mod?: BoxMod
 
   /** Class names applied to Stepper elements. */
-  classNames?: StylesApiProps<StepperStepProps>['classNames']
+  classNames?: StylesApiProps<StepperStepFactory>['classNames']
 
   /** Inline styles applied to Stepper elements. */
   styles?: StylesApiProps<StepperStepProps>['styles']
@@ -116,3 +126,12 @@ export interface StepperStepSlots {
 
 export interface StepperStepProps
   extends Omit<BoxProps, keyof StepperStepOwnProps>, StepperStepOwnProps {}
+
+export type StepperStepFactory = Factory<{
+  props: Omit<StepperStepProps, 'rootRef'>
+  ref: HTMLButtonElement
+  slots: StepperStepSlots
+  element: 'button'
+  stylesNames: StepperStepStylesNames
+}>
+import type { VueRefTarget } from '@mantine-vue/hooks'

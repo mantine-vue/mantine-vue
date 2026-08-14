@@ -43,7 +43,7 @@ onBeforeUnmount(() => resetNavigationProgressAction(props.store))
       :color="props.color"
       :class-names="classes"
       :data-mounted="state.mounted || undefined"
-      :vars="{ root: { '--nprogress-z-index': props.zIndex?.toString() } }"
+      :style="{ '--nprogress-z-index': props.zIndex?.toString() }"
     />
   </OptionalPortal>
 </template>

@@ -1,6 +1,7 @@
 export { Chip } from './Chip'
 export type {
   ChipCssVariables,
+  ChipFactory,
   ChipIconSlotProps,
   ChipOwnProps,
   ChipProps,

@@ -23,6 +23,7 @@ export { varsResolver, getFlatValues }
 
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref, useAttrs, useSlots, watch } from 'vue'
+import { assignRef } from '@mantine-vue/hooks'
 import { Box, useStyles } from '../../core'
 import type { TreeDragDropPayload } from './move-tree-node/move-tree-node'
 import TreeNode from './TreeNode.vue'
@@ -36,6 +37,7 @@ defineOptions({
 })
 
 const props = withDefaults(defineProps<TreeOwnProps>(), {
+  rootRef: undefined,
   component: 'ul',
   levelOffset: 'lg',
   expandOnClick: true,
@@ -119,10 +121,20 @@ const rootStyles = computed(() =>
 function onDragDrop(payload: TreeDragDropPayload) {
   emit('drag-drop', payload)
 }
+
+const rootElement = ref<Element | null>(null)
+
+const setRootRef = (node: Element | null) => {
+  rootElement.value = node
+  assignRef(props.rootRef, node)
+}
+
+defineExpose({ rootElement })
 </script>
 
 <template>
   <Box
+    :rootRef="setRootRef"
     ref="root"
     v-bind="{ ...attrs, ...rootStyles }"
     :component="props.component"

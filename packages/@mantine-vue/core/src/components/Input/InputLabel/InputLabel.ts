@@ -1,10 +1,12 @@
-import { withBoxProps } from '../../../core'
+import { factory } from '../../../core'
 import InputLabelComponent, { varsResolver } from './InputLabel.vue'
+import type { InputLabelFactory } from './InputLabel.types'
 import classes from '../Input.module.css'
 
-export const InputLabel = withBoxProps(
-  Object.assign(InputLabelComponent, { classes, varsResolver }),
-)
+export const InputLabel = factory<InputLabelFactory>(InputLabelComponent, {
+  classes,
+  varsResolver,
+})
 
 export type {
   InputLabelCssVariables,
@@ -12,4 +14,5 @@ export type {
   InputLabelProps,
   InputLabelSlots,
   InputLabelStylesNames,
+  InputLabelFactory,
 } from './InputLabel.types'

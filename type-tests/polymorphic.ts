@@ -113,6 +113,20 @@ Button.extend({
   vars: () => ({ root: { '--button-height': '40px' } }),
 })
 
+/**
+ * `classNames`/`styles` on the component's own props are keyed by `stylesNames`, because
+ * `ButtonOwnProps` extends `StylesApiProps<ButtonFactory>` rather than a props type.
+ */
+const keyedClassNames: ButtonDefaultProps = { classNames: { root: 'r', label: 'l' } }
+const keyedStyles: ButtonDefaultProps = { styles: { root: { fontWeight: 600 } } }
+const keyedClassNamesFn: ButtonDefaultProps = { classNames: () => ({ root: 'r' }) }
+
+// @ts-expect-error `notAStyleName` is not a Button style name
+const invalidClassNamesKey: ButtonDefaultProps = { classNames: { notAStyleName: 'x' } }
+
+// @ts-expect-error `notAStyleName` is not a Button style name
+const invalidStylesKey: ButtonDefaultProps = { styles: { notAStyleName: {} } }
+
 /** `withProps` keeps polymorphic behaviour and the target's props. */
 const LinkButton = Button.withProps({ component: RouterLink, variant: 'subtle', to: '/docs' })
 const AnchorButton = Button.withProps({ component: 'a', variant: 'subtle' })
@@ -136,8 +150,15 @@ const propsAreNotEmpty: keyof ButtonDefaultProps extends never ? false : true = 
 /** The payload itself must not be `any`. */
 const factoryIsNotAny: IsAny<ButtonFactory> extends false ? true : false = true
 
-// @ts-expect-error `nope` is not a Button variant
-const invalidVariant: ButtonDefaultProps = { variant: 'nope' }
+/**
+ * `variant` is `MantineVariant<ButtonVariant>` = `ButtonVariant | (string & {})`, so a custom
+ * variant is intentionally allowed -- `public-api.ts` asserts the same. Only the wrong *kind* of
+ * value is rejected.
+ */
+const customVariant: ButtonDefaultProps = { variant: 'danger' }
+
+// @ts-expect-error `variant` is a string, not a number
+const invalidVariant: ButtonDefaultProps = { variant: 123 }
 
 // @ts-expect-error `fullWidth` is a boolean
 const invalidPropType: ButtonDefaultProps = { fullWidth: 'yes' }
@@ -170,13 +191,13 @@ const invalidRefType: PolymorphicRef<'button'> = document.createElement('a')
 Button.extend({ notAThing: true })
 
 // @ts-expect-error `extend` validates defaultProps against the component's props
-Button.extend({ defaultProps: { variant: 'nope' } })
+Button.extend({ defaultProps: { fullWidth: 'yes' } })
 
 // @ts-expect-error `extend` validates classNames against the component's stylesNames
 Button.extend({ classNames: { notAStyleName: 'x' } })
 
 // @ts-expect-error `withProps` validates the fixed props it is given
-const invalidWithProps = Button.withProps({ variant: 'nope' })
+const invalidWithProps = Button.withProps({ fullWidth: 'yes' })
 
 // @ts-expect-error `classes` is keyed by stylesNames
 const invalidClassName: string = Button.classes.notAStyleName
@@ -184,6 +205,12 @@ const invalidClassName: string = Button.classes.notAStyleName
 export type { ButtonAnchorProps, ButtonDefaultProps, ButtonPublicType, ButtonRouterProps }
 
 export {
+  customVariant,
+  keyedClassNamesFn,
+  keyedStyles,
+  keyedClassNames,
+  invalidStylesKey,
+  invalidClassNamesKey,
   AnchorButton,
   LinkButton,
   anchorElement,

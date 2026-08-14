@@ -22,3 +22,8 @@ export type ModalBaseStylesNames =
   | 'content'
   | 'close'
   | 'inner'
+export type { ModalBaseBodyFactory } from './ModalBaseBody'
+export type { ModalBaseHeaderFactory } from './ModalBaseHeader'
+export type { ModalBaseTitleFactory } from './ModalBaseTitle'
+export type { ModalBaseFactory } from './ModalBase'
+export type { ModalBaseContentFactory } from './ModalBaseContent'

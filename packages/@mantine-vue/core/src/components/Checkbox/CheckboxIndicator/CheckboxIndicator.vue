@@ -26,7 +26,8 @@ export { varsResolver }
 </script>
 
 <script setup lang="ts">
-import { computed, useAttrs } from 'vue'
+import { ref, computed, useAttrs } from 'vue'
+import { assignRef } from '@mantine-vue/hooks'
 import { Box, useStyles } from '../../../core'
 import { CheckboxIcon } from '../CheckIcon'
 import { useCheckboxCardContext } from '../CheckboxCard/CheckboxCard'
@@ -35,6 +36,7 @@ import classes from './CheckboxIndicator.module.css'
 
 defineOptions({ name: 'CheckboxIndicator', inheritAttrs: false })
 const props = withDefaults(defineProps<CheckboxIndicatorOwnProps>(), {
+  rootRef: undefined,
   color: undefined,
   size: 'sm',
   radius: 'sm',
@@ -69,10 +71,20 @@ const checked = computed(() =>
     ? props.checked || props.indeterminate
     : cardContext?.checked || false,
 )
+
+const rootElement = ref<Element | null>(null)
+
+const setRootRef = (node: Element | null) => {
+  rootElement.value = node
+  assignRef(props.rootRef, node)
+}
+
+defineExpose({ rootElement })
 </script>
 
 <template>
   <Box
+    :rootRef="setRootRef"
     v-bind="{
       ...attrs,
       ...getStyles('indicator', { className: attrs.class, style: attrs.style as any }),

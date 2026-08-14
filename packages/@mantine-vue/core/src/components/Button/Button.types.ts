@@ -4,6 +4,7 @@ import type {
   BoxMod,
   BoxProps,
   MantineColor,
+  MantineElementType,
   MantineGradient,
   MantineNode,
   MantineRadius,
@@ -55,7 +56,7 @@ export interface ButtonSlots {
 }
 
 /** Props declared by `Button` itself. See `ButtonProps` for the full public type. */
-export interface ButtonOwnProps extends StylesApiProps<ButtonProps> {
+export interface ButtonOwnProps extends StylesApiProps<ButtonFactory> {
   /**
    * Controls the `height`, `font-size` and horizontal `padding` of the button.
    *
@@ -130,7 +131,7 @@ export interface ButtonOwnProps extends StylesApiProps<ButtonProps> {
    *
    * @default 'button'
    */
-  component?: any
+  component?: MantineElementType
 
   /**
    * Controls the visual representation of the button.

@@ -1,4 +1,4 @@
-import type { BoxMod, BoxProps, StylesApiProps } from '../../core'
+import type { BoxMod, BoxProps, StylesApiProps, Factory } from '../../core'
 
 export type RollingNumberStylesNames = 'root' | 'digit' | 'digitColumn' | 'char'
 
@@ -10,7 +10,10 @@ export type RollingNumberCssVariables = {
  * Props declared by `RollingNumber` itself.
  * See `RollingNumberProps` for the full public type.
  */
-export interface RollingNumberOwnProps extends StylesApiProps<RollingNumberProps> {
+export interface RollingNumberOwnProps extends StylesApiProps<RollingNumberFactory> {
+  /** Receives the root DOM node. */
+  rootRef?: VueRefTarget<Element>
+
   /** Number to display. Changing it rolls the digits to the new value. */
   value: number
 
@@ -75,3 +78,12 @@ export interface RollingNumberOwnProps extends StylesApiProps<RollingNumberProps
 
 export interface RollingNumberProps
   extends Omit<BoxProps, keyof RollingNumberOwnProps>, RollingNumberOwnProps {}
+
+export type RollingNumberFactory = Factory<{
+  props: Omit<RollingNumberProps, 'rootRef'>
+  ref: HTMLDivElement
+  element: 'div'
+  stylesNames: RollingNumberStylesNames
+  vars: RollingNumberCssVariables
+}>
+import type { VueRefTarget } from '@mantine-vue/hooks'

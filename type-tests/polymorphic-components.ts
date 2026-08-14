@@ -160,9 +160,7 @@ const navLinkEmitProps: ComponentProps<typeof NavLink> = {
 const imageEmitProps: ComponentProps<typeof Image> = { src: '/i.png', onError: () => {} }
 
 // @ts-expect-error the emit payload is a boolean, not a string
-const badNavLinkEmit: ComponentProps<typeof NavLink> = {
-  'onUpdate:opened': (opened: string) => void opened,
-}
+const badNavLinkEmit: ComponentProps<typeof NavLink> = { 'onUpdate:opened': (o: string) => void o }
 
 const actionIconGroup = ActionIcon.Group
 const actionIconGroupSection = ActionIcon.GroupSection
@@ -190,14 +188,14 @@ Card.extend({ styles: { root: { padding: 8 } } })
 const LinkAnchor = Anchor.withProps({ component: RouterLink, to: '/docs' })
 const IconLink = ActionIcon.withProps({ component: 'a', variant: 'subtle' })
 
-// @ts-expect-error `nope` is not a Badge variant
-const badVariant: ComponentProps<typeof Badge> = { variant: 'nope' }
+// @ts-expect-error `variant` is a string, not a number (custom variant strings are allowed)
+const badVariant: ComponentProps<typeof Badge> = { variant: 123 }
 
 // @ts-expect-error `href` is not a div attribute, and Overlay defaults to a div root
 const badOverlayProp: ComponentProps<typeof Overlay> = { href: '/nope' }
 
-// @ts-expect-error `type` is not an anchor attribute
-const badAnchorProp: ComponentProps<typeof Anchor> = { type: 'submit' }
+// @ts-expect-error `underline` only accepts the documented modes
+const badAnchorProp: ComponentProps<typeof Anchor> = { underline: 'sometimes' }
 
 // @ts-expect-error `wrap` only accepts flex-wrap values
 const badFlexWrap: ComponentProps<typeof Flex> = { wrap: 'sideways' }

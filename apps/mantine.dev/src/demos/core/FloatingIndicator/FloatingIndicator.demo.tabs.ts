@@ -1,4 +1,4 @@
-import { defineComponent, h, ref } from 'vue'
+import { defineComponent, h, ref, type CSSProperties } from 'vue'
 import { FloatingIndicator, Tabs } from '@mantine-vue/core'
 import type { MantineDemo } from '@/demo'
 
@@ -87,7 +87,10 @@ const Demo = defineComponent({
       }
     }
 
-    const listStyle = { position: 'relative', marginBottom: 'var(--mantine-spacing-md)' }
+    const listStyle = {
+      position: 'relative',
+      marginBottom: 'var(--mantine-spacing-md)',
+    } satisfies CSSProperties
     const indicatorStyle = {
       backgroundColor: 'var(--mantine-color-body)',
       borderRadius: 'var(--mantine-radius-md)',

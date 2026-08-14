@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { computed, useAttrs } from 'vue'
-import { useId } from '@mantine-vue/hooks'
+import { ref, computed, useAttrs } from 'vue'
+import { assignRef, useId } from '@mantine-vue/hooks'
 import { Box, getDefaultZIndex, getShadow, getSpacing } from '../../core'
 import { OptionalPortal } from '../Portal'
 import { provideModalBaseContext } from './ModalBase.context'
@@ -112,11 +112,20 @@ const rootStyle = computed(() => [
   },
   attrs.style,
 ])
+
+const rootElement = ref<Element | null>(null)
+
+const setRootRef = (node: Element | null) => {
+  rootElement.value = node
+  assignRef(props.rootRef, node)
+}
+
+defineExpose({ rootElement })
 </script>
 
 <template>
   <OptionalPortal v-bind="props.portalProps" :within-portal="props.withinPortal">
-    <Box v-bind="attrs" :id="rootId" :style="rootStyle">
+    <Box :rootRef="setRootRef" v-bind="attrs" :id="rootId" :style="rootStyle">
       <slot />
     </Box>
   </OptionalPortal>

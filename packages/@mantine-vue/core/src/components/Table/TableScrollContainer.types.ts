@@ -1,5 +1,6 @@
 import type { VNodeChild } from 'vue'
-import type { BoxProps, StylesApiProps } from '../../core'
+import type { VueRefTarget } from '@mantine-vue/hooks'
+import type { BoxProps, Factory, StylesApiProps } from '../../core'
 import type { ScrollAreaProps } from '../ScrollArea'
 
 export type TableScrollContainerStylesNames = 'scrollContainer' | 'scrollContainerInner'
@@ -8,7 +9,10 @@ export type TableScrollContainerCssVariables = {
 }
 
 /** Props declared by `TableScrollContainer` itself. See `TableScrollContainerProps` for the full public type. */
-export interface TableScrollContainerOwnProps extends StylesApiProps<TableScrollContainerProps> {
+export interface TableScrollContainerOwnProps extends StylesApiProps<TableScrollContainerFactory> {
+  /** Receives the root DOM node -- the `ScrollArea` root, or the `div` for `type="native"`. */
+  rootRef?: VueRefTarget<Element>
+
   /** `min-width` at which the table becomes scrollable. */
   minWidth: string | number
 
@@ -29,3 +33,13 @@ export interface TableScrollContainerSlots {
   /** Table content. */
   default?: () => VNodeChild
 }
+
+export type TableScrollContainerFactory = Factory<{
+  props: Omit<TableScrollContainerProps, 'rootRef'>
+  slots: TableScrollContainerSlots
+  ref: HTMLDivElement
+  exposed: { rootElement: Element | null }
+  element: 'div'
+  stylesNames: TableScrollContainerStylesNames
+  vars: TableScrollContainerCssVariables
+}>

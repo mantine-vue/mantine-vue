@@ -19,7 +19,13 @@ const attrs = useAttrs()
 </script>
 
 <template>
-  <PaginationEdge v-bind="attrs" __edge="previous" :icon="props.icon" :disabled="props.disabled">
+  <PaginationEdge
+    v-bind="attrs"
+    :root-ref="props.rootRef"
+    __edge="previous"
+    :icon="props.icon"
+    :disabled="props.disabled"
+  >
     <template v-if="$slots.icon" #icon><slot name="icon" /></template>
   </PaginationEdge>
 </template>

@@ -13,7 +13,8 @@ export { varsResolver }
 </script>
 
 <script setup lang="ts">
-import { computed, useAttrs, useSlots } from 'vue'
+import { ref, computed, useAttrs, useSlots } from 'vue'
+import { assignRef } from '@mantine-vue/hooks'
 import { Box, hasNode, resolveNode, useProps, useStyles } from '../../core'
 import { CloseButton } from '../CloseButton'
 import { Loader } from '../Loader'
@@ -23,6 +24,7 @@ import classes from './Notification.module.css'
 defineOptions({ name: 'Notification', inheritAttrs: false })
 
 const rawProps = withDefaults(defineProps<NotificationOwnProps>(), {
+  rootRef: undefined,
   color: undefined,
   radius: undefined,
   icon: undefined,
@@ -70,10 +72,20 @@ function handleClose(event: MouseEvent) {
   props.closeButtonProps?.onClick?.(event)
   emit('close')
 }
+
+const rootElement = ref<Element | null>(null)
+
+const setRootRef = (node: Element | null) => {
+  rootElement.value = node
+  assignRef(props.rootRef, node)
+}
+
+defineExpose({ rootElement })
 </script>
 
 <template>
   <Box
+    :rootRef="setRootRef"
     v-bind="{
       ...attrs,
       ...getStyles('root', { className: attrs.class, style: attrs.style as any }),

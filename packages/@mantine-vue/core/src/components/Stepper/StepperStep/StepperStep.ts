@@ -1,9 +1,9 @@
-import { withBoxProps } from '../../../core'
+import { factory } from '../../../core'
 import StepperStepComponent from './StepperStep.vue'
+import type { StepperStepFactory } from './StepperStep.types'
 import classes from '../Stepper.module.css'
 
-export const StepperStep = withBoxProps(StepperStepComponent)
-Object.assign(StepperStep, { classes })
+export const StepperStep = factory<StepperStepFactory>(StepperStepComponent, { classes })
 
 export type {
   StepperStepFragment,
@@ -13,4 +13,5 @@ export type {
   StepperStepSlots,
   StepperStepState,
   StepperStepStylesNames,
+  StepperStepFactory,
 } from './StepperStep.types'

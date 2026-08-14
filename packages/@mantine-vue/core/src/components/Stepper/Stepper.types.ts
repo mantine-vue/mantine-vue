@@ -1,3 +1,5 @@
+import type { StepperCompleted } from './StepperCompleted/StepperCompleted'
+import type { StepperStep } from './StepperStep/StepperStep'
 import type { VNodeChild } from 'vue'
 import type {
   BoxMod,
@@ -7,6 +9,7 @@ import type {
   MantineRadius,
   MantineSize,
   StylesApiProps,
+  Factory,
 } from '../../core'
 
 export type StepperStylesNames =
@@ -57,7 +60,10 @@ export interface StepperSlots {
 }
 
 /** Props declared by `Stepper` itself. See `StepperProps` for the full public type. */
-export interface StepperOwnProps extends StylesApiProps<StepperProps> {
+export interface StepperOwnProps extends StylesApiProps<StepperFactory> {
+  /** Receives the root DOM node. */
+  rootRef?: VueRefTarget<Element>
+
   /** Zero based index of the active step, bound with `v-model:active`. */
   active: number
 
@@ -153,3 +159,18 @@ export interface StepperEmits {
   /** Emitted with the step index when a step is clicked. */
   'step-click': [index: number]
 }
+
+export type StepperFactory = Factory<{
+  props: Omit<StepperProps, 'rootRef'>
+  ref: HTMLDivElement
+  slots: StepperSlots
+  emits: StepperEmits
+  element: 'div'
+  stylesNames: StepperStylesNames
+  vars: StepperCssVariables
+  staticComponents: {
+    Step: typeof StepperStep
+    Completed: typeof StepperCompleted
+  }
+}>
+import type { VueRefTarget } from '@mantine-vue/hooks'

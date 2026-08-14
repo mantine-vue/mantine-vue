@@ -2,6 +2,7 @@ export { Stepper } from './Stepper'
 export type {
   StepperCssVariables,
   StepperEmits,
+  StepperFactory,
   StepperIconSlotProps,
   StepperOwnProps,
   StepperProps,

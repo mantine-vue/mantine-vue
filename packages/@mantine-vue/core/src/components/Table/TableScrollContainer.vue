@@ -17,7 +17,8 @@ export { varsResolver }
 </script>
 
 <script setup lang="ts">
-import { computed, useAttrs } from 'vue'
+import { ref, computed, useAttrs } from 'vue'
+import { assignRef } from '@mantine-vue/hooks'
 import { Box, useProps, useStyles } from '../../core'
 import { ScrollArea } from '../ScrollArea'
 import type {
@@ -59,16 +60,27 @@ const rootProps = computed(() =>
   props.type === 'scrollarea'
     ? {
         ...attrs,
+        rootRef: setRootRef,
         offsetScrollbars: props.maxHeight ? 'xy' : 'x',
         ...props.scrollAreaProps,
         ...getStyles('scrollContainer'),
       }
     : {
         ...attrs,
+        rootRef: setRootRef,
         component: 'div',
         ...getStyles('scrollContainer'),
       },
 )
+
+const rootElement = ref<Element | null>(null)
+
+const setRootRef = (node: Element | null) => {
+  rootElement.value = node
+  assignRef(props.rootRef, node)
+}
+
+defineExpose({ rootElement })
 </script>
 
 <template>

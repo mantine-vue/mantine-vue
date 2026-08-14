@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { computed, useAttrs } from 'vue'
+import { ref, computed, useAttrs } from 'vue'
+import { assignRef } from '@mantine-vue/hooks'
 import { CloseButton } from '../../CloseButton'
 import { useInputContext } from '../Input.context'
 import type { InputClearButtonOwnProps, InputClearButtonSlots } from './InputClearButton.types'
@@ -18,6 +19,7 @@ const closeButtonProps = computed(
   () =>
     ({
       ...attrs,
+      rootRef: setRootRef,
       variant: props.variant || 'transparent',
       size: props.size || ctx.size || 'sm',
       classNames: props.classNames,
@@ -26,6 +28,15 @@ const closeButtonProps = computed(
       style: [{ pointerEvents: 'all', background: 'var(--input-bg)' }, attrs.style as any],
     }) as any,
 )
+
+const rootElement = ref<Element | null>(null)
+
+const setRootRef = (node: Element | null) => {
+  rootElement.value = node
+  assignRef(props.rootRef, node)
+}
+
+defineExpose({ rootElement })
 </script>
 
 <template>

@@ -1,4 +1,4 @@
-import type { BoxProps } from '../../../core'
+import type { BoxProps, Factory } from '../../../core'
 
 /** Props declared by `RatingItem` itself. See `RatingItemProps` for the full public type. */
 export interface RatingItemOwnProps {
@@ -51,3 +51,11 @@ export interface RatingItemOwnProps {
 
 export interface RatingItemProps
   extends Omit<BoxProps, keyof RatingItemOwnProps>, RatingItemOwnProps {}
+
+export type RatingItemStylesNames = 'label' | 'symbolBody' | 'input'
+
+export type RatingItemFactory = Factory<{
+  props: RatingItemProps
+  element: 'label'
+  stylesNames: RatingItemStylesNames
+}>

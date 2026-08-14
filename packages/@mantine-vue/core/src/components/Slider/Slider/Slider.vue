@@ -35,7 +35,7 @@ export { defaultProps, varsResolver }
 
 <script setup lang="ts">
 import { computed, ref, useAttrs, useSlots, watch } from 'vue'
-import { useMove, useUncontrolled } from '@mantine-vue/hooks'
+import { assignRef, useMove, useUncontrolled } from '@mantine-vue/hooks'
 import { resolveNode, useDirection, useProps, useStyles } from '../../../core'
 import { provideSliderContext } from '../Slider.context'
 import type { SliderMark } from '../SliderMark'
@@ -237,10 +237,20 @@ function setThumbRef(node: any) {
 
 const thumbChildren = computed(() => resolveNode(props.thumbChildren, slots.thumbChildren))
 const renderThumbChildren = () => thumbChildren.value
+
+const rootElement = ref<Element | null>(null)
+
+const setRootRef = (node: Element | null) => {
+  rootElement.value = node
+  assignRef(props.rootRef, node)
+}
+
+defineExpose({ rootElement })
 </script>
 
 <template>
   <SliderRoot
+    :root-ref="setRootRef"
     v-bind="attrs"
     :size="props.size"
     :disabled="props.disabled"

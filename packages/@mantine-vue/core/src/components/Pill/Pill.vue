@@ -18,7 +18,8 @@ export { varsResolver }
 </script>
 
 <script setup lang="ts">
-import { computed, useAttrs } from 'vue'
+import { ref, computed, useAttrs } from 'vue'
+import { assignRef } from '@mantine-vue/hooks'
 import { Box, useProps, useStyles } from '../../core'
 import { CloseButton } from '../CloseButton'
 import { usePillsInputContext } from '../PillsInput/PillsInput.context'
@@ -29,6 +30,7 @@ import classes from './Pill.module.css'
 defineOptions({ name: 'Pill', inheritAttrs: false })
 
 const rawProps = withDefaults(defineProps<PillOwnProps>(), {
+  rootRef: undefined,
   size: undefined,
   withRemoveButton: false,
   removeButtonProps: undefined,
@@ -93,10 +95,20 @@ function handleRemoveClick(event: MouseEvent) {
   emit('remove')
   callHandler(props.removeButtonProps?.onClick, event)
 }
+
+const rootElement = ref<Element | null>(null)
+
+const setRootRef = (node: Element | null) => {
+  rootElement.value = node
+  assignRef(props.rootRef, node)
+}
+
+defineExpose({ rootElement })
 </script>
 
 <template>
   <Box
+    :rootRef="setRootRef"
     v-bind="{
       ...attrs,
       ...getStyles('root', { className: attrs.class, style: attrs.style as any }),

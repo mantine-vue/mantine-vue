@@ -49,6 +49,7 @@ import {
   type VNode,
   type VNodeChild,
 } from 'vue'
+import { assignRef } from '@mantine-vue/hooks'
 import { Box, useProps, useStyles } from '../../core'
 import { getRowPositionsData } from './get-row-position-data'
 import { useDimensions } from './use-dimensions'
@@ -61,6 +62,7 @@ defineOptions({
 })
 
 const rawProps = withDefaults(defineProps<OverflowListOwnProps>(), {
+  rootRef: undefined,
   collapseFrom: 'end',
   unstyled: false,
 })
@@ -102,8 +104,6 @@ const getStyles = useStyles({
   vars: props.vars as any,
   varsResolver,
 })
-
-defineExpose({ root: rootRef })
 
 /** Lays the widths out row by row and reports whether they stay within `maxRows`. */
 function fitsInRows(widths: number[], containerWidth: number, columnGap: number, startIndex = 0) {
@@ -314,10 +314,19 @@ const renderChildren = (): VNodeChild => {
 
   return isCollapseStart.value ? [renderedOverflow, ...items] : [...items, renderedOverflow]
 }
+
+const rootElement = ref<Element | null>(null)
+
+const setRootRef = (node: Element | null) => {
+  rootElement.value = node
+  assignRef(props.rootRef, node)
+}
+
+defineExpose({ root: rootRef, rootElement })
 </script>
 
 <template>
-  <Box ref="rootRef" v-bind="{ ...attrs, ...rootStyles }">
+  <Box :rootRef="setRootRef" ref="rootRef" v-bind="{ ...attrs, ...rootStyles }">
     <component :is="renderChildren" />
   </Box>
 </template>

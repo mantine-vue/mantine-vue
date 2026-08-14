@@ -1,7 +1,6 @@
 <script lang="ts">
 import { createVarsResolver, getSize } from '../../core'
 
-/** Module scope: created once, not per component instance. */
 const varsResolver = createVarsResolver<any>((_, { size }) => ({
   controls: {
     '--ni-chevron-size': getSize(size, 'ni-chevron-size'),
@@ -376,10 +375,19 @@ const rightSectionWidth = computed(
 /** `bigint` values are integers only, so the numeric keypad is the right hint. */
 const inputMode = computed(() => (isBigIntMode.value ? 'numeric' : 'decimal'))
 
-/** `InputBase` renders a wrapper, so the element to drive is the inner input. */
-function setRootRef(node: any) {
-  inputRef.value = node?.querySelector?.('input') ?? node
+/**
+ * `Input` hands back the field itself, so no wrapper lookup is needed. The same node drives the
+ * internal `inputRef`, the caller's `rootRef` and the exposed `rootElement`.
+ */
+const rootElement = ref<Element | null>(null)
+
+const setRootRef = (node: Element | null) => {
+  inputRef.value = node as HTMLInputElement | null
+  rootElement.value = node
+  assignRef(props.rootRef, node)
 }
+
+defineExpose({ rootElement })
 
 function onInput(event: Event) {
   isEditing.value = true
@@ -503,6 +511,7 @@ function onBlur() {
 </script>
 
 <template>
+  <!-- NumberInput adds style names that InputBase does not expose, so forwarded styles are cast. -->
   <InputBase
     v-bind="attrs"
     component="input"
@@ -520,9 +529,9 @@ function onBlur() {
     :required="props.required"
     :with-asterisk="props.withAsterisk"
     :wrapper-props="props.wrapperProps"
-    :class-names="props.classNames"
-    :styles="props.styles"
-    :vars="props.vars"
+    :class-names="props.classNames as any"
+    :styles="props.styles as any"
+    :vars="props.vars as any"
     :unstyled="props.unstyled"
     :right-section="rightSection"
     :right-section-pointer-events="rightSectionPointerEvents"

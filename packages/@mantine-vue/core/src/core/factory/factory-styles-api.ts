@@ -58,3 +58,16 @@ export type FactoryPartialVarsResolver<Payload extends FactoryPayload> = (
   props: Payload['props'],
   ctx: Record<string, any>,
 ) => PartialTransformVars<Payload['vars']>
+
+/**
+ * The `vars` prop stays resolver-only, matching upstream.
+ *
+ * `useStyles` would also accept a plain record, and `classNames`/`styles` do -- but adding the
+ * record form here means mapping `Payload['vars']` in a *union* member rather than in a function's
+ * return position. Return positions are evaluated lazily; a union member is not, so the components
+ * still on the legacy props-keyed form (`vars?: Vars<XProps>` declared inside `XProps`) become
+ * circular, and several others blow the instantiation depth limit.
+ *
+ * Callers needing an arbitrary custom property should bind it through `style`, which is where
+ * upstream's `__vars` escape hatch ends up anyway.
+ */

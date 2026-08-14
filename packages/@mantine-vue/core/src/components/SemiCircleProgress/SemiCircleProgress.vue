@@ -53,7 +53,8 @@ export { varsResolver }
 </script>
 
 <script setup lang="ts">
-import { computed, useAttrs, useSlots } from 'vue'
+import { ref, computed, useAttrs, useSlots } from 'vue'
+import { assignRef } from '@mantine-vue/hooks'
 import { Box, hasNode, resolveNode, useProps, useStyles } from '../../core'
 import type {
   SemiCircleProgressOwnProps,
@@ -64,6 +65,7 @@ import classes from './SemiCircleProgress.module.css'
 defineOptions({ name: 'SemiCircleProgress', inheritAttrs: false })
 
 const rawProps = withDefaults(defineProps<SemiCircleProgressOwnProps>(), {
+  rootRef: undefined,
   size: undefined,
   thickness: undefined,
   orientation: undefined,
@@ -105,10 +107,20 @@ const semiCirclePercentage = computed(
 )
 const label = computed(() => resolveNode(props.label, slots.label))
 const renderLabel = () => label.value
+
+const rootElement = ref<Element | null>(null)
+
+const setRootRef = (node: Element | null) => {
+  rootElement.value = node
+  assignRef(props.rootRef, node)
+}
+
+defineExpose({ rootElement })
 </script>
 
 <template>
   <Box
+    :rootRef="setRootRef"
     v-bind="{
       ...attrs,
       ...getStyles('root', { className: attrs.class, style: attrs.style as any }),

@@ -6,12 +6,13 @@ import type {
   MantineSize,
   StylesApiProps,
   MantineElementType,
+  PolymorphicFactory,
 } from '../../core'
 
 export type CloseButtonVariant = 'subtle' | 'transparent'
 
 /** Props declared by `CloseButton` itself. See `CloseButtonProps` for the full public type. */
-export interface CloseButtonOwnProps extends StylesApiProps<CloseButtonProps> {
+export interface CloseButtonOwnProps extends StylesApiProps<CloseButtonFactory> {
   /**
    * Root element or component rendered by `CloseButton`.
    *
@@ -74,3 +75,21 @@ export interface CloseButtonSlots {
 
 export interface CloseButtonProps
   extends Omit<BoxProps, keyof CloseButtonOwnProps>, CloseButtonOwnProps {}
+
+export type CloseButtonStylesNames = 'root'
+
+export type CloseButtonCssVariables = {
+  root: '--cb-icon-size' | '--cb-size' | '--cb-radius'
+}
+
+export type CloseButtonFactory = PolymorphicFactory<{
+  props: Omit<CloseButtonProps, 'component' | 'rootRef'>
+  slots: CloseButtonSlots
+  ref: HTMLButtonElement
+  exposed: { rootElement: Element | null }
+  defaultComponent: 'button'
+  defaultRef: HTMLButtonElement
+  stylesNames: CloseButtonStylesNames
+  vars: CloseButtonCssVariables
+  variant: CloseButtonVariant
+}>

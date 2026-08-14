@@ -5,7 +5,8 @@ export { defaultProps }
 </script>
 
 <script setup lang="ts">
-import { computed, h, useAttrs, useSlots } from 'vue'
+import { ref, computed, h, useAttrs, useSlots } from 'vue'
+import { assignRef } from '@mantine-vue/hooks'
 import { useProps } from '../../core'
 import { InputBase } from '../InputBase'
 import { getParsedNativeSelectData } from './get-parsed-data/get-parsed-data'
@@ -63,10 +64,20 @@ const rightSection = computed(() =>
     ? props.rightSection
     : h(NativeSelectChevron),
 )
+
+const rootElement = ref<Element | null>(null)
+
+const setRootRef = (node: Element | null) => {
+  rootElement.value = node
+  assignRef(props.rootRef, node)
+}
+
+defineExpose({ rootElement })
 </script>
 
 <template>
   <InputBase
+    :root-ref="setRootRef"
     v-bind="attrs"
     component="select"
     __static-selector="NativeSelect"

@@ -5,6 +5,7 @@ import type {
   MantineShadow,
   StylesApiProps,
   MantineElementType,
+  PolymorphicFactory,
 } from '../../core'
 
 export type PaperStylesNames = 'root'
@@ -19,7 +20,7 @@ export interface PaperSlots {
 }
 
 /** Props declared by `Paper` itself. See `PaperProps` for the full public type. */
-export interface PaperOwnProps extends StylesApiProps<PaperProps> {
+export interface PaperOwnProps extends StylesApiProps<PaperFactory> {
   /** Receives the root DOM node. See the polymorphic components guide. */
   rootRef?: VueRefTarget<Element>
 
@@ -48,3 +49,14 @@ export interface PaperOwnProps extends StylesApiProps<PaperProps> {
 import type { VueRefTarget } from '@mantine-vue/hooks'
 
 export interface PaperProps extends Omit<BoxProps, keyof PaperOwnProps>, PaperOwnProps {}
+
+export type PaperFactory = PolymorphicFactory<{
+  props: Omit<PaperProps, 'component' | 'rootRef'>
+  slots: PaperSlots
+  ref: HTMLDivElement
+  exposed: { rootElement: Element | null }
+  defaultComponent: 'div'
+  defaultRef: HTMLDivElement
+  stylesNames: PaperStylesNames
+  vars: PaperCssVariables
+}>

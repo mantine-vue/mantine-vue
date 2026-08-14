@@ -36,7 +36,8 @@ const varsResolver = createVarsResolver<any>((theme, { color, iconSize, radius, 
 </script>
 
 <script setup lang="ts">
-import { computed, useAttrs, useSlots } from 'vue'
+import { ref, computed, useAttrs, useSlots } from 'vue'
+import { assignRef } from '@mantine-vue/hooks'
 import { Box, hasNode, resolveNode, useProps, useStyles } from '../../core'
 import type { BlockquoteOwnProps, BlockquoteSlots } from './Blockquote.types'
 import classes from './Blockquote.module.css'
@@ -44,6 +45,7 @@ import classes from './Blockquote.module.css'
 defineOptions({ name: 'Blockquote', inheritAttrs: false })
 
 const rawProps = withDefaults(defineProps<BlockquoteOwnProps>(), {
+  rootRef: undefined,
   icon: undefined,
   color: undefined,
   cite: undefined,
@@ -74,10 +76,19 @@ const icon = computed(() => resolveNode(props.icon, slots.icon))
 const cite = computed(() => resolveNode(props.cite, slots.cite))
 const renderIcon = () => icon.value
 const renderCite = () => cite.value
+
+const rootElement = ref<Element | null>(null)
+
+const setRootRef = (node: Element | null) => {
+  rootElement.value = node
+  assignRef(props.rootRef, node)
+}
+
+defineExpose({ rootElement })
 </script>
 
 <template>
-  <Box v-bind="{ ...attrs, ...getStyles('root') }" component="blockquote">
+  <Box :rootRef="setRootRef" v-bind="{ ...attrs, ...getStyles('root') }" component="blockquote">
     <span v-if="hasNode(icon)" v-bind="getStyles('icon')"><component :is="renderIcon" /></span>
     <slot />
     <cite v-if="hasNode(cite)" v-bind="getStyles('cite')"><component :is="renderCite" /></cite>

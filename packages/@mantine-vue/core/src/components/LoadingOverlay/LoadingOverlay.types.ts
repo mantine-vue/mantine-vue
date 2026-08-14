@@ -1,9 +1,17 @@
-import type { BoxProps, StylesApiProps } from '../../core'
+import type { VueRefTarget } from '@mantine-vue/hooks'
+import type { BoxProps, StylesApiProps, Factory } from '../../core'
 
 export type LoadingOverlayStylesNames = 'root' | 'loader' | 'overlay'
 
+export type LoadingOverlayCssVariables = {
+  root: '--lo-z-index'
+}
+
 /** Props declared by `LoadingOverlay` itself. See `LoadingOverlayProps` for the full public type. */
-export interface LoadingOverlayOwnProps extends StylesApiProps<LoadingOverlayProps> {
+export interface LoadingOverlayOwnProps extends StylesApiProps<LoadingOverlayFactory> {
+  /** Receives the root DOM node. */
+  rootRef?: VueRefTarget<Element>
+
   /**
    * Props passed down to `Transition` component. Set `duration` to create custom transition or override default transition.
    *
@@ -38,3 +46,12 @@ export interface LoadingOverlayOwnProps extends StylesApiProps<LoadingOverlayPro
 
 export interface LoadingOverlayProps
   extends Omit<BoxProps, keyof LoadingOverlayOwnProps>, LoadingOverlayOwnProps {}
+
+export type LoadingOverlayFactory = Factory<{
+  props: Omit<LoadingOverlayProps, 'rootRef'>
+  ref: HTMLDivElement
+  exposed: { rootElement: Element | null }
+  element: 'div'
+  stylesNames: LoadingOverlayStylesNames
+  vars: LoadingOverlayCssVariables
+}>

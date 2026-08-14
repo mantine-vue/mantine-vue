@@ -1,5 +1,11 @@
+import type { AppShellSection } from './AppShellSection/AppShellSection'
+import type { AppShellFooter } from './AppShellFooter/AppShellFooter'
+import type { AppShellAside } from './AppShellAside/AppShellAside'
+import type { AppShellMain } from './AppShellMain/AppShellMain'
+import type { AppShellHeader } from './AppShellHeader/AppShellHeader'
+import type { AppShellNavbar } from './AppShellNavbar/AppShellNavbar'
 import type { VNodeChild } from 'vue'
-import type { BoxMod, BoxProps, StylesApiProps } from '../../core'
+import type { BoxMod, BoxProps, StylesApiProps, Factory } from '../../core'
 
 export type AppShellSize = number | string
 export interface AppShellResponsiveSize {
@@ -44,7 +50,10 @@ export interface AppShellSlots {
 }
 
 /** Props declared by `AppShell` itself. See `AppShellProps` for the full public type. */
-export interface AppShellOwnProps extends StylesApiProps<AppShellProps> {
+export interface AppShellOwnProps extends StylesApiProps<AppShellFactory> {
+  /** Receives the root DOM node. */
+  rootRef?: VueRefTarget<Element>
+
   /**
    * If set, associated components have a border.
    *
@@ -127,3 +136,27 @@ export interface AppShellOwnProps extends StylesApiProps<AppShellProps> {
 }
 
 export interface AppShellProps extends Omit<BoxProps, keyof AppShellOwnProps>, AppShellOwnProps {}
+
+export type AppShellStylesNames = 'root'
+
+export type AppShellCssVariables = {
+  root: '--app-shell-transition-duration'
+}
+
+export type AppShellFactory = Factory<{
+  props: Omit<AppShellProps, 'rootRef'>
+  ref: HTMLDivElement
+  slots: AppShellSlots
+  element: 'div'
+  stylesNames: AppShellStylesNames
+  vars: AppShellCssVariables
+  staticComponents: {
+    Navbar: typeof AppShellNavbar
+    Header: typeof AppShellHeader
+    Main: typeof AppShellMain
+    Aside: typeof AppShellAside
+    Footer: typeof AppShellFooter
+    Section: typeof AppShellSection
+  }
+}>
+import type { VueRefTarget } from '@mantine-vue/hooks'

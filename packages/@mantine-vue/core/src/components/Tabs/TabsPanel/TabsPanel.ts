@@ -1,11 +1,14 @@
-import { withBoxProps } from '../../../core'
+import { factory } from '../../../core'
 import TabsPanelComponent from './TabsPanel.vue'
+import type { TabsPanelFactory } from './TabsPanel.types'
 import classes from '../Tabs.module.css'
 
-export const TabsPanel = withBoxProps(TabsPanelComponent)
-Object.assign(TabsPanel, { classes })
+export const TabsPanel = factory<TabsPanelFactory>(TabsPanelComponent, {
+  classes,
+})
 
 export type {
+  TabsPanelFactory,
   TabsPanelOwnProps,
   TabsPanelProps,
   TabsPanelSlots,

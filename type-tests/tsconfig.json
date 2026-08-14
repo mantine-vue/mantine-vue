@@ -19,6 +19,7 @@
     "./Polymorphic.vue",
     "./polymorphic.ts",
     "./polymorphic-components.ts",
-    "./PolymorphicComponents.vue"
+    "./PolymorphicComponents.vue",
+    "./factory-components.ts"
   ]
 }

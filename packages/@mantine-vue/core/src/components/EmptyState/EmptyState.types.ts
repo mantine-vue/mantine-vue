@@ -1,3 +1,7 @@
+import type { EmptyStateActions } from './EmptyStateActions/EmptyStateActions'
+import type { EmptyStateDescription } from './EmptyStateDescription/EmptyStateDescription'
+import type { EmptyStateTitle } from './EmptyStateTitle/EmptyStateTitle'
+import type { EmptyStateIndicator } from './EmptyStateIndicator/EmptyStateIndicator'
 import type { VNodeChild } from 'vue'
 import type {
   BoxMod,
@@ -6,6 +10,7 @@ import type {
   MantineNode,
   MantineSize,
   StylesApiProps,
+  Factory,
 } from '../../core'
 
 export type EmptyStateStylesNames =
@@ -43,7 +48,10 @@ export interface EmptyStateSlots {
 }
 
 /** Props declared by `EmptyState` itself. See `EmptyStateProps` for the full public type. */
-export interface EmptyStateOwnProps extends StylesApiProps<EmptyStateProps> {
+export interface EmptyStateOwnProps extends StylesApiProps<EmptyStateFactory> {
+  /** Receives the root DOM node. */
+  rootRef?: VueRefTarget<Element>
+
   /**
    * Controls the indicator size, the gap between elements and the font sizes of the
    * title and the description.
@@ -106,3 +114,20 @@ export interface EmptyStateOwnProps extends StylesApiProps<EmptyStateProps> {
 
 export interface EmptyStateProps
   extends Omit<BoxProps, keyof EmptyStateOwnProps>, EmptyStateOwnProps {}
+
+export type EmptyStateFactory = Factory<{
+  props: Omit<EmptyStateProps, 'rootRef'>
+  ref: HTMLDivElement
+  slots: EmptyStateSlots
+  element: 'div'
+  stylesNames: EmptyStateStylesNames
+  vars: EmptyStateCssVariables
+  variant: EmptyStateVariant
+  staticComponents: {
+    Indicator: typeof EmptyStateIndicator
+    Title: typeof EmptyStateTitle
+    Description: typeof EmptyStateDescription
+    Actions: typeof EmptyStateActions
+  }
+}>
+import type { VueRefTarget } from '@mantine-vue/hooks'

@@ -28,7 +28,8 @@ export { varsResolver }
 </script>
 
 <script setup lang="ts">
-import { useAttrs } from 'vue'
+import { ref, useAttrs } from 'vue'
+import { assignRef } from '@mantine-vue/hooks'
 import { Box, useProps, useStyles } from '../../core'
 import type { ThemeIconOwnProps, ThemeIconSlots } from './ThemeIcon.types'
 import classes from './ThemeIcon.module.css'
@@ -39,6 +40,7 @@ defineOptions({
 })
 
 const rawProps = withDefaults(defineProps<ThemeIconOwnProps>(), {
+  rootRef: undefined,
   // Intentionally undefined to preserve downstream defaults.
   autoContrast: undefined,
   size: undefined,
@@ -69,10 +71,19 @@ const getStyles = useStyles({
   varsResolver,
   unstyled: props.unstyled,
 })
+
+const rootElement = ref<Element | null>(null)
+
+const setRootRef = (node: Element | null) => {
+  rootElement.value = node
+  assignRef(props.rootRef, node)
+}
+
+defineExpose({ rootElement })
 </script>
 
 <template>
-  <Box v-bind="{ ...attrs, ...getStyles('root') }" :variant="props.variant">
+  <Box :rootRef="setRootRef" v-bind="{ ...attrs, ...getStyles('root') }" :variant="props.variant">
     <slot />
   </Box>
 </template>

@@ -17,8 +17,9 @@ function normalizeKey(value: string, caseInsensitive?: boolean, accentInsensitiv
 </script>
 
 <script setup lang="ts">
-import { useAttrs, useSlots } from 'vue'
-import { useProps } from '../../core'
+import { computed, ref, useAttrs, useSlots } from 'vue'
+import { assignRef } from '@mantine-vue/hooks'
+import { useMantineTheme, useProps } from '../../core'
 import { Mark } from '../Mark'
 import { Text } from '../Text'
 import { highlighter } from './highlighter/highlighter'
@@ -27,6 +28,7 @@ import type { HighlightOwnProps, HighlightSlots, HighlightTerm } from './Highlig
 defineOptions({ name: 'Highlight', inheritAttrs: false })
 
 const rawProps = withDefaults(defineProps<HighlightOwnProps>(), {
+  rootRef: undefined,
   color: undefined,
   highlightStyles: undefined,
   wholeWord: undefined,
@@ -83,11 +85,33 @@ function getChunks() {
       props.color,
   }))
 }
+
+const rootElement = ref<Element | null>(null)
+
+const setRootRef = (node: Element | null) => {
+  rootElement.value = node
+  assignRef(props.rootRef, node)
+}
+
+defineExpose({ rootElement })
+
+const theme = useMantineTheme()
+
+/**
+ * `highlightStyles` accepts a theme callback, which cannot be bound to `:style` directly -- Vue
+ * would receive the function itself. Resolve it against the theme first.
+ */
+const highlightStyle = computed(() =>
+  typeof props.highlightStyles === 'function'
+    ? props.highlightStyles(theme.value)
+    : props.highlightStyles,
+)
 </script>
 
 <template>
   <Text
     v-bind="attrs"
+    :rootRef="setRootRef"
     :component="props.component"
     :span="props.span"
     :unstyled="props.unstyled"
@@ -101,7 +125,7 @@ function getChunks() {
         v-if="item.highlighted"
         :unstyled="props.unstyled"
         :color="item.color"
-        :style="props.highlightStyles"
+        :style="highlightStyle"
         :data-highlight="item.chunk"
       >
         {{ item.chunk }}

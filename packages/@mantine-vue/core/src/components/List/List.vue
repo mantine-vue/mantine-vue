@@ -10,13 +10,15 @@ export const varsResolver = createVarsResolver<any>((_, { size, spacing }) => ({
 const defaultProps = { type: 'unordered' } as const
 </script>
 <script setup lang="ts">
-import { useAttrs, useSlots } from 'vue'
+import { ref, useAttrs, useSlots } from 'vue'
+import { assignRef } from '@mantine-vue/hooks'
 import { Box, hasNode, resolveNode, useProps, useStyles } from '../../core'
 import { provideListContext } from './List.context'
 import type { ListOwnProps, ListSlots } from './List.types'
 import classes from './List.module.css'
 defineOptions({ name: 'List', inheritAttrs: false })
 const rawProps = withDefaults(defineProps<ListOwnProps>(), {
+  rootRef: undefined,
   type: undefined,
   withPadding: false,
   size: undefined,
@@ -62,9 +64,19 @@ const getMod = () => [
   { withPadding: props.withPadding, type: hasNode(getIcon()) ? 'none' : props.listStyleType },
   props.mod,
 ]
+
+const rootElement = ref<Element | null>(null)
+
+const setRootRef = (node: Element | null) => {
+  rootElement.value = node
+  assignRef(props.rootRef, node)
+}
+
+defineExpose({ rootElement })
 </script>
 <template>
   <Box
+    :rootRef="setRootRef"
     v-bind="{ ...attrs, ...getStyles('root', { style: { listStyleType: props.listStyleType } }) }"
     :component="props.type === 'unordered' ? 'ul' : 'ol'"
     :start="props.type === 'ordered' ? props.start : undefined"

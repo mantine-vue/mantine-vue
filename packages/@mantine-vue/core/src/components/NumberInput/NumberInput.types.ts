@@ -1,5 +1,6 @@
+import type { VueRefTarget } from '@mantine-vue/hooks'
 import type { VNodeChild } from 'vue'
-import type { ClassNames, MantineNode, MantineSize, Styles, Vars } from '../../core'
+import type { Factory, MantineNode, MantineSize, StylesApiProps } from '../../core'
 import type { ThousandsGroupStyle } from '../NumberFormatter'
 
 export interface NumberInputHandlers {
@@ -67,7 +68,10 @@ export interface NumberInputValueChangePayload {
  *
  * Every prop of `InputBase` is also accepted and forwarded to the underlying input.
  */
-export interface NumberInputProps {
+export interface NumberInputProps extends StylesApiProps<NumberInputFactory> {
+  /** Receives the input element */
+  rootRef?: VueRefTarget<Element>
+
   /** Value, bound with `v-model`. */
   modelValue?: NumberInputValue
 
@@ -265,15 +269,6 @@ export interface NumberInputProps {
   /** Props passed down to the root element. */
   wrapperProps?: Record<string, any>
 
-  /** `classNames` of the Styles API. */
-  classNames?: ClassNames
-
-  /** `styles` of the Styles API. */
-  styles?: Styles
-
-  /** CSS variables of the Styles API. */
-  vars?: Vars
-
   /**
    * If set, all Mantine classes are removed.
    *
@@ -284,3 +279,29 @@ export interface NumberInputProps {
   /** Any other prop is forwarded to the underlying `InputBase`. */
   [key: string]: any
 }
+
+export interface NumberInputEmits {
+  /** Called with the parsed value. */
+  'update:modelValue': [value: NumberInputValue]
+
+  /** Called with the parsed value when it changes. */
+  change: [value: NumberInputValue]
+
+  /** Called with the parsed value and what caused the change. */
+  'value-change': [payload: NumberInputValueChangePayload, event: { source: string }]
+
+  /** Called when the value is clamped to `min`. */
+  'min-reached': []
+
+  /** Called when the value is clamped to `max`. */
+  'max-reached': []
+}
+
+export type NumberInputFactory = Factory<{
+  props: Omit<NumberInputProps, 'rootRef'>
+  slots: NumberInputSlots
+  emits: NumberInputEmits
+  ref: HTMLInputElement
+  stylesNames: NumberInputStylesNames
+  vars: NumberInputCssVariables
+}>

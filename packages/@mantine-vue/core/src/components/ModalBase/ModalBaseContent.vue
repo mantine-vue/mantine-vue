@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { computed, useAttrs } from 'vue'
+import { ref, computed, useAttrs } from 'vue'
+import { assignRef } from '@mantine-vue/hooks'
 import { omitAttrs } from '../../core'
 import { FocusTrap } from '../FocusTrap'
 import { Paper } from '../Paper'
@@ -46,6 +47,15 @@ function onEntered() {
   ;(ctx.transitionProps as any)?.onEntered?.()
   ;(props.transitionProps as any)?.onEntered?.()
 }
+
+const rootElement = ref<Element | null>(null)
+
+const setRootRef = (node: Element | null) => {
+  rootElement.value = node
+  assignRef(props.rootRef, node)
+}
+
+defineExpose({ rootElement })
 </script>
 
 <template>
@@ -63,6 +73,7 @@ function onEntered() {
       >
         <FocusTrap :active="ctx.opened && ctx.trapFocus">
           <Paper
+            :root-ref="setRootRef"
             v-bind="attrs"
             component="section"
             role="dialog"

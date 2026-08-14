@@ -22,3 +22,4 @@ export type {
 } from './ProgressSection/ProgressSection'
 export { useProgressContext } from './Progress.context'
 export type { ProgressContextValue } from './Progress.context'
+export type { ProgressFactory } from './Progress'

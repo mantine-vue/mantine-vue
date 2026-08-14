@@ -1,9 +1,13 @@
+import type { VueRefTarget } from '@mantine-vue/hooks'
 import type { VNodeChild } from 'vue'
-import type { AlignItems, BoxProps, StyleProp, StylesApiProps } from '../../../core'
+import type { AlignItems, BoxProps, StyleProp, StylesApiProps, Factory } from '../../../core'
 import type { ColSpan } from './GridColVariables'
 
 /** Props declared by `GridCol` itself. See `GridColProps` for the full public type. */
 export interface GridColOwnProps {
+  /** Receives the root DOM node. */
+  rootRef?: VueRefTarget<Element>
+
   /**
    * Column span
    *
@@ -21,13 +25,13 @@ export interface GridColOwnProps {
   align?: StyleProp<AlignItems>
 
   /** Class names applied to Grid elements. */
-  classNames?: StylesApiProps<GridColProps>['classNames']
+  classNames?: StylesApiProps<GridColFactory>['classNames']
 
   /** Inline styles applied to Grid elements. */
-  styles?: StylesApiProps<GridColProps>['styles']
+  styles?: StylesApiProps<GridColFactory>['styles']
 
   /** CSS variables applied to Grid elements. */
-  vars?: StylesApiProps<GridColProps>['vars']
+  vars?: StylesApiProps<GridColFactory>['vars']
 }
 
 export interface GridColProps extends Omit<BoxProps, keyof GridColOwnProps>, GridColOwnProps {}
@@ -36,3 +40,14 @@ export interface GridColSlots {
   /** Column content. */
   default?: () => VNodeChild
 }
+
+export type GridColStylesNames = 'col'
+
+export type GridColFactory = Factory<{
+  props: Omit<GridColProps, 'rootRef'>
+  ref: HTMLDivElement
+  exposed: { rootElement: Element | null }
+  slots: GridColSlots
+  element: 'div'
+  stylesNames: GridColStylesNames
+}>

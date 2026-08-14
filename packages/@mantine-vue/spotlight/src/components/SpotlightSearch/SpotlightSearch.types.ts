@@ -1,3 +1,5 @@
+import type { InputFactory, Vars } from '@mantine-vue/core'
+
 export type SpotlightSearchStylesNames = 'input' | 'wrapper' | 'section' | 'bottomSection'
 /** Props accepted by `SpotlightSearch`. */
 export interface SpotlightSearchProps {
@@ -9,8 +11,8 @@ export interface SpotlightSearchProps {
   classNames?: Record<string, any>
   /** Inline styles applied to component elements. */
   styles?: Record<string, any>
-  /** CSS variables applied to component elements. */
-  vars?: Record<string, any>
+  /** CSS variables applied to component elements. Keyed to `Input`, which this renders. */
+  vars?: Vars<InputFactory>
   [key: string]: any
 }
 

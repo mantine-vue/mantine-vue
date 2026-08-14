@@ -1,9 +1,12 @@
-import { withBoxProps } from '../../core'
+import { factory } from '../../core'
 import FloatingIndicatorComponent, { varsResolver } from './FloatingIndicator.vue'
+import type { FloatingIndicatorFactory } from './FloatingIndicator.types'
 import classes from './FloatingIndicator.module.css'
 
-export const FloatingIndicator = withBoxProps(FloatingIndicatorComponent)
-Object.assign(FloatingIndicator, { classes, varsResolver })
+export const FloatingIndicator = factory<FloatingIndicatorFactory>(FloatingIndicatorComponent, {
+  classes,
+  varsResolver,
+})
 
 export type {
   FloatingIndicatorCssVariables,
@@ -11,6 +14,7 @@ export type {
   FloatingIndicatorProps,
   FloatingIndicatorSlots,
   FloatingIndicatorStylesNames,
+  FloatingIndicatorFactory,
 } from './FloatingIndicator.types'
 
 export { useFloatingIndicator } from './use-floating-indicator'

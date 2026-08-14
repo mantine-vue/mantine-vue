@@ -1,5 +1,5 @@
 import type { VNodeChild } from 'vue'
-import type { MantineNode, SectionSlots } from '../../core'
+import type { MantineNode, SectionSlots, MantineElementType } from '../../core'
 import type { PopoverProps } from '../Popover/Popover.types'
 import type { FloatingPosition } from '../../utils/Floating'
 
@@ -120,7 +120,7 @@ export interface MenuItemProps {
    *
    * @default 'button'
    */
-  component?: any
+  component?: MantineElementType
 
   /** Key of `theme.colors` or any valid CSS color. */
   color?: string

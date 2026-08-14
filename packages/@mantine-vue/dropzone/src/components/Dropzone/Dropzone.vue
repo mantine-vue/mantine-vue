@@ -23,7 +23,7 @@ export { varsResolver }
 </script>
 
 <script setup lang="ts">
-import { computed, useAttrs, watch } from 'vue'
+import { ref, computed, useAttrs, watch } from 'vue'
 import { Box, LoadingOverlay, useProps, useStyles } from '@mantine-vue/core'
 import { assignRef } from '@mantine-vue/hooks'
 import { provideDropzoneContext } from '../../Dropzone.context'
@@ -126,10 +126,19 @@ const rootAttrs = (): any => ({
   ],
 })
 const inputAttrs = (): any => ({ ...dz.getInputProps(props.inputProps), name: props.name })
+
+const rootElement = ref<Element | null>(null)
+
+const setRootRef = (node: Element | null) => {
+  rootElement.value = node
+  assignRef(props.rootRef, node)
+}
+
+defineExpose({ rootElement })
 </script>
 
 <template>
-  <Box v-bind="rootAttrs()">
+  <Box :rootRef="setRootRef" v-bind="rootAttrs()">
     <LoadingOverlay
       :visible="props.loading"
       :overlay-props="{ radius: props.radius }"

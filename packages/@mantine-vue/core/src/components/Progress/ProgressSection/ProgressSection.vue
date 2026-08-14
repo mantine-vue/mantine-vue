@@ -3,7 +3,8 @@ const defaultProps = { withAria: true } as const
 </script>
 
 <script setup lang="ts">
-import { computed, useAttrs } from 'vue'
+import { ref, computed, useAttrs } from 'vue'
+import { assignRef } from '@mantine-vue/hooks'
 import {
   Box,
   getAutoContrastValue,
@@ -18,6 +19,7 @@ import type { ProgressSectionOwnProps, ProgressSectionSlots } from './ProgressSe
 defineOptions({ name: 'ProgressSection', inheritAttrs: false })
 
 const rawProps = withDefaults(defineProps<ProgressSectionOwnProps>(), {
+  rootRef: undefined,
   withAria: undefined,
   color: undefined,
   striped: false,
@@ -52,10 +54,20 @@ const sectionStyle = computed(() => ({
     : undefined,
   ...(attrs.style as Record<string, any>),
 }))
+
+const rootElement = ref<Element | null>(null)
+
+const setRootRef = (node: Element | null) => {
+  rootElement.value = node
+  assignRef(props.rootRef, node)
+}
+
+defineExpose({ rootElement })
 </script>
 
 <template>
   <Box
+    :rootRef="setRootRef"
     v-bind="{
       ...attrs,
       ...ariaAttributes,

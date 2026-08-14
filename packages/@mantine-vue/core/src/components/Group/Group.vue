@@ -22,7 +22,8 @@ export { varsResolver }
 </script>
 
 <script setup lang="ts">
-import { Comment, h, useAttrs, useSlots, type VNode } from 'vue'
+import { Comment, h, ref, useAttrs, useSlots, type VNode } from 'vue'
+import { assignRef } from '@mantine-vue/hooks'
 import { Box, useProps, useStyles } from '../../core'
 import type { GroupOwnProps, GroupSlots } from './Group.types'
 import classes from './Group.module.css'
@@ -41,6 +42,15 @@ defineSlots<GroupSlots>()
 const attrs = useAttrs()
 const slots = useSlots()
 const props = useProps('Group', defaultProps, rawProps)
+const rootElement = ref<Element | null>(null)
+
+const setRootRef = (node: Element | null) => {
+  rootElement.value = node
+  assignRef(props.rootRef, node)
+}
+
+defineExpose({ rootElement })
+
 const stylesCtx = { childWidth: '' }
 const getStyles = useStyles({
   name: 'Group',
@@ -72,6 +82,7 @@ const renderGroup = Object.assign(
         ...attrs,
         ...getStyles('root', { className: attrs.class, style: attrs.style as any }),
         mod: { grow: props.grow },
+        rootRef: setRootRef,
       },
       () => children,
     )

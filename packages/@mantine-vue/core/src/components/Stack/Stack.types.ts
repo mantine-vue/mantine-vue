@@ -4,10 +4,14 @@ import type {
   JustifyContent,
   MantineSpacing,
   StylesApiProps,
+  Factory,
 } from '../../core'
 
 /** Props declared by `Stack` itself. See `StackProps` for the full public type. */
-export interface StackOwnProps extends StylesApiProps<StackProps> {
+export interface StackOwnProps extends StylesApiProps<StackFactory> {
+  /** Receives the root DOM node. */
+  rootRef?: VueRefTarget<Element>
+
   /**
    * Key of `theme.spacing` or any valid CSS value to set `gap` property, numbers are converted to rem
    *
@@ -31,3 +35,18 @@ export interface StackOwnProps extends StylesApiProps<StackProps> {
 }
 
 export interface StackProps extends Omit<BoxProps, keyof StackOwnProps>, StackOwnProps {}
+
+export type StackStylesNames = 'root'
+
+export type StackCssVariables = {
+  root: '--stack-gap' | '--stack-align' | '--stack-justify'
+}
+
+export type StackFactory = Factory<{
+  props: Omit<StackProps, 'rootRef'>
+  ref: HTMLDivElement
+  element: 'div'
+  stylesNames: StackStylesNames
+  vars: StackCssVariables
+}>
+import type { VueRefTarget } from '@mantine-vue/hooks'

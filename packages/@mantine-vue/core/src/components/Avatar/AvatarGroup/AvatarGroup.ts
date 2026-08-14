@@ -1,9 +1,12 @@
-import { withBoxProps } from '../../../core'
+import { factory } from '../../../core'
 import { useAvatarGroupContext } from './AvatarGroup.context'
 import AvatarGroupComponent, { varsResolver } from './AvatarGroup.vue'
+import type { AvatarGroupFactory } from './AvatarGroup.types'
 import classes from '../Avatar.module.css'
-export const AvatarGroup = withBoxProps(AvatarGroupComponent)
-Object.assign(AvatarGroup, { classes, varsResolver })
+export const AvatarGroup = factory<AvatarGroupFactory>(AvatarGroupComponent, {
+  classes,
+  varsResolver,
+})
 export { useAvatarGroupContext }
 export type {
   AvatarGroupContextValue,
@@ -12,4 +15,5 @@ export type {
   AvatarGroupProps,
   AvatarGroupSlots,
   AvatarGroupStylesNames,
+  AvatarGroupFactory,
 } from './AvatarGroup.types'

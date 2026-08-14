@@ -1,5 +1,5 @@
 import type { VNodeChild } from 'vue'
-import type { BoxMod, BoxProps, MantineRadius, StylesApiProps } from '../../../core'
+import type { BoxMod, BoxProps, MantineRadius, StylesApiProps, Factory } from '../../../core'
 
 export type RadioCardStylesNames = 'card'
 
@@ -18,7 +18,10 @@ export interface RadioCardSlots {
 }
 
 /** Props declared by `RadioCard` itself. See `RadioCardProps` for the full public type. */
-export interface RadioCardOwnProps extends StylesApiProps<RadioCardProps> {
+export interface RadioCardOwnProps extends StylesApiProps<RadioCardFactory> {
+  /** Receives the root DOM node. */
+  rootRef?: VueRefTarget<Element>
+
   /** Checked state, bound with `v-model`. */
   modelValue?: boolean
 
@@ -54,3 +57,13 @@ export interface RadioCardOwnProps extends StylesApiProps<RadioCardProps> {
 
 export interface RadioCardProps
   extends Omit<BoxProps, keyof RadioCardOwnProps>, RadioCardOwnProps {}
+
+export type RadioCardFactory = Factory<{
+  props: Omit<RadioCardProps, 'rootRef'>
+  ref: HTMLButtonElement
+  slots: RadioCardSlots
+  element: 'button'
+  stylesNames: RadioCardStylesNames
+  vars: RadioCardCssVariables
+}>
+import type { VueRefTarget } from '@mantine-vue/hooks'

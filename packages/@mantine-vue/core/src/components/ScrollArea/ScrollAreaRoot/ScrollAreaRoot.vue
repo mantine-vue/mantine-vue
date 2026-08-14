@@ -6,6 +6,7 @@ export { defaultProps }
 
 <script setup lang="ts">
 import { computed, ref, useAttrs } from 'vue'
+import { assignRef } from '@mantine-vue/hooks'
 import { Box, useProps } from '../../../core'
 import { provideScrollAreaContext } from '../ScrollArea.context'
 import type { ScrollAreaRootOwnProps, ScrollAreaRootSlots } from './ScrollAreaRoot.types'
@@ -20,6 +21,7 @@ defineOptions({
  * default or Vue casts an absent prop to `false`.
  */
 const rawProps = withDefaults(defineProps<ScrollAreaRootOwnProps>(), {
+  rootRef: undefined,
   scrollbars: undefined,
 })
 
@@ -69,10 +71,19 @@ const cornerVars = computed(() => ({
   '--sa-corner-width': props.scrollbars !== 'xy' ? '0px' : `${cornerWidth.value}px`,
   '--sa-corner-height': props.scrollbars !== 'xy' ? '0px' : `${cornerHeight.value}px`,
 }))
+
+const rootElement = ref<Element | null>(null)
+
+const setRootRef = (node: Element | null) => {
+  rootElement.value = node
+  assignRef(props.rootRef, node)
+}
+
+defineExpose({ rootElement })
 </script>
 
 <template>
-  <Box v-bind="attrs" :style="[cornerVars, attrs.style as any]">
+  <Box :rootRef="setRootRef" v-bind="attrs" :style="[cornerVars, attrs.style as any]">
     <slot />
   </Box>
 </template>

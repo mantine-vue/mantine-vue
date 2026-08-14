@@ -1,8 +1,11 @@
 import type { VNodeChild } from 'vue'
-import type { BoxProps } from '../../core'
+import type { BoxProps, Factory } from '../../core'
 
 /** Props declared by `Collapse` itself. See `CollapseProps` for the full public type. */
 export interface CollapseOwnProps {
+  /** Receives the root DOM node. */
+  rootRef?: VueRefTarget<Element>
+
   /**
    * Collapse orientation
    *
@@ -48,3 +51,11 @@ export interface CollapseSlots {
   /** Content revealed when the collapse is expanded. */
   default?: () => VNodeChild
 }
+
+export type CollapseFactory = Factory<{
+  props: Omit<CollapseProps, 'rootRef'>
+  ref: HTMLDivElement
+  slots: CollapseSlots
+  element: 'div'
+}>
+import type { VueRefTarget } from '@mantine-vue/hooks'

@@ -56,7 +56,4 @@ export type {
   PolymorphicProps,
 } from './polymorphic-factory'
 
-export { withBoxProps } from './with-box-props'
-export type { WithBoxProps } from './with-box-props'
-
 export { useForwardedRef } from './use-forwarded-ref'

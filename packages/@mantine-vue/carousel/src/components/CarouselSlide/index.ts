@@ -1,5 +1,10 @@
-import { withBoxProps } from '@mantine-vue/core'
+import { factory } from '@mantine-vue/core'
 import CarouselSlideComponent from './CarouselSlide.vue'
+import type { CarouselSlideFactory } from './CarouselSlide.types'
 import classes from '../../Carousel.module.css'
-export const CarouselSlide = Object.assign(withBoxProps(CarouselSlideComponent), { classes })
-export type { CarouselSlideProps, CarouselSlideStylesNames } from './CarouselSlide.types'
+export const CarouselSlide = factory<CarouselSlideFactory>(CarouselSlideComponent, { classes })
+export type {
+  CarouselSlideFactory,
+  CarouselSlideProps,
+  CarouselSlideStylesNames,
+} from './CarouselSlide.types'

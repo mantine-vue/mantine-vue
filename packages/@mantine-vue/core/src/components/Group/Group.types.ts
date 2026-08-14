@@ -1,15 +1,26 @@
 import type { VNodeChild } from 'vue'
+import type { VueRefTarget } from '@mantine-vue/hooks'
 import type {
   AlignItems,
   BoxProps,
+  Factory,
   FlexWrap,
   JustifyContent,
   MantineSpacing,
   StylesApiProps,
 } from '../../core'
 
+export type GroupStylesNames = 'root'
+
+export type GroupCssVariables = {
+  root: '--group-child-width' | '--group-gap' | '--group-align' | '--group-justify' | '--group-wrap'
+}
+
 /** Props declared by `Group` itself. See `GroupProps` for the full public type. */
-export interface GroupOwnProps extends StylesApiProps<GroupProps> {
+export interface GroupOwnProps extends StylesApiProps<GroupFactory> {
+  /** Receives the root DOM node. */
+  rootRef?: VueRefTarget<Element>
+
   /**
    * Controls `justify-content` CSS property
    *
@@ -59,3 +70,13 @@ export interface GroupSlots {
   /** Group children used to calculate the grow width. */
   default?: () => VNodeChild
 }
+
+export type GroupFactory = Factory<{
+  props: Omit<GroupProps, 'rootRef'>
+  slots: GroupSlots
+  ref: HTMLDivElement
+  exposed: { rootElement: Element | null }
+  element: 'div'
+  stylesNames: GroupStylesNames
+  vars: GroupCssVariables
+}>

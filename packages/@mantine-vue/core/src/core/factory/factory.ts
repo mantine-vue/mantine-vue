@@ -1,4 +1,10 @@
-import { defineComponent, h, type Component, type EmitFn } from 'vue'
+import {
+  defineComponent,
+  h,
+  type Component,
+  type DefineSetupFnComponent,
+  type SlotsType,
+} from 'vue'
 import type { VueRefTarget } from '@mantine-vue/hooks'
 import type { MantineThemeComponent } from '../MantineProvider'
 import type { EmptyProps } from './create-polymorphic-component'
@@ -62,9 +68,13 @@ export type ComponentVariablesResolver<Payload extends FactoryPayload> =
     ? { varsResolver: FactoryVarsResolver<Payload> }
     : EmptyProps
 
-/** Compound components spread onto the component as statics. */
-export type StaticComponents<Input> =
-  Input extends Record<string, any> ? Input : Record<string, never>
+/**
+ * Compound components spread onto the component as statics.
+ *
+ * Resolves to `EmptyProps` rather than `Record<string, never>` when a payload declares none --
+ * that record's index signature would make `Badge.Section` type-check on any component.
+ */
+export type StaticComponents<Input> = Input extends Record<string, any> ? Input : EmptyProps
 
 export interface FactoryComponentWithProps<Payload extends FactoryPayload> {
   /**
@@ -81,20 +91,27 @@ export type MantineComponentStaticProperties<Payload extends FactoryPayload> =
     FactoryComponentWithProps<Payload> &
     StaticComponents<Payload['staticComponents']>
 
-/**
- * Public type of a non-polymorphic factory component.
- *
- * Declared with a construct signature rather than as a bare function so that
- * `InstanceType<typeof Component>['$props']` keeps working and `vue-tsc` resolves slots
- * and emits in templates exactly as it does for an SFC.
- */
-export type MantineComponent<Payload extends FactoryPayload> = {
-  new (...args: any[]): {
-    $props: FactoryComponentProps<Payload> & RootRefProps<Payload['ref']>
-    $slots: Payload['slots']
-    /** A function, like Vue's own `$emit` -- not the payload's `emits` map. */
-    $emit: EmitFn<Payload['emits']>
-  } & (Payload['exposed'] extends Record<string, any> ? Payload['exposed'] : EmptyProps)
+type MantineComponentProps<Payload extends FactoryPayload> = FactoryComponentProps<Payload> &
+  RootRefProps<Payload['ref']>
+
+type MantineComponentEmits<Payload extends FactoryPayload> =
+  Payload['emits'] extends Record<string, any> ? Payload['emits'] : Record<never, never>
+
+type MantineComponentSlots<Payload extends FactoryPayload> =
+  Payload['slots'] extends Record<string, any> ? Payload['slots'] : Record<never, never>
+
+type VueMantineComponent<Payload extends FactoryPayload> = DefineSetupFnComponent<
+  MantineComponentProps<Payload>,
+  MantineComponentEmits<Payload>,
+  SlotsType<MantineComponentSlots<Payload>>
+>
+
+/** A factory component compatible with Vue's public instance and `h()` types. */
+export type MantineComponent<Payload extends FactoryPayload> = VueMantineComponent<Payload> & {
+  new (
+    ...args: any[]
+  ): InstanceType<VueMantineComponent<Payload>> &
+    (Payload['exposed'] extends Record<string, any> ? Payload['exposed'] : EmptyProps)
 } & MantineComponentStaticProperties<Payload>
 
 export function identity<T>(value: T): T {
@@ -117,8 +134,6 @@ export function createWithProps(target: Component, statics: Record<string, any>)
     })
 
     Object.assign(Extended, statics, {
-      // The returned type also advertises `withProps`, so it must be chainable. Lazy, so this
-      // recursion terminates.
       withProps: createWithProps(Extended, statics),
     })
 
@@ -138,10 +153,7 @@ export function attachStatics(ui: Component, statics: Record<string, any> | unde
   return target
 }
 
-/**
- * Attaches the Mantine static API to a component implementation. The implementation stays an
- * ordinary SFC -- only the statics and the exported type change.
- */
+/** Attaches the Mantine static API to a component implementation. */
 export function factory<Payload extends FactoryPayload>(
   ui: Component,
   statics?: Payload['staticComponents'] & {

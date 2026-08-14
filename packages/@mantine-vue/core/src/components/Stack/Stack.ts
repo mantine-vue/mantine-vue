@@ -1,6 +1,11 @@
-import { withBoxProps } from '../../core'
-import StackComponent from './Stack.vue'
+import { factory } from '../../core'
+import StackComponent, { varsResolver } from './Stack.vue'
+import type { StackFactory } from './Stack.types'
+import classes from './Stack.module.css'
 
-export const Stack = withBoxProps(StackComponent)
+export const Stack = factory<StackFactory>(StackComponent, {
+  classes,
+  varsResolver,
+})
 
-export type { StackOwnProps, StackProps } from './Stack.types'
+export type { StackOwnProps, StackProps, StackFactory } from './Stack.types'

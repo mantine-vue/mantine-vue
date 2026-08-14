@@ -2,6 +2,7 @@ export { Table } from './Table'
 export type {
   TableCssVariables,
   TableData,
+  TableFactory,
   TableOwnProps,
   TableProps,
   TableSlots,
@@ -35,6 +36,7 @@ export { TableDataRenderer } from './TableDataRenderer'
 export { TableScrollContainer }
 export type {
   TableScrollContainerCssVariables,
+  TableScrollContainerFactory,
   TableScrollContainerOwnProps,
   TableScrollContainerProps,
   TableScrollContainerSlots,

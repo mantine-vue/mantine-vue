@@ -7,6 +7,7 @@ import type {
   MantineNode,
   MantineRadius,
   Styles,
+  Factory,
 } from '../../../core'
 import type { TimelineStylesNames } from '../Timeline.types'
 
@@ -34,6 +35,9 @@ export interface TimelineItemSlots {
  * See `TimelineItemProps` for the full public type.
  */
 export interface TimelineItemOwnProps {
+  /** Receives the root DOM node. */
+  rootRef?: VueRefTarget<Element>
+
   /**
    * Active state assigned by the parent `Timeline` from its `active` index.
    * Set by `Timeline`; the explicit `active` prop takes precedence.
@@ -130,3 +134,12 @@ export interface TimelineItemOwnProps {
 
 export interface TimelineItemProps
   extends Omit<BoxProps, keyof TimelineItemOwnProps>, TimelineItemOwnProps {}
+
+export type TimelineItemFactory = Factory<{
+  props: Omit<TimelineItemProps, 'rootRef'>
+  ref: HTMLSpanElement
+  slots: TimelineItemSlots
+  element: 'span'
+  stylesNames: TimelineItemStylesNames
+}>
+import type { VueRefTarget } from '@mantine-vue/hooks'

@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { computed, isVNode, useAttrs, useSlots } from 'vue'
+import { ref, computed, isVNode, useAttrs, useSlots } from 'vue'
+import { assignRef } from '@mantine-vue/hooks'
 import { getThemeColor, useMantineTheme, useProps } from '../../../core'
 import { CheckIcon } from '../../Checkbox'
 import { Loader } from '../../Loader'
@@ -16,6 +17,7 @@ import type {
 defineOptions({ name: 'StepperStep', inheritAttrs: false })
 
 const rawProps = withDefaults(defineProps<StepperStepOwnProps>(), {
+  rootRef: undefined,
   step: undefined,
   state: undefined,
   color: undefined,
@@ -116,10 +118,20 @@ const renderCurrentIcon = () => currentIcon.value
 const renderCompleted = () => completed.value
 const renderLabel = () => labelNode.value
 const renderDescription = () => descriptionNode.value
+
+const rootElement = ref<Element | null>(null)
+
+const setRootRef = (node: Element | null) => {
+  rootElement.value = node
+  assignRef(props.rootRef, node)
+}
+
+defineExpose({ rootElement })
 </script>
 
 <template>
   <UnstyledButton
+    :rootRef="setRootRef"
     v-bind="{ ...attrs, ...stepStyles, ...dataAttributes }"
     :mod="[{ iconPosition, allowClick: props.allowStepClick }, props.mod]"
     :style="rootStyle"

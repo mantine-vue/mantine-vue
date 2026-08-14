@@ -1,9 +1,10 @@
 export { RingProgress } from './RingProgress'
 export type {
   RingProgressCssVariables,
+  RingProgressFactory,
   RingProgressOwnProps,
   RingProgressProps,
-  RingProgressSlots,
   RingProgressSection,
+  RingProgressSlots,
   RingProgressStylesNames,
 } from './RingProgress'

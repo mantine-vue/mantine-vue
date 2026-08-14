@@ -1,3 +1,4 @@
+import type { ListItem } from './ListItem/ListItem'
 import type { VNodeChild } from 'vue'
 import type {
   BoxMod,
@@ -6,10 +7,14 @@ import type {
   MantineSize,
   MantineSpacing,
   StylesApiProps,
+  Factory,
 } from '../../core'
 
 /** Props declared by `List` itself. See `ListProps` for the full public type. */
-export interface ListOwnProps extends StylesApiProps<ListProps> {
+export interface ListOwnProps extends StylesApiProps<ListFactory> {
+  /** Receives the root DOM node. */
+  rootRef?: VueRefTarget<Element>
+
   /**
    * List type
    *
@@ -76,3 +81,16 @@ export interface ListProps extends Omit<BoxProps, keyof ListOwnProps>, ListOwnPr
 
 export type ListStylesNames = 'root' | 'item' | 'itemWrapper' | 'itemIcon' | 'itemLabel'
 export type ListCssVariables = { root: '--list-fz' | '--list-lh' | '--list-spacing' }
+
+export type ListFactory = Factory<{
+  props: Omit<ListProps, 'rootRef'>
+  ref: HTMLUListElement
+  slots: ListSlots
+  element: 'ul'
+  stylesNames: ListStylesNames
+  vars: ListCssVariables
+  staticComponents: {
+    Item: typeof ListItem
+  }
+}>
+import type { VueRefTarget } from '@mantine-vue/hooks'

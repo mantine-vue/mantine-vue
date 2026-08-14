@@ -17,7 +17,7 @@ export const varsResolver = createVarsResolver<any>(
 
 <script setup lang="ts">
 import { computed, ref, toRef, useAttrs } from 'vue'
-import { useReducedMotion } from '@mantine-vue/hooks'
+import { assignRef, useReducedMotion } from '@mantine-vue/hooks'
 import { Box, useStyles } from '../../core'
 import { useFloatingIndicator } from './use-floating-indicator'
 import type { FloatingIndicatorOwnProps, FloatingIndicatorSlots } from './FloatingIndicator.types'
@@ -26,6 +26,7 @@ import classes from './FloatingIndicator.module.css'
 defineOptions({ name: 'FloatingIndicator', inheritAttrs: false })
 
 const props = withDefaults(defineProps<FloatingIndicatorOwnProps>(), {
+  rootRef: undefined,
   target: undefined,
   parent: undefined,
   transitionDuration: undefined,
@@ -76,10 +77,20 @@ const shouldRender = computed(() => Boolean(props.target && props.parent))
 const setFloatingRef = (node: any) => {
   floatingRef.value = node?.$el ?? node ?? null
 }
+
+const rootElement = ref<Element | null>(null)
+
+const setRootRef = (node: Element | null) => {
+  rootElement.value = node
+  assignRef(props.rootRef, node)
+}
+
+defineExpose({ rootElement })
 </script>
 
 <template>
   <Box
+    :rootRef="setRootRef"
     v-if="shouldRender"
     v-bind="{
       ...attrs,

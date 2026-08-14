@@ -4,15 +4,7 @@ import type { EmptyProps, MantineElementType } from './create-polymorphic-compon
 /** `data-*` attributes, which are always permitted alongside a component's own props. */
 export type DataAttributes = Record<`data-${string}`, any>
 
-/**
- * Describes everything public about a component: props, slots, emits, exposed members, root
- * ref, Styles API metadata and compound components.
- *
- * One payload per component is hand-written next to its props interface (for example
- * `ButtonFactory` in `Button.types.ts`) and is what the factory builds the public type from.
- * `Record<string, any>` is confined to the constraint -- every concrete payload names a real
- * interface, so no `any` reaches a component's public type.
- */
+/** Describes the public types and metadata used to construct a factory component. */
 export interface FactoryPayload {
   /** The component's full public props interface, including `BoxProps` when supported. */
   props: Record<string, any>
@@ -31,6 +23,12 @@ export interface FactoryPayload {
 
   /** Members made available through `defineExpose`, reachable via a template `ref`. */
   exposed?: Record<string, any>
+
+  /**
+   * Extra context the Styles API resolvers receive as their third argument, for components whose
+   * classes or CSS variables depend on state rather than props alone
+   */
+  ctx?: Record<string, any>
 
   /** The DOM node the component's root resolves to. */
   ref?: any
@@ -89,8 +87,15 @@ export type ElementAttributes<Element, Declared> = Element extends keyof Intrins
   ? Omit<IntrinsicElementAttributes[Element], keyof Declared>
   : EmptyProps
 
-/** The full public props of a non-polymorphic factory component. */
+/**
+ * The full public props of a non-polymorphic factory component.
+ *
+ * `DataAttributes` is part of the contract because `data-*` is valid on every element and Vue's
+ * `IntrinsicElementAttributes` does not model it. Without it, `:data-active="…"` on a factory
+ * component is rejected under `strictTemplates` even though the DOM accepts it.
+ */
 export type FactoryComponentProps<Payload extends FactoryPayload> = Payload['props'] &
   EmitsToProps<Payload['emits']> &
   ElementAttributes<Payload['element'], Payload['props'] & EmitsToProps<Payload['emits']>> &
+  DataAttributes &
   ReservedProps

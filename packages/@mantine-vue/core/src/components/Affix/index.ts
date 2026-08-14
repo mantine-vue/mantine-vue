@@ -1,5 +1,6 @@
 export { Affix } from './Affix'
 export type {
+  AffixFactory,
   AffixOwnProps,
   AffixPosition,
   AffixProps,

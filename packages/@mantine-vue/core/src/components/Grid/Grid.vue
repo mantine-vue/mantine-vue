@@ -6,7 +6,8 @@ export const varsResolver = createVarsResolver<any>((_, { justify, align, overfl
 const defaultProps = { gap: 'md', columns: 12 } as const
 </script>
 <script setup lang="ts">
-import { useAttrs } from 'vue'
+import { ref, useAttrs } from 'vue'
+import { assignRef } from '@mantine-vue/hooks'
 import { Box, useProps, useRandomClassName, useStyles } from '../../core'
 import { provideGridContext } from './Grid.context'
 import { GridVariables } from './GridVariables'
@@ -60,6 +61,15 @@ provideGridContext({
     return props.type
   },
 })
+
+const rootElement = ref<Element | null>(null)
+
+const setRootRef = (node: Element | null) => {
+  rootElement.value = node
+  assignRef(props.rootRef, node)
+}
+
+defineExpose({ rootElement })
 </script>
 <template>
   <GridVariables
@@ -71,11 +81,16 @@ provideGridContext({
     :type="props.type"
   />
   <div v-if="props.type === 'container' && props.breakpoints" v-bind="getStyles('container')">
-    <Box v-bind="{ ...attrs, ...getStyles('root', { className: responsiveClassName }) }"
+    <Box
+      :rootRef="setRootRef"
+      v-bind="{ ...attrs, ...getStyles('root', { className: responsiveClassName }) }"
       ><div v-bind="getStyles('inner')"><slot /></div
     ></Box>
   </div>
-  <Box v-else v-bind="{ ...attrs, ...getStyles('root', { className: responsiveClassName }) }"
+  <Box
+    v-else
+    :rootRef="setRootRef"
+    v-bind="{ ...attrs, ...getStyles('root', { className: responsiveClassName }) }"
     ><div v-bind="getStyles('inner')"><slot /></div
   ></Box>
 </template>

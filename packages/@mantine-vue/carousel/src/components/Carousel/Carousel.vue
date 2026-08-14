@@ -23,7 +23,7 @@ import {
   useProps,
   useStyles,
 } from '@mantine-vue/core'
-import { useId } from '@mantine-vue/hooks'
+import { assignRef, useId } from '@mantine-vue/hooks'
 import { provideCarouselContext } from '../../Carousel.context'
 import CarouselContainerVariables from '../CarouselVariables/CarouselContainerVariables.vue'
 import CarouselVariables from '../CarouselVariables/CarouselVariables.vue'
@@ -241,13 +241,21 @@ provideCarouselContext({
   },
 } as any)
 
-defineExpose({ embla })
+const rootElement = ref<Element | null>(null)
+
+const setRootRef = (node: Element | null) => {
+  rootElement.value = node
+  assignRef(props.rootRef, node)
+}
+
+defineExpose({ embla, rootElement })
 </script>
 
 <template>
   <CarouselContainerVariables v-if="props.type === 'container'" v-bind="variablesProps" />
   <CarouselVariables v-else v-bind="variablesProps" />
   <Box
+    :rootRef="setRootRef"
     v-bind="{
       role: 'region',
       'aria-roledescription': 'carousel',

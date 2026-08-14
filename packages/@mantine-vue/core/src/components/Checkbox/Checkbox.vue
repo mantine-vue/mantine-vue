@@ -55,7 +55,7 @@ export { mergedClasses, varsResolver, defaultProps, DEFAULT_SIZE }
 </script>
 
 <script setup lang="ts">
-import { computed, useAttrs, useSlots } from 'vue'
+import { ref, computed, useAttrs, useSlots } from 'vue'
 import { assignRef, useId, useUncontrolled } from '@mantine-vue/hooks'
 import { Box, omitAttrs, resolveNode, useProps, useStyles } from '../../core'
 import { InlineInput } from '../../utils'
@@ -148,9 +148,15 @@ const iconStyles = computed(() => getStyles('icon'))
 const iconSlotProps = computed(() => ({ indeterminate: props.indeterminate, ...iconStyles.value }))
 const IconComponent = computed(() => props.icon || CheckboxIcon)
 
+const rootElement = ref<Element | null>(null)
+
 function setRootRef(node: any) {
-  assignRef(props.rootRef, node?.$el ?? node ?? null)
+  const element = (node?.$el ?? node ?? null) as Element | null
+  rootElement.value = element
+  assignRef(props.rootRef, element)
 }
+
+defineExpose({ rootElement })
 
 function onInputClick(event: MouseEvent) {
   callHandler((attrs as any).onClick, event)

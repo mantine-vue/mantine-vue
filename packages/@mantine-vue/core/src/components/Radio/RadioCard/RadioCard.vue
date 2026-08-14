@@ -12,8 +12,8 @@ export { varsResolver }
 </script>
 
 <script setup lang="ts">
-import { computed, provide, useAttrs } from 'vue'
-import { useUncontrolled } from '@mantine-vue/hooks'
+import { ref, computed, provide, useAttrs } from 'vue'
+import { assignRef, useUncontrolled } from '@mantine-vue/hooks'
 import { omitAttrs, useStyles } from '../../../core'
 import { UnstyledButton } from '../../UnstyledButton'
 import { useRadioGroupContext } from '../RadioGroup/RadioGroup'
@@ -27,6 +27,7 @@ defineOptions({
 })
 
 const props = withDefaults(defineProps<RadioCardOwnProps>(), {
+  rootRef: undefined,
   modelValue: undefined,
   checked: undefined,
   defaultChecked: undefined,
@@ -99,10 +100,20 @@ function onClick(event: MouseEvent) {
  * invoked explicitly above; otherwise Vue would merge them and fire it twice.
  */
 const forwardedAttrs = computed(() => omitAttrs(attrs, ['onClick']))
+
+const rootElement = ref<Element | null>(null)
+
+const setRootRef = (node: Element | null) => {
+  rootElement.value = node
+  assignRef(props.rootRef, node)
+}
+
+defineExpose({ rootElement })
 </script>
 
 <template>
   <UnstyledButton
+    :rootRef="setRootRef"
     v-bind="{ ...forwardedAttrs, ...cardStyles }"
     __static-selector="RadioCard"
     :mod="[{ 'with-border': props.withBorder, checked }, props.mod]"

@@ -1,10 +1,13 @@
 import type { VNodeChild } from 'vue'
-import type { BoxMod, BoxProps, MantineColor, StylesApiProps } from '../../../core'
+import type { BoxMod, BoxProps, MantineColor, StylesApiProps, Factory } from '../../../core'
 
 export type ProgressSectionStylesNames = 'section'
 
 /** Props declared by `ProgressSection` itself. See `ProgressSectionProps` for the full public type. */
 export interface ProgressSectionOwnProps {
+  /** Receives the root DOM node. */
+  rootRef?: VueRefTarget<Element>
+
   /** Value of the section in 0–100 range */
   value: number
 
@@ -40,7 +43,7 @@ export interface ProgressSectionOwnProps {
   mod?: BoxMod
 
   /** Class names applied to Progress elements. */
-  classNames?: StylesApiProps<ProgressSectionProps>['classNames']
+  classNames?: StylesApiProps<ProgressSectionFactory>['classNames']
 
   /** Inline styles applied to Progress elements. */
   styles?: StylesApiProps<ProgressSectionProps>['styles']
@@ -56,3 +59,12 @@ export interface ProgressSectionSlots {
   /** Section label content. */
   default?: () => VNodeChild
 }
+
+export type ProgressSectionFactory = Factory<{
+  props: Omit<ProgressSectionProps, 'rootRef'>
+  ref: HTMLDivElement
+  slots: ProgressSectionSlots
+  element: 'div'
+  stylesNames: ProgressSectionStylesNames
+}>
+import type { VueRefTarget } from '@mantine-vue/hooks'

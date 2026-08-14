@@ -1,5 +1,21 @@
+import type { TableCaption } from './Table.components'
+import type { TableTr } from './Table.components'
+import type { TableTh } from './Table.components'
+import type { TableTd } from './Table.components'
+import type { TableTfoot } from './Table.components'
+import type { TableTbody } from './Table.components'
+import type { TableThead } from './Table.components'
+import type { TableDataRenderer } from './TableDataRenderer'
+import type { TableScrollContainer } from './TableScrollContainer'
 import type { CSSProperties, VNodeChild } from 'vue'
-import type { BoxMod, BoxProps, MantineColor, MantineSpacing, StylesApiProps } from '../../core'
+import type {
+  BoxMod,
+  BoxProps,
+  MantineColor,
+  MantineSpacing,
+  StylesApiProps,
+  Factory,
+} from '../../core'
 
 export type TableVariant = 'default' | 'vertical'
 
@@ -39,7 +55,10 @@ export interface TableSlots {
 }
 
 /** Props declared by `Table` itself. See `TableProps` for the full public type. */
-export interface TableOwnProps extends StylesApiProps<TableProps> {
+export interface TableOwnProps extends StylesApiProps<TableFactory> {
+  /** Receives the root DOM node. */
+  rootRef?: VueRefTarget<Element>
+
   /** Value of the `table-layout` CSS property. */
   layout?: CSSProperties['tableLayout']
 
@@ -135,3 +154,25 @@ export interface TableOwnProps extends StylesApiProps<TableProps> {
 }
 
 export interface TableProps extends Omit<BoxProps, keyof TableOwnProps>, TableOwnProps {}
+
+export type TableFactory = Factory<{
+  props: Omit<TableProps, 'rootRef'>
+  ref: HTMLTableElement
+  slots: TableSlots
+  element: 'table'
+  stylesNames: TableStylesNames
+  vars: TableCssVariables
+  variant: TableVariant
+  staticComponents: {
+    Thead: typeof TableThead
+    Tbody: typeof TableTbody
+    Tfoot: typeof TableTfoot
+    Td: typeof TableTd
+    Th: typeof TableTh
+    Tr: typeof TableTr
+    Caption: typeof TableCaption
+    ScrollContainer: typeof TableScrollContainer
+    DataRenderer: typeof TableDataRenderer
+  }
+}>
+import type { VueRefTarget } from '@mantine-vue/hooks'

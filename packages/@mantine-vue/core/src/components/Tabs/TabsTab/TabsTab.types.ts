@@ -1,5 +1,12 @@
 import type { VNodeChild } from 'vue'
-import type { BoxMod, BoxProps, MantineColor, MantineNode, SectionSlots } from '../../../core'
+import type {
+  BoxMod,
+  BoxProps,
+  MantineColor,
+  MantineNode,
+  SectionSlots,
+  Factory,
+} from '../../../core'
 
 export type TabsTabStylesNames = 'tab' | 'tabSection' | 'tabLabel'
 
@@ -10,6 +17,9 @@ export interface TabsTabSlots extends SectionSlots {
 
 /** Props declared by `TabsTab` itself. See `TabsTabProps` for the full public type. */
 export interface TabsTabOwnProps {
+  /** Receives the root DOM node. */
+  rootRef?: VueRefTarget<Element>
+
   /** Value of the associated panel. */
   value: string
 
@@ -59,3 +69,13 @@ export interface TabsTabEmits {
   /** Emitted on keydown, before the built-in arrow key navigation runs. */
   keydown: [event: KeyboardEvent]
 }
+
+export type TabsTabFactory = Factory<{
+  props: Omit<TabsTabProps, 'rootRef'>
+  ref: HTMLButtonElement
+  slots: TabsTabSlots
+  emits: TabsTabEmits
+  element: 'button'
+  stylesNames: TabsTabStylesNames
+}>
+import type { VueRefTarget } from '@mantine-vue/hooks'

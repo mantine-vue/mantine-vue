@@ -1,3 +1,5 @@
+import type { Factory } from '../../../core'
+import type { VueRefTarget } from '@mantine-vue/hooks'
 import type { Component, VNodeChild } from 'vue'
 import type { BoxProps } from '../../../core'
 
@@ -11,6 +13,9 @@ export interface PaginationEdgeSlots {
 
 /** Props declared by the pagination edge controls. */
 export interface PaginationEdgeOwnProps {
+  /** Receives the root DOM node -- the edge controls always render a button. */
+  rootRef?: VueRefTarget<HTMLButtonElement>
+
   /**
    * Component rendered as the icon. Defaults to the icon that matches the edge.
    * Can also be set with the `icon` slot – the slot takes precedence.
@@ -28,3 +33,11 @@ export interface PaginationEdgeOwnProps {
 
 export interface PaginationEdgeProps
   extends Omit<BoxProps, keyof PaginationEdgeOwnProps>, PaginationEdgeOwnProps {}
+
+/** Public contract shared by the four edge controls. */
+export type PaginationEdgeFactory = Factory<{
+  props: PaginationEdgeProps
+  slots: PaginationEdgeSlots
+  ref: HTMLButtonElement
+  element: 'button'
+}>

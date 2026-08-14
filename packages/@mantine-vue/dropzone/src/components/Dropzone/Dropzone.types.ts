@@ -1,5 +1,7 @@
+import type { DropzoneAccept, DropzoneIdle, DropzoneReject } from '../DropzoneStatus'
+import type { VueRefTarget } from '@mantine-vue/hooks'
 import type { Accept, DropEvent, FileError, FileRejection, FileWithPath } from '../../types'
-import type { MantineColor, MantineRadius } from '@mantine-vue/core'
+import type { MantineColor, MantineRadius, Factory } from '@mantine-vue/core'
 
 export type DropzoneStylesNames = 'root' | 'inner'
 export type DropzoneVariant = 'filled' | 'light'
@@ -13,6 +15,9 @@ export type DropzoneCssVariables = {
 }
 
 export interface DropzoneProps {
+  /** Receives the root DOM node. */
+  rootRef?: VueRefTarget<Element>
+
   /** Key of `theme.colors` or any valid CSS color to set colors of `Dropzone.Accept`. @default theme.primaryColor */
   acceptColor?: MantineColor
   /** Key of `theme.colors` or any valid CSS color to set colors of `Dropzone.Reject`. @default 'red' */
@@ -87,3 +92,19 @@ export interface DropzoneEmits {
   /** Emitted when user opens the file selection dialog. */
   'file-dialog-open': []
 }
+
+export type DropzoneFactory = Factory<{
+  props: Omit<DropzoneProps, 'rootRef'>
+  emits: DropzoneEmits
+  ref: HTMLDivElement
+  exposed: { rootElement: Element | null }
+  element: 'div'
+  stylesNames: DropzoneStylesNames
+  vars: DropzoneCssVariables
+  variant: DropzoneVariant
+  staticComponents: {
+    Accept: typeof DropzoneAccept
+    Idle: typeof DropzoneIdle
+    Reject: typeof DropzoneReject
+  }
+}>

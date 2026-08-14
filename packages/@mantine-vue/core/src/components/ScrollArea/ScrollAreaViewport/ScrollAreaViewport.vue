@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { computed, useAttrs } from 'vue'
+import { ref, computed, useAttrs } from 'vue'
+import { assignRef } from '@mantine-vue/hooks'
 import { Box } from '../../../core'
 import { useScrollAreaContext } from '../ScrollArea.context'
 import type {
@@ -13,7 +14,7 @@ defineOptions({
   inheritAttrs: false,
 })
 
-defineProps<ScrollAreaViewportOwnProps>()
+const props = defineProps<ScrollAreaViewportOwnProps>()
 
 const emit = defineEmits<ScrollAreaViewportEmits>()
 
@@ -44,10 +45,24 @@ function setContentRef(node: any) {
   emit('content-mounted', element)
   ctx.onContentChange(element)
 }
+
+const rootElement = ref<Element | null>(null)
+
+const setRootRef = (node: Element | null) => {
+  rootElement.value = node
+  assignRef(props.rootRef, node)
+}
+
+defineExpose({ rootElement })
 </script>
 
 <template>
-  <Box :ref="setViewportRef" v-bind="attrs" :style="[overflow, attrs.style as any]">
+  <Box
+    :rootRef="setRootRef"
+    :ref="setViewportRef"
+    v-bind="attrs"
+    :style="[overflow, attrs.style as any]"
+  >
     <div :ref="setContentRef" v-bind="ctx.getStyles('content')">
       <slot />
     </div>

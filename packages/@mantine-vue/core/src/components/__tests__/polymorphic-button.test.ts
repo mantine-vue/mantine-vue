@@ -188,7 +188,7 @@ describe('@mantine-vue/core polymorphicFactory (Button)', () => {
   })
 
   it('assigns the root DOM node to rootRef, following the selected root', async () => {
-    const buttonRef = ref<Element | null>(null)
+    const buttonRef = ref<HTMLButtonElement | null>(null)
     mount({
       render: () =>
         h(MantineProvider, { env: 'test' }, () => h(Button, { rootRef: buttonRef }, () => 'Label')),
@@ -198,7 +198,7 @@ describe('@mantine-vue/core polymorphicFactory (Button)', () => {
     expect(buttonRef.value).toBeInstanceOf(HTMLButtonElement)
     expect(buttonRef.value?.classList.contains('mantine-Button-root')).toBe(true)
 
-    const anchorRef = ref<Element | null>(null)
+    const anchorRef = ref<HTMLAnchorElement | null>(null)
     mount({
       render: () =>
         h(MantineProvider, { env: 'test' }, () =>

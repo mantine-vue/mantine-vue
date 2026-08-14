@@ -9,7 +9,8 @@ const defaultProps = { separator: '/' } as const
 </script>
 
 <script setup lang="ts">
-import { cloneVNode, Comment, Fragment, h, Text, useAttrs, useSlots, type VNode } from 'vue'
+import { ref, cloneVNode, Comment, Fragment, h, Text, useAttrs, useSlots, type VNode } from 'vue'
+import { assignRef } from '@mantine-vue/hooks'
 import { Box, resolveNode, useProps, useStyles } from '../../core'
 import type { BreadcrumbsOwnProps, BreadcrumbsSlots } from './Breadcrumbs.types'
 import classes from './Breadcrumbs.module.css'
@@ -73,10 +74,19 @@ const renderBreadcrumbs = Object.assign(
       return acc
     }, [])
 
-    return h(Box, { ...attrs, ...getStyles('root') }, () => items)
+    return h(Box, { ...attrs, rootRef: setRootRef, ...getStyles('root') }, () => items)
   },
   { props: { nodes: { type: Function, required: false } } },
 )
+
+const rootElement = ref<Element | null>(null)
+
+const setRootRef = (node: Element | null) => {
+  rootElement.value = node
+  assignRef(props.rootRef, node)
+}
+
+defineExpose({ rootElement })
 </script>
 
 <template>

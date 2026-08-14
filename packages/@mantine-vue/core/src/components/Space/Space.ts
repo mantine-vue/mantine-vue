@@ -1,4 +1,5 @@
-import { withBoxProps } from '../../core'
+import { factory } from '../../core'
 import SpaceComponent from './Space.vue'
-export const Space = withBoxProps(SpaceComponent)
-export type { SpaceOwnProps, SpaceProps } from './Space.types'
+import type { SpaceFactory } from './Space.types'
+export const Space = factory<SpaceFactory>(SpaceComponent)
+export type { SpaceOwnProps, SpaceProps, SpaceFactory } from './Space.types'

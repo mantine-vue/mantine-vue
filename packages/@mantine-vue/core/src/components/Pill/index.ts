@@ -9,3 +9,4 @@ export type {
   PillGroupSlots,
   PillGroupStylesNames,
 } from './PillGroup/PillGroup'
+export type { PillFactory } from './Pill'

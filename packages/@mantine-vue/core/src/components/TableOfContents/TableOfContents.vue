@@ -25,7 +25,7 @@ const defaultProps = {
 } as const
 </script>
 <script setup lang="ts">
-import { h, useAttrs } from 'vue'
+import { ref, h, useAttrs } from 'vue'
 import { assignRef, useId, useScrollSpy, type UseScrollSpyHeadingData } from '@mantine-vue/hooks'
 import { Box, useProps, useStyles } from '../../core'
 import { UnstyledButton } from '../UnstyledButton'
@@ -74,6 +74,7 @@ const renderTableOfContents = () => {
     Box,
     {
       ...attrs,
+      rootRef: setRootRef,
       variant: props.variant,
       ...getStyles('root', { className: attrs.class, style: attrs.style as any }),
     },
@@ -106,5 +107,14 @@ const renderTableOfContents = () => {
       }),
   )
 }
+
+const rootElement = ref<Element | null>(null)
+
+const setRootRef = (node: Element | null) => {
+  rootElement.value = node
+  assignRef(props.rootRef, node)
+}
+
+defineExpose({ rootElement })
 </script>
 <template><renderTableOfContents /></template>

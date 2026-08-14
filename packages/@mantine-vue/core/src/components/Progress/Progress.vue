@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { useAttrs } from 'vue'
+import { ref, useAttrs } from 'vue'
+import { assignRef } from '@mantine-vue/hooks'
 import { useProps } from '../../core'
 import { ProgressRoot } from './ProgressRoot/ProgressRoot'
 import { ProgressSection } from './ProgressSection/ProgressSection'
@@ -18,11 +19,22 @@ const rawProps = withDefaults(defineProps<ProgressOwnProps>(), {
   vars: undefined,
 })
 const attrs = useAttrs()
+const ariaLabel = attrs['aria-label'] as string | undefined
 const props = useProps('Progress', null, rawProps)
+
+const rootElement = ref<Element | null>(null)
+
+const setRootRef = (node: Element | null) => {
+  rootElement.value = node
+  assignRef(props.rootRef, node)
+}
+
+defineExpose({ rootElement })
 </script>
 
 <template>
   <ProgressRoot
+    :root-ref="setRootRef"
     v-bind="attrs"
     :class-names="props.classNames as any"
     :styles="props.styles as any"
@@ -39,7 +51,7 @@ const props = useProps('Progress', null, rawProps)
       :color="props.color"
       :striped="props.striped"
       :animated="props.animated"
-      :aria-label="attrs['aria-label']"
+      :aria-label="ariaLabel"
     />
   </ProgressRoot>
 </template>
