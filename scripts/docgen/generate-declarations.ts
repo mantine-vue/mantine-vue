@@ -4,12 +4,19 @@ import path from 'node:path'
 import ts from 'typescript'
 import {
   chunkByFile,
+  findEmitsDeclarations,
   findPropsDeclarations,
   findSlotsDeclarations,
   type PropsDeclaration,
 } from './find-props-declarations'
 import { getSourceFiles } from './get-source-files'
-import type { DocgenData, DocgenProp, DocgenSlot, GenerateDeclarationsOptions } from './types'
+import type {
+  DocgenData,
+  DocgenEmit,
+  DocgenProp,
+  DocgenSlot,
+  GenerateDeclarationsOptions,
+} from './types'
 
 function readCompilerOptions(tsConfigPath: string): ts.CompilerOptions {
   const configFile = ts.readConfigFile(tsConfigPath, ts.sys.readFile)
@@ -240,16 +247,62 @@ function collectSlots({
     }, {})
 }
 
+function collectEmits({
+  type,
+  checker,
+  includePaths,
+  typesReplacement,
+}: CollectSlotsOptions): Record<string, DocgenEmit> {
+  const emits: Record<string, DocgenEmit> = {}
+
+  for (const symbol of checker.getPropertiesOfType(type)) {
+    const name = symbol.getName()
+    const declaration = symbol.declarations?.[0]
+
+    if (name.startsWith('__') || !declaration) {
+      continue
+    }
+
+    if (!isWithinPaths(declaration.getSourceFile().fileName, includePaths)) {
+      continue
+    }
+
+    const emitType = checker.getTypeOfSymbolAtLocation(symbol, declaration)
+    const typeName = checker.typeToString(
+      emitType,
+      declaration,
+      ts.TypeFormatFlags.NoTruncation |
+        ts.TypeFormatFlags.InTypeAlias |
+        ts.TypeFormatFlags.UseAliasDefinedOutsideCurrentScope,
+    )
+
+    emits[name] = {
+      name,
+      type: { name: cleanType(typeName, typesReplacement) },
+      description: getDescription(symbol, checker),
+      declaredIn: toRepositoryPath(declaration.getSourceFile().fileName),
+    }
+  }
+
+  return Object.keys(emits)
+    .sort((a, b) => a.localeCompare(b))
+    .reduce<Record<string, DocgenEmit>>((acc, key) => {
+      acc[key] = emits[key]
+      return acc
+    }, {})
+}
+
 interface AnalyseChunkOptions {
   declarations: PropsDeclaration[]
   slotsByComponent: Map<string, PropsDeclaration>
+  emitsByComponent: Map<string, PropsDeclaration>
   compilerOptions: ts.CompilerOptions
   includePaths: string[]
   excludeProps: Set<string>
   typesReplacement: Record<string, string>
 }
 
-/** Resolves the exported symbol a `PropsDeclaration` (or slots equivalent) points at. */
+/** Resolves the exported symbol referenced by a props, slots, or emits declaration. */
 function resolveDeclaredSymbol(
   program: ts.Program,
   checker: ts.TypeChecker,
@@ -278,21 +331,26 @@ function resolveDeclaredSymbol(
 function analyseChunk({
   declarations,
   slotsByComponent,
+  emitsByComponent,
   compilerOptions,
   includePaths,
   excludeProps,
   typesReplacement,
 }: AnalyseChunkOptions): DocgenData {
-  // A component's `*Slots` interface does not always live in the same file as
-  // its `*Props` interface (see `WeekViewSlots`, declared next to the
-  // component itself rather than in the shared `component-props.ts`), so its
-  // file needs to be a root too or the checker never parses it.
   const slotsDeclarations = declarations
     .map((declaration) => slotsByComponent.get(declaration.componentName))
     .filter((declaration): declaration is PropsDeclaration => Boolean(declaration))
 
+  const emitsDeclarations = declarations
+    .map((declaration) => emitsByComponent.get(declaration.componentName))
+    .filter((declaration): declaration is PropsDeclaration => Boolean(declaration))
+
   const rootNames = [
-    ...new Set([...declarations, ...slotsDeclarations].map((declaration) => declaration.fileName)),
+    ...new Set(
+      [...declarations, ...slotsDeclarations, ...emitsDeclarations].map(
+        (declaration) => declaration.fileName,
+      ),
+    ),
   ]
   const program = ts.createProgram(rootNames, compilerOptions)
   const checker = program.getTypeChecker()
@@ -332,11 +390,25 @@ function analyseChunk({
         })
       : undefined
 
+    const emitsDeclaration = emitsByComponent.get(declaration.componentName)
+    const emitsSymbol = emitsDeclaration
+      ? resolveDeclaredSymbol(program, checker, emitsDeclaration)
+      : undefined
+    const emits = emitsSymbol
+      ? collectEmits({
+          type: checker.getDeclaredTypeOfSymbol(emitsSymbol),
+          checker,
+          includePaths,
+          typesReplacement,
+        })
+      : undefined
+
     data[declaration.componentName] = {
       displayName: declaration.componentName,
       description: getDescription(symbol, checker),
       props,
       ...(slots && Object.keys(slots).length > 0 ? { slots } : {}),
+      ...(emits && Object.keys(emits).length > 0 ? { emits } : {}),
       declaredIn: toRepositoryPath(declaration.fileName),
     }
   }
@@ -378,6 +450,9 @@ export function generateDeclarations(options: GenerateDeclarationsOptions): Docg
   const slotsByComponent = new Map(
     findSlotsDeclarations(files).map((declaration) => [declaration.componentName, declaration]),
   )
+  const emitsByComponent = new Map(
+    findEmitsDeclarations(files).map((declaration) => [declaration.componentName, declaration]),
+  )
   const chunks = chunkByFile(declarations, chunkSize)
 
   console.log(
@@ -411,6 +486,7 @@ export function generateDeclarations(options: GenerateDeclarationsOptions): Docg
       analyseChunk({
         declarations: chunk,
         slotsByComponent,
+        emitsByComponent,
         compilerOptions,
         includePaths,
         excludeProps: new Set(excludeProps),

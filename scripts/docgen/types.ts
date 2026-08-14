@@ -36,6 +36,17 @@ export interface DocgenSlot {
   declaredIn?: string
 }
 
+export interface DocgenEmit {
+  /** Event name as it is used with `v-on`, e.g. `slide-change` */
+  name: string
+  /** Event payload tuple serialized to a string, e.g. `[index: number]` */
+  type: { name: string }
+  /** JSDoc description of the event, may contain inline markdown */
+  description: string
+  /** Repository-relative path of the file that declares this event. */
+  declaredIn?: string
+}
+
 export interface DocgenComponent {
   /** Component name, e.g. `Button` – derived from the `ButtonProps` interface */
   displayName: string
@@ -48,6 +59,8 @@ export interface DocgenComponent {
    * component does not declare a `*Slots` interface.
    */
   slots?: Record<string, DocgenSlot>
+  /** All events declared by the component. Omitted when it has no `*Emits` interface. */
+  emits?: Record<string, DocgenEmit>
   /**
    * Repository-relative path of the file that declares the props interface.
    * A path ending in `.types.ts` marks a component that has been migrated to a

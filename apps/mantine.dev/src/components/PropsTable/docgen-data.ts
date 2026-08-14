@@ -23,12 +23,22 @@ export interface DocgenSlot {
   declaredIn?: string
 }
 
+export interface DocgenEmit {
+  name: string
+  type: { name: string }
+  description: string
+  /** Repository-relative path of the file that declares the event. */
+  declaredIn?: string
+}
+
 export interface Docgen {
   displayName: string
   description: string
   props: Record<string, DocgenProp>
   /** Omitted when the component does not declare a `*Slots` interface. */
   slots?: Record<string, DocgenSlot>
+  /** Omitted when the component does not declare a `*Emits` interface. */
+  emits?: Record<string, DocgenEmit>
   /** Repository-relative path of the file that declares the props interface. */
   declaredIn?: string
 }
