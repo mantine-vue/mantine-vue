@@ -1,5 +1,6 @@
 import { ActionIcon, Menu, Tooltip } from '@mantine-vue/core'
 import { defineComponent, h, type PropType, type VNodeChild } from 'vue'
+import { getServerGroupingColumnActions } from '../../server-grouping/MVT_ServerGroupingGroupBy'
 import type { MVT_Header, MVT_RowData, MVT_TableInstance } from '../../types'
 import { parseFromValuesOrFunc } from '../../utils/utils'
 import { useMVT_Slots } from '../MVT_TableSlots'
@@ -36,6 +37,12 @@ export const MVT_ColumnActionMenu = defineComponent({
         iconClass?: string,
       ) =>
         h(Menu.Item, { disabled, leftSection: h(icon, { class: iconClass }), onClick }, () => label)
+
+      const serverGroupBy = getServerGroupingColumnActions(
+        table as MVT_TableInstance<any>,
+        column.id,
+      )
+
       const internal: VNodeChild[] = []
       if (o.enableSorting && column.getCanSort()) {
         if (o.enableSortingRemoval !== false)
@@ -100,6 +107,21 @@ export const MVT_ColumnActionMenu = defineComponent({
               table.setColumnOrder((old: string[]) => ['mvt-row-expand', ...old])
             },
           ),
+        )
+        if (o.enableColumnPinning) internal.push(h(Menu.Divider))
+      } else if (serverGroupBy) {
+        const { addGroup, grouping, removeGroup } = serverGroupBy
+        const isGrouped = grouping.includes(column.id)
+        internal.push(
+          isGrouped
+            ? item(l.clearGrouping ?? 'Clear grouping', icons.IconClearAll, () =>
+                removeGroup(column.id),
+              )
+            : item(
+                l.groupByColumn.replace('{column}', String(def.header)),
+                icons.IconBoxMultiple,
+                () => addGroup(column.id),
+              ),
         )
         if (o.enableColumnPinning) internal.push(h(Menu.Divider))
       }

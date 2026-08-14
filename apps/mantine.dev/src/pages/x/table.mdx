@@ -196,6 +196,232 @@ delay — change pages, sort a column, or type in the search box and watch it "r
 > options once, so getters are what keep server-driven values (like the `rowCount` total and the
 > current page) reactive.
 
+## Server-side grouping
+
+Use server-side grouping for hierarchical views over large datasets. Groups load lazily: root groups load first, child groups load when expanded, and records load after the final grouping level.
+
+Each level manages its own pagination, sorting, filtering, loading, and error state.
+
+Enable the feature with the `serverGrouping` table option and create a provider with `createServerGroupingProvider`. The provider handles backend requests through `loadGroups` and `loadRecords`, while adapter functions such as `groups`, `groupId`, `groupLabel`, and `records` map your API response into the table's internal model.
+
+```ts
+const provider = createServerGroupingProvider({
+  loadGroups: async (ctx) => {
+    // Fetch grouped data from your API
+  },
+  loadRecords: async (ctx) => {
+    // Fetch final records from your API
+  },
+})
+```
+
+The example below starts grouped by region and sales rep:
+
+```ts
+serverGrouping: {
+  provider,
+  defaultGrouping: ['region', 'rep'],
+}
+```
+
+<Demo data={DataTableDemos.serverGrouping} />
+
+### Grouping controls
+
+When grouping uses the table's `grouping` state, a **Group by** control is available in the top toolbar. Users can add, remove, reorder, or clear grouping levels.
+
+By default, columns are groupable when they are data columns and `enableGrouping` is not `false`. Use `groupBy.columns` to explicitly define available grouping fields, including custom descriptors such as `createdAt:month`.
+
+```ts
+serverGrouping: {
+  groupBy: {
+    enabled: true,
+    allowReorder: true,
+    allowClearAll: true,
+    columns: ['region', 'rep', 'createdAt:month'],
+    getFieldLabel: (field) => labels[field],
+    renderControl: (ctx) => /* custom control */,
+    mantineButtonProps: {},
+    mantineMenuProps: {},
+    mantinePillProps: ({ field }) => ({}),
+  },
+}
+```
+
+The `#serverGroupByControl` slot can also replace the default control and takes precedence over `renderControl`. It receives:
+
+```ts
+{
+  grouping,
+  groupableColumns,
+  addGroup,
+  removeGroup,
+  moveGroup,
+  clearGrouping,
+  table,
+}
+```
+
+Column action menus also expose grouping actions. Disable them with:
+
+```ts
+serverGrouping: {
+  groupBy: {
+    showInColumnActions: false,
+  },
+}
+```
+
+`defaultGrouping` sets the initial hierarchy for uncontrolled tables. Controlled `state.grouping` and `initialState.grouping` take precedence.
+
+If no grouping is configured, records load directly from the provider and the table behaves as a normal server-side table.
+
+### Pagination, sorting, and filtering
+
+The root level uses the table's regular pagination UI. Nested levels use independent pagination.
+
+```ts
+serverGrouping: {
+  initialPageSize: 15,
+  pagination: {
+    showForGroups: true,
+    showForRecords: true,
+    showAtRoot: false,
+    mantineActionIconProps: {},
+  },
+}
+```
+
+`initialPageSize` also sets the fixed page size used by nested levels.
+
+Sorting, global filters, and column filters are forwarded to the provider in grouped and ungrouped modes. Use `sortingMode` and `filteringMode` to control whether state is shared across levels.
+
+Changing filters resets the root to the first page and reloads affected levels.
+
+### Provider context and state
+
+Grouping fields are opaque strings. Values such as `createdAt:month` are passed to the provider unchanged, so your backend decides how to interpret them.
+
+If child requests depend on `parentGroups[n].value`, map `groupValue` to the backend value your loader expects. Otherwise, use `parentGroup.id` or `parentGroup.meta`.
+
+Each provider request receives:
+
+```ts
+{
+  parentGroups,
+  pagination,
+  sorting,
+  columnFilters,
+  globalFilter,
+  signal,
+}
+```
+
+Forward the provided `AbortSignal` to your HTTP client so obsolete requests can be cancelled automatically.
+
+Expansion can be controlled with:
+
+```ts
+state.serverGroupingExpanded
+onServerGroupingExpandedChange
+```
+
+Per-path state and reloading are available through:
+
+```ts
+table.setServerGroupingPagination(...)
+table.setServerGroupingSorting(...)
+table.setServerGroupingColumnFilters(...)
+table.setServerGroupingGlobalFilter(...)
+
+table.reloadServerGrouping()
+table.reloadServerGroupingPath(pathId)
+```
+
+Customize grouped rendering with the following slots or their equivalent `renderGroup*` options:
+
+```ts
+#serverGroupLabel
+#serverGroupCount
+#serverGroupCell
+#serverGroupError
+#serverGroupEmpty
+#serverGroupLoading
+```
+
+### Row selection
+
+`enableRowSelection` works with server-side grouping. Selection applies to record rows only; group rows do not render selection checkboxes.
+
+The header checkbox operates on loaded records inside expanded groups. Records in collapsed or unloaded groups are not implicitly selected.
+
+By default, collapsing a group preserves its selected records. To clear them on collapse:
+
+```ts
+serverGrouping: {
+  selection: {
+    clearOnCollapse: true,
+  },
+}
+```
+
+For bulk actions across the full filtered dataset, enable **Select all matching records**:
+
+```ts
+serverGrouping: {
+  selection: {
+    enableSelectAllMatching: true,
+  },
+}
+```
+
+The default `selectAllMode: 'query'` stores the selection as a query instead of downloading every matching row id.
+
+```ts
+const payload = table.getServerGroupingSelectionPayload()
+
+await api.bulkArchive(payload)
+```
+
+Unchecking an individual row while query selection is active adds that row to the exclusion set. Changing the grouping or shared filters clears the query selection because it refers to the previous result set.
+
+For small bounded datasets, use explicit ids instead:
+
+```ts
+serverGrouping: {
+  selection: {
+    enableSelectAllMatching: true,
+    selectAllMode: 'ids',
+    loadAllMatchingRowIds,
+  },
+}
+```
+
+<Demo data={DataTableDemos.serverGroupingSelection} />
+
+Selection APIs are also available programmatically:
+
+```ts
+table.getServerGroupingSelectionSummary()
+table.toggleAllServerGroupingRecordsSelected(value?)
+table.selectAllMatchingServerGroupingRecords()
+```
+
+### TanStack Query
+
+If your app already uses [TanStack Query](https://tanstack.com/query/latest), use it for caching and request deduplication instead of the optional `serverGrouping.cache`.
+
+Provider loaders are regular async functions, so they can delegate to `queryClient.fetchQuery`. Build the query key from the provider request context.
+
+After invalidating cached data, reload the table:
+
+```ts
+await queryClient.invalidateQueries(...)
+table.reloadServerGrouping()
+```
+
+<Demo data={DataTableDemos.serverGroupingQuery} />
+
 ## Localization
 
 The English locale ships by default. Pass a custom `localization` (a partial object is merged over

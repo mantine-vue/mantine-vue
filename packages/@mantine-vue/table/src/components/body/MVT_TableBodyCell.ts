@@ -195,8 +195,11 @@ export const MVT_TableBodyCell = defineComponent({
         isCellContentOverflowing.value = false
       }
 
+      // Server grouping fields are not TanStack client-grouped columns.
+      const isServerGrouping = !!(table as any)._serverGrouping
+
       const renderCellContent = () => {
-        if (cell.getIsPlaceholder()) {
+        if (!isServerGrouping && cell.getIsPlaceholder()) {
           return columnDef.PlaceholderCell?.({ cell, column, row, table }) ?? null
         }
 

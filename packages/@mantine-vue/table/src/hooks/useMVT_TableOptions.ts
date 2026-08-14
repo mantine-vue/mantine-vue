@@ -20,6 +20,7 @@ import { MVT_SortingFns } from '../fns/sortingFns'
 import { MVT_Default_Icons } from '../icons'
 import { MVT_Localization_EN } from '../locales/en'
 import { type MVT_DefinedTableOptions, type MVT_RowData, type MVT_TableOptions } from '../types'
+import { getAllLeafColumnDefs, getColumnId } from '../utils/column.utils'
 
 export const MVT_DefaultColumn = {
   filterVariant: 'text',
@@ -155,6 +156,77 @@ export const useMVT_TableOptions: <TData extends MVT_RowData>(
     manualGrouping = true
     manualPagination = true
     manualSorting = true
+  }
+
+  // The provider owns server-grouped pagination, sorting, and filtering.
+  if (rest.serverGrouping?.provider && rest.serverGrouping.enabled !== false) {
+    if (enableGrouping || rawOptions.manualGrouping) {
+      // oxlint-disable-next-line no-console
+      console.warn(
+        '[mantine-vue-table] `serverGrouping` cannot be combined with client-side ' +
+          '`enableGrouping` or `manualGrouping`. Disable one of them — ' +
+          '`serverGrouping` will take precedence for rendering.',
+      )
+    }
+    manualFiltering = true
+    manualPagination = true
+    manualSorting = true
+
+    // Server-grouping fields must not trigger TanStack's client-side column reorder.
+    if (rawOptions.groupedColumnMode === undefined) {
+      ;(rest as any).groupedColumnMode = false
+    }
+
+    // Seed the root toolbar from the fixed nested page size.
+    const configuredPageSize =
+      rest.serverGrouping.pagination?.defaultPageSize ?? rest.serverGrouping.initialPageSize
+    const seededPageSize =
+      Number.isInteger(configuredPageSize) && (configuredPageSize as number) > 0
+        ? configuredPageSize
+        : undefined
+    if (seededPageSize && rawOptions.state?.pagination === undefined) {
+      rest.initialState = {
+        ...rest.initialState,
+        pagination: {
+          pageIndex: rest.initialState?.pagination?.pageIndex ?? 0,
+          pageSize: rest.initialState?.pagination?.pageSize ?? seededPageSize,
+        },
+      }
+    }
+
+    // Controlled, initial, and static grouping values take precedence over the default.
+    const { defaultGrouping } = rest.serverGrouping
+    if (
+      defaultGrouping?.length &&
+      !rest.serverGrouping.grouping &&
+      rawOptions.state?.grouping === undefined &&
+      rest.initialState?.grouping === undefined
+    ) {
+      rest.initialState = { ...rest.initialState, grouping: [...defaultGrouping] }
+    }
+
+    // Custom backend descriptors may not correspond to table columns, so only warn.
+    const configuredFields = [...(rest.serverGrouping.grouping ?? []), ...(defaultGrouping ?? [])]
+    if (configuredFields.length) {
+      const knownFields = new Set<string>([
+        ...getAllLeafColumnDefs(rawOptions.columns).map((col) => getColumnId(col)),
+        ...(rest.serverGrouping.groupBy?.columns ?? []),
+      ])
+      const unknownFields = [...new Set(configuredFields)].filter(
+        (field) => !knownFields.has(field),
+      )
+      if (unknownFields.length) {
+        // oxlint-disable-next-line no-console
+        console.warn(
+          `[mantine-vue-table] serverGrouping field(s) ${unknownFields
+            .map((field) => `"${field}"`)
+            .join(', ')} do not match any column id. ` +
+            'Custom backend descriptors are supported — declare them in ' +
+            '`serverGrouping.groupBy.columns` to silence this warning and make ' +
+            'them selectable in the group-by toolbar.',
+        )
+      }
+    }
   }
 
   const definedOptions = {

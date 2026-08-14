@@ -37,6 +37,17 @@ import {
   showRowSelectionColumn,
   showRowSpacerColumn,
 } from '../utils/displayColumn.utils'
+import { MVT_SERVER_GROUPING_ROOT_PATH_ID } from '../server-grouping/serverGrouping.types'
+import {
+  getServerGroupingSelectionPayload,
+  getServerGroupingSelectionSummary,
+  selectAllMatchingServerGroupingRecords,
+  toggleAllServerGroupingRecordsSelected,
+} from '../server-grouping/serverGroupingSelection'
+import {
+  createMVT_ServerGroupingManager,
+  type MVT_ServerGroupingManager,
+} from '../server-grouping/useMVT_ServerGrouping'
 import { createRow } from '../utils/tanstack.helpers'
 import { getMVT_RowActionsColumnDef } from './display-columns/getMVT_RowActionsColumnDef'
 import { getMVT_RowDragColumnDef } from './display-columns/getMVT_RowDragColumnDef'
@@ -156,6 +167,15 @@ export const useMVT_TableInstance = <TData extends MVT_RowData>(
       Object.defineProperty(state, key, { configurable: true, enumerable: true, get: getter })
     }
   }
+  // Assigned after table creation; the getter below must remain lazy.
+  // oxlint-disable-next-line prefer-const
+  let serverGroupingManager: MVT_ServerGroupingManager<TData> | undefined
+  defineState('serverGroupingExpanded', () => serverGroupingManager?.getExpanded() ?? {})
+  defineState(
+    'serverGroupingSelectAll',
+    () => serverGroupingManager?.getSelectAll() ?? { active: false, excludedRowIds: [] },
+  )
+
   defineState('columnFilterFns', () => columnFilterFns.value)
   defineState('columnOrder', () => columnOrder.value)
   defineState('columnSizingInfo', () => columnSizingInfo.value)
@@ -328,6 +348,78 @@ export const useMVT_TableInstance = <TData extends MVT_RowData>(
   table.setShowToolbarDropZone =
     statefulTableOptions.onShowToolbarDropZoneChange ??
     ((updater) => applyUpdater(showToolbarDropZone, updater))
+
+  serverGroupingManager = createMVT_ServerGroupingManager(
+    table,
+    () =>
+      userStateKeys.has('serverGroupingExpanded')
+        ? (readUserState() as any).serverGroupingExpanded
+        : undefined,
+    () =>
+      userStateKeys.has('serverGroupingSelectAll')
+        ? (readUserState() as any).serverGroupingSelectAll
+        : undefined,
+  )
+  ;(table as any)._serverGrouping = serverGroupingManager
+  if (serverGroupingManager) {
+    // The toolbar needs the root path's server-reported total.
+    const readUserRowCount = Object.getOwnPropertyDescriptor(definedTableOptions, 'rowCount')?.get
+    Object.defineProperty(definedTableOptions, 'rowCount', {
+      configurable: true,
+      enumerable: true,
+      get: () =>
+        readUserRowCount?.call(definedTableOptions) ??
+        serverGroupingManager?.getPathState(MVT_SERVER_GROUPING_ROOT_PATH_ID)?.rowCount,
+    })
+  }
+  table.getServerGroupingState = () =>
+    serverGroupingManager?.getState() ?? { enabled: false, expanded: {}, grouping: [], paths: {} }
+  table.getServerGroupingPathState = (pathId) => serverGroupingManager?.getPathState(pathId)
+  table.expandServerGroup = (pathId) => serverGroupingManager?.expand(pathId)
+  table.collapseServerGroup = (pathId) => serverGroupingManager?.collapse(pathId)
+  table.toggleServerGroup = (pathId) => serverGroupingManager?.toggle(pathId)
+  table.reloadServerGrouping = () => serverGroupingManager?.reload()
+  table.reloadServerGroupingPath = (pathId) => serverGroupingManager?.reload(pathId)
+  table.invalidateServerGrouping = () => serverGroupingManager?.invalidate()
+  table.invalidateServerGroupingPath = (pathId) => serverGroupingManager?.invalidate(pathId)
+  table.resetServerGroupingState = () => serverGroupingManager?.reset()
+  table.setServerGroupingExpanded = (updater) => serverGroupingManager?.setExpanded(updater)
+  table.setServerGroupingPagination = (pathId, pagination) =>
+    serverGroupingManager?.setPagination(pathId, pagination)
+  table.setServerGroupingSorting = (pathId, sorting) =>
+    serverGroupingManager?.setSorting(pathId, sorting)
+  table.setServerGroupingColumnFilters = (pathId, columnFilters) =>
+    serverGroupingManager?.setColumnFilters(pathId, columnFilters)
+  table.setServerGroupingGlobalFilter = (pathId, globalFilter) =>
+    serverGroupingManager?.setGlobalFilter(pathId, globalFilter)
+  table.getServerGroupingSelectionSummary = () =>
+    serverGroupingManager
+      ? getServerGroupingSelectionSummary(table as MVT_TableInstance<any>)
+      : {
+          excludedRowIds: [],
+          isAll: false,
+          isSelectAllMatching: false,
+          isSome: false,
+          mode: 'include',
+          selectableCount: 0,
+          selectedCount: 0,
+          selectedRowIds: [],
+        }
+  table.toggleAllServerGroupingRecordsSelected = (value) => {
+    if (serverGroupingManager) {
+      toggleAllServerGroupingRecordsSelected(table as MVT_TableInstance<any>, value)
+    }
+  }
+  table.selectAllMatchingServerGroupingRecords = async () => {
+    if (serverGroupingManager) {
+      await selectAllMatchingServerGroupingRecords(table as MVT_TableInstance<any>)
+    }
+  }
+  table.getServerGroupingSelectAllState = () =>
+    serverGroupingManager?.getSelectAll() ?? { active: false, excludedRowIds: [] }
+  table.setServerGroupingSelectAllState = (updater) => serverGroupingManager?.setSelectAll(updater)
+  table.getServerGroupingSelectionPayload = () =>
+    getServerGroupingSelectionPayload(table as MVT_TableInstance<any>)
 
   // Expose the reactive slot registry + setter so `<MantineVueTable>` can
   // publish its named slots into the instance

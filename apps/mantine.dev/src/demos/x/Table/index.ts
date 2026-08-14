@@ -14,6 +14,9 @@ import { expanding } from './Table.demo.expanding'
 import { aggregation } from './Table.demo.aggregation'
 import { columnFiltering } from './Table.demo.columnFiltering'
 import { serverSide } from './Table.demo.serverSide'
+import { serverGrouping } from './Table.demo.serverGrouping'
+import { serverGroupingQuery } from './Table.demo.serverGroupingQuery'
+import { serverGroupingSelection } from './Table.demo.serverGroupingSelection'
 import { virtualized } from './Table.demo.virtualized'
 
 export const DataTableDemos = {
@@ -33,5 +36,8 @@ export const DataTableDemos = {
   aggregation,
   columnFiltering,
   serverSide,
+  serverGrouping,
+  serverGroupingQuery,
+  serverGroupingSelection,
   virtualized,
 }
