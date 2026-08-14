@@ -46,7 +46,7 @@ export function createMdxTitle(order: 1 | 2 | 3 | 4 | 5 | 6) {
             class: classes.offset,
           }),
           h(Title, { ...attrs, order, class: classes.title }, () =>
-            h('a', { class: classes.link, href: `#${props.id}` }, () => children),
+            h('a', { class: classes.link, href: `#${props.id}` }, children),
           ),
         ]
       }
