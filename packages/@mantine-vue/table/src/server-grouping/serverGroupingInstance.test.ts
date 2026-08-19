@@ -42,7 +42,7 @@ import {
   getServerGroupableColumns,
   getServerGroupingColumnActions,
   getServerGroupingGroupByContext,
-} from './MVT_ServerGroupingGroupBy'
+} from './MVT_ServerGroupingGroupBy.vue'
 import { MVT_SERVER_GROUPING_ROOT_PATH_ID } from './serverGrouping.types'
 
 const flush = async () => {

@@ -2,8 +2,8 @@ import { Fragment, h } from 'vue'
 
 import { Flex, Tooltip } from '@mantine-vue/core'
 
-import { MVT_ExpandAllButton } from '../../components/buttons/MVT_ExpandAllButton'
-import { MVT_ExpandButton } from '../../components/buttons/MVT_ExpandButton'
+import MVT_ExpandAllButton from '../../components/buttons/MVT_ExpandAllButton.vue'
+import MVT_ExpandButton from '../../components/buttons/MVT_ExpandButton.vue'
 import { type MVT_ColumnDef, type MVT_RowData, type MVT_StatefulTableOptions } from '../../types'
 import { defaultDisplayColumnProps } from '../../utils/displayColumn.utils'
 

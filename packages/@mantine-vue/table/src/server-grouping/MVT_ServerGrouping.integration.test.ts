@@ -5,7 +5,7 @@ import { describe, expect, it, vi } from 'vitest'
 
 import { MantineProvider } from '@mantine-vue/core'
 
-import { MantineVueTable } from '../components/MantineVueTable'
+import MantineVueTable from '../components/MantineVueTable.vue'
 import { useMantineVueTable } from '../hooks/useMantineVueTable'
 import { type MVT_ColumnDef, type MVT_TableInstance, type MVT_TableOptions } from '../types'
 import { createServerGroupingProvider } from './createServerGroupingProvider'
@@ -299,6 +299,30 @@ describe('MVT server grouping integration', () => {
 
     expect(loadGroups.mock.calls.at(-1)![0].groupingField).toBe('department')
     expect(table.getState().serverGroupingExpanded).toEqual({})
+    wrapper.unmount()
+  })
+
+  it('removes a grouped-alert badge immediately when its remove button is clicked', async () => {
+    const { provider } = makeBackend()
+    const { table, wrapper } = mountTable({
+      initialState: { grouping: ['name', 'amount'] },
+      serverGrouping: { provider },
+    })
+    await flush(wrapper)
+
+    const alert = wrapper.find('[role="alert"]')
+    expect(alert.exists()).toBe(true)
+    expect(alert.text()).toContain('Name')
+    expect(alert.text()).toContain('Amount')
+
+    const removeName = alert.findAll('button')[0]
+    expect(removeName).toBeDefined()
+    await removeName.trigger('click')
+    await nextTick()
+
+    expect(table.getState().grouping).toEqual(['amount'])
+    expect(alert.text()).not.toContain('Name')
+    expect(alert.text()).toContain('Amount')
     wrapper.unmount()
   })
 

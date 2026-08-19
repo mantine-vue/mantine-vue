@@ -1,3 +1,4 @@
+import { ref } from 'vue'
 import { describe, expect, it, vi } from 'vitest'
 import { usePagination } from './use-pagination'
 
@@ -95,5 +96,14 @@ describe('@mantine-vue/hooks/use-pagination', () => {
     expect(pagination.active.value).toBe(5)
     pagination.setPage(20)
     expect(pagination.active.value).toBe(15)
+  })
+
+  it('updates the range when total changes', () => {
+    const total = ref(5)
+    const pagination = usePagination({ total })
+
+    expect(pagination.range.value).toStrictEqual([1, 2, 3, 4, 5])
+    total.value = 1
+    expect(pagination.range.value).toStrictEqual([1])
   })
 })

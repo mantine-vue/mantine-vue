@@ -3,7 +3,7 @@ import { mount } from '@vue/test-utils'
 import { MantineProvider } from '@mantine-vue/core'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { provideMVT_Slots } from '../MVT_TableSlots'
-import { MVT_EditRowModal } from './MVT_EditRowModal'
+import MVT_EditRowModal from './MVT_EditRowModal.vue'
 
 afterEach(() => {
   document.body.innerHTML = ''

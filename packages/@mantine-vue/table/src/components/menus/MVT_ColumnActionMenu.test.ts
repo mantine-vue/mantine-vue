@@ -3,7 +3,7 @@ import { mount } from '@vue/test-utils'
 import { describe, expect, it } from 'vitest'
 import { MantineProvider } from '@mantine-vue/core'
 import { MVT_Default_Icons } from '../../icons'
-import { MVT_ColumnActionMenu } from './MVT_ColumnActionMenu'
+import MVT_ColumnActionMenu from './MVT_ColumnActionMenu.vue'
 
 describe('MVT_ColumnActionMenu', () => {
   it('opens when the action button is clicked', async () => {

@@ -1,6 +1,6 @@
 import { h, type Ref } from 'vue'
 
-import { MVT_TableBodyRowGrabHandle } from '../../components/body/MVT_TableBodyRowGrabHandle'
+import MVT_TableBodyRowGrabHandle from '../../components/body/MVT_TableBodyRowGrabHandle.vue'
 import { type MVT_ColumnDef, type MVT_RowData, type MVT_StatefulTableOptions } from '../../types'
 import { defaultDisplayColumnProps } from '../../utils/displayColumn.utils'
 

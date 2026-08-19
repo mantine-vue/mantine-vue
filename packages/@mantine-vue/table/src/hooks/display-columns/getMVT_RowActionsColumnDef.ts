@@ -1,6 +1,6 @@
 import { h } from 'vue'
 
-import { MVT_ToggleRowActionMenuButton } from '../../components/buttons/MVT_ToggleRowActionMenuButton'
+import MVT_ToggleRowActionMenuButton from '../../components/buttons/MVT_ToggleRowActionMenuButton.vue'
 import { type MVT_ColumnDef, type MVT_RowData, type MVT_StatefulTableOptions } from '../../types'
 import { defaultDisplayColumnProps } from '../../utils/displayColumn.utils'
 

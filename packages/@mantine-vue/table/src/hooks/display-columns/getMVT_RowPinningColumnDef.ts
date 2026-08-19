@@ -1,6 +1,6 @@
 import { h } from 'vue'
 
-import { MVT_TableBodyRowPinButton } from '../../components/body/MVT_TableBodyRowPinButton'
+import MVT_TableBodyRowPinButton from '../../components/body/MVT_TableBodyRowPinButton.vue'
 import { type MVT_ColumnDef, type MVT_RowData, type MVT_StatefulTableOptions } from '../../types'
 import { defaultDisplayColumnProps } from '../../utils/displayColumn.utils'
 

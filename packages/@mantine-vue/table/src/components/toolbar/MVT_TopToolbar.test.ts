@@ -2,7 +2,7 @@ import { defineComponent, h, nextTick } from 'vue'
 import { mount } from '@vue/test-utils'
 import { describe, expect, it } from 'vitest'
 import { MantineProvider } from '@mantine-vue/core'
-import { MVT_TopToolbar } from './MVT_TopToolbar'
+import MVT_TopToolbar from './MVT_TopToolbar.vue'
 import classes from './MVT_TopToolbar.module.css'
 
 describe('MVT_TopToolbar', () => {
