@@ -1,6 +1,6 @@
 import { h } from 'vue'
 
-import { MVT_SelectCheckbox } from '../../components/inputs/MVT_SelectCheckbox'
+import MVT_SelectCheckbox from '../../components/inputs/MVT_SelectCheckbox.vue'
 import { type MVT_ColumnDef, type MVT_RowData, type MVT_StatefulTableOptions } from '../../types'
 import { defaultDisplayColumnProps } from '../../utils/displayColumn.utils'
 

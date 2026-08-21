@@ -1,10 +1,10 @@
-import { computed, type MaybeRefOrGetter } from 'vue'
+import { computed, toValue, type MaybeRefOrGetter } from 'vue'
 import { useUncontrolled } from '../use-uncontrolled/use-uncontrolled'
 
 export const DOTS = 'dots' as const
 
 export interface UsePaginationOptions {
-  total: number
+  total: MaybeRefOrGetter<number>
   siblings?: number
   boundaries?: number
   page?: MaybeRefOrGetter<number | undefined>
@@ -28,7 +28,7 @@ export function usePagination({
   startValue = 1,
 }: UsePaginationOptions) {
   const start = computed(() => Math.max(Math.trunc(startValue), 1))
-  const end = computed(() => Math.max(Math.trunc(total), start.value))
+  const end = computed(() => Math.max(Math.trunc(toValue(total)), start.value))
   const totalPages = computed(() => end.value - start.value + 1)
   const firstPage = computed(() => initialPage ?? start.value)
   const [active, setActive] = useUncontrolled<number>({

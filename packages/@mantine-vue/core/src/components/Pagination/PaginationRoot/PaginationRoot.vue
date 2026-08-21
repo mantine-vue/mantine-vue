@@ -63,7 +63,7 @@ const attrs = useAttrs()
 const props = useProps('PaginationRoot', defaultProps, rawProps)
 
 const pagination = usePagination({
-  total: props.total,
+  total: () => props.total,
   page: () => props.modelValue,
   initialPage: props.defaultValue,
   siblings: props.siblings,
