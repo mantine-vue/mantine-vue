@@ -106,9 +106,7 @@ function vueCode(componentName: string, options: ScheduleDemoOptions) {
   const selectedDateState = withSelectedDate
     ? `\nconst selectedDate = ref<string | null>(${JSON.stringify(options.selectedDate)})`
     : ''
-  const selectedDateProps = withSelectedDate
-    ? '\n    :selected-date="selectedDate"\n    :on-selected-date-change="(value) => (selectedDate = value)"'
-    : ''
+  const selectedDateProps = withSelectedDate ? '\n    v-model:selected-date="selectedDate"' : ''
   const resourcesState = options.resources
     ? `\nconst resources: ScheduleResourceData[] = ${JSON.stringify(options.resources, null, 2)}`
     : ''
@@ -125,7 +123,7 @@ function createEvent(data: { date?: string; slotStart?: string; slotEnd?: string
 `
     : ''
   const formProps = options.interactiveForm
-    ? '\n    :on-time-slot-click="createEvent"\n    :on-day-click="createEvent"\n    :on-slot-drag-end="createEvent"'
+    ? '\n    @time-slot-click="createEvent"\n    @day-click="createEvent"\n    @slot-drag-end="createEvent"'
     : ''
   const externalImport = options.externalDrag ? "\nimport dayjs from 'dayjs'" : ''
   const externalFunctions = options.externalDrag
@@ -152,7 +150,9 @@ function dropExternal(data: { dropDateTime: string; resourceId?: string | number
   </div>
 `
     : ''
-  const externalProps = options.externalDrag ? '\n    :on-external-event-drop="dropExternal"' : ''
+  const externalProps = options.externalDrag
+    ? '\n    with-external-event-drop\n    @external-event-drop="dropExternal"'
+    : ''
   return `<script setup lang="ts">
 import { ref } from 'vue'
 ${externalImport}
@@ -176,9 +176,9 @@ ${externalMarkup}
   <${componentName}
     :date="date"
     :events="events"${resourcesProps}${selectedDateProps}${attributes}
-    :on-date-change="(value) => (date = value)"
-    :on-event-drop="updateEvent"
-    :on-event-resize="updateEvent"${formProps}${externalProps}
+    @date-change="(value) => (date = value)"
+    @event-drop="updateEvent"
+    @event-resize="updateEvent"${formProps}${externalProps}
   />
 </template>`
 }
@@ -303,6 +303,7 @@ export function createScheduleDemo(
               : {}),
             startTime: '08:00:00',
             endTime: '18:00:00',
+            withExternalEventDrop: true,
             onDateChange: (value: string) => {
               date.value = value
             },
@@ -370,7 +371,8 @@ export const sharedVariants: Record<string, ScheduleDemoOptions> = {
     props: { withEventsDragAndDrop: true },
     externalDrag: true,
     codeProps: 'with-events-drag-and-drop',
-    description: 'Events can be moved between slots; external items can use onExternalEventDrop.',
+    description:
+      'Events can be moved between slots; set `withExternalEventDrop` and listen for `externalEventDrop` to accept items from outside.',
   },
   externalDragDrop: {
     externalDrag: true,

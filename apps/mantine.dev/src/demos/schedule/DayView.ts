@@ -61,7 +61,7 @@ export const DayViewDemos = createDemoRegistry(DayView, 'DayView', keys, {
   },
   businessHours: { props: { highlightBusinessHours: true }, codeProps: 'highlight-business-hours' },
   getTimeSlotProps: {
-    description: 'Use onTimeSlotClick to inspect or customize individual slots.',
+    description: 'Listen for the `timeSlotClick` event to inspect or customize individual slots.',
   },
   slotHeight: { props: { slotHeight: 80 }, codeProps: ':slot-height="80"' },
   withoutHeader: { props: { withHeader: false }, codeProps: ':with-header="false"' },
@@ -84,7 +84,9 @@ export const DayViewDemos = createDemoRegistry(DayView, 'DayView', keys, {
     codeProps: `:labels="{ allDay: 'Whole day', today: 'Go to today' }"`,
   },
   controlledDate: {
-    description: 'The demo keeps date in a Vue ref and updates it with onDateChange.',
+    description: 'The demo keeps date in a Vue ref and updates it from the `dateChange` event.',
   },
-  viewChange: { description: 'Use onViewChange to switch to another standalone view.' },
+  viewChange: {
+    description: 'Listen for the `viewChange` event to switch to another standalone view.',
+  },
 })

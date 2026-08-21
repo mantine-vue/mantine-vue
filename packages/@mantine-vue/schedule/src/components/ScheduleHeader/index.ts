@@ -1,2 +1,6 @@
 export * from './ScheduleHeader'
 export * from './ScheduleHeaderBase'
+export * from './HeaderControl'
+export * from './ViewSelect'
+export * from './MonthYearSelect'
+export { useScheduleHeaderLabels } from './ScheduleHeader.context'

@@ -17,6 +17,7 @@
       "@mantine-vue/utils": ["./packages/@mantine-vue/utils/src"],
       "@mantine-vue/hooks": ["./packages/@mantine-vue/hooks/src"],
       "@mantine-vue/core": ["./packages/@mantine-vue/core/src"],
+      "@mantine-vue/core/styles-api": ["./packages/@mantine-vue/core/src/core/styles-api/index.ts"],
       "@mantine-vue/code-highlight": ["./packages/@mantine-vue/code-highlight/src"],
       "@mantine-vue/dates": ["./packages/@mantine-vue/dates/src"],
       "@mantine-vue/form": ["./packages/@mantine-vue/form/src"],

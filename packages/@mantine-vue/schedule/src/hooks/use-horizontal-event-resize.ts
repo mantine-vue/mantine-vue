@@ -1,5 +1,6 @@
 import dayjs from 'dayjs'
-import { onBeforeUnmount, ref } from 'vue'
+import { onBeforeUnmount, shallowRef } from 'vue'
+import { rafThrottle } from '../components/shared'
 import type { EventDropData } from '../component-props'
 import type { DateTimeStringValue, ScheduleEventData, ScheduleMode } from '../types'
 import { clampIntervalMinutes, parseTimeString } from '../utils'
@@ -27,10 +28,10 @@ export function useHorizontalEventResize(input: {
   startTime: () => string
   endTime: () => string
   intervalMinutes: () => number
-  onEventResize: () => ((data: EventDropData) => void) | undefined
+  onEventResize: (data: EventDropData) => void
   canResizeEvent: () => ((event: ScheduleEventData) => boolean) | undefined
 }) {
-  const state = ref<ResizeState | null>(null)
+  const state = shallowRef<ResizeState | null>(null)
   let justResized = false
   let savedUserSelect = ''
 
@@ -56,11 +57,15 @@ export function useHorizontalEventResize(input: {
     const minutes = startMinutes + Math.round((snap(percent) / 100) * total)
     return `${date} ${String(Math.floor(minutes / 60)).padStart(2, '0')}:${String(minutes % 60).padStart(2, '0')}:00`
   }
-  const move = (event: PointerEvent) => {
+  /**
+   * Coalesced to one animation frame: `pointermove` outruns paint, and each step reads layout
+   * and re-renders the grid.
+   */
+  const move = rafThrottle((clientX: number) => {
     if (!state.value) return
     const rect = state.value.container.getBoundingClientRect()
     const dayWidth = rect.width / state.value.dayCount
-    const raw = ((event.clientX - rect.left - state.value.dayIndex * dayWidth) / dayWidth) * 100
+    const raw = ((clientX - rect.left - state.value.dayIndex * dayWidth) / dayWidth) * 100
     const point = snap(raw)
     const { minWidth } = metrics()
     const current = state.value
@@ -72,20 +77,24 @@ export function useHorizontalEventResize(input: {
       current.currentWidth = right - current.currentLeft
     }
     state.value = { ...current }
-  }
+  })
+  const trackPointer = (event: PointerEvent) => move(event.clientX)
   const cleanup = () => {
-    document.removeEventListener('pointermove', move)
+    move.cancel()
+    document.removeEventListener('pointermove', trackPointer)
     document.removeEventListener('pointerup', finish)
     document.body.style.userSelect = savedUserSelect
   }
   const finish = () => {
+    // Drop the pending frame first, so a stale step cannot land after the gesture ended.
+    move.cancel()
     const current = state.value
     if (
       current &&
       (current.currentLeft !== current.originalLeft ||
         current.currentWidth !== current.originalWidth)
     ) {
-      input.onEventResize()?.({
+      input.onEventResize({
         eventId: current.event.id,
         newStart:
           current.edge === 'start'
@@ -128,7 +137,7 @@ export function useHorizontalEventResize(input: {
     }
     savedUserSelect = document.body.style.userSelect
     document.body.style.userSelect = 'none'
-    document.addEventListener('pointermove', move)
+    document.addEventListener('pointermove', trackPointer)
     document.addEventListener('pointerup', finish)
   }
   onBeforeUnmount(cleanup)

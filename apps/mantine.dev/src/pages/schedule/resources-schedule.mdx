@@ -12,13 +12,13 @@ export default Layout(MDX_DATA.ResourcesSchedule)
 
 ## Controlled state
 
-You can control the current date and view level with the `date`/`onDateChange` and `view`/`onViewChange` props.
+You can control the current date and view level with `v-model:date` and `v-model:view`.
 
 <Demo data={ResourcesScheduleDemos.controlled} />
 
 ## Drag and drop
 
-Enable drag and drop across all views with the `withEventsDragAndDrop` prop. `onEventDrop` receives the target `resourceId`.
+Enable drag and drop across all views with the `withEventsDragAndDrop` prop. The `eventDrop` payload carries the target `resourceId`.
 
 <Demo data={ResourcesScheduleDemos.dragDrop} />
 
@@ -42,7 +42,7 @@ Click time slots, day cells or existing events to create events. The interaction
 
 ## External drag and drop
 
-You can drag external items onto the schedule using the `onExternalEventDrop` prop. The callback receives the `resourceId` of the target resource.
+Set `withExternalEventDrop` to drag external items onto the schedule. The `externalEventDrop` payload carries the `resourceId` of the target resource.
 
 <Demo data={ResourcesScheduleDemos.externalDragDrop} />
 

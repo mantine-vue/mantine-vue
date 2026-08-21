@@ -1,80 +1,123 @@
 import dayjs from 'dayjs'
-import { h, type CSSProperties, type PropType, type VNodeChild } from 'vue'
+import { computed, onScopeDispose, type ComputedRef } from 'vue'
+import type { EventSlots, RenderEvent, RenderEventBody } from '../component-props'
 import type {
-  BaseViewProps,
-  EventDropData,
-  NativeButtonProps,
-  RenderEvent,
-  RenderEventBody,
-  TimeSlotClickData,
-} from '../component-props'
-import type {
-  AnyDateValue,
   DateLabelFormat,
   DateStringValue,
   DateTimeStringValue,
   ScheduleEventData,
-  ScheduleMode,
-  ScheduleViewLevel,
 } from '../types'
-import type { BusinessHoursValue } from '../utils'
 import { expandRecurringEvents, formatDate, toDateString } from '../utils'
-import { ScheduleEvent } from './ScheduleEvent/ScheduleEvent'
 
-export const baseViewProps = {
-  date: { type: [String, Date] as PropType<Date | DateStringValue>, required: true },
-  onDateChange: Function as PropType<(date: DateStringValue) => void>,
-  events: Array as PropType<ScheduleEventData[]>,
-  locale: String,
-  radius: [String, Number] as PropType<string | number>,
-  labels: Object,
-  mode: { type: String as PropType<ScheduleMode>, default: 'default' },
-  withHeader: { type: Boolean, default: true },
-  onViewChange: Function as PropType<(view: ScheduleViewLevel) => void>,
-  previousControlProps: Object as PropType<NativeButtonProps>,
-  nextControlProps: Object as PropType<NativeButtonProps>,
-  todayControlProps: Object as PropType<NativeButtonProps>,
-  viewSelectProps: Object,
-  renderEventBody: Function as PropType<RenderEventBody>,
-  renderEvent: Function as PropType<RenderEvent>,
-  onEventClick: Function as PropType<(event: ScheduleEventData, nativeEvent: MouseEvent) => void>,
-  recurrenceExpansionLimit: { type: Number, default: 2000 },
-}
-
-export const timeViewProps = {
-  ...baseViewProps,
-  startTime: { type: String, default: '00:00:00' },
-  endTime: { type: String, default: '23:59:59' },
-  intervalMinutes: { type: Number, default: 60 },
-  slotLabelFormat: { type: [String, Function] as PropType<DateLabelFormat>, default: 'HH:mm' },
-  withCurrentTimeIndicator: { type: Boolean, default: undefined },
-  withCurrentTimeBubble: { type: Boolean, default: true },
-  getCurrentTime: Function as PropType<() => AnyDateValue>,
-  slotHeight: { type: [String, Number] as PropType<CSSProperties['height']>, default: 64 },
-  highlightBusinessHours: Boolean,
-  businessHours: [Array, Object] as PropType<BusinessHoursValue>,
-  withEventsDragAndDrop: Boolean,
-  onEventDrop: Function as PropType<(data: EventDropData) => void>,
-  canDragEvent: Function as PropType<(event: ScheduleEventData) => boolean>,
-  onEventDragStart: Function as PropType<(event: ScheduleEventData) => void>,
-  onEventDragEnd: Function as PropType<() => void>,
-  onTimeSlotClick: Function as PropType<(data: TimeSlotClickData) => void>,
-  onAllDaySlotClick: Function as PropType<(date: DateStringValue, nativeEvent: MouseEvent) => void>,
-  withDragSlotSelect: Boolean,
-  onSlotDragEnd: Function,
-  startScrollTime: String,
-  onExternalEventDrop: Function,
-  withEventResize: Boolean,
-  onEventResize: Function as PropType<(data: EventDropData) => void>,
-  canResizeEvent: Function as PropType<(event: ScheduleEventData) => boolean>,
-}
-
+/**
+ * Resolves a schedule `radius` prop to a CSS value.
+ *
+ * Deliberately not `getRadius` from the core package: this accepts any CSS length
+ * (`12px`, `1em`, `clamp(...)`) alongside the `theme.radius` keys, and treats a plain
+ * number as pixels rather than rem.
+ */
 export function resolveScheduleRadius(radius: string | number | undefined): string | undefined {
-  if (radius === undefined) return undefined
-  if (typeof radius === 'number') return `${radius}px`
+  if (radius === undefined) {
+    return undefined
+  }
+
+  if (typeof radius === 'number') {
+    return `${radius}px`
+  }
+
   return ['xs', 'sm', 'md', 'lg', 'xl'].includes(radius)
     ? `var(--mantine-radius-${radius})`
     : radius
+}
+
+/** A callback coalesced to one animation frame, with the pending frame cancellable. */
+export interface RafThrottled<Args extends unknown[]> {
+  (...args: Args): void
+
+  /** Drops the pending frame. Call this the moment the gesture ends. */
+  cancel: () => void
+}
+
+/**
+ * Runs `callback` at most once per animation frame with the most recent arguments.
+ *
+ * Pointer and drag events fire far faster than the browser paints. Handling every one of them
+ * means the schedule reads layout and re-renders several times per frame, which makes the drag
+ * fall behind the pointer and keep catching up after it has stopped. Coalescing to one frame
+ * keeps the work bounded, and `cancel` guarantees nothing lands after the drop.
+ */
+export function rafThrottle<Args extends unknown[]>(
+  callback: (...args: Args) => void,
+): RafThrottled<Args> {
+  let frame = 0
+  let pending: Args | null = null
+
+  const run = () => {
+    frame = 0
+    const args = pending
+    pending = null
+
+    if (args) {
+      callback(...args)
+    }
+  }
+
+  const throttled = ((...args: Args) => {
+    pending = args
+
+    if (frame === 0) {
+      frame = requestAnimationFrame(run)
+    }
+  }) as RafThrottled<Args>
+
+  throttled.cancel = () => {
+    if (frame !== 0) {
+      cancelAnimationFrame(frame)
+    }
+
+    frame = 0
+    pending = null
+  }
+
+  onScopeDispose(throttled.cancel, true)
+
+  return throttled
+}
+
+/**
+ * Styles produced by `getStyles` for one selector. `any` matches the core signature: the value
+ * is spread onto an element, where `class` and `style` accept every shape Vue supports.
+ */
+export type SelectorStyles = { class: any; style: any }
+
+/**
+ * Memoizes `getStyles(selector)` for selectors that take no per-element options.
+ *
+ * A view renders the same selector for hundreds of slots, and every `getStyles` call rebuilds
+ * the class list and merges the resolved styles and CSS variables. Wrapping each selector in a
+ * `computed` turns that into one evaluation per selector per change of the theme or the props,
+ * instead of one per element per render — which is what a drag re-render is made of.
+ */
+export function useStaticStyles<Selector extends string>(
+  getStyles: (selector: Selector) => SelectorStyles,
+) {
+  const cache = new Map<Selector, ComputedRef<SelectorStyles>>()
+
+  return (selector: Selector): SelectorStyles => {
+    let entry = cache.get(selector)
+
+    if (!entry) {
+      entry = computed(() => getStyles(selector))
+      cache.set(selector, entry)
+    }
+
+    return entry.value
+  }
+}
+
+/** Converts a `slotHeight` / `rowHeight` style prop to a CSS length. */
+export function cssSize(value: string | number | undefined): string | undefined {
+  return typeof value === 'number' ? `${value}px` : value
 }
 
 export function getExpandedEvents(
@@ -94,113 +137,102 @@ export function formatLabel(
   return formatDate({ date, locale: locale || 'en', format })
 }
 
-/** Scoped slots that mirror the `renderEvent` / `renderEventBody` props. */
-export interface EventSlots {
-  eventBody?: (props: { event: ScheduleEventData }) => VNodeChild
-  event?: (props: Record<string, unknown> & { event: ScheduleEventData }) => VNodeChild
+/** The `renderEvent` / `renderEventBody` pair a view hands down to `ScheduleEvent`. */
+export interface EventRenderers {
+  renderEvent?: RenderEvent
+  renderEventBody?: RenderEventBody
 }
 
 /**
- * Build the slots object forwarded to a child component, omitting undefined entries.
- * Returns a `Record<string, unknown>` (possibly empty) so it satisfies Vue's `RawSlots`
- * type when passed as the third argument to `h()`.
+ * Folds the `event` / `eventBody` scoped slots into the equivalent render props, so a view
+ * forwards a single object down to every `ScheduleEvent` it renders instead of re-declaring
+ * the slots at each call site. Slots win over props, matching the rest of the library.
  */
-export function forwardEventSlots(slots: EventSlots | undefined): Record<string, unknown> {
-  const forwarded: Record<string, unknown> = {}
-  if (slots?.eventBody) forwarded.eventBody = slots.eventBody
-  if (slots?.event) forwarded.event = slots.event
-  return forwarded
+export function resolveEventRenderers(props: EventRenderers, slots: EventSlots): EventRenderers {
+  return {
+    renderEvent: slots.event
+      ? (event, renderProps) => slots.event!({ ...renderProps, event })
+      : props.renderEvent,
+    renderEventBody: slots.eventBody
+      ? (event) => slots.eventBody!({ event })
+      : props.renderEventBody,
+  }
 }
 
-export function eventNode(
-  event: ScheduleEventData,
-  props: Pick<BaseViewProps, 'mode' | 'renderEvent' | 'renderEventBody' | 'onEventClick'> & {
-    withEventsDragAndDrop?: boolean
-    canDragEvent?: (event: ScheduleEventData) => boolean
-    onEventDragStart?: (event: ScheduleEventData) => void
-    onEventDragEnd?: () => void
-  },
-  extra: Record<string, unknown> = {},
-  slots?: EventSlots,
-): VNodeChild {
-  const draggable =
-    props.mode !== 'static' &&
-    props.withEventsDragAndDrop === true &&
-    (props.canDragEvent?.(event) ?? true)
-  return h(
-    ScheduleEvent,
-    {
-      event,
-      mode: props.mode ?? 'default',
-      renderEvent: props.renderEvent,
-      renderEventBody: props.renderEventBody,
-      draggable,
-      onEventDragStart: props.onEventDragStart,
-      onEventDragEnd: props.onEventDragEnd,
-      onClick: (nativeEvent: MouseEvent) => props.onEventClick?.(event, nativeEvent),
-      ...extra,
-    },
-    forwardEventSlots(slots),
-  )
-}
-
+/** Reads the event referenced by a native drag payload, if the drag started inside a schedule. */
 export function getDropEvent(
   events: ScheduleEventData[] | undefined,
   transfer: DataTransfer | null,
 ) {
   const raw = transfer?.getData('application/json')
-  if (!raw) return undefined
+
+  if (!raw) {
+    return undefined
+  }
 
   try {
     const data: unknown = JSON.parse(raw)
-    if (typeof data !== 'object' || data === null || !('eventId' in data)) return undefined
+
+    if (typeof data !== 'object' || data === null || !('eventId' in data)) {
+      return undefined
+    }
+
     const eventId = (data as { eventId: unknown }).eventId
-    if (typeof eventId !== 'string' && typeof eventId !== 'number') return undefined
+
+    if (typeof eventId !== 'string' && typeof eventId !== 'number') {
+      return undefined
+    }
+
     return events?.find((event) => String(event.id) === String(eventId))
   } catch {
     return undefined
   }
 }
 
-export function getTimeSlotDropTarget({
-  nativeEvent,
-  container,
-  intervals,
-  date,
-}: {
-  nativeEvent: DragEvent
-  container: HTMLElement
-  intervals: Array<{ startTime: string }>
-  date: string
-}): { slotIndex: number; target: DateTimeStringValue } | undefined {
-  const eventTarget = nativeEvent.target instanceof Element ? nativeEvent.target : null
-  const targetSlot = eventTarget?.closest<HTMLElement>('[data-time-slot-index]')
-  let slotIndex =
-    targetSlot && container.contains(targetSlot)
-      ? Number(targetSlot.dataset.timeSlotIndex)
-      : Number.NaN
+/**
+ * Attribute the views put on their `ScrollArea` viewport so they can find it again without
+ * depending on Mantine static classes, which a consumer can turn off.
+ */
+export const SCROLL_VIEWPORT_ATTRIBUTE = 'data-schedule-viewport'
 
-  if (!Number.isInteger(slotIndex)) {
-    const slots = container.querySelectorAll<HTMLElement>('[data-time-slot-index]')
-    slotIndex = Array.from(slots).findIndex((slot) => {
-      const rect = slot.getBoundingClientRect()
-      return nativeEvent.clientY >= rect.top && nativeEvent.clientY <= rect.bottom
-    })
+/** Props spread onto the viewport of a view's `ScrollArea`. */
+export const scheduleViewportProps = { [SCROLL_VIEWPORT_ATTRIBUTE]: '' }
+
+/** Finds the `ScrollArea` viewport that contains `node`. */
+export function getScrollAreaViewport(node: HTMLElement | null | undefined) {
+  return node?.closest<HTMLElement>(`[${SCROLL_VIEWPORT_ATTRIBUTE}]`) ?? null
+}
+
+/**
+ * Scrolls the viewport around `target` so that `target` sits at its start.
+ *
+ * The second pass runs a frame later because a `ScrollArea` viewport is still being laid out
+ * on the tick it mounts, so the first offsets it reports are not final.
+ */
+export function scrollSlotIntoView(target: HTMLElement | null | undefined, axis: 'x' | 'y' = 'y') {
+  const viewport = getScrollAreaViewport(target)
+
+  if (!viewport || !target) {
+    return
   }
 
-  const interval = intervals[slotIndex]
-  return interval
-    ? {
-        slotIndex,
-        target: `${date} ${interval.startTime}` as DateTimeStringValue,
-      }
-    : undefined
+  const scroll = () => {
+    if (axis === 'x') {
+      viewport.scrollLeft = target.offsetLeft
+    } else {
+      viewport.scrollTop = target.offsetTop
+    }
+  }
+
+  scroll()
+  requestAnimationFrame(scroll)
 }
 
 export function moveEventTo(event: ScheduleEventData, newStart: dayjs.ConfigType) {
   const start = dayjs(event.start)
   const duration = dayjs(event.end).diff(start, 'second')
   const nextStart = dayjs(newStart)
+
   return {
     eventId: event.id,
     newStart: nextStart.format('YYYY-MM-DD HH:mm:ss') as DateTimeStringValue,
@@ -215,6 +247,7 @@ export function moveEventToAllDay(event: ScheduleEventData, date: dayjs.ConfigTy
     1,
     dayjs(event.end).startOf('day').diff(dayjs(event.start).startOf('day'), 'day'),
   )
+
   return {
     eventId: event.id,
     newStart: dayStart.format('YYYY-MM-DD HH:mm:ss') as DateTimeStringValue,
@@ -223,6 +256,6 @@ export function moveEventToAllDay(event: ScheduleEventData, date: dayjs.ConfigTy
   }
 }
 
-export function todayString() {
+export function todayString(): DateStringValue {
   return toDateString(dayjs())
 }

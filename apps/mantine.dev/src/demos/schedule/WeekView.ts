@@ -13,7 +13,6 @@ const keys = [
   'firstDayOfWeek',
   'weekdayFormat',
   'withoutWeekendDays',
-  'highlightToday',
   'withoutWeekNumber',
   'currentTimeIndicator',
   'forceCurrentTimeIndicator',
@@ -65,8 +64,7 @@ export const WeekViewDemos = createDemoRegistry(WeekView, 'WeekView', keys, {
     props: { withWeekendDays: false },
     codeProps: ':with-weekend-days="false"',
   },
-  highlightToday: { props: { highlightToday: false }, codeProps: ':highlight-today="false"' },
-  withoutWeekNumber: { props: { withWeekNumbers: false }, codeProps: ':with-week-numbers="false"' },
+  withoutWeekNumber: { props: { withWeekNumber: false }, codeProps: ':with-week-number="false"' },
   currentTimeIndicator: {
     props: { withCurrentTimeIndicator: true, getCurrentTime: getDemoCurrentTime },
     codeProps: 'with-current-time-indicator\n    :get-current-time="() => \'2026-07-15 14:30:00\'"',
@@ -84,9 +82,14 @@ export const WeekViewDemos = createDemoRegistry(WeekView, 'WeekView', keys, {
     props: { withCurrentTimeIndicator: true, getCurrentTime: getDemoCurrentTime },
     codeProps: 'with-current-time-indicator\n    :get-current-time="() => \'2026-07-15 14:30:00\'"',
   },
-  withoutAllDaySlots: { props: { withAllDaySlot: false }, codeProps: ':with-all-day-slot="false"' },
+  withoutAllDaySlots: {
+    props: { withAllDaySlots: false },
+    codeProps: ':with-all-day-slots="false"',
+  },
   withoutHeader: { props: { withHeader: false }, codeProps: ':with-header="false"' },
-  viewChange: { description: 'Use onViewChange to switch to another standalone view.' },
+  viewChange: {
+    description: 'Listen for the `viewChange` event to switch to another standalone view.',
+  },
   customHeader: { props: { withHeader: false }, codeProps: ':with-header="false"' },
   weekLabelFormat: { props: { weekLabelFormat: 'D MMM' }, codeProps: 'week-label-format="D MMM"' },
   slotLabelFormat: { props: { slotLabelFormat: 'h A' }, codeProps: 'slot-label-format="h A"' },
@@ -100,7 +103,7 @@ export const WeekViewDemos = createDemoRegistry(WeekView, 'WeekView', keys, {
     codeProps: 'highlight-business-hours',
   },
   getTimeSlotProps: {
-    description: 'Use onTimeSlotClick to inspect or customize individual slots.',
+    description: 'Listen for the `timeSlotClick` event to inspect or customize individual slots.',
   },
   renderEventBody: {
     props: { renderEventBody: (event: { title: string }) => h('strong', event.title) },

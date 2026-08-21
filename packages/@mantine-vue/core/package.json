@@ -28,6 +28,16 @@
         "default": "./cjs/index.cjs"
       }
     },
+    "./styles-api": {
+      "import": {
+        "types": "./lib/core/styles-api/index.d.ts",
+        "default": "./esm/index.mjs"
+      },
+      "require": {
+        "types": "./lib/core/styles-api/index.d.ts",
+        "default": "./cjs/index.cjs"
+      }
+    },
     "./styles.css": "./styles.css",
     "./styles.layer.css": "./styles.layer.css",
     "./styles/*": "./styles/*"
