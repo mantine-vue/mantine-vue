@@ -1,4 +1,4 @@
-import { onMounted, ref, watch } from 'vue'
+import { ref, watch } from 'vue'
 
 import { type MVT_RowData, type MVT_SortingState, type MVT_TableInstance } from '../types'
 import { getDefaultColumnOrderIds } from '../utils/displayColumn.utils'
@@ -15,15 +15,11 @@ export const useMVT_Effects = <TData extends MVT_RowData>(table: MVT_TableInstan
     options: { enablePagination, enableRowPinning, rowCount },
   } = table
 
-  const initialBodyHeight = ref<string>()
+  const initialBodyHeight = ref(
+    typeof document === 'undefined' ? undefined : document.body.style.height,
+  )
   const previousTop = ref<number>()
   const appliedSort = ref<MVT_SortingState>(getState().sorting)
-
-  onMounted(() => {
-    if (typeof window !== 'undefined') {
-      initialBodyHeight.value = document.body.style.height
-    }
-  })
 
   //hide scrollbars when table is in full screen mode, preserve body scroll position after full screen exit
   watch(

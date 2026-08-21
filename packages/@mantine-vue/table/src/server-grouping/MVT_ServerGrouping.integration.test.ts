@@ -107,6 +107,12 @@ const mountTable = (
   slots?: Record<string, any>,
 ) => {
   let table!: MVT_TableInstance<Sale>
+  const serverGrouping = {
+    ...options.serverGrouping,
+    groupBy: options.serverGrouping.groupBy ?? {
+      columns: options.serverGrouping.grouping ?? [],
+    },
+  }
   const wrapper = mount(
     defineComponent({
       setup() {
@@ -114,6 +120,7 @@ const mountTable = (
           columns,
           data: [],
           ...options,
+          serverGrouping,
         } as MVT_TableOptions<Sale>)
         return () =>
           h(MantineProvider, { env: 'test' }, () => h(MantineVueTable, { table } as any, slots))

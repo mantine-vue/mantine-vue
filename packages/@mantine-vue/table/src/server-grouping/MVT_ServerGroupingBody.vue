@@ -343,7 +343,13 @@ const rowEntries = () => {
       // Reuse manager-cached rows so rendering and selection share stable ids.
       const rows = activeManager.getRecordRows(pathId)
       rows.forEach((row, index) =>
-        entries.push({ index, key: row.id, kind: 'record', numRows: rows.length, row }),
+        entries.push({
+          index,
+          key: `${pathId}:record:${row.id}`,
+          kind: 'record',
+          numRows: rows.length,
+          row,
+        }),
       )
     }
 
