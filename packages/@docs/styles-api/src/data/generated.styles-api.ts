@@ -3576,6 +3576,8 @@ export const MonthPickerInputStylesApi: StylesApiData<
 
 export const MonthViewStylesApi: StylesApiData<
   | 'monthView'
+  | 'monthViewScrollArea'
+  | 'monthViewInner'
   | 'monthViewBackgroundEvent'
   | 'monthViewDay'
   | 'monthViewDayLabel'
@@ -3588,6 +3590,8 @@ export const MonthViewStylesApi: StylesApiData<
 > = {
   selectors: {
     monthView: 'Root element',
+    monthViewScrollArea: 'Scroll area component that wraps the grid',
+    monthViewInner: 'Inner container wrapping the weekday names and the weeks',
     monthViewBackgroundEvent: 'Background event element',
     monthViewDay: 'Day cell',
     monthViewDayLabel: 'Day number label',

@@ -18,13 +18,13 @@ Set `withWeekNumbers` to display week numbers in the first column of each month.
 
 ## Without week days
 
-Set `withWeekDays={false}` to hide the weekday names row in each month.
+Set `:with-week-days="false"` to hide the weekday names row in each month.
 
 <Demo data={YearViewDemos.withoutWeekDays} />
 
 ## Hide outside days
 
-Set `withOutsideDays={false}` to hide days from adjacent months.
+Set `:with-outside-days="false"` to hide days from adjacent months.
 
 <Demo data={YearViewDemos.withOutsideDays} />
 
@@ -42,20 +42,20 @@ Use `weekdayFormat` prop to customize weekday names.
 
 ## Highlight today
 
-Set `highlightToday={false}` to disable highlighting the current day.
+Set `:highlight-today="false"` to disable highlighting the current day.
 
 <Demo data={YearViewDemos.highlightToday} />
 
 ## Without header
 
-Set `withHeader={false}` to hide the header controls.
+Set `:with-header="false"` to hide the header controls.
 
 <Demo data={YearViewDemos.withoutHeader} />
 
 ## Custom header
 
 You can build a custom header using `ScheduleHeader` compound components combined with your own controls.
-Set `withHeader={false}` on the view and compose the header externally.
+Set `:with-header="false"` on the view and compose the header externally.
 
 <Demo data={YearViewDemos.customHeader} />
 
@@ -91,7 +91,7 @@ and reducing padding on smaller screens. Container queries are supported in all 
 
 In the YearView component, focus is managed to provide an efficient keyboard navigation experience:
 
-- Only the first day of each month is included in the tab order (has `tabIndex={0}`)
+- Only the first day of each month is included in the tab order (has `:tab-index="0"`)
 - All other days within a month have `tabIndex={-1}` and can only be reached via arrow key navigation
 - Outside days (days from adjacent months displayed in the current month view) are not focusable
 - Disabled days are skipped during keyboard navigation

@@ -1,4 +1,5 @@
 export * from './types'
+export * from './component-props'
 export type { ScheduleLabels, ScheduleLabelsOverride } from './labels'
 export { DEFAULT_SCHEDULE_LABELS, getLabel } from './labels'
 export * from './utils'

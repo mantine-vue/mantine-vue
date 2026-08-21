@@ -48,6 +48,9 @@ export const DOCGEN_EXCLUDE_COMPONENTS = [
   'CalendarBaseProps',
   'DateInputSharedProps',
   'ControlProps',
+  // Shared schedule building blocks and payload types that are not components.
+  'ScheduleEventRenderProps',
+  'ScheduleHeaderBaseProps',
 ]
 
 /**

@@ -134,7 +134,7 @@ const override: ScheduleRecurringOverrideEventData = {
 
 Use the `payload` field to attach arbitrary data to events. The payload is not used
 internally by the library – it is meant for application-specific data that you can
-access in callbacks (`onEventClick`, `onEventDrop`, etc.) and in custom event renderers
+access in event payloads (`eventClick`, `eventDrop`, etc.) and in custom event renderers
 (`renderEventBody`):
 
 ```ts
@@ -167,7 +167,7 @@ payload type as a generic argument to `ScheduleEventData<MyPayload>`.
 
 When a recurring series is expanded for the visible date range, each generated event
 includes a `recurringInstance` metadata object. This object is added by the library –
-you do not set it yourself, but you can read it in callbacks and custom renderers to
+you do not set it yourself, but you can read it in event payloads and custom renderers to
 distinguish generated occurrences from regular events:
 
 ```ts
@@ -187,7 +187,7 @@ interface RecurringInstanceMeta {
 }
 ```
 
-Example of reading the metadata in `onEventClick`:
+Example of reading the metadata in the `eventClick` event:
 
 ```vue
 <script setup lang="ts">
@@ -203,41 +203,40 @@ function handleEventClick(event: ScheduleEventData) {
 </script>
 
 <template>
-  <Schedule :events="events" :on-event-click="handleEventClick" />
+  <Schedule :events="events" @event-click="handleEventClick" />
 </template>
 ```
 
-## Callback payloads
+## Event payloads
 
-All event callbacks accept structured data describing what the user interacted with.
-The following sections document the exact payload received by each callback.
+Every schedule component reports user interaction through Vue events. The signatures below are
+written the way `defineEmits` declares them: the array is the argument list a listener receives.
 
-### onEventClick
+### eventClick
 
-Called when an event is clicked in any view:
+Emitted when an event is clicked in any view:
 
 ```ts
-onEventClick?: (
-  event: ScheduleEventData,
-  nativeEvent: MouseEvent
-) => void;
+eventClick: [event: ScheduleEventData, nativeEvent: MouseEvent]
 ```
 
 - `event` – the clicked event, including `recurringInstance` metadata if it is a
   generated occurrence.
 - `nativeEvent` – the native DOM mouse event.
 
-### onEventDrop
+### eventDrop
 
-Called when an event is dropped after a drag (requires `withEventsDragAndDrop`):
+Emitted when an event is dropped after a drag (requires `withEventsDragAndDrop`):
 
 ```ts
-onEventDrop?: (data: {
-  eventId: string | number;
-  newStart: DateTimeStringValue;
-  newEnd: DateTimeStringValue;
-  event: ScheduleEventData;
-}) => void;
+eventDrop: [
+  data: {
+    eventId: string | number
+    newStart: DateTimeStringValue
+    newEnd: DateTimeStringValue
+    event: ScheduleEventData
+  },
+]
 ```
 
 - `eventId` – id of the dropped event (same as `event.id`). For generated recurring
@@ -247,108 +246,114 @@ onEventDrop?: (data: {
 - `newStart` / `newEnd` – new datetime values in `YYYY-MM-DD HH:mm:ss` format.
 - `event` – full event data, including `recurringInstance` metadata if applicable.
 
-### onEventResize
+The resource views emit the same payload with an extra `resourceId` field.
 
-Called when an event is resized by dragging its top or bottom edge
-(requires `withEventResize`):
+### eventResize
+
+Emitted when an event is resized by dragging its edge (requires `withEventResize`):
 
 ```ts
-onEventResize?: (data: {
-  eventId: string | number;
-  newStart: DateTimeStringValue;
-  newEnd: DateTimeStringValue;
-  event: ScheduleEventData;
-}) => void;
+eventResize: [
+  data: {
+    eventId: string | number
+    newStart: DateTimeStringValue
+    newEnd: DateTimeStringValue
+    event: ScheduleEventData
+  },
+]
 ```
 
-The payload has the same shape as `onEventDrop`, including the caveat about `eventId`
+The payload has the same shape as `eventDrop`, including the caveat about `eventId`
 for generated recurring instances.
 
-### onEventDragStart / onEventDragEnd
+### eventDragStart / eventDragEnd
 
-Called when an event drag starts or ends:
+Emitted when an event drag starts or ends:
 
 ```ts
-onEventDragStart?: (event: ScheduleEventData) => void;
-onEventDragEnd?: () => void;
+eventDragStart: [event: ScheduleEventData]
+eventDragEnd: []
 ```
 
-`onEventDragEnd` is called both for successful drops and for cancelled drags – use
-`onEventDrop` if you need the new position.
+`eventDragEnd` fires both for successful drops and for cancelled drags – listen for
+`eventDrop` if you need the new position.
 
-### onTimeSlotClick
+### timeSlotClick
 
-Called when a time slot is clicked in `DayView` or `WeekView`:
+Emitted when a time slot is clicked in `DayView` or `WeekView`:
 
 ```ts
-onTimeSlotClick?: (data: {
-  slotStart: DateTimeStringValue;
-  slotEnd: DateTimeStringValue;
-  nativeEvent: MouseEvent;
-}) => void;
+timeSlotClick: [
+  data: {
+    slotStart: DateTimeStringValue
+    slotEnd: DateTimeStringValue
+    nativeEvent: MouseEvent
+  },
+]
 ```
 
 - `slotStart` / `slotEnd` – the slot range in `YYYY-MM-DD HH:mm:ss` format. Slot length
   is controlled by the view's `intervalMinutes` prop.
 
-### onAllDaySlotClick
+### allDaySlotClick
 
-Called when the all-day slot is clicked in `DayView` or `WeekView`:
+Emitted when the all-day slot is clicked in `DayView` or `WeekView`:
 
 ```ts
-onAllDaySlotClick?: (
-  date: DateStringValue,
-  event: MouseEvent
-) => void;
+allDaySlotClick: [date: DateStringValue, nativeEvent: MouseEvent]
 ```
 
 - `date` – the clicked date in `YYYY-MM-DD` format.
 
-### onDayClick
+### dayClick
 
-Called when a day is clicked in `MonthView` or `YearView`:
+Emitted when a day is clicked in `MonthView` or `YearView`:
 
 ```ts
-onDayClick?: (
-  date: DateStringValue,
-  event: MouseEvent
-) => void;
+dayClick: [date: DateStringValue, nativeEvent: MouseEvent]
 ```
 
 - `date` – the clicked date in `YYYY-MM-DD` format.
 
-### onSlotDragEnd
+### slotDragEnd
 
-Called when a slot range is selected by dragging across time slots or day cells
+Emitted when a slot range is selected by dragging across time slots or day cells
 (requires `withDragSlotSelect`):
 
 ```ts
-onSlotDragEnd?: (
-  rangeStart: DateTimeStringValue,
-  rangeEnd: DateTimeStringValue
-) => void;
+slotDragEnd: [rangeStart: DateTimeStringValue, rangeEnd: DateTimeStringValue]
 ```
 
 - `rangeStart` / `rangeEnd` – the selected range in `YYYY-MM-DD HH:mm:ss` format.
 
-### onExternalEventDrop
+### externalEventDrop
 
-Called when an item is dragged from outside the schedule and dropped onto a slot:
+Emitted when an item is dragged from outside the schedule and dropped onto a slot.
+Set `withExternalEventDrop` to accept such drops:
 
 ```ts
-onExternalEventDrop?: (
-  dataTransfer: DataTransfer,
-  dropDateTime: DateTimeStringValue
-) => void;
+externalEventDrop: [dataTransfer: DataTransfer, dropDateTime: DateTimeStringValue]
 ```
 
 - `dataTransfer` – the native `DataTransfer` object set by the external item during its
-  `onDragStart` handler. Read your custom data with `dataTransfer.getData(type)`.
+  `dragstart` handler. Read your custom data with `dataTransfer.getData(type)`.
 - `dropDateTime` – the drop target datetime in `YYYY-MM-DD HH:mm:ss` format.
+
+### dateChange / viewChange
+
+Emitted when the header navigates to another date or view level. Both are also available
+through `v-model:date` and `v-model:view` on `Schedule` and `ResourcesSchedule`:
+
+```ts
+dateChange: [date: DateStringValue]
+viewChange: [view: ScheduleViewLevel]
+```
+
+## Function props
 
 ### canDragEvent / canResizeEvent
 
-Permission callbacks – return `false` to prevent dragging or resizing for a specific event:
+Both return `false` to prevent dragging or resizing a specific event:
 
 ```ts
 canDragEvent?: (event: ScheduleEventData) => boolean;
@@ -357,7 +362,7 @@ canResizeEvent?: (event: ScheduleEventData) => boolean;
 
 ## Date and time value formats
 
-Event data and callback payloads use the following string formats consistently:
+Event data and event payloads use the following string formats consistently:
 
 - `DateStringValue` – `YYYY-MM-DD` (e.g. `2024-01-15`)
 - `DateTimeStringValue` – `YYYY-MM-DD HH:mm:ss` (e.g. `2024-01-15 10:00:00`)

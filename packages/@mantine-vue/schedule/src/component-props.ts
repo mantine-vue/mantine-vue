@@ -1,291 +1,296 @@
-import type { CSSProperties, HTMLAttributes, PropType, VNodeChild } from 'vue'
+import type { CSSProperties, HTMLAttributes, VNodeChild } from 'vue'
+import type { EmitsToProps } from '@mantine-vue/core'
+import type {
+  ViewSelectEmits,
+  ViewSelectProps,
+} from './components/ScheduleHeader/ViewSelect/ViewSelect.types'
 import type { ScheduleLabelsOverride } from './labels'
 import type {
   AnyDateValue,
   DateLabelFormat,
   DateStringValue,
   DateTimeStringValue,
-  DayOfWeek,
   ScheduleEventData,
   ScheduleMode,
   ScheduleViewLevel,
 } from './types'
 import type { BusinessHoursValue } from './utils'
 
+/**
+ * Native attributes accepted by the header controls and the other button-like elements
+ * a view renders on the consumer's behalf. `data-*` attributes are part of the type
+ * because Vue's `HTMLAttributes` does not model them.
+ */
 export type NativeButtonProps = HTMLAttributes & Record<`data-${string}`, unknown>
-export type RenderEventBody = (event: ScheduleEventData) => VNodeChild
-export type RenderEvent = (event: ScheduleEventData, props: ScheduleEventRenderProps) => VNodeChild
 
+/**
+ * Props forwarded to a component a view renders internally, plus the `on*` listeners for its
+ * events so a nested object can subscribe to them.
+ *
+ * `rootRef` is dropped because it only makes sense on the element a consumer owns, and because
+ * the factory narrows it to a concrete element type that a `Partial<…Props>` cannot satisfy.
+ */
+export type ForwardedProps<Props, Emits = Record<never, never>> = Partial<Omit<Props, 'rootRef'>> &
+  EmitsToProps<Emits>
+
+/** Renders the body of an event, replacing the default title. */
+export type RenderEventBody = (event: ScheduleEventData) => VNodeChild
+
+/** Props `ScheduleEvent` would spread onto its root element, handed to `renderEvent`. */
 export interface ScheduleEventRenderProps extends NativeButtonProps {
+  /** Default event content, so a custom root can still render it. */
   children?: VNodeChild
 }
 
+/** Replaces the rendering of an event entirely, root element included. */
+export type RenderEvent = (event: ScheduleEventData, props: ScheduleEventRenderProps) => VNodeChild
+
+/** Payload of the `eventDrop` and `eventResize` events and of the matching callback props. */
 export interface EventDropData {
+  /** Id of the event that changed. */
   eventId: string | number
+
+  /** New start datetime, `YYYY-MM-DD HH:mm:ss`. */
   newStart: DateTimeStringValue
+
+  /** New end datetime, `YYYY-MM-DD HH:mm:ss`. */
   newEnd: DateTimeStringValue
+
+  /** Event object as it was before the change. */
   event: ScheduleEventData
 }
 
+/** Payload of the `timeSlotClick` event and of the `onTimeSlotClick` prop. */
 export interface TimeSlotClickData {
+  /** Start datetime of the clicked slot, `YYYY-MM-DD HH:mm:ss`. */
   slotStart: DateTimeStringValue
+
+  /** End datetime of the clicked slot, `YYYY-MM-DD HH:mm:ss`. */
   slotEnd: DateTimeStringValue
+
+  /** Originating DOM event. */
   nativeEvent: MouseEvent
 }
 
-export interface BaseViewProps extends HTMLAttributes {
+/**
+ * Props shared by every schedule view. Not a component of its own: `DayViewOwnProps`,
+ * `MonthViewOwnProps` and friends extend it, so its members appear in their props tables.
+ */
+export interface BaseViewOwnProps {
+  /** Date displayed by the view. Accepts anything `dayjs` understands. */
   date: Date | DateStringValue
-  onDateChange?: (date: DateStringValue) => void
+
+  /** Events rendered by the view. */
   events?: ScheduleEventData[]
+
+  /**
+   * Locale passed down to `dayjs` when formatting labels.
+   * @default 'en'
+   */
   locale?: string
+
+  /** Key of `theme.radius` or any valid CSS value to set `border-radius`. */
   radius?: string | number
+
+  /** Overrides for the built-in labels, used for i18n and accessible names. */
   labels?: ScheduleLabelsOverride
+
+  /**
+   * Interaction mode. `static` disables every event, slot and navigation interaction.
+   * @default 'default'
+   */
   mode?: ScheduleMode
+
+  /**
+   * If set, the navigation header is rendered above the view.
+   * @default true
+   */
   withHeader?: boolean
-  onViewChange?: (view: ScheduleViewLevel) => void
+
+  /** Props passed to the previous control of the header. */
   previousControlProps?: NativeButtonProps
+
+  /** Props passed to the next control of the header. */
   nextControlProps?: NativeButtonProps
+
+  /** Props passed to the today control of the header. */
   todayControlProps?: NativeButtonProps
-  viewSelectProps?: Partial<ViewSelectProps>
+
+  /** Props passed to the view select of the header. */
+  viewSelectProps?: ForwardedProps<ViewSelectProps, ViewSelectEmits>
+
+  /**
+   * Replaces the body of every event. Can also be set with the `eventBody` slot,
+   * which takes precedence over the prop.
+   */
   renderEventBody?: RenderEventBody
+
+  /**
+   * Replaces every event entirely, root element included. Can also be set with the
+   * `event` slot, which takes precedence over the prop.
+   */
   renderEvent?: RenderEvent
-  onEventClick?: (event: ScheduleEventData, nativeEvent: MouseEvent) => void
+
+  /**
+   * Maximum number of instances generated per recurring series.
+   * @default 2000
+   */
   recurrenceExpansionLimit?: number
 }
 
-export interface TimeViewProps extends BaseViewProps {
+/**
+ * Props shared by the views that lay events out on a time axis. Not a component of its own:
+ * `DayViewOwnProps` and `WeekViewOwnProps` extend it.
+ */
+export interface TimeViewOwnProps extends BaseViewOwnProps {
+  /**
+   * First visible time of the day, `HH:mm:ss`.
+   * @default '00:00:00'
+   */
   startTime?: string
+
+  /**
+   * Last visible time of the day, `HH:mm:ss`.
+   * @default '23:59:59'
+   */
   endTime?: string
+
+  /** Length of one time slot in minutes. */
   intervalMinutes?: number
+
+  /**
+   * Format of the time slot labels.
+   * @default 'HH:mm'
+   */
   slotLabelFormat?: DateLabelFormat
+
+  /** If set, a line marking the current time is displayed. */
   withCurrentTimeIndicator?: boolean
+
+  /**
+   * If set, the current time indicator carries a bubble with the current time.
+   * @default true
+   */
   withCurrentTimeBubble?: boolean
+
+  /**
+   * Returns the current time, called on every tick. Use it to render the indicator in
+   * another timezone.
+   * @default () => dayjs()
+   */
   getCurrentTime?: () => AnyDateValue
+
+  /**
+   * Height of a one hour slot.
+   * @default 64
+   */
   slotHeight?: CSSProperties['height']
+
+  /**
+   * If set, business hours are highlighted.
+   * @default false
+   */
   highlightBusinessHours?: boolean
+
+  /**
+   * Business hours as an `HH:mm:ss` range shared by every day, or a record keyed by day of
+   * the week (`0` – Sunday) for per-day ranges. Set a day to `null` to mark it as fully
+   * outside business hours.
+   * @default ['09:00:00', '17:00:00']
+   */
   businessHours?: BusinessHoursValue
+
+  /**
+   * If set, events can be dragged onto another slot.
+   * @default false
+   */
   withEventsDragAndDrop?: boolean
-  onEventDrop?: (data: EventDropData) => void
+
+  /**
+   * Returns whether the given event may be dragged.
+   * @default () => true
+   */
   canDragEvent?: (event: ScheduleEventData) => boolean
-  onEventDragStart?: (event: ScheduleEventData) => void
-  onEventDragEnd?: () => void
-  onTimeSlotClick?: (data: TimeSlotClickData) => void
-  onAllDaySlotClick?: (date: DateStringValue, nativeEvent: MouseEvent) => void
+
+  /**
+   * If set, dragging across time slots selects a range.
+   * @default false
+   */
   withDragSlotSelect?: boolean
-  onSlotDragEnd?: (rangeStart: DateTimeStringValue, rangeEnd: DateTimeStringValue) => void
+
+  /**
+   * If set, items dragged in from outside the schedule can be dropped on a slot, which emits
+   * `externalEventDrop`. Enabling event drag and drop turns this on as well.
+   * @default false
+   */
+  withExternalEventDrop?: boolean
+
+  /** Time the view scrolls to on the initial render, `HH:mm:ss`. */
   startScrollTime?: string
-  onExternalEventDrop?: (dataTransfer: DataTransfer, dropDateTime: DateTimeStringValue) => void
+
+  /**
+   * If set, events can be resized by dragging their edges.
+   * @default false
+   */
   withEventResize?: boolean
-  onEventResize?: (data: EventDropData) => void
+
+  /**
+   * Returns whether the given event may be resized.
+   * @default () => true
+   */
   canResizeEvent?: (event: ScheduleEventData) => boolean
 }
 
-export interface DayViewProps extends TimeViewProps {
-  headerFormat?: DateLabelFormat
-  withAllDaySlot?: boolean
-  allDaySlotHeight?: CSSProperties['height']
-  maxAllDayEvents?: number
-  moreEventsProps?: Partial<MoreEventsProps>
+/**
+ * Events emitted by every schedule view. Not a component of its own: `DayViewEmits`,
+ * `MonthViewEmits` and friends extend it.
+ */
+export interface BaseViewEmits {
+  /** Emitted when the view navigates to another date. */
+  dateChange: [date: DateStringValue]
+
+  /** Emitted when the header view select picks another view level. */
+  viewChange: [view: ScheduleViewLevel]
+
+  /** Emitted when an event is clicked. */
+  eventClick: [event: ScheduleEventData, nativeEvent: MouseEvent]
 }
 
-export interface WeekViewProps extends TimeViewProps {
-  firstDayOfWeek?: DayOfWeek
-  weekdayFormat?: DateLabelFormat
-  dayFormat?: DateLabelFormat
-  withWeekNumber?: boolean
-  withAllDaySlots?: boolean
-  /** @deprecated Use withWeekNumber */
-  withWeekNumbers?: boolean
-  /** @deprecated Use withAllDaySlots */
-  withAllDaySlot?: boolean
-  allDaySlotsHeight?: CSSProperties['height']
-  maxAllDayEvents?: number
-  weekendDays?: DayOfWeek[]
-  withWeekendDays?: boolean
-  forceCurrentTimeIndicator?: boolean
-  weekLabelFormat?: DateLabelFormat
-  renderWeekLabel?: (input: { weekStart: DateStringValue; weekEnd: DateStringValue }) => string
+/**
+ * Events emitted by the views that lay events out on a time axis. Not a component of its own:
+ * `DayViewEmits` and `WeekViewEmits` extend it.
+ */
+export interface TimeViewEmits extends BaseViewEmits {
+  /** Emitted when an event is dropped on a new slot. */
+  eventDrop: [data: EventDropData]
+
+  /** Emitted when a drag of an event starts. */
+  eventDragStart: [event: ScheduleEventData]
+
+  /** Emitted when a drag of an event ends. */
+  eventDragEnd: []
+
+  /** Emitted when a time slot is clicked. */
+  timeSlotClick: [data: TimeSlotClickData]
+
+  /** Emitted when an all-day slot is clicked. */
+  allDaySlotClick: [date: DateStringValue, nativeEvent: MouseEvent]
+
+  /** Emitted when a time slot range is selected by dragging. */
+  slotDragEnd: [rangeStart: DateTimeStringValue, rangeEnd: DateTimeStringValue]
+
+  /** Emitted when an item from outside the schedule is dropped on a slot. */
+  externalEventDrop: [dataTransfer: DataTransfer, dropDateTime: DateTimeStringValue]
+
+  /** Emitted when an event is resized. */
+  eventResize: [data: EventDropData]
 }
 
-export interface MonthViewProps extends BaseViewProps {
-  firstDayOfWeek?: DayOfWeek
-  weekdayFormat?: DateLabelFormat
-  weekendDays?: DayOfWeek[]
-  withWeekNumbers?: boolean
-  withWeekDays?: boolean
-  consistentWeeks?: boolean
-  highlightToday?: boolean
-  withOutsideDays?: boolean
-  maxEventsPerDay?: number
-  getDayProps?: (date: DateStringValue) => NativeButtonProps
-  getWeekNumberProps?: (weekStartDate: DateStringValue) => NativeButtonProps
-  onDayClick?: (date: DateStringValue, nativeEvent: MouseEvent) => void
-  onWeekNumberClick?: (date: DateStringValue, nativeEvent: MouseEvent) => void
-  withEventsDragAndDrop?: boolean
-  onEventDrop?: (data: EventDropData) => void
-  canDragEvent?: (event: ScheduleEventData) => boolean
-  onEventDragStart?: (event: ScheduleEventData) => void
-  onEventDragEnd?: () => void
-  onExternalEventDrop?: (dataTransfer: DataTransfer, date: DateStringValue) => void
-  withDragSlotSelect?: boolean
-  onSlotDragEnd?: (rangeStart: DateStringValue, rangeEnd: DateStringValue) => void
-}
+/** Scoped slots that mirror the `renderEvent` and `renderEventBody` props. */
+export interface EventSlots {
+  /** Replaces the body of every event. Takes precedence over `renderEventBody`. */
+  eventBody?: (props: { event: ScheduleEventData }) => VNodeChild
 
-export interface YearViewProps extends BaseViewProps {
-  firstDayOfWeek?: DayOfWeek
-  weekdayFormat?: DateLabelFormat
-  weekendDays?: DayOfWeek[]
-  withWeekNumbers?: boolean
-  withWeekDays?: boolean
-  consistentWeeks?: boolean
-  highlightToday?: boolean
-  withOutsideDays?: boolean
-  monthsListFormat?: DateLabelFormat
-  getDayProps?: (date: DateStringValue) => NativeButtonProps
-  getWeekNumberProps?: (weekStartDate: DateStringValue) => NativeButtonProps
-  onDayClick?: (date: DateStringValue, nativeEvent: MouseEvent) => void
-  onMonthClick?: (month: DateStringValue) => void
-  onWeekNumberClick?: (date: DateStringValue, nativeEvent: MouseEvent) => void
+  /** Replaces every event entirely. Takes precedence over `renderEvent`. */
+  event?: (props: ScheduleEventRenderProps & { event: ScheduleEventData }) => VNodeChild
 }
-
-export interface MobileMonthViewProps extends MonthViewProps {
-  selectedDate?: Date | DateStringValue | null
-  defaultSelectedDate?: Date | DateStringValue | null
-  onSelectedDateChange?: (date: DateStringValue | null) => void
-  eventsHeaderFormat?: DateLabelFormat
-  onYearClick?: () => void
-  renderHeader?: (input: {
-    mode: ScheduleMode
-    date: Date | DateStringValue
-    defaultHeader: VNodeChild
-  }) => VNodeChild
-}
-
-export interface ViewSelectProps extends Omit<HTMLAttributes, 'onChange'> {
-  views?: readonly ScheduleViewLevel[]
-  value?: ScheduleViewLevel
-  onChange?: (value: ScheduleViewLevel) => void
-  radius?: string | number
-  labels?: ScheduleLabelsOverride
-}
-
-export interface MonthYearSelectProps extends HTMLAttributes {
-  locale?: string
-  startYear?: number
-  endYear?: number
-  yearValue?: number
-  monthValue?: number
-  onYearChange?: (year: number) => void
-  onMonthChange?: (month: number) => void
-  monthsListFormat?: DateLabelFormat
-  labelFormat?: DateLabelFormat
-  radius?: string | number
-  getYearControlProps?: (year: number) => NativeButtonProps
-  getMonthControlProps?: (month: number) => NativeButtonProps
-  withMonths?: boolean
-  labels?: ScheduleLabelsOverride
-}
-
-export interface ScheduleHeaderProps extends HTMLAttributes {
-  labels?: ScheduleLabelsOverride
-}
-
-export interface HeaderControlProps extends NativeButtonProps {
-  active?: boolean
-  square?: boolean
-  radius?: string | number
-  interactive?: boolean
-  labels?: ScheduleLabelsOverride
-}
-
-export interface ScheduleEventProps extends NativeButtonProps {
-  event: ScheduleEventData
-  radius?: string | number
-  nowrap?: boolean
-  autoSize?: boolean
-  size?: 'sm' | 'md' | (string & {})
-  renderEventBody?: RenderEventBody
-  renderEvent?: RenderEvent
-  hanging?: 'start' | 'end' | 'both' | 'none'
-  draggable?: boolean
-  onEventDragStart?: (event: ScheduleEventData) => void
-  onEventDragEnd?: () => void
-  isDragging?: boolean
-  mode?: ScheduleMode
-  withResize?: boolean
-  onResizeStart?: (edge: 'top' | 'bottom', event: PointerEvent) => void
-  isResizing?: boolean
-}
-
-export type MoreEventsDropdownType = 'popover' | 'modal'
-export interface MoreEventsProps extends NativeButtonProps {
-  events: ScheduleEventData[]
-  moreEventsCount: number
-  radius?: string | number
-  modalTitle?: string
-  dropdownType?: MoreEventsDropdownType
-  popoverProps?: Record<string, unknown>
-  modalProps?: Record<string, unknown>
-  onDropdownClose?: () => void
-  renderEventBody?: RenderEventBody
-  renderEvent?: RenderEvent
-  labels?: ScheduleLabelsOverride
-  mode?: ScheduleMode
-  onEventClick?: (event: ScheduleEventData, nativeEvent: MouseEvent) => void
-}
-
-export interface CurrentTimeIndicatorProps extends HTMLAttributes {
-  color?: string
-  startOffset?: string
-  endOffset?: string
-  topOffset?: string
-  timeBubbleStartOffset?: string
-  withTimeBubble?: boolean
-  withThumb?: boolean
-  currentTimeFormat?: DateLabelFormat
-  locale?: string
-  startTime?: string
-  endTime?: string
-  intervalMinutes?: number
-  getCurrentTime?: () => AnyDateValue
-}
-
-export interface ScheduleProps extends HTMLAttributes {
-  date?: Date | DateStringValue
-  defaultDate?: Date | DateStringValue
-  onDateChange?: (date: DateStringValue) => void
-  view?: ScheduleViewLevel
-  defaultView?: ScheduleViewLevel
-  onViewChange?: (view: ScheduleViewLevel) => void
-  events?: ScheduleEventData[]
-  locale?: string
-  radius?: string | number
-  labels?: ScheduleLabelsOverride
-  renderEventBody?: RenderEventBody
-  withEventsDragAndDrop?: boolean
-  onEventDrop?: (data: EventDropData) => void
-  canDragEvent?: (event: ScheduleEventData) => boolean
-  onEventDragStart?: (event: ScheduleEventData) => void
-  onEventDragEnd?: () => void
-  onTimeSlotClick?: (data: TimeSlotClickData) => void
-  onAllDaySlotClick?: (date: DateStringValue, nativeEvent: MouseEvent) => void
-  onEventClick?: (event: ScheduleEventData, nativeEvent: MouseEvent) => void
-  onDayClick?: (date: DateStringValue, nativeEvent: MouseEvent) => void
-  onMonthClick?: (month: DateStringValue) => void
-  withDragSlotSelect?: boolean
-  onSlotDragEnd?: (rangeStart: string, rangeEnd: string) => void
-  mode?: ScheduleMode
-  onExternalEventDrop?: (dataTransfer: DataTransfer, dateTime: string) => void
-  withEventResize?: boolean
-  onEventResize?: (data: EventDropData) => void
-  canResizeEvent?: (event: ScheduleEventData) => boolean
-  recurrenceExpansionLimit?: number
-  layout?: 'default' | 'responsive'
-  dayViewProps?: Partial<DayViewProps>
-  weekViewProps?: Partial<WeekViewProps>
-  monthViewProps?: Partial<MonthViewProps>
-  yearViewProps?: Partial<YearViewProps>
-  mobileMonthViewProps?: Partial<MobileMonthViewProps>
-}
-
-export const objectProp = Object as PropType<Record<string, unknown>>

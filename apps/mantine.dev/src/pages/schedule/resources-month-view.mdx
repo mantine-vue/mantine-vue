@@ -16,13 +16,13 @@ ResourcesMonthView displays resources as rows and every day of the selected mont
 
 ## Drag and drop
 
-Events can move between days and resources. `onEventDrop` receives the target `resourceId`.
+Events can move between days and resources. The `eventDrop` payload carries the target `resourceId`.
 
 <Demo data={ResourcesMonthViewDemos.dragDrop} />
 
 ## Event form
 
-Use `onDayClick`, `withDragSlotSelect` and `onSlotDragEnd` to create events for a resource.
+Use the `dayClick` event, `withDragSlotSelect` and the `slotDragEnd` event to create events for a resource.
 
 <Demo data={ResourcesMonthViewDemos.eventForm} />
 

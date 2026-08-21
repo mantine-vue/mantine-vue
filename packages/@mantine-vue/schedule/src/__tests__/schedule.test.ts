@@ -88,6 +88,13 @@ function clickWithPointer(element: HTMLElement) {
   element.click()
 }
 
+async function flushFrame() {
+  await new Promise<void>((resolve) => {
+    requestAnimationFrame(() => resolve())
+  })
+  await nextTick()
+}
+
 function pressKey(element: HTMLElement, key: string) {
   element.dispatchEvent(new KeyboardEvent('keydown', { key, bubbles: true, cancelable: true }))
 }
@@ -259,9 +266,9 @@ describe('@mantine-vue/schedule', () => {
   })
 
   it.each([
-    [WeekView, 'Weekday 2026-07-13', 'Weekday 2026-07-14', 'Weekday 2026-07-15'],
-    [MonthView, 'July 13, 2026', 'July 14, 2026', 'July 15, 2026'],
-  ] as const)('marks configured weekend days in %s', (component, first, second, regular) => {
+    ['WeekView', WeekView, 'Weekday 2026-07-13', 'Weekday 2026-07-14', 'Weekday 2026-07-15'],
+    ['MonthView', MonthView, 'July 13, 2026', 'July 14, 2026', 'July 15, 2026'],
+  ] as const)('marks configured weekend days in %s', (_name, component, first, second, regular) => {
     const wrapper = mountWithProvider(component, {
       date: '2026-07-15',
       weekendDays: [1, 2],
@@ -277,15 +284,21 @@ describe('@mantine-vue/schedule', () => {
   })
 
   it.each([
-    [MonthView, 'button[aria-label="July 15, 2026"]', 'button[aria-label="July 16, 2026"]'],
     [
+      'MonthView',
+      MonthView,
+      'button[aria-label="July 15, 2026"]',
+      'button[aria-label="July 16, 2026"]',
+    ],
+    [
+      'YearView',
       YearView,
       'button[aria-label="January 1, 2026"]:not([data-outside])',
       'button[aria-label="January 2, 2026"]:not([data-outside])',
     ],
   ])(
     'supports calendar-grid arrow navigation in %s',
-    (component, currentSelector, nextSelector) => {
+    (_name, component, currentSelector, nextSelector) => {
       const wrapper = mountWithProviderAttached(component, { date: '2026-07-15' })
       const current = wrapper.get(currentSelector as string).element
       const next = wrapper.get(nextSelector as string).element
@@ -341,7 +354,10 @@ describe('@mantine-vue/schedule', () => {
     )
   })
 
-  it.each([DayView, WeekView])('moves events with drag and drop in %s', async (component) => {
+  it.each([
+    ['DayView', DayView],
+    ['WeekView', WeekView],
+  ] as const)('moves events with drag and drop in %s', async (_name, component) => {
     const onEventDrop = vi.fn()
     const wrapper = mountWithProvider(component, {
       date: '2026-07-15',
@@ -377,9 +393,12 @@ describe('@mantine-vue/schedule', () => {
     expect(eventButton.attributes('data-dragging')).toBeUndefined()
   })
 
-  it.each([DayView, WeekView])(
+  it.each([
+    ['DayView', DayView],
+    ['WeekView', WeekView],
+  ] as const)(
     'moves events when they are dropped over another event in %s',
-    async (component) => {
+    async (_name, component) => {
       const onEventDrop = vi.fn()
       const wrapper = mountWithProvider(component, {
         date: '2026-07-15',
@@ -429,7 +448,7 @@ describe('@mantine-vue/schedule', () => {
 
       dispatchDragEvent(draggedEvent.element, 'dragstart', dataTransfer)
       dispatchDragEvent(dropEvent.element, 'dragover', dataTransfer, 96)
-      await nextTick()
+      await flushFrame()
 
       expect(slots[1].getAttribute('data-drop-target')).toBe('true')
       expect(dataTransfer.dropEffect).toBe('move')
@@ -544,57 +563,57 @@ describe('@mantine-vue/schedule', () => {
     )
   })
 
-  it.each([DayView, WeekView])(
-    'updates event height while it is being resized in %s',
-    async (component) => {
-      const onEventResize = vi.fn()
-      const wrapper = mountWithProvider(component, {
-        date: '2026-07-15',
-        events,
-        startTime: '09:00:00',
-        endTime: '11:00:00',
-        intervalMinutes: 30,
-        withEventResize: true,
-        onEventResize,
-      })
-      const eventButton = wrapper.get('button[data-event-id="1"]')
-      const eventParent = eventButton.element.parentElement as HTMLElement
-      const container = eventParent
-      vi.spyOn(container, 'getBoundingClientRect').mockReturnValue({
-        x: 0,
-        y: 100,
-        top: 100,
-        right: 100,
-        bottom: 228,
-        left: 0,
-        width: 100,
-        height: 128,
-        toJSON: () => ({}),
-      })
+  it.each([
+    ['DayView', DayView],
+    ['WeekView', WeekView],
+  ] as const)('updates event height while it is being resized in %s', async (_name, component) => {
+    const onEventResize = vi.fn()
+    const wrapper = mountWithProvider(component, {
+      date: '2026-07-15',
+      events,
+      startTime: '09:00:00',
+      endTime: '11:00:00',
+      intervalMinutes: 30,
+      withEventResize: true,
+      onEventResize,
+    })
+    const eventButton = wrapper.get('button[data-event-id="1"]')
+    const eventParent = eventButton.element.parentElement as HTMLElement
+    const container = eventParent
+    vi.spyOn(container, 'getBoundingClientRect').mockReturnValue({
+      x: 0,
+      y: 100,
+      top: 100,
+      right: 100,
+      bottom: 228,
+      left: 0,
+      width: 100,
+      height: 128,
+      toJSON: () => ({}),
+    })
 
-      eventButton
-        .get('[data-edge="bottom"]')
-        .element.dispatchEvent(new MouseEvent('pointerdown', { clientY: 164, bubbles: true }))
-      document.dispatchEvent(new MouseEvent('pointermove', { clientY: 196 }))
-      await nextTick()
+    eventButton
+      .get('[data-edge="bottom"]')
+      .element.dispatchEvent(new MouseEvent('pointerdown', { clientY: 164, bubbles: true }))
+    document.dispatchEvent(new MouseEvent('pointermove', { clientY: 196 }))
+    await flushFrame()
 
-      expect(eventButton.attributes('style')).toContain('bottom: 25%')
-      expect(eventButton.attributes('style')).toContain('min-height: 1px')
-      expect(eventButton.attributes('data-resizing')).toBe('true')
-      expect(onEventResize).not.toHaveBeenCalled()
+    expect(eventButton.attributes('style')).toContain('bottom: 25%')
+    expect(eventButton.attributes('style')).toContain('min-height: 1px')
+    expect(eventButton.attributes('data-resizing')).toBe('true')
+    expect(onEventResize).not.toHaveBeenCalled()
 
-      document.dispatchEvent(new MouseEvent('pointerup', { clientY: 196 }))
-      await nextTick()
+    document.dispatchEvent(new MouseEvent('pointerup', { clientY: 196 }))
+    await nextTick()
 
-      expect(onEventResize).toHaveBeenCalledWith(
-        expect.objectContaining({
-          eventId: 1,
-          newStart: '2026-07-15 09:00:00',
-          newEnd: '2026-07-15 10:30:00',
-        }),
-      )
-    },
-  )
+    expect(onEventResize).toHaveBeenCalledWith(
+      expect.objectContaining({
+        eventId: 1,
+        newStart: '2026-07-15 09:00:00',
+        newEnd: '2026-07-15 10:30:00',
+      }),
+    )
+  })
 
   it('uses getCurrentTime to render and position current time indicators', () => {
     const getCurrentTime = () => '2026-07-15 14:30:00'
@@ -793,7 +812,7 @@ describe('@mantine-vue/schedule', () => {
     document.dispatchEvent(
       new MouseEvent('pointermove', { bubbles: true, cancelable: true, clientX: 300 }),
     )
-    await nextTick()
+    await flushFrame()
 
     expect(eventWrapper.attributes('style')).toContain('width: calc(20% - 2px)')
     expect(onEventResize).not.toHaveBeenCalled()
@@ -887,9 +906,262 @@ describe('@mantine-vue/schedule', () => {
     expect(eventButton?.attributes('data-event-id')).toBeUndefined()
   })
 
-  it.each([MonthView, YearView, MobileMonthView])('mounts %s with event data', (component) => {
+  it.each([
+    ['MonthView', MonthView],
+    ['YearView', YearView],
+    ['MobileMonthView', MobileMonthView],
+  ] as const)('mounts %s with event data', (_name, component) => {
     const wrapper = mountWithProvider(component, { date: '2026-07-15', events })
 
     expect(wrapper.text()).toContain('July')
+  })
+
+  it.each([
+    ['DayView', DayView, '[data-time-slot-index="4"]'],
+    ['WeekView', WeekView, '[data-week-day-index="0"][data-time-slot-index="4"]'],
+  ] as const)('scrolls to startScrollTime on mount in %s', async (_name, component, selector) => {
+    const wrapper = mountWithProviderAttached(component, {
+      date: '2026-07-15',
+      startTime: '08:00:00',
+      endTime: '18:00:00',
+      intervalMinutes: 60,
+      startScrollTime: '12:00:00',
+    })
+
+    const viewport = wrapper.get('[data-schedule-viewport]').element as HTMLElement
+    const slot = wrapper.get(selector).element as HTMLElement
+    Object.defineProperty(slot, 'offsetTop', { value: 256, configurable: true })
+
+    await nextTick()
+    await nextTick()
+
+    expect(viewport.scrollTop).toBe(256)
+    wrapper.unmount()
+  })
+
+  it('forwards classNames and styles down to the components a view renders', () => {
+    const wrapper = mountWithProvider(DayView, {
+      date: '2026-07-15',
+      events,
+      classNames: { event: 'custom-event', headerControl: 'custom-header-control' },
+      styles: { event: { opacity: 0.5 } },
+    })
+
+    const event = wrapper.get('button[data-event-id="1"]')
+    expect(event.classes()).toContain('custom-event')
+    expect(event.attributes('style')).toContain('opacity: 0.5')
+    expect(wrapper.get('button[data-type="today"]').classes()).toContain('custom-header-control')
+  })
+
+  it('merges control labels over the ones provided by the header', () => {
+    const wrapper = mountWithProvider(DayView, {
+      date: '2026-07-15',
+      labels: { today: 'Heute', next: 'Weiter' },
+      todayControlProps: { labels: { today: 'Jetzt' } },
+    })
+
+    const today = wrapper.get('button[data-type="today"]')
+    expect(today.text()).toBe('Jetzt')
+    // The override replaces one key without dropping the rest of the header labels.
+    expect(wrapper.get('button[data-type="next"]').attributes('aria-label')).toBe('Weiter')
+  })
+
+  it('uses the labels override for the mobile month view empty state', () => {
+    const wrapper = mountWithProvider(MobileMonthView, {
+      date: '2026-07-15',
+      selectedDate: '2026-07-17',
+      events,
+      labels: { noEvents: 'Nichts geplant' },
+    })
+
+    expect(wrapper.text()).toContain('Nichts geplant')
+  })
+
+  it('reports interaction through events rather than callback props', async () => {
+    const eventClick = vi.fn()
+    const dateChange = vi.fn()
+    const wrapper = mountWithProvider(DayView, {
+      date: '2026-07-15',
+      events,
+      onEventClick: eventClick,
+      onDateChange: dateChange,
+    })
+
+    await wrapper.get('button[data-event-id="1"]').trigger('click')
+    await wrapper.get('button[data-type="next"]').trigger('click')
+
+    expect(eventClick).toHaveBeenCalledTimes(1)
+    expect(eventClick).toHaveBeenCalledWith(
+      expect.objectContaining({ id: 1 }),
+      expect.any(MouseEvent),
+    )
+    expect(dateChange).toHaveBeenCalledExactlyOnceWith('2026-07-16 00:00:00')
+    expect(wrapper.get('[class*="dayView"]').attributes('oneventclick')).toBeUndefined()
+  })
+
+  it.each([
+    ['DayView', DayView],
+    ['WeekView', WeekView],
+    ['MonthView', MonthView],
+  ] as const)('marks every event while one of them is dragged in %s', async (_name, component) => {
+    const wrapper = mountWithProvider(component, {
+      date: '2026-07-15',
+      events: [events[0], { ...events[0], id: 2, title: 'Second' }],
+      withEventsDragAndDrop: true,
+    })
+
+    const buttons = wrapper.findAll('button[data-event-id]')
+    expect(buttons.length).toBeGreaterThan(1)
+    expect(buttons[0].attributes('data-any-dragging')).toBeUndefined()
+
+    dispatchDragEvent(buttons[0].element, 'dragstart', createDataTransfer())
+    await nextTick()
+
+    // Every event is marked, and only the dragged one also carries `data-dragging`.
+    expect(buttons[0].attributes('data-any-dragging')).toBe('true')
+    expect(buttons[1].attributes('data-any-dragging')).toBe('true')
+    expect(buttons[0].attributes('data-dragging')).toBe('true')
+    expect(buttons[1].attributes('data-dragging')).toBeUndefined()
+
+    dispatchDragEvent(buttons[0].element, 'dragend', createDataTransfer())
+    await nextTick()
+
+    expect(buttons[0].attributes('data-any-dragging')).toBeUndefined()
+    expect(buttons[1].attributes('data-any-dragging')).toBeUndefined()
+  })
+
+  it('only accepts external drops when withExternalEventDrop is set', async () => {
+    const dropExternal = async (withExternalEventDrop: boolean) => {
+      const externalEventDrop = vi.fn()
+      const wrapper = mountWithProvider(DayView, {
+        date: '2026-07-15',
+        startTime: '09:00:00',
+        endTime: '11:00:00',
+        intervalMinutes: 60,
+        withExternalEventDrop,
+        onExternalEventDrop: externalEventDrop,
+      })
+      const slot = wrapper.findAll('[data-time-slot-index]')[1].element
+      const dataTransfer = createDataTransfer()
+      dataTransfer.setData('text/plain', 'external')
+
+      dispatchDragEvent(slot, 'dragover', dataTransfer, 10)
+      await flushFrame()
+      dispatchDragEvent(slot, 'drop', dataTransfer, 10)
+      await nextTick()
+
+      wrapper.unmount()
+      return { externalEventDrop, dataTransfer }
+    }
+
+    expect((await dropExternal(false)).externalEventDrop).not.toHaveBeenCalled()
+
+    const enabled = await dropExternal(true)
+    expect(enabled.externalEventDrop).toHaveBeenCalledWith(
+      enabled.dataTransfer,
+      '2026-07-15 10:00:00',
+    )
+  })
+
+  it('coalesces rapid drag movement into one update and drops the pending one on drop', async () => {
+    const onEventDrop = vi.fn()
+    const wrapper = mountWithProviderAttached(WeekView, {
+      date: '2026-07-15',
+      events,
+      startTime: '09:00:00',
+      endTime: '12:00:00',
+      intervalMinutes: 60,
+      withEventsDragAndDrop: true,
+      onEventDrop,
+    })
+
+    const slots = wrapper.findAll('[data-week-day-index="2"][data-time-slot-index]')
+    const dataTransfer = createDataTransfer()
+    dispatchDragEvent(wrapper.get('button[data-event-id="1"]').element, 'dragstart', dataTransfer)
+
+    // A burst of moves across several slots must not queue up one render per event.
+    dispatchDragEvent(slots[0].element, 'dragover', dataTransfer)
+    dispatchDragEvent(slots[1].element, 'dragover', dataTransfer)
+    dispatchDragEvent(slots[2].element, 'dragover', dataTransfer)
+    await nextTick()
+
+    // Nothing has been applied yet: the burst is still waiting for its single frame.
+    expect(wrapper.findAll('[data-drop-target]')).toHaveLength(0)
+
+    await flushFrame()
+
+    // Only the last position of the burst is applied.
+    const highlighted = wrapper.findAll('[data-drop-target]')
+    expect(highlighted).toHaveLength(1)
+    expect(highlighted[0].attributes('data-time-slot-index')).toBe('2')
+
+    // A move immediately before the drop must not repaint after it.
+    dispatchDragEvent(slots[0].element, 'dragover', dataTransfer)
+    dispatchDragEvent(slots[2].element, 'drop', dataTransfer)
+    await flushFrame()
+
+    expect(wrapper.findAll('[data-drop-target]')).toHaveLength(0)
+    expect(onEventDrop).toHaveBeenCalledTimes(1)
+    wrapper.unmount()
+  })
+
+  it.each([
+    ['DayView', DayView],
+    ['WeekView', WeekView],
+    ['MonthView', MonthView],
+  ] as const)(
+    'clears the drag state in %s even when the dragged element is gone before dragend',
+    async (_name, component) => {
+      const eventDragEnd = vi.fn()
+      const wrapper = mountWithProviderAttached(component, {
+        date: '2026-07-15',
+        events,
+        withEventsDragAndDrop: true,
+        onEventDragEnd: eventDragEnd,
+      })
+
+      const dragged = wrapper.get('button[data-event-id="1"]').element
+      const dataTransfer = createDataTransfer()
+      dispatchDragEvent(dragged, 'dragstart', dataTransfer)
+      await nextTick()
+
+      expect(wrapper.findAll('[data-any-dragging]').length).toBeGreaterThan(0)
+
+      document.dispatchEvent(new Event('drop', { bubbles: true }))
+      await flushFrame()
+
+      expect(wrapper.findAll('[data-any-dragging]')).toHaveLength(0)
+      expect(wrapper.findAll('[data-drop-target]')).toHaveLength(0)
+
+      expect(wrapper.findAll('[data-dragging]')).toHaveLength(0)
+      expect(eventDragEnd).toHaveBeenCalledTimes(1)
+
+      const next = wrapper.get('button[data-event-id="1"]').element
+      dispatchDragEvent(next, 'dragstart', createDataTransfer())
+      await nextTick()
+
+      expect(wrapper.findAll('[data-any-dragging]').length).toBeGreaterThan(0)
+      wrapper.unmount()
+    },
+  )
+
+  it('reports a cancelled drag once, through dragend on the element', async () => {
+    const eventDragEnd = vi.fn()
+    const wrapper = mountWithProviderAttached(DayView, {
+      date: '2026-07-15',
+      events,
+      withEventsDragAndDrop: true,
+      onEventDragEnd: eventDragEnd,
+    })
+
+    const dragged = wrapper.get('button[data-event-id="1"]').element
+    dispatchDragEvent(dragged, 'dragstart', createDataTransfer())
+    await nextTick()
+    dispatchDragEvent(dragged, 'dragend', createDataTransfer())
+    await nextTick()
+
+    expect(eventDragEnd).toHaveBeenCalledTimes(1)
+    expect(wrapper.findAll('[data-any-dragging]')).toHaveLength(0)
+    wrapper.unmount()
   })
 })

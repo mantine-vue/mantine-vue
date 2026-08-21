@@ -13,7 +13,7 @@ drag and drop, custom time ranges, and more.
 
 ## Controlled date
 
-Control the date displayed by WeekView externally using `date` and `onDateChange` props.
+Control the date displayed by WeekView externally using the `date` prop and the `dateChange` event.
 
 <Demo data={WeekViewDemos.controlledDate} />
 
@@ -51,19 +51,13 @@ Use `weekdayFormat` prop to customize the weekday names display. It accepts dayj
 
 ## Without weekend days
 
-Set `withWeekendDays={false}` to hide Saturday and Sunday columns.
+Set `:with-weekend-days="false"` to hide Saturday and Sunday columns.
 
 <Demo data={WeekViewDemos.withoutWeekendDays} />
 
-## Highlight today
-
-Set `highlightToday` to visually distinguish today's column:
-
-<Demo data={WeekViewDemos.highlightToday} />
-
 ## Without week number
 
-Set `withWeekNumber={false}` to hide the week number in the top-left corner.
+Set `:with-week-number="false"` to hide the week number in the top-left corner.
 
 <Demo data={WeekViewDemos.withoutWeekNumber} />
 
@@ -97,7 +91,7 @@ see the indicator and the time bubble move to the matching day and position:
 
 ## Without all-day slots
 
-Set `withAllDaySlots={false}` to hide the all-day events section at the top.
+Set `:with-all-day-slots="false"` to hide the all-day events section at the top.
 
 <Demo data={WeekViewDemos.withoutAllDaySlots} />
 
@@ -110,20 +104,20 @@ Events that span midnight or cover a full day are automatically placed in this s
 
 ## Without header
 
-Set `withHeader={false}` to hide the header controls.
+Set `:with-header="false"` to hide the header controls.
 
 <Demo data={WeekViewDemos.withoutHeader} />
 
 ## View change callback
 
-Use `onViewChange` callback to be notified when the user selects a different view from the header dropdown.
+Listen for the `viewChange` event to be notified when the user selects a different view from the header dropdown.
 
 <Demo data={WeekViewDemos.viewChange} />
 
 ## Custom header
 
 You can build a custom header using `ScheduleHeader` compound components combined with your own controls.
-Set `withHeader={false}` on the view and compose the header externally.
+Set `:with-header="false"` on the view and compose the header externally.
 
 <Demo data={WeekViewDemos.customHeader} />
 
@@ -175,7 +169,7 @@ and should return an object of props to spread onto the slot element, or `undefi
 This is useful for setting `data-business-hours` on a custom range that differs from the
 default 9:00–17:00, or for attaching custom event handlers to specific slots.
 Event handlers like `onClick` returned by `getTimeSlotProps` are composed with internal handlers
-(`onTimeSlotClick`) – both will fire without overriding each other.
+(the `timeSlotClick` event) – both will fire without overriding each other.
 
 <Demo data={WeekViewDemos.getTimeSlotProps} />
 
@@ -200,15 +194,15 @@ Events that return `false` will not be draggable.
 
 ## External drag and drop
 
-Use `onExternalEventDrop` to allow dragging items from outside the component into
-the schedule. External items must set data in `dataTransfer` during their `onDragStart`.
+Set `withExternalEventDrop` and listen for the `externalEventDrop` event to allow dragging items from outside the component into
+the schedule. External items must set data in `dataTransfer` during their own `dragstart` handler.
 The callback receives the `DataTransfer` object and the drop target datetime.
 
 <Demo data={WeekViewDemos.externalDragDrop} />
 
 ## Bidirectional drag and drop
 
-Combine `onExternalEventDrop` with `withEventsDragAndDrop` to enable bidirectional
+Combine `withExternalEventDrop` with `withEventsDragAndDrop` to enable bidirectional
 drag and drop. Items dragged from the sidebar are removed from the list and added
 to the schedule. Events dragged from the schedule back to the sidebar are removed
 from the schedule. The schedule sets `application/json` with `{ eventId }` in
@@ -220,7 +214,7 @@ identify the event.
 ## Event resize
 
 Enable event resizing by setting `withEventResize` prop. Users can drag the top or bottom
-edge of an event to adjust its start or end time. Use `onEventResize` callback to handle
+edge of an event to adjust its start or end time. Listen for the `eventResize` event to handle
 the resize. Use `canResizeEvent` to control which events can be resized.
 
 <Demo data={WeekViewDemos.eventResize} />
@@ -288,9 +282,9 @@ Combine it with `labels` prop to translate all UI text.
 ## Create and update events
 
 Set `withDragSlotSelect` prop to allow users to drag across time slots to select a time range.
-When the drag ends, the `onSlotDragEnd` callback is called with the range start and end dates.
-The drag is constrained to a single day column. Combined with `onTimeSlotClick`, `onAllDaySlotClick`,
-and `onEventClick` callbacks, this enables a complete event creation and editing experience.
+When the drag ends, the `slotDragEnd` event is emitted with the range start and end dates.
+The drag is constrained to a single day column. Combined with the `timeSlotClick`, `allDaySlotClick`
+and `eventClick` events, this enables a complete event creation and editing experience.
 
 <Demo data={WeekViewDemos.eventForm} />
 
@@ -306,7 +300,7 @@ and reducing padding on smaller screens. Container queries are supported in all 
 
 In the WeekView component, focus is managed to provide an efficient keyboard navigation experience:
 
-- The weekdays row, all-day slots row, and time slots grid each have their first element in the tab order (`tabIndex={0}`)
+- The weekdays row, all-day slots row, and time slots grid each have their first element in the tab order (`:tab-index="0"`)
 - All other elements have `tabIndex={-1}` and can only be reached via arrow key navigation
 - This approach reduces the number of tab stops when navigating through the schedule
 

@@ -1,5 +1,6 @@
 import dayjs from 'dayjs'
-import { onBeforeUnmount, ref } from 'vue'
+import { onBeforeUnmount, shallowRef } from 'vue'
+import { rafThrottle } from '../components/shared'
 import type { EventDropData } from '../component-props'
 import type { DateTimeStringValue, ScheduleEventData, ScheduleMode } from '../types'
 import { clampIntervalMinutes, parseTimeString } from '../utils'
@@ -41,12 +42,12 @@ export interface UseEventResizeInput {
   startTime: () => string
   endTime: () => string
   intervalMinutes: () => number
-  onEventResize: () => ((data: EventDropData) => void) | undefined
+  onEventResize: (data: EventDropData) => void
   canResizeEvent: () => ((event: ScheduleEventData) => boolean) | undefined
 }
 
 export function useEventResize(input: UseEventResizeInput) {
-  const resizeState = ref<ResizeState | null>(null)
+  const resizeState = shallowRef<ResizeState | null>(null)
   let justResized = false
   let savedUserSelect: string | null = null
 
@@ -72,14 +73,19 @@ export function useEventResize(input: UseEventResizeInput) {
     return `${eventDate} ${String(hours).padStart(2, '0')}:${String(mins).padStart(2, '0')}:00`
   }
 
-  const handlePointerMove = (event: PointerEvent) => {
+  /**
+   * Coalesced to one animation frame: `pointermove` outruns paint, and each step reads layout
+   * and re-renders the grid. Without this the preview trails the pointer and keeps moving after
+   * it stops.
+   */
+  const handlePointerMove = rafThrottle((clientY: number) => {
     const state = resizeState.value
     if (!state) return
 
     const containerRect = state.container.getBoundingClientRect()
     if (containerRect.height === 0) return
 
-    const relativeY = event.clientY - containerRect.top
+    const relativeY = clientY - containerRect.top
     const rawPercent = Math.max(0, Math.min(100, (relativeY / containerRect.height) * 100))
     const snappedPercent = snapPercent(rawPercent, state)
     let currentTop = state.originalTop
@@ -94,10 +100,13 @@ export function useEventResize(input: UseEventResizeInput) {
     }
 
     resizeState.value = { ...state, currentTop, currentHeight }
-  }
+  })
+
+  const trackPointer = (event: PointerEvent) => handlePointerMove(event.clientY)
 
   const removeDocumentListeners = () => {
-    document.removeEventListener('pointermove', handlePointerMove)
+    handlePointerMove.cancel()
+    document.removeEventListener('pointermove', trackPointer)
     document.removeEventListener('pointerup', handlePointerUp)
     if (savedUserSelect !== null) {
       document.body.style.userSelect = savedUserSelect
@@ -106,6 +115,8 @@ export function useEventResize(input: UseEventResizeInput) {
   }
 
   const handlePointerUp = () => {
+    // Drop the pending frame first, so a stale step cannot land after the gesture ended.
+    handlePointerMove.cancel()
     const state = resizeState.value
     if (
       state &&
@@ -120,7 +131,7 @@ export function useEventResize(input: UseEventResizeInput) {
           ? percentToDateTime(state.currentTop + state.currentHeight, state.eventDate, state)
           : state.originalEnd
 
-      input.onEventResize()?.({ eventId: state.eventId, newStart, newEnd, event: state.event })
+      input.onEventResize({ eventId: state.eventId, newStart, newEnd, event: state.event })
     }
 
     resizeState.value = null
@@ -174,7 +185,7 @@ export function useEventResize(input: UseEventResizeInput) {
 
     savedUserSelect = document.body.style.userSelect
     document.body.style.userSelect = 'none'
-    document.addEventListener('pointermove', handlePointerMove)
+    document.addEventListener('pointermove', trackPointer)
     document.addEventListener('pointerup', handlePointerUp)
   }
 

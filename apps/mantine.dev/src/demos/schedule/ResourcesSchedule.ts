@@ -99,7 +99,7 @@ export const ResourcesScheduleDemos = createDemoRegistry(
     ...sharedVariants,
     controlled: {
       description:
-        'Control the current date and view level with date/onDateChange and view/onViewChange.',
+        'Control the current date and view level with `v-model:date` and `v-model:view`.',
     },
     weekView: {
       props: { defaultView: 'week' },

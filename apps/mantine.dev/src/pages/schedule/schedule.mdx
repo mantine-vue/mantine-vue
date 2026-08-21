@@ -13,7 +13,7 @@ view switching. Use the view selector in the header to switch between different 
 
 ## Controlled state
 
-Control the current view and date externally using the `view`, `onViewChange`, `date`, and `onDateChange` props.
+Control the current view and date externally with `v-model:view` and `v-model:date`, or with the `viewChange` and `dateChange` events.
 This allows you to build custom navigation or integrate with other components.
 
 <Demo data={ScheduleDemos.controlled} />
@@ -37,7 +37,7 @@ Set `defaultView` to control which view is shown initially when using uncontroll
 ## Custom header
 
 You can build a custom header using `ScheduleHeader` compound components combined with your own controls.
-Disable the default header on all views by passing `withHeader={false}` through view-specific props.
+Disable the default header on all views by passing `:with-header="false"` through view-specific props.
 
 <Demo data={ScheduleDemos.customHeader} />
 
@@ -51,10 +51,10 @@ The following props are shared across all views:
 - `labels` - Label overrides for i18n
 - `renderEventBody` - Custom event renderer
 - `withEventsDragAndDrop` - Enable drag and drop
-- `onEventDrop` - Drag and drop handler
+- `eventDrop` - emitted when an event is dropped in a new position
 - `canDragEvent` - Drag permission callback
 - `withEventResize` - Enable event resizing
-- `onEventResize` - Resize handler
+- `eventResize` - emitted when an event is resized
 - `canResizeEvent` - Resize permission callback
 - `mode` - Interaction mode (`default` or `static`)
 
@@ -71,23 +71,23 @@ to different time slots and days across all views.
 ## Create and update events
 
 Set `withDragSlotSelect` prop to allow users to drag across time slots or day cells to select a range.
-When the drag ends, the `onSlotDragEnd` callback is called with the range start and end dates.
-Combined with `onTimeSlotClick`, `onAllDaySlotClick`, `onDayClick`, and `onEventClick` callbacks,
+When the drag ends, the `slotDragEnd` event is emitted with the range start and end dates.
+Combined with the `timeSlotClick`, `allDaySlotClick`, `dayClick` and `eventClick` events,
 this enables a complete event creation and editing experience across all views.
 
 <Demo data={ScheduleDemos.eventForm} />
 
 ## External drag and drop
 
-Use `onExternalEventDrop` to allow dragging items from outside the component into
-the schedule. External items must set data in `dataTransfer` during their `onDragStart`.
+Set `withExternalEventDrop` and listen for the `externalEventDrop` event to allow dragging items from outside the component into
+the schedule. External items must set data in `dataTransfer` during their own `dragstart` handler.
 The callback receives the `DataTransfer` object and the drop target datetime.
 
 <Demo data={ScheduleDemos.externalDragDrop} />
 
 ## Bidirectional drag and drop
 
-Combine `onExternalEventDrop` with `withEventsDragAndDrop` to enable bidirectional
+Combine `withExternalEventDrop` with `withEventsDragAndDrop` to enable bidirectional
 drag and drop. Items dragged from the sidebar are removed from the list and added
 to the schedule. Events dragged from the schedule back to the sidebar are removed
 from the schedule. The schedule sets `application/json` with `{ eventId }` in
@@ -99,7 +99,7 @@ identify the event.
 ## Event resize
 
 Enable event resizing by setting `withEventResize` prop. Users can drag the top or bottom
-edge of an event to adjust its start or end time. Use `onEventResize` callback to handle
+edge of an event to adjust its start or end time. Listen for the `eventResize` event to handle
 the resize. Event resize works in both Day and Week views and can be combined with drag and drop.
 
 <Demo data={ScheduleDemos.eventResize} />

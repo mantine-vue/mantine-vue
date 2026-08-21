@@ -26,7 +26,7 @@ By default, days from the previous and next months are hidden. Set `withOutsideD
 
 ## Highlight today
 
-Set `highlightToday={false}` to disable highlighting the current day.
+Set `:highlight-today="false"` to disable highlighting the current day.
 
 <Demo data={MobileMonthViewDemos.highlightToday} />
 
@@ -45,7 +45,7 @@ the current mode, and the current date, allowing you to wrap or replace the defa
 
 ## Consistent weeks
 
-Set `consistentWeeks={false}` to only show weeks that have days in the current month.
+Set `:consistent-weeks="false"` to only show weeks that have days in the current month.
 
 <Demo data={MobileMonthViewDemos.consistentWeeks} />
 
@@ -57,7 +57,7 @@ Use `weekdayFormat` prop to customize the weekday names display. It accepts dayj
 
 ## Without week days
 
-Set `withWeekDays={false}` to hide the weekday names row.
+Set `:with-week-days="false"` to hide the weekday names row.
 
 <Demo data={MobileMonthViewDemos.withoutWeekDays} />
 
@@ -80,7 +80,7 @@ MobileMonthView follows the same keyboard navigation patterns as [MonthView](./m
 
 ### Focus management
 
-The first day of the month is included in the tab order (`tabIndex={0}`), while all other days have `tabIndex={-1}`. When a day receives focus via arrow key navigation, the component updates `tabIndex` values so that the newly focused day becomes the tab stop.
+The first day of the month is included in the tab order (`:tab-index="0"`), while all other days have `tabIndex={-1}`. When a day receives focus via arrow key navigation, the component updates `tabIndex` values so that the newly focused day becomes the tab stop.
 
 ### Keyboard interactions
 

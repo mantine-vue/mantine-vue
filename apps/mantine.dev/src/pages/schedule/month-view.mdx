@@ -18,7 +18,7 @@ Set `withWeekNumbers` to display week numbers in the first column.
 
 ## Without week days
 
-Set `withWeekDays={false}` to hide the weekday names row.
+Set `:with-week-days="false"` to hide the weekday names row.
 
 <Demo data={MonthViewDemos.withoutWeekDays} />
 
@@ -36,19 +36,19 @@ Use `weekdayFormat` prop to customize weekday names.
 
 ## Consistent weeks
 
-Set `consistentWeeks={false}` to only show weeks that have days in the current month.
+Set `:consistent-weeks="false"` to only show weeks that have days in the current month.
 
 <Demo data={MonthViewDemos.consistentWeeks} />
 
 ## Highlight today
 
-Set `highlightToday={false}` to disable highlighting the current day.
+Set `:highlight-today="false"` to disable highlighting the current day.
 
 <Demo data={MonthViewDemos.highlightToday} />
 
 ## Without outside days
 
-Set `withOutsideDays={false}` to hide days from adjacent months.
+Set `:with-outside-days="false"` to hide days from adjacent months.
 
 <Demo data={MonthViewDemos.withoutOutsideDays} />
 
@@ -60,14 +60,14 @@ Use `radius` prop to customize the border radius of events.
 
 ## Without header
 
-Set `withHeader={false}` to hide the header controls.
+Set `:with-header="false"` to hide the header controls.
 
 <Demo data={MonthViewDemos.withoutHeader} />
 
 ## Custom header
 
 You can build a custom header using `ScheduleHeader` compound components combined with your own controls.
-Set `withHeader={false}` on the view and compose the header externally.
+Set `:with-header="false"` on the view and compose the header externally.
 
 <Demo data={MonthViewDemos.customHeader} />
 
@@ -92,15 +92,15 @@ Enable drag and drop to move events between days.
 
 ## External drag and drop
 
-Use `onExternalEventDrop` to allow dragging items from outside the component into
-the schedule. External items must set data in `dataTransfer` during their `onDragStart`.
+Set `withExternalEventDrop` and listen for the `externalEventDrop` event to allow dragging items from outside the component into
+the schedule. External items must set data in `dataTransfer` during their own `dragstart` handler.
 The callback receives the `DataTransfer` object and the drop target datetime.
 
 <Demo data={MonthViewDemos.externalDragDrop} />
 
 ## Bidirectional drag and drop
 
-Combine `onExternalEventDrop` with `withEventsDragAndDrop` to enable bidirectional
+Combine `withExternalEventDrop` with `withEventsDragAndDrop` to enable bidirectional
 drag and drop. Items dragged from the sidebar are removed from the list and added
 to the schedule. Events dragged from the schedule back to the sidebar are removed
 from the schedule. The schedule sets `application/json` with `{ eventId }` in
@@ -156,8 +156,8 @@ Combine it with `labels` prop to translate all UI text.
 ## Create and update events
 
 Set `withDragSlotSelect` prop to allow users to drag across day cells to select a date range.
-When the drag ends, the `onSlotDragEnd` callback is called with the range start and end dates.
-Combined with `onDayClick` and `onEventClick` callbacks, this enables a complete event creation
+When the drag ends, the `slotDragEnd` event is emitted with the range start and end dates.
+Combined with the `dayClick` and `eventClick` events, this enables a complete event creation
 and editing experience.
 
 <Demo data={MonthViewDemos.eventForm} />
@@ -174,7 +174,7 @@ and reducing padding on smaller screens. Container queries are supported in all 
 
 In the MonthView component, focus is managed to provide an efficient keyboard navigation experience:
 
-- Only the first day in the month view is included in the tab order (has `tabIndex={0}`)
+- Only the first day in the month view is included in the tab order (has `:tab-index="0"`)
 - All other days have `tabIndex={-1}` and can only be reached via arrow key navigation
 - Outside days (days from adjacent months) are navigable using arrow keys when `withOutsideDays` is `true`
 - Disabled days are skipped during keyboard navigation

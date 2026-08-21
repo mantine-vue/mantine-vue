@@ -50,7 +50,7 @@ with appropriate widths and offsets.
 ## Current time indicator
 
 Set `withCurrentTimeIndicator` to display a line showing the current time.
-By default, it's only shown for the current day. Set `withCurrentTimeBubble={false}`
+By default, it's only shown for the current day. Set `:with-current-time-bubble="false"`
 to hide the time bubble.
 
 <Demo data={DayViewDemos.currentTimeIndicator} />
@@ -86,7 +86,7 @@ and should return an object of props to spread onto the slot element, or `undefi
 This is useful for setting `data-business-hours` on a custom range that differs from the
 default 9:00–17:00, or for attaching custom event handlers to specific slots.
 Event handlers like `onClick` returned by `getTimeSlotProps` are composed with internal handlers
-(`onTimeSlotClick`) – both will fire without overriding each other.
+(the `timeSlotClick` event) – both will fire without overriding each other.
 
 <Demo data={DayViewDemos.getTimeSlotProps} />
 
@@ -99,7 +99,7 @@ Customize the height of time slots and the all-day section using `slotHeight` an
 
 ## Without header
 
-Set `withHeader={false}` to hide the header controls. This is useful when you want to
+Set `:with-header="false"` to hide the header controls. This is useful when you want to
 build a custom header or embed the view in a larger component.
 
 <Demo data={DayViewDemos.withoutHeader} />
@@ -107,7 +107,7 @@ build a custom header or embed the view in a larger component.
 ## Custom header
 
 You can build a custom header using `ScheduleHeader` compound components combined with your own controls.
-Set `withHeader={false}` on the view and compose the header externally.
+Set `:with-header="false"` on the view and compose the header externally.
 
 <Demo data={DayViewDemos.customHeader} />
 
@@ -133,22 +133,22 @@ Use `radius` prop to control the border radius of the day view container.
 
 ## Drag and drop
 
-Enable drag and drop by setting `withEventsDragAndDrop` prop. Use `onEventDrop` callback to handle
+Enable drag and drop by setting `withEventsDragAndDrop` prop. Listen for the `eventDrop` event to handle
 event drops. All-day events cannot be dragged.
 
 <Demo data={DayViewDemos.dragDrop} />
 
 ## External drag and drop
 
-Use `onExternalEventDrop` to allow dragging items from outside the component into
-the schedule. External items must set data in `dataTransfer` during their `onDragStart`.
+Set `withExternalEventDrop` and listen for the `externalEventDrop` event to allow dragging items from outside the component into
+the schedule. External items must set data in `dataTransfer` during their own `dragstart` handler.
 The callback receives the `DataTransfer` object and the drop target datetime.
 
 <Demo data={DayViewDemos.externalDragDrop} />
 
 ## Bidirectional drag and drop
 
-Combine `onExternalEventDrop` with `withEventsDragAndDrop` to enable bidirectional
+Combine `withExternalEventDrop` with `withEventsDragAndDrop` to enable bidirectional
 drag and drop. Items dragged from the sidebar are removed from the list and added
 to the schedule. Events dragged from the schedule back to the sidebar are removed
 from the schedule. The schedule sets `application/json` with `{ eventId }` in
@@ -167,7 +167,7 @@ implementing locked or read-only events.
 ## Event resize
 
 Enable event resizing by setting `withEventResize` prop. Users can drag the top or bottom
-edge of an event to adjust its start or end time. Use `onEventResize` callback to handle
+edge of an event to adjust its start or end time. Listen for the `eventResize` event to handle
 the resize.
 
 <Demo data={DayViewDemos.eventResize} />
@@ -241,22 +241,22 @@ Combine it with `labels` prop to translate all UI text.
 
 ## Controlled date
 
-Control the date externally using the `date` prop and `onDateChange` callback.
+Control the date externally using the `date` prop and the `dateChange` event.
 This allows you to build custom navigation or integrate with other components.
 
 <Demo data={DayViewDemos.controlledDate} />
 
 ## View change
 
-Use `onViewChange` prop to handle view level changes when the user clicks on view selector buttons.
+Listen for the `viewChange` event to handle view level changes when the user clicks the view selector buttons.
 
 <Demo data={DayViewDemos.viewChange} />
 
 ## Create and update events
 
 Set `withDragSlotSelect` prop to allow users to drag across time slots to select a time range.
-When the drag ends, the `onSlotDragEnd` callback is called with the range start and end dates.
-Combined with `onTimeSlotClick`, `onAllDaySlotClick`, and `onEventClick` callbacks, this enables
+When the drag ends, the `slotDragEnd` event is emitted with the range start and end dates.
+Combined with the `timeSlotClick`, `allDaySlotClick` and `eventClick` events, this enables
 a complete event creation and editing experience.
 
 <Demo data={DayViewDemos.eventForm} />
@@ -273,7 +273,7 @@ and reducing padding on smaller screens. Container queries are supported in all 
 
 In the DayView component, focus is managed to provide an efficient keyboard navigation experience:
 
-- Only the first time slot is included in the tab order (`tabIndex={0}`)
+- Only the first time slot is included in the tab order (`:tab-index="0"`)
 - All other time slots have `tabIndex={-1}` and can only be reached via arrow key navigation
 - This approach reduces the number of tab stops when navigating through the schedule
 
