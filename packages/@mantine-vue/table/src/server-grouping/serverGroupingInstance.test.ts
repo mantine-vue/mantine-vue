@@ -61,6 +61,7 @@ interface Sale {
 const columns: MVT_ColumnDef<Sale>[] = [
   { accessorKey: 'name', header: 'Name' },
   { accessorKey: 'amount', header: 'Amount' },
+  { accessorFn: () => undefined, enableGrouping: false, header: 'Country', id: 'country' },
 ]
 
 const makeProvider = () =>
