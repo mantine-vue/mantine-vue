@@ -1,0 +1,23 @@
+.drawerRoot {
+  display: contents;
+}
+
+/*
+ * A column layout is what keeps the composer pinned to the bottom of the drawer: without it the
+ * body grows past the viewport and the user has to scroll before they can type.
+ */
+.drawerContent {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  max-height: 100%;
+}
+
+.drawerBody {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  padding: 0;
+}

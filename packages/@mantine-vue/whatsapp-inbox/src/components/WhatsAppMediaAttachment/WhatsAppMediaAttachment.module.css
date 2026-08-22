@@ -1,0 +1,83 @@
+.mediaRoot {
+  display: block;
+  max-width: 100%;
+}
+
+.mediaImageControl {
+  display: block;
+  padding: 0;
+  border-radius: var(--mantine-radius-md);
+  overflow: hidden;
+  max-width: 100%;
+  cursor: zoom-in;
+}
+
+.mediaImage {
+  display: block;
+  max-width: min(var(--wa-media-max-width, 320px), 100%);
+  height: auto;
+  border-radius: var(--mantine-radius-md);
+  object-fit: cover;
+}
+
+.mediaRoot:where([data-media-type='sticker']) .mediaImage {
+  max-width: 140px;
+  border-radius: 0;
+}
+
+.mediaVideo {
+  display: block;
+  max-width: min(var(--wa-media-max-width, 320px), 100%);
+  height: auto;
+  border-radius: var(--mantine-radius-md);
+  background-color: var(--mantine-color-black);
+}
+
+.mediaAudio {
+  display: block;
+  width: min(var(--wa-media-max-width, 320px), 100%);
+}
+
+.mediaDocument {
+  display: flex;
+  align-items: center;
+  gap: var(--mantine-spacing-xs);
+  padding: var(--mantine-spacing-xs);
+  border-radius: var(--mantine-radius-md);
+  background-color: var(--wa-document-bg, var(--mantine-color-default-hover));
+  max-width: min(var(--wa-media-max-width, 320px), 100%);
+}
+
+.mediaDocumentIcon {
+  flex-shrink: 0;
+  display: flex;
+  color: var(--mantine-color-dimmed);
+}
+
+.mediaDocumentBody {
+  min-width: 0;
+  flex: 1;
+}
+
+.mediaDocumentName {
+  font-size: var(--mantine-font-size-sm);
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mediaDocumentMeta {
+  font-size: var(--mantine-font-size-xs);
+  color: var(--mantine-color-dimmed);
+}
+
+.mediaAction {
+  flex-shrink: 0;
+}
+
+.mediaFallback {
+  font-size: var(--mantine-font-size-sm);
+  color: var(--mantine-color-dimmed);
+  font-style: italic;
+}

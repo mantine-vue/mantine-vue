@@ -1,0 +1,156 @@
+.bubbleRoot {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  /* Spans the row so `align-items` can place the bubble on the correct side. */
+  width: 100%;
+  max-width: 100%;
+}
+
+.bubbleRoot:where([data-direction='outbound']) {
+  align-items: flex-end;
+}
+
+.bubbleRoot:where([data-variant='system']) {
+  align-items: center;
+}
+
+.bubble {
+  position: relative;
+  max-width: var(--wa-bubble-max-width, 75%);
+  min-width: 0;
+  padding: 6px 9px 6px 9px;
+  border-radius: var(--wa-bubble-radius, var(--mantine-radius-lg));
+  background-color: var(--wa-bubble-bg);
+  color: var(--wa-bubble-color, var(--mantine-color-text));
+  box-shadow: var(--wa-bubble-shadow, 0 1px 0.5px rgba(0, 0, 0, 0.13));
+  overflow-wrap: anywhere;
+}
+
+.bubbleRoot:where([data-direction='inbound']) .bubble {
+  --wa-bubble-bg: var(--wa-inbound-bg, var(--mantine-color-body));
+  border-start-start-radius: var(--wa-bubble-corner);
+}
+
+.bubbleRoot:where([data-direction='outbound']) .bubble {
+  --wa-bubble-bg: var(--wa-outbound-bg, var(--mantine-color-teal-light));
+  border-start-end-radius: var(--wa-bubble-corner);
+}
+
+.bubbleRoot:where([data-with-tail]) {
+  --wa-bubble-corner: var(--mantine-radius-xs);
+}
+
+.bubbleAuthor {
+  font-size: var(--mantine-font-size-xs);
+  font-weight: 600;
+  color: var(--mantine-color-anchor);
+  margin-bottom: 2px;
+}
+
+.bubbleQuote {
+  display: block;
+  width: 100%;
+  text-align: start;
+  border-inline-start: 3px solid var(--mantine-color-anchor);
+  border-radius: var(--mantine-radius-sm);
+  background-color: var(--mantine-color-default-hover);
+  padding: 4px 8px;
+  margin-bottom: 4px;
+}
+
+.bubbleQuoteAuthor {
+  font-size: var(--mantine-font-size-xs);
+  font-weight: 600;
+  color: var(--mantine-color-anchor);
+}
+
+.bubbleQuoteText {
+  font-size: var(--mantine-font-size-xs);
+  color: var(--mantine-color-dimmed);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.bubbleForwarded {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: var(--mantine-font-size-xs);
+  color: var(--mantine-color-dimmed);
+  font-style: italic;
+  margin-bottom: 2px;
+}
+
+.bubbleContent {
+  font-size: var(--mantine-font-size-sm);
+  line-height: 1.4;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.bubbleFooter {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4px;
+  margin-top: 2px;
+  line-height: 1;
+}
+
+.bubbleTime {
+  font-size: 11px;
+  color: var(--mantine-color-dimmed);
+  white-space: nowrap;
+}
+
+.bubbleStatus {
+  font-size: 14px;
+}
+
+.bubbleError {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 2px;
+  max-width: var(--wa-bubble-max-width, 75%);
+}
+
+.bubbleErrorText {
+  font-size: var(--mantine-font-size-xs);
+  color: var(--mantine-color-error);
+}
+
+.bubbleRetry {
+  font-size: var(--mantine-font-size-xs);
+}
+
+.bubbleReactions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: -6px;
+  z-index: 1;
+}
+
+.bubbleReaction {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  font-size: var(--mantine-font-size-xs);
+  padding: 1px 6px;
+  border-radius: var(--mantine-radius-xl);
+  background-color: var(--mantine-color-body);
+  border: 1px solid var(--mantine-color-default-border);
+}
+
+.systemMessage {
+  font-size: var(--mantine-font-size-xs);
+  color: var(--mantine-color-dimmed);
+  background-color: var(--mantine-color-default-hover);
+  border-radius: var(--mantine-radius-sm);
+  padding: 4px 10px;
+  text-align: center;
+  max-width: 90%;
+}

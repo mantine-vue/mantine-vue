@@ -1,0 +1,24 @@
+.statusRoot {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+  line-height: 1;
+  color: var(--wa-status-color, var(--mantine-color-dimmed));
+}
+
+.statusRoot:where([data-status='read']) {
+  --wa-status-color: var(--mantine-color-blue-5);
+}
+
+.statusRoot:where([data-status='failed']) {
+  --wa-status-color: var(--mantine-color-error);
+}
+
+.statusIcon {
+  display: block;
+}
+
+.statusLabel {
+  font-size: var(--mantine-font-size-xs);
+}

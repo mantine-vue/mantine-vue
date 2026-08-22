@@ -1,0 +1,144 @@
+import { WhatsAppInboxDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.WhatsAppGettingStarted)
+
+# Mantine WhatsApp inbox
+
+[![npm](https://img.shields.io/npm/dm/@mantine-vue/whatsapp-inbox)](https://www.npmjs.com/package/@mantine-vue/whatsapp-inbox)
+
+`@mantine-vue/whatsapp-inbox` provides a WhatsApp-style messaging experience: conversation
+browsing, message history, a capability-driven composer, approved templates, interactive messages
+and media – as a full-page inbox, a modal or a drawer.
+
+## Installation
+
+<InstallScript packages="@mantine-vue/whatsapp-inbox" />
+
+After installation, import package styles at the root of your application:
+
+```ts
+import '@mantine-vue/core/styles.css'
+// ⚠️ import whatsapp-inbox styles after core package styles
+import '@mantine-vue/whatsapp-inbox/styles.css'
+```
+
+## The package is a UI toolkit
+
+The extension renders application data and emits user actions. It does not fetch data, upload
+files, open sockets, or communicate with Meta.
+
+<DataTable
+  head={['The extension owns', 'Your application owns']}
+  data={[
+    ['Layout, responsiveness and theming', 'Fetching conversations, messages, templates'],
+    ['Stateful UI behaviour (scroll, focus, drafts)', 'Persistence and caching'],
+    ['Validation of drafts and picked files', 'Sending messages and uploading files'],
+    ['Composition through props, slots and events', 'Real-time subscriptions'],
+    ['Accessibility', 'Backend business rules, including the messaging window'],
+  ]}
+/>
+
+Everything crosses that line as a prop going in or a typed event coming out. There is no adapter
+to implement and no client to configure.
+
+## Usage
+
+The demo below is interactive. Its surrounding demo state simulates delivery updates after a
+message is sent.
+
+<Demo data={WhatsAppInboxDemos.usage} />
+
+## Data flows in one direction
+
+```
+your backend ──▶ normalized props ──▶ components ──▶ typed events ──▶ your backend
+```
+
+1. Map whatever your backend returns onto the [domain model](/whatsapp-inbox/types).
+2. Pass it down as props.
+3. Answer the emitted events, then push the new data back in as props.
+
+Because the components hold no copy of your data, a message that changes on the server is
+reflected the moment the prop changes – there is no internal cache to invalidate. See
+[backend integration](/whatsapp-inbox/integration) for TanStack Query and WebSocket examples.
+
+## Components
+
+The package exports twenty-one components. `WhatsAppInbox` composes most of them, but every one of
+them is usable on its own.
+
+<DataTable
+  head={['Component', 'Purpose']}
+  data={[
+    [
+      <a href="/whatsapp-inbox/inbox">WhatsAppInbox</a>,
+      'Full-page inbox: list, conversation and contact panel',
+    ],
+    [
+      <a href="/whatsapp-inbox/modal-and-drawer">WhatsAppInboxModal</a>,
+      'One conversation in a dialog',
+    ],
+    [
+      <a href="/whatsapp-inbox/modal-and-drawer">WhatsAppInboxDrawer</a>,
+      'One conversation in a side panel',
+    ],
+    [
+      <a href="/whatsapp-inbox/customization">WhatsAppInboxProvider</a>,
+      'Shared labels, locale and formatters',
+    ],
+    [
+      <a href="/whatsapp-inbox/conversation-list">WhatsAppConversationList</a>,
+      'Conversation browsing, search and filters',
+    ],
+    [
+      <a href="/whatsapp-inbox/conversation-list">WhatsAppConversationListItem</a>,
+      'One conversation row',
+    ],
+    [
+      <a href="/whatsapp-inbox/conversation">WhatsAppConversation</a>,
+      'Header, history and composer together',
+    ],
+    [
+      <a href="/whatsapp-inbox/conversation">WhatsAppConversationHeader</a>,
+      'Contact header with actions',
+    ],
+    [
+      <a href="/whatsapp-inbox/messages">WhatsAppMessageList</a>,
+      'Scrollable history with day dividers',
+    ],
+    [<a href="/whatsapp-inbox/messages">WhatsAppMessage</a>, 'One message, dispatched by its type'],
+    [<a href="/whatsapp-inbox/messages">WhatsAppMessageBubble</a>, 'The bubble primitive'],
+    [<a href="/whatsapp-inbox/messages">WhatsAppMessageStatus</a>, 'Delivery state indicator'],
+    [<a href="/whatsapp-inbox/composer">WhatsAppComposer</a>, 'Capability-driven composer'],
+    [
+      <a href="/whatsapp-inbox/composer">WhatsAppEmojiPicker</a>,
+      'WhatsApp-style emoji picker, used by the composer',
+    ],
+    [
+      <a href="/whatsapp-inbox/messaging-window">WhatsAppMessagingWindowNotice</a>,
+      'Closed-window explanation',
+    ],
+    [
+      <a href="/whatsapp-inbox/templates">WhatsAppTemplateSelector</a>,
+      'Template search, parameters and validation',
+    ],
+    [
+      <a href="/whatsapp-inbox/templates">WhatsAppTemplatePreview</a>,
+      'Template rendered with its values',
+    ],
+    [
+      <a href="/whatsapp-inbox/interactive-messages">WhatsAppInteractiveMessageEditor</a>,
+      'Buttons, CTA and list messages',
+    ],
+    [<a href="/whatsapp-inbox/media">WhatsAppMediaAttachment</a>, 'Received media'],
+    [<a href="/whatsapp-inbox/media">WhatsAppAttachmentPreview</a>, 'Staged upload with progress'],
+    [<a href="/whatsapp-inbox/customization">WhatsAppContactPanel</a>, 'Contact details sidebar'],
+  ]}
+/>
+
+## Non-goals
+
+The extension does not connect to Meta's WhatsApp API, authenticate, make requests, or decide
+whether the 24-hour window is open. It assumes no CRM, provider, database, or server framework.

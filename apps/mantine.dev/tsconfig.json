@@ -38,7 +38,8 @@
       "@mantine-vue/carousel": ["../../packages/@mantine-vue/carousel/src"],
       "@mantine-vue/table": ["../../packages/@mantine-vue/table/src/index.ts"],
       "@mantine-vue/charts": ["../../packages/@mantine-vue/charts/src"],
-      "@mantine-vue/mantine-header": ["../../packages/@mantine-vue/mantine-header/src"]
+      "@mantine-vue/mantine-header": ["../../packages/@mantine-vue/mantine-header/src"],
+      "@mantine-vue/whatsapp-inbox": ["../../packages/@mantine-vue/whatsapp-inbox/src"]
     }
   },
   "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue", "src/**/*.mdx", "env.d.ts"],

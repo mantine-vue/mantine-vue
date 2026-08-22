@@ -1,0 +1,121 @@
+import { Code } from '@mantine-vue/core'
+import { WhatsAppInteractiveDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.WhatsAppInteractiveMessages)
+
+## Usage
+
+Interactive messages let the contact answer by tapping instead of typing. The editor composes
+them, validates the draft, and emits it as an outgoing payload.
+
+<Demo data={WhatsAppInteractiveDemos.editor} />
+
+## Capability driven
+
+Not every provider exposes every interactive type, so the editor offers exactly what
+`capabilities.interactiveTypes` lists. With one type the selector is not rendered at all; with an
+empty list the composer hides the action entirely.
+
+<Demo data={WhatsAppInteractiveDemos.capabilityDriven} />
+
+```ts
+const capabilities = {
+  canSendInteractive: true,
+  // Drop 'list' and the editor stops offering list messages
+  interactiveTypes: ['button', 'cta_url', 'list'],
+}
+```
+
+## The three types
+
+```ts
+type WhatsAppInteractiveContent =
+  | {
+      type: 'button'
+      header?: WhatsAppInteractiveHeader
+      body: string
+      footer?: string
+      buttons: { id: string; title: string }[]
+    }
+  | {
+      type: 'cta_url'
+      header?: WhatsAppInteractiveHeader
+      body: string
+      footer?: string
+      action: { displayText: string; url: string }
+    }
+  | {
+      type: 'list'
+      header?: WhatsAppInteractiveHeader
+      body: string
+      footer?: string
+      button: string
+      sections: { title?: string; rows: { id: string; title: string; description?: string }[] }[]
+    }
+```
+
+The draft bound with `v-model` is always a well-formed `WhatsAppInteractiveContent`, never a loose
+bag of fields – so there is nothing to translate when it is submitted, and the same value can be
+stored as a saved reply.
+
+## Validation
+
+The editor refuses to submit until the draft is valid and surfaces errors after a submit attempt:
+
+<DataTable
+  head={['Type', 'Requirement']}
+  data={[
+    ['all', 'Body text is not empty'],
+    [<Code>button</Code>, 'At least one button with a title'],
+    [
+      <Code>cta_url</Code>,
+      <>
+        Display text is set and the URL is a valid <Code>http</Code>/<Code>https</Code> URL
+      </>,
+    ],
+    [<Code>list</Code>, 'The list button text is set and at least one row has a title'],
+  ]}
+/>
+
+`maxButtons` (3 by default) and `maxRowsPerSection` (10) cap what can be added. Adjust them to
+whatever your provider allows.
+
+## Display
+
+Interactive messages are rendered in both directions, including the option the recipient picked –
+an inbound reply carries `reply` alongside the original content.
+
+<Demo data={WhatsAppInteractiveDemos.display} />
+
+```ts
+const reply: WhatsAppMessageData = {
+  id: 'm-9',
+  type: 'interactive',
+  direction: 'inbound',
+  timestamp,
+  interactive: { type: 'button', body: 'Did this solve your issue?', buttons: [] },
+  reply: { id: 'yes', title: 'Yes, thanks' },
+}
+```
+
+## Sending
+
+```ts
+function handleSend(payload: WhatsAppOutgoingMessage) {
+  if (payload.kind === 'interactive') {
+    api.sendInteractive({
+      conversationId: payload.conversationId,
+      clientId: payload.clientId,
+      interactive: payload.interactive,
+    })
+  }
+}
+```
+
+## Messaging window
+
+Interactive messages are free-form content as far as WhatsApp is concerned, so they are disabled
+while the [messaging window](/whatsapp-inbox/messaging-window) is closed – templates are the only
+thing that stays available.

@@ -1,0 +1,65 @@
+.templatePreviewRoot {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.templatePreviewMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.templatePreviewHeader {
+  font-weight: 600;
+  font-size: var(--mantine-font-size-sm);
+}
+
+.templatePreviewHeaderMedia {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--mantine-font-size-xs);
+  color: var(--mantine-color-dimmed);
+  padding: 6px 8px;
+  border-radius: var(--mantine-radius-sm);
+  background-color: var(--mantine-color-default-hover);
+}
+
+.templatePreviewBody {
+  font-size: var(--mantine-font-size-sm);
+  line-height: 1.4;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.templatePreviewFooter {
+  font-size: var(--mantine-font-size-xs);
+  color: var(--mantine-color-dimmed);
+}
+
+.templatePreviewButtons {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: 4px;
+  border-top: 1px solid var(--mantine-color-default-border);
+  padding-top: 4px;
+}
+
+.templatePreviewButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: var(--mantine-font-size-sm);
+  color: var(--mantine-color-anchor);
+  padding: 4px;
+  text-align: center;
+}
+
+.templatePreviewFallback {
+  font-size: var(--mantine-font-size-sm);
+  white-space: pre-wrap;
+}

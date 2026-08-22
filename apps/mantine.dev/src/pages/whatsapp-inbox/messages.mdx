@@ -1,0 +1,189 @@
+import { Code } from '@mantine-vue/core'
+import { WhatsAppConversationDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.WhatsAppMessages)
+
+## Message types
+
+`WhatsAppMessageData` is a discriminated union on `type`. Narrowing a message gives access to
+exactly the payload that type carries, and adding a type is a compile error in every renderer that
+must handle it.
+
+<Demo data={WhatsAppConversationDemos.messageTypes} />
+
+<DataTable
+  head={['type', 'Payload', 'Rendered as']}
+  data={[
+    [<Code>text</Code>, <Code>text</Code>, 'Plain text, newlines preserved'],
+    [
+      <Code>image</Code>,
+      <>
+        <Code>attachment</Code>, <Code>caption</Code>
+      </>,
+      'Image with an optional caption',
+    ],
+    [
+      <Code>video</Code>,
+      <>
+        <Code>attachment</Code>, <Code>caption</Code>
+      </>,
+      'Video player with a poster',
+    ],
+    [<Code>audio</Code>, <Code>attachment</Code>, 'Audio player'],
+    [<Code>document</Code>, <Code>attachment</Code>, 'File row with size and a download action'],
+    [<Code>sticker</Code>, <Code>attachment</Code>, 'Image without a bubble background'],
+    [<Code>template</Code>, <Code>template</Code>, 'The template, with its values substituted'],
+    [
+      <Code>interactive</Code>,
+      <>
+        <Code>interactive</Code>, <Code>reply</Code>
+      </>,
+      'Body, footer and buttons',
+    ],
+    [<Code>location</Code>, <Code>location</Code>, 'Name, address and a map link'],
+    [<Code>contacts</Code>, <Code>contacts</Code>, 'One card per shared contact'],
+    [<Code>system</Code>, <Code>text</Code>, 'Centred text without a bubble'],
+    [
+      <Code>unsupported</Code>,
+      <Code>text</Code>,
+      'Italic placeholder, so the history stays complete',
+    ],
+  ]}
+/>
+
+`unsupported` is the escape hatch for anything your backend received but could not normalize.
+Rendering it keeps the history honest instead of leaving a hole in it.
+
+## Delivery states
+
+Every state has its own glyph plus screen-reader text – colour is decoration on top, never the
+only signal.
+
+<Demo data={WhatsAppConversationDemos.deliveryStates} />
+
+<DataTable
+  head={['status', 'Meaning']}
+  data={[
+    [<Code>pending</Code>, 'Accepted by your application, not yet confirmed by the provider'],
+    [<Code>sent</Code>, 'The provider accepted it'],
+    [<Code>delivered</Code>, 'It reached the device'],
+    [<Code>read</Code>, 'The contact opened it'],
+    [<Code>failed</Code>, 'It could not be sent'],
+  ]}
+/>
+
+The extension never advances these itself. Your backend reports them, you update the prop.
+
+## Failed messages
+
+A message with `status: 'failed'` renders its reason and a retry action, which emits
+`retryMessage`. Nothing is resent by the component.
+
+```ts
+const message: WhatsAppMessageData = {
+  id: 'm-1',
+  type: 'text',
+  direction: 'outbound',
+  status: 'failed',
+  timestamp,
+  text: 'Hello',
+  error: {
+    code: '131047',
+    message: 'Re-engagement message outside the allowed window',
+    // Set to false for failures a retry cannot fix
+    retryable: true,
+  },
+}
+```
+
+Set `capabilities.canRetryFailed` to `false` to hide the action for a whole conversation.
+
+## Day dividers, grouping and scrolling
+
+`WhatsAppMessageList` groups messages into calendar days and renders a sticky divider before each
+one. The list is **not** re-sorted: your order is the order, because a backend may return threaded
+or cursor-paged results.
+
+Scrolling behaves the way a messaging app has to:
+
+- a new message scrolls into view only while the user is already at the bottom;
+- reading older messages is never interrupted, and a jump-to-latest control appears instead;
+- prepending older messages preserves the reading position by restoring the distance to the
+  bottom, not the absolute offset;
+- switching conversations jumps straight to the newest message.
+
+```vue
+<WhatsAppMessageList
+  :messages="messages"
+  :conversation-id="conversationId"
+  :pagination="{ hasMore, loadingMore, cursor }"
+  :auto-scroll="true"
+  :auto-scroll-threshold="80"
+  :load-older-threshold="120"
+  @load-older="({ cursor }) => fetchOlder(cursor)"
+  @at-bottom-change="setAtBottom"
+/>
+```
+
+## Custom rendering
+
+Two levels of override, each available as a prop or as a slot. Slots win over props.
+
+<Demo data={WhatsAppConversationDemos.customRendering} />
+
+`renderMessage` replaces a message entirely, bubble included. Returning `undefined` falls back to
+the built-in renderer, which is what makes it practical to override one custom type and leave the
+rest of the history alone.
+
+`renderMessageContent` replaces only the content, keeping the bubble, timestamp, delivery state
+and failure row.
+
+```ts
+import { h } from 'vue'
+import type { WhatsAppMessageData } from '@mantine-vue/whatsapp-inbox'
+
+const renderMessage = (message: WhatsAppMessageData) =>
+  message.meta?.kind === 'order' ? h(OrderCard, { message }) : undefined
+```
+
+## Using the bubble on its own
+
+`WhatsAppMessageBubble` is the presentational primitive. It knows nothing about the domain model,
+so it is the right building block for a message type of your own.
+
+```vue
+<WhatsAppMessageBubble
+  direction="outbound"
+  status="read"
+  :timestamp="message.timestamp"
+  :author="{ name: 'Sara Nasser' }"
+  :reply-to="{ id: 'm-1', text: 'Here is your receipt.', author: 'Sara' }"
+  radius="md"
+  max-width="70%"
+>
+  Anything you like
+</WhatsAppMessageBubble>
+```
+
+## Virtualization
+
+No virtualization library is bundled, and none is required: messages are keyed by `id` and the
+markup per message is small. When a history is long enough to need one, take the viewport from the
+list and hand it to the library you already use:
+
+```ts
+const list = ref<WhatsAppMessageListExposed | null>(null)
+
+const viewport = list.value?.getViewport()
+```
+
+## Accessibility
+
+- The history is a `role="log"` region with an accessible name.
+- Every bubble announces its direction before the content, so a screen reader can tell sent from
+  received without relying on alignment.
+- Timestamps carry the full date as an accessible label and a tooltip.
+- Delivery states are announced as words.
+- Failure rows use `role="alert"`.

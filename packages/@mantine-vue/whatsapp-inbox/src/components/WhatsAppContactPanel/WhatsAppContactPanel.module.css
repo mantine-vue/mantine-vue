@@ -1,0 +1,89 @@
+.contactPanelRoot {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  height: 100%;
+  background-color: var(--mantine-color-body);
+  border-inline-start: 1px solid var(--mantine-color-default-border);
+}
+
+.contactPanelHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--mantine-spacing-xs);
+  padding: var(--mantine-spacing-xs) var(--mantine-spacing-sm);
+  min-height: var(--wa-header-height, 64px);
+  border-bottom: 1px solid var(--mantine-color-default-border);
+  flex-shrink: 0;
+}
+
+.contactPanelTitle {
+  font-size: var(--mantine-font-size-sm);
+  font-weight: 600;
+}
+
+.contactPanelBody {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--mantine-spacing-md);
+  padding: var(--mantine-spacing-md);
+}
+
+.contactPanelIdentity {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  text-align: center;
+}
+
+.contactPanelName {
+  font-size: var(--mantine-font-size-md);
+  font-weight: 600;
+}
+
+.contactPanelPhone {
+  font-size: var(--mantine-font-size-sm);
+  color: var(--mantine-color-dimmed);
+}
+
+.contactPanelField {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.contactPanelFieldLabel {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--mantine-color-dimmed);
+}
+
+.contactPanelFieldValue {
+  font-size: var(--mantine-font-size-sm);
+  overflow-wrap: anywhere;
+}
+
+.contactPanelTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.contactPanelFooter {
+  padding: var(--mantine-spacing-md);
+  border-top: 1px solid var(--mantine-color-default-border);
+  flex-shrink: 0;
+}
+
+.contactPanelEmpty {
+  padding: var(--mantine-spacing-lg);
+  text-align: center;
+  font-size: var(--mantine-font-size-sm);
+  color: var(--mantine-color-dimmed);
+}

@@ -1,6 +1,9 @@
 import type { Frontmatter } from '@/types'
+import { WHATSAPP_INBOX_MDX_DATA } from './whatsapp-inbox-data'
 
 export const MDX_DATA: Record<string, Frontmatter> = {
+  ...WHATSAPP_INBOX_MDX_DATA,
+
   GettingStarted: {
     title: 'Getting started',
     package: '@mantine-vue/core',

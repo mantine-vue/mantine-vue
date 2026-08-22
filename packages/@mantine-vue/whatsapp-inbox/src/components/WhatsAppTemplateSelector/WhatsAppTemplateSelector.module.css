@@ -1,0 +1,121 @@
+.templateSelectorRoot {
+  display: flex;
+  flex-direction: column;
+  gap: var(--mantine-spacing-sm);
+  min-height: 0;
+}
+
+.templateSelectorControls {
+  display: flex;
+  gap: var(--mantine-spacing-xs);
+  flex-wrap: wrap;
+}
+
+.templateSelectorList {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  max-height: var(--wa-template-list-max-height, 360px);
+}
+
+.templateSelectorItem {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 100%;
+  text-align: start;
+  padding: var(--mantine-spacing-xs);
+  border-radius: var(--mantine-radius-md);
+  border: 1px solid var(--mantine-color-default-border);
+}
+
+.templateSelectorItem:where(:not([data-disabled])) {
+  @mixin hover {
+    background-color: var(--mantine-color-default-hover);
+  }
+}
+
+.templateSelectorItem:where([data-disabled]) {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.templateSelectorItem:where([data-selected]) {
+  border-color: var(--mantine-primary-color-filled);
+}
+
+.templateSelectorItemName {
+  font-size: var(--mantine-font-size-sm);
+  font-weight: 600;
+}
+
+.templateSelectorItemMeta {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.templateSelectorItemBody {
+  font-size: var(--mantine-font-size-xs);
+  color: var(--mantine-color-dimmed);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.templateSelectorState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--mantine-spacing-xs);
+  padding: var(--mantine-spacing-lg);
+  text-align: center;
+}
+
+.templateSelectorDetail {
+  display: flex;
+  flex-direction: column;
+  gap: var(--mantine-spacing-sm);
+  min-height: 0;
+  overflow-y: auto;
+  max-height: var(--wa-template-list-max-height, 360px);
+}
+
+.templateSelectorPreview {
+  padding: var(--mantine-spacing-sm);
+  border-radius: var(--mantine-radius-md);
+  background-color: var(--mantine-color-default);
+}
+
+.templateSelectorForm {
+  display: flex;
+  flex-direction: column;
+  gap: var(--mantine-spacing-sm);
+}
+
+.templateSelectorSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--mantine-spacing-xs);
+}
+
+.templateSelectorSectionTitle {
+  font-size: var(--mantine-font-size-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--mantine-color-dimmed);
+}
+
+.templateSelectorFooter {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--mantine-spacing-xs);
+  padding-top: var(--mantine-spacing-xs);
+  border-top: 1px solid var(--mantine-color-default-border);
+}

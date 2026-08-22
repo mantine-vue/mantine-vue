@@ -19,6 +19,7 @@ export const DOCGEN_SOURCE_PATHS = getPaths([
   'packages/@mantine-vue/spotlight/src',
   'packages/@mantine-vue/table/src',
   'packages/@mantine-vue/tiptap/src',
+  'packages/@mantine-vue/whatsapp-inbox/src',
 ])
 
 /**
@@ -51,6 +52,11 @@ export const DOCGEN_EXCLUDE_COMPONENTS = [
   // Shared schedule building blocks and payload types that are not components.
   'ScheduleEventRenderProps',
   'ScheduleHeaderBaseProps',
+  // Shared WhatsApp inbox building blocks and slot payloads that are not components.
+  'WhatsAppConversationItemSlotProps',
+  'WhatsAppInboxConversationProps',
+  'WhatsAppInboxModalConversationProps',
+  'WhatsAppInboxDrawerConversationProps',
 ]
 
 /**

@@ -1,0 +1,19 @@
+.conversationRoot {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  height: 100%;
+  overflow: hidden;
+  background-color: var(--mantine-color-body);
+}
+
+.conversationState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--mantine-spacing-sm);
+  flex: 1;
+  padding: var(--mantine-spacing-xl);
+  text-align: center;
+}

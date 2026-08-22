@@ -1,0 +1,281 @@
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.WhatsAppIntegration)
+
+## Integration flow
+
+1. Map whatever your backend returns onto the [domain model](/whatsapp-inbox/types).
+2. Pass it down as props.
+3. Answer the emitted events, then push the new data back in as props.
+
+There is no adapter interface or client to register. Update the relevant prop when backend data
+changes.
+
+## Mapping your backend
+
+Write the mapping once, in one place. It is the only file that knows your API's shape.
+
+```ts
+import type { WhatsAppConversationSummary, WhatsAppMessageData } from '@mantine-vue/whatsapp-inbox'
+
+export function toConversation(row: ApiConversation): WhatsAppConversationSummary {
+  return {
+    id: row.uuid,
+    contact: {
+      id: row.customer.uuid,
+      name: row.customer.full_name,
+      phoneNumber: row.customer.wa_id,
+      avatarUrl: row.customer.avatar,
+      fields: [{ key: 'crm', label: 'CRM id', value: row.customer.crm_id }],
+    },
+    unreadCount: row.unread,
+    updatedAt: row.last_activity_at,
+    status: row.state,
+    assignee: row.agent && { id: row.agent.uuid, name: row.agent.name },
+    lastMessage: {
+      id: row.last_message?.uuid,
+      type: row.last_message?.kind,
+      direction: row.last_message?.direction,
+      status: row.last_message?.delivery,
+      text: row.last_message?.preview,
+      timestamp: row.last_message?.created_at,
+    },
+  }
+}
+
+export function toMessage(row: ApiMessage): WhatsAppMessageData {
+  const base = {
+    id: row.uuid,
+    direction: row.direction,
+    status: row.delivery,
+    timestamp: row.created_at,
+    error: row.error && { code: row.error.code, message: row.error.detail },
+  } as const
+
+  switch (row.kind) {
+    case 'image':
+    case 'video':
+    case 'audio':
+    case 'document':
+      return {
+        ...base,
+        type: row.kind,
+        caption: row.caption,
+        attachment: {
+          mediaType: row.kind,
+          url: row.media_url,
+          thumbnailUrl: row.thumb_url,
+          fileName: row.file_name,
+          mimeType: row.mime,
+          size: row.bytes,
+        },
+      }
+    case 'template':
+      return { ...base, type: 'template', template: toTemplateInstance(row) }
+    default:
+      return { ...base, type: 'text', text: row.body }
+  }
+}
+```
+
+Anything your backend sends that you cannot map yet becomes an `unsupported` message rather than a
+hole in the history:
+
+```ts
+return { ...base, type: 'unsupported', text: 'This message type is not supported yet' }
+```
+
+## Capabilities come from the backend too
+
+Capabilities are not a static config object – they belong to the conversation, and the messaging
+window inside them is a server decision. Send them down with the conversation.
+
+```ts
+export function toCapabilities(row: ApiConversation): WhatsAppConversationCapabilities {
+  return {
+    canSendFreeForm: row.permissions.free_form,
+    canSendTemplates: row.permissions.templates,
+    canSendMedia: row.permissions.media,
+    canSendInteractive: row.provider.supports_interactive,
+    interactiveTypes: row.provider.interactive_types,
+    maxTextLength: row.provider.max_text_length,
+    mediaConstraints: row.provider.media_limits,
+    messagingWindow: {
+      state: row.window.open ? 'open' : 'closed',
+      reasonCode: row.window.reason_code,
+      reason: row.window.reason,
+      expiresAt: row.window.expires_at,
+    },
+    disabledReason: row.readonly ? 'This conversation is read-only for your role' : undefined,
+  }
+}
+```
+
+## TanStack Query
+
+TanStack Query is **not** a dependency of this package. Everything below is consumer-side code,
+and any other data library works the same way.
+
+```vue
+<script setup lang="ts">
+import { computed, ref } from 'vue'
+import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/vue-query'
+import { WhatsAppInbox } from '@mantine-vue/whatsapp-inbox'
+import type { WhatsAppOutgoingMessage } from '@mantine-vue/whatsapp-inbox'
+
+const selectedConversationId = ref<string | null>(null)
+const queryClient = useQueryClient()
+
+const conversationsQuery = useQuery({
+  queryKey: ['conversations'],
+  queryFn: () => api.listConversations().then((rows) => rows.map(toConversation)),
+})
+
+const messagesQuery = useInfiniteQuery({
+  queryKey: ['messages', selectedConversationId],
+  enabled: computed(() => selectedConversationId.value !== null),
+  initialPageParam: null as string | null,
+  queryFn: ({ pageParam }) =>
+    api.listMessages({ conversationId: selectedConversationId.value!, before: pageParam }),
+  getNextPageParam: (page) => page.nextCursor,
+})
+
+const sendMutation = useMutation({
+  mutationFn: (payload: WhatsAppOutgoingMessage) => api.send(payload),
+
+  // Reconcile the optimistic message with the backend response by `clientId`.
+  onMutate: (payload) => {
+    queryClient.setQueryData(['messages', selectedConversationId.value], (data) =>
+      appendOptimistic(data, payload),
+    )
+  },
+  onSettled: () => queryClient.invalidateQueries({ queryKey: ['messages'] }),
+})
+
+// Older pages arrive first, so the array is reversed into display order.
+const messages = computed(() =>
+  [...(messagesQuery.data.value?.pages ?? [])].reverse().flatMap((page) => page.items),
+)
+</script>
+
+<template>
+  <WhatsAppInbox
+    v-model:selected-conversation-id="selectedConversationId"
+    :conversations="conversationsQuery.data.value ?? []"
+    :conversations-loading="conversationsQuery.isLoading.value"
+    :conversations-error="conversationsQuery.error.value?.message ?? null"
+    :messages="messages"
+    :messages-loading="messagesQuery.isLoading.value"
+    :messages-error="messagesQuery.error.value?.message ?? null"
+    :messages-pagination="{
+      hasMore: messagesQuery.hasNextPage.value,
+      loadingMore: messagesQuery.isFetchingNextPage.value,
+    }"
+    :sending="sendMutation.isPending.value"
+    :send-error="sendMutation.error.value?.message ?? null"
+    style="height: 100dvh"
+    @send="sendMutation.mutate"
+    @load-older-messages="messagesQuery.fetchNextPage()"
+    @retry-load-messages="messagesQuery.refetch()"
+    @retry-load-conversations="conversationsQuery.refetch()"
+    @retry-send="sendMutation.reset()"
+  />
+</template>
+```
+
+## Real-time updates over WebSocket
+
+The extension creates no connections. Own the socket, write into your store, and let the props
+change – the components re-render from the new data and never hold a stale copy of it.
+
+```ts
+import { onBeforeUnmount, onMounted, ref } from 'vue'
+import type { WhatsAppMessageData } from '@mantine-vue/whatsapp-inbox'
+
+const messages = ref<WhatsAppMessageData[]>([])
+const conversations = ref<WhatsAppConversationSummary[]>([])
+
+onMounted(() => {
+  const socket = new WebSocket(import.meta.env.VITE_WS_URL)
+
+  socket.addEventListener('message', (event) => {
+    const update = JSON.parse(event.data)
+
+    switch (update.type) {
+      case 'message.created':
+        messages.value = [...messages.value, toMessage(update.message)]
+        break
+
+      // A status change patches one message; the list keys by id, so only that
+      // bubble re-renders.
+      case 'message.status':
+        messages.value = messages.value.map((message) =>
+          message.id === update.id ? { ...message, status: update.status } : message,
+        )
+        break
+
+      case 'conversation.updated':
+        conversations.value = conversations.value.map((conversation) =>
+          conversation.id === update.id ? toConversation(update.conversation) : conversation,
+        )
+        break
+    }
+  })
+
+  onBeforeUnmount(() => socket.close())
+})
+```
+
+With TanStack Query, write into the cache instead and let the query be the single source:
+
+```ts
+socket.addEventListener('message', (event) => {
+  const update = JSON.parse(event.data)
+
+  queryClient.setQueryData(['messages', update.conversationId], (data) =>
+    applyRealtimeUpdate(data, update),
+  )
+})
+```
+
+`WhatsAppMessageList` auto-scrolls to a new message only while the user is already at the bottom
+and preserves the reading position when older messages are prepended.
+
+## Typing indicators
+
+The composer emits `typing` on every keystroke. Throttle it yourself and broadcast whatever your
+transport expects:
+
+```ts
+import { useThrottledCallback } from '@mantine-vue/hooks'
+
+const broadcastTyping = useThrottledCallback(() => socket.send('typing'), 2000)
+```
+
+## Marking conversations as read
+
+Reading is a business decision, not a side effect of rendering, so the extension never does it.
+Handle `selectConversation` and tell your backend:
+
+```vue
+<WhatsAppInbox @select-conversation="(conversation) => api.markRead(conversation.id)" />
+```
+
+## Testing your integration
+
+Because everything crosses the boundary as props and events, an integration test needs no fake
+provider: render the component with fixtures and assert on the emitted payloads.
+
+```ts
+const onSend = vi.fn()
+
+const wrapper = mount(WhatsAppComposer, {
+  props: { conversationId: 'c-1', capabilities: { canSendFreeForm: true }, onSend },
+})
+
+await wrapper.get('textarea').setValue('Hello')
+await wrapper.get('button[aria-label="Send"]').trigger('click')
+
+expect(onSend.mock.calls[0][0]).toMatchObject({ kind: 'text', text: 'Hello' })
+```

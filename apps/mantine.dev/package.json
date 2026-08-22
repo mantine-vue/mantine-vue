@@ -29,6 +29,7 @@
     "@mantine-vue/spotlight": "workspace:*",
     "@mantine-vue/table": "workspace:*",
     "@mantine-vue/tiptap": "workspace:*",
+    "@mantine-vue/whatsapp-inbox": "workspace:*",
     "@phosphor-icons/vue": "^2.2",
     "@tiptap/core": ">=3.3.0",
     "@tiptap/extension-code-block": ">=3.3.0",

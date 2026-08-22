@@ -769,6 +769,77 @@ const routes: RouteRecordRaw[] = [
     name: 'x-code-highlight',
     component: mdxRoute(() => import('./pages/x/code-highlight.mdx')),
   },
+  { path: '/whatsapp-inbox', redirect: '/whatsapp-inbox/getting-started' },
+  {
+    path: '/whatsapp-inbox/getting-started',
+    name: 'whatsapp-inbox-getting-started',
+    component: mdxRoute(() => import('./pages/whatsapp-inbox/getting-started.mdx')),
+  },
+  {
+    path: '/whatsapp-inbox/inbox',
+    name: 'whatsapp-inbox-inbox',
+    component: mdxRoute(() => import('./pages/whatsapp-inbox/inbox.mdx')),
+  },
+  {
+    path: '/whatsapp-inbox/conversation-list',
+    name: 'whatsapp-inbox-conversation-list',
+    component: mdxRoute(() => import('./pages/whatsapp-inbox/conversation-list.mdx')),
+  },
+  {
+    path: '/whatsapp-inbox/conversation',
+    name: 'whatsapp-inbox-conversation',
+    component: mdxRoute(() => import('./pages/whatsapp-inbox/conversation.mdx')),
+  },
+  {
+    path: '/whatsapp-inbox/messages',
+    name: 'whatsapp-inbox-messages',
+    component: mdxRoute(() => import('./pages/whatsapp-inbox/messages.mdx')),
+  },
+  {
+    path: '/whatsapp-inbox/composer',
+    name: 'whatsapp-inbox-composer',
+    component: mdxRoute(() => import('./pages/whatsapp-inbox/composer.mdx')),
+  },
+  {
+    path: '/whatsapp-inbox/messaging-window',
+    name: 'whatsapp-inbox-messaging-window',
+    component: mdxRoute(() => import('./pages/whatsapp-inbox/messaging-window.mdx')),
+  },
+  {
+    path: '/whatsapp-inbox/templates',
+    name: 'whatsapp-inbox-templates',
+    component: mdxRoute(() => import('./pages/whatsapp-inbox/templates.mdx')),
+  },
+  {
+    path: '/whatsapp-inbox/interactive-messages',
+    name: 'whatsapp-inbox-interactive-messages',
+    component: mdxRoute(() => import('./pages/whatsapp-inbox/interactive-messages.mdx')),
+  },
+  {
+    path: '/whatsapp-inbox/media',
+    name: 'whatsapp-inbox-media',
+    component: mdxRoute(() => import('./pages/whatsapp-inbox/media.mdx')),
+  },
+  {
+    path: '/whatsapp-inbox/modal-and-drawer',
+    name: 'whatsapp-inbox-modal-and-drawer',
+    component: mdxRoute(() => import('./pages/whatsapp-inbox/modal-and-drawer.mdx')),
+  },
+  {
+    path: '/whatsapp-inbox/integration',
+    name: 'whatsapp-inbox-integration',
+    component: mdxRoute(() => import('./pages/whatsapp-inbox/integration.mdx')),
+  },
+  {
+    path: '/whatsapp-inbox/customization',
+    name: 'whatsapp-inbox-customization',
+    component: mdxRoute(() => import('./pages/whatsapp-inbox/customization.mdx')),
+  },
+  {
+    path: '/whatsapp-inbox/types',
+    name: 'whatsapp-inbox-types',
+    component: mdxRoute(() => import('./pages/whatsapp-inbox/types.mdx')),
+  },
   { path: '/schedule', redirect: '/schedule/getting-started' },
   {
     path: '/schedule/getting-started',

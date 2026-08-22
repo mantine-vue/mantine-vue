@@ -1,0 +1,90 @@
+.composerRoot {
+  display: flex;
+  flex-direction: column;
+  gap: var(--mantine-spacing-xs);
+  padding: var(--mantine-spacing-sm);
+  border-top: 1px solid var(--mantine-color-default-border);
+  background-color: var(--mantine-color-body);
+}
+
+.composerNotice {
+  width: 100%;
+}
+
+.composerReply {
+  display: flex;
+  align-items: center;
+  gap: var(--mantine-spacing-xs);
+  padding: 6px 8px;
+  border-radius: var(--mantine-radius-sm);
+  border-inline-start: 3px solid var(--mantine-color-anchor);
+  background-color: var(--mantine-color-default-hover);
+}
+
+.composerReplyBody {
+  flex: 1;
+  min-width: 0;
+}
+
+.composerReplyAuthor {
+  font-size: var(--mantine-font-size-xs);
+  font-weight: 600;
+  color: var(--mantine-color-anchor);
+}
+
+.composerReplyText {
+  font-size: var(--mantine-font-size-xs);
+  color: var(--mantine-color-dimmed);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.composerAttachments {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--mantine-spacing-xs);
+}
+
+.composerError {
+  width: 100%;
+}
+
+.composerInputRow {
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.composerInput {
+  flex: 1;
+  min-width: 0;
+}
+
+.composerActions {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.composerAction {
+  flex-shrink: 0;
+}
+
+.composerSend {
+  flex-shrink: 0;
+}
+
+.composerFooter {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.composerCount {
+  font-size: var(--mantine-font-size-xs);
+  color: var(--mantine-color-dimmed);
+}
+
+.composerCount:where([data-exceeded]) {
+  color: var(--mantine-color-error);
+}
