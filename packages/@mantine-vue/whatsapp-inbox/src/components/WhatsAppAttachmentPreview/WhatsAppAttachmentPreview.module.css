@@ -1,0 +1,68 @@
+.attachmentPreviewRoot {
+  display: flex;
+  align-items: center;
+  gap: var(--mantine-spacing-xs);
+  padding: 6px 8px;
+  border-radius: var(--mantine-radius-md);
+  border: 1px solid var(--mantine-color-default-border);
+  background-color: var(--mantine-color-body);
+  min-width: 200px;
+  max-width: 280px;
+}
+
+.attachmentPreviewRoot:where([data-status='failed']) {
+  border-color: var(--mantine-color-error);
+}
+
+.attachmentPreviewThumb {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--mantine-radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--mantine-color-default-hover);
+  color: var(--mantine-color-dimmed);
+  overflow: hidden;
+}
+
+.attachmentPreviewThumbImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.attachmentPreviewBody {
+  flex: 1;
+  min-width: 0;
+}
+
+.attachmentPreviewName {
+  font-size: var(--mantine-font-size-xs);
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.attachmentPreviewMeta {
+  font-size: 11px;
+  color: var(--mantine-color-dimmed);
+}
+
+.attachmentPreviewProgress {
+  margin-top: 4px;
+}
+
+.attachmentPreviewError {
+  font-size: 11px;
+  color: var(--mantine-color-error);
+}
+
+.attachmentPreviewActions {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex-shrink: 0;
+}

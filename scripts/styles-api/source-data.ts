@@ -4,7 +4,7 @@ import ts from 'typescript'
 import { getPath } from '../utils/get-path'
 
 const PACKAGES_DIR = getPath('packages/@mantine-vue')
-const MDX_DATA_FILE = getPath('apps/mantine.dev/src/mdx/mdx-data.ts')
+const MDX_DATA_DIR = getPath('apps/mantine.dev/src/mdx')
 const SOURCE_EXTENSIONS = new Set(['.ts', '.vue', '.css'])
 
 export interface SourceModifier {
@@ -131,28 +131,45 @@ function extractCssData(cssFiles: string[]) {
   return { selectors: [...selectors], modifiers }
 }
 
+/**
+ * Components whose pages declare a Styles API tab.
+ *
+ * The whole `mdx` directory is scanned rather than `mdx-data.ts` alone: page metadata is split
+ * across files once a package documents enough components to be worth its own module, and a
+ * record the checker cannot see is a Styles API table nothing verifies.
+ */
 export function getDocumentedStylesComponents() {
-  const source = fs.readFileSync(MDX_DATA_FILE, 'utf8')
-  const sourceFile = ts.createSourceFile(MDX_DATA_FILE, source, ts.ScriptTarget.Latest, true)
   const components: string[] = []
 
-  const visit = (node: ts.Node) => {
-    if (
-      ts.isPropertyAssignment(node) &&
-      node.name.getText(sourceFile) === 'styles' &&
-      ts.isArrayLiteralExpression(node.initializer)
-    ) {
-      for (const element of node.initializer.elements) {
-        if (ts.isStringLiteral(element)) {
-          components.push(element.text)
+  const collect = (file: string) => {
+    const source = fs.readFileSync(file, 'utf8')
+    const sourceFile = ts.createSourceFile(file, source, ts.ScriptTarget.Latest, true)
+
+    const visit = (node: ts.Node) => {
+      if (
+        ts.isPropertyAssignment(node) &&
+        node.name.getText(sourceFile) === 'styles' &&
+        ts.isArrayLiteralExpression(node.initializer)
+      ) {
+        for (const element of node.initializer.elements) {
+          if (ts.isStringLiteral(element)) {
+            components.push(element.text)
+          }
         }
       }
+
+      node.forEachChild(visit)
     }
 
-    node.forEachChild(visit)
+    visit(sourceFile)
   }
 
-  visit(sourceFile)
+  for (const entry of fs.readdirSync(MDX_DATA_DIR, { withFileTypes: true })) {
+    if (entry.isFile() && entry.name.endsWith('.ts')) {
+      collect(path.join(MDX_DATA_DIR, entry.name))
+    }
+  }
+
   return unique(components)
 }
 

@@ -55,6 +55,9 @@ export default defineConfig({
       '@mantine-vue/table/styles.css': alias('../../packages/@mantine-vue/table/styles.css'),
       '@mantine-vue/table': alias('../../packages/@mantine-vue/table/src/index.ts'),
       '@mantine-vue/tiptap': alias('../../packages/@mantine-vue/tiptap/src/index.ts'),
+      '@mantine-vue/whatsapp-inbox': alias(
+        '../../packages/@mantine-vue/whatsapp-inbox/src/index.ts',
+      ),
       'vue/jsx-runtime': alias('./src/mdx-jsx-runtime.ts'),
       'vue/jsx-dev-runtime': alias('./src/mdx-jsx-runtime.ts'),
     },

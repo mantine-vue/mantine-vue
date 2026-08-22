@@ -1,0 +1,162 @@
+import { Code } from '@mantine-vue/core'
+import { WhatsAppConversationListDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.WhatsAppConversationList)
+
+## Usage
+
+`WhatsAppConversationList` renders the supplied conversations in their existing order and emits
+user actions. It does not fetch, filter, or sort the data unless configured to order it.
+
+<Demo data={WhatsAppConversationListDemos.usage} />
+
+## What a list item shows
+
+Each row is built from a `WhatsAppConversationSummary`:
+
+<DataTable
+  head={['Field', 'Rendered as']}
+  data={[
+    [
+      <Code>contact.name</Code>,
+      <>
+        Row title, falling back to <Code>contact.phoneNumber</Code>
+      </>,
+    ],
+    [<Code>contact.phoneNumber</Code>, 'Second line, when it differs from the title'],
+    [<Code>contact.avatarUrl</Code>, 'Avatar, falling back to the contact initials'],
+    [
+      <Code>lastMessage.text</Code>,
+      <>
+        Preview line, falling back to a label derived from <Code>lastMessage.type</Code>
+      </>,
+    ],
+    [<Code>lastMessage.status</Code>, 'Delivery state before the preview, for outbound messages'],
+    [<Code>updatedAt</Code>, 'Timestamp, relative for today and this week'],
+    [<Code>unreadCount</Code>, 'Unread badge and bold styling'],
+    [
+      <>
+        <Code>pinned</Code>, <Code>muted</Code>
+      </>,
+      'Indicator icons',
+    ],
+    [<Code>labels</Code>, 'Colored badges'],
+  ]}
+/>
+
+## Unread indicators
+
+A conversation with `unreadCount` above zero gets a badge, bolder text and a
+`data-unread` attribute. The count is also part of the row's accessible name, so a screen reader
+announces it without the user having to hunt for the badge.
+
+Marking a conversation as read is your decision, not the list's – handle `select` and update the
+data you pass in.
+
+## Filters
+
+Filters are controlled with `v-model:filters` and reported through `update:filters`. **The list
+never applies them to the array it was given**: it tells you what changed and renders whatever you
+pass next, which is what makes server-side filtering the natural case.
+
+Controls whose options you do not supply stay hidden, so a backend without assignment never shows
+a filter it cannot answer.
+
+<Demo data={WhatsAppConversationListDemos.filters} />
+
+```ts
+interface WhatsAppInboxFilters {
+  query?: string
+  unreadOnly?: boolean
+  /** `null` means unassigned, `undefined` means no filter */
+  assigneeId?: string | null
+  status?: string | null
+  labels?: string[]
+}
+```
+
+## Starting a new conversation
+
+`with-new-conversation` renders a control in the list header that collects a phone number for a
+contact who is not in the list yet. The list validates the number and emits it; creating or
+looking up the conversation stays with your application, because only your backend knows the
+opt-in rules.
+
+```vue
+<WhatsAppConversationList
+  v-model:new-conversation-opened="newConversationOpened"
+  with-new-conversation
+  :new-conversation-creating="creating"
+  :new-conversation-error="createError"
+  :conversations="conversations"
+  @new-conversation="handleNewConversation"
+/>
+```
+
+```ts
+interface WhatsAppNewConversationPayload {
+  /** Exactly as the user typed it. */
+  phoneNumber: string
+  /** Digits with a leading `+`, convenient as a lookup key. */
+  normalizedPhoneNumber: string
+  name?: string
+}
+```
+
+Default validation only checks the digit count, since the authoritative rules belong to the
+provider and a frontend that guessed at national formats would reject numbers the backend
+accepts. Replace it when you have stricter rules:
+
+```vue
+<WhatsAppConversationList
+  :validate-phone-number="(value) => (isE164(value) ? null : 'Use the international format')"
+/>
+```
+
+Use `new-conversation-error` for anything only the backend can decide – a missing opt-in, a
+blocked number, a quota.
+
+## Pagination and infinite scroll
+
+Pass the cursor state through `pagination`. The list emits `loadMore` with that cursor both when
+the user scrolls near the end and when the explicit control is used, and guards against firing the
+same request twice.
+
+<Demo data={WhatsAppConversationListDemos.pagination} />
+
+Set `with-infinite-scroll="false"` to rely on the explicit control alone.
+
+## Ordering
+
+`order="none"` is the default: the array renders exactly as supplied, because a backend that
+already sorted by relevance, priority or a custom queue must not be silently reordered by the UI.
+
+Set `order="activity"` to sort by latest activity with pinned conversations first, or import
+`sortConversationsByActivity` and do it yourself.
+
+## States
+
+<Demo data={WhatsAppConversationListDemos.states} />
+
+The empty state distinguishes an empty inbox from an empty result: when any filter is active it
+offers to clear the filters instead of claiming there are no conversations.
+
+## Customizing a row
+
+Use the `conversationItem` slot to replace the whole row, or `conversationAvatar` and
+`conversationPreview` to replace one part of it.
+
+<Demo data={WhatsAppConversationListDemos.item} />
+
+`WhatsAppConversationListItem` is exported separately if you would rather build the list yourself.
+
+## Accessibility
+
+- The list is a `ul` of `button` rows, so it is reachable and operable with the keyboard by
+  default.
+- The selected row carries `aria-current="true"`.
+- Each row has one composed accessible name: contact, unread count, preview text and time. The
+  visual content is hidden from assistive technology so it is not read twice.
+- The search field is labelled and typed as `search`.

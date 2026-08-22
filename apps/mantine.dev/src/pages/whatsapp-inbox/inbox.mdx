@@ -1,0 +1,191 @@
+import { WhatsAppInboxDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.WhatsAppInbox)
+
+## Usage
+
+`WhatsAppInbox` is the full-page layout: a conversation list, the selected conversation and an
+optional contact panel. It forwards every prop, event and slot of the components it composes, so
+you rarely need to reach for them directly.
+
+`WhatsAppInbox` fills the height of its container, so give it one.
+
+<Demo data={WhatsAppInboxDemos.usage} />
+
+## Controlled selection
+
+The selected conversation is business-critical state, so your application owns it. Bind it with
+`v-model:selected-conversation-id`, or leave it uncontrolled with
+`default-selected-conversation-id`.
+
+The selection is the single source of truth for which conversation is open: the `conversation`
+prop is only the detail record for the selected id, so passing one does not open it on its own.
+That is what lets the inbox represent "nothing selected" while a previous conversation is still
+loaded.
+
+<Demo data={WhatsAppInboxDemos.controlled} />
+
+## Data props
+
+Everything the inbox renders comes from props. There is no internal store.
+
+```vue
+<WhatsAppInbox
+  :conversations="conversations"
+  :conversation="conversation"
+  :messages="messages"
+  :templates="templates"
+  :uploads="uploads"
+  :capabilities="capabilities"
+  :conversations-loading="conversationsLoading"
+  :conversations-error="conversationsError"
+  :conversations-pagination="{ hasMore, loadingMore, cursor }"
+  :messages-loading="messagesLoading"
+  :messages-error="messagesError"
+  :messages-pagination="{ hasMore: hasOlder, loadingMore: loadingOlder }"
+  :sending="sending"
+  :send-error="sendError"
+/>
+```
+
+`conversations` are summaries for the list; `conversation` is the opened record, which carries the
+`capabilities` that drive the composer. When the summary already holds everything you need, you
+can omit `conversation` entirely – the inbox falls back to the matching entry of `conversations`.
+
+## Events
+
+Every user action is an event. None of them perform work.
+
+```vue
+<WhatsAppInbox
+  @send="handleSend"
+  @select-conversation="markRead"
+  @load-more-conversations="({ cursor }) => fetchNextConversations(cursor)"
+  @load-older-messages="({ cursor }) => fetchOlderMessages(cursor)"
+  @retry-load-conversations="refetchConversations"
+  @retry-load-messages="refetchMessages"
+  @retry-message="resend"
+  @retry-send="resend"
+  @attachments-add="upload"
+  @attachment-remove="removeUpload"
+  @attachment-retry="retryUpload"
+  @attachment-cancel="cancelUpload"
+  @media-download="trackDownload"
+  @typing="broadcastTypingIndicator"
+/>
+```
+
+## Starting a new conversation
+
+Set `with-new-conversation` to render a control in the list header that collects a phone number
+for a contact who is not in the list yet.
+
+The extension validates the number and hands it over; creating or looking up the conversation is
+your call, because only your backend knows whether the contact has opted in.
+
+<Demo data={WhatsAppInboxDemos.newConversation} />
+
+```vue
+<script setup lang="ts">
+import type { WhatsAppNewConversationPayload } from '@mantine-vue/whatsapp-inbox'
+
+async function handleNewConversation({
+  normalizedPhoneNumber,
+  name,
+}: WhatsAppNewConversationPayload) {
+  const conversation = await api.startConversation({ phoneNumber: normalizedPhoneNumber, name })
+
+  conversations.value = [conversation, ...conversations.value]
+  selectedConversationId.value = conversation.id
+  newConversationOpened.value = false
+}
+</script>
+
+<template>
+  <WhatsAppInbox
+    v-model:new-conversation-opened="newConversationOpened"
+    with-new-conversation
+    :new-conversation-creating="creating"
+    :new-conversation-error="createError"
+    @new-conversation="handleNewConversation"
+  />
+</template>
+```
+
+The payload carries the number as typed and a `normalizedPhoneNumber` (digits with a leading `+`)
+that makes a decent lookup key. Default validation is a permissive digit count, because the
+authoritative rules belong to the provider; replace it with `validate-phone-number` when you have
+stricter ones, and use `new-conversation-error` for anything only the backend can decide.
+
+## Unsent drafts
+
+An unsent draft is work the user has not finished, so the inbox keeps one per conversation and
+restores it when they come back. That is the default; `draft-behavior="reset"` drops the draft of
+the conversation being left instead.
+
+<Demo data={WhatsAppInboxDemos.drafts} />
+
+```vue
+<!-- Uncontrolled: the inbox keeps the map itself -->
+<WhatsAppInbox draft-behavior="preserve" />
+
+<!-- Controlled: persist drafts across reloads, or share them between screens -->
+<WhatsAppInbox v-model:drafts="drafts" />
+
+<!-- One conversation only, as the modal and drawer use it -->
+<WhatsAppInbox v-model:draft="draft" />
+```
+
+`draft` wins over `drafts` when both are set, and `draftBehavior` does not apply to it: a
+controlled single value is the consumer's to manage.
+
+## Contact panel
+
+Set `with-contact-panel` to render the contact sidebar and the header control that toggles it. The
+opened state is controllable with `v-model:contact-panel-opened`.
+
+<Demo data={WhatsAppInboxDemos.contactPanel} />
+
+## Responsive layout
+
+`layout="auto"` (the default) measures the component itself rather than the viewport, so an inbox
+embedded in a narrow column collapses to a single pane even on a wide screen. Below
+`narrowBreakpoint` the list and the conversation take turns, and a back control appears in the
+header.
+
+Force either arrangement with `layout="split"` or `layout="single"`.
+
+<Demo data={WhatsAppInboxDemos.narrow} />
+
+## Loading, error and empty states
+
+Async state is a prop, never an internal guess. Each state has a slot if you want to replace it.
+
+<Demo data={WhatsAppInboxDemos.states} />
+
+## Slots
+
+`WhatsAppInbox` forwards the slots of every component it renders, so you can customize any part of
+the layout without dropping down to the primitives.
+
+<Demo data={WhatsAppInboxDemos.slots} />
+
+Available slots: `listHeader`, `listFooter`, `filters`, `conversationItem`, `conversationAvatar`,
+`conversationPreview`, `emptyInbox`, `loadingInbox`, `errorInbox`, `conversationHeader`,
+`headerActions`, `message`, `messageContent`, `messageFooter`, `mediaAttachment`,
+`emptyConversation`, `loadingMessages`, `errorMessages`, `composerPrefix`, `composerSuffix`,
+`composerActions`, `emojiPicker`, `attachmentPreview`, `templatePreview`, `contactPanel`,
+`contactPanelHeader`, `contactPanelFooter`.
+
+## Performance
+
+The inbox is designed for large mailboxes and long histories:
+
+- messages are keyed by `id`, so a delivery-state update patches one bubble instead of the list;
+- auto-scroll only happens while the user is already at the bottom of the history;
+- prepending older messages preserves the reading position;
+- `loadMoreConversations` and `loadOlderMessages` are guarded against duplicate requests;
+- no virtualization library is bundled – `WhatsAppMessageList` exposes `getViewport()` so you can
+  plug in the one you already use.

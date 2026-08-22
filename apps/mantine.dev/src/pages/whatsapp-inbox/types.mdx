@@ -1,0 +1,363 @@
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.WhatsAppTypes)
+
+## Backend neutral by construction
+
+Nothing in the domain model mirrors a Meta Cloud API response. Your application maps whatever its
+backend returns onto these types, which is what keeps the components independent of any particular
+WhatsApp provider, CRM or transport.
+
+Timestamps are plain values so any serialization survives the trip: ISO 8601 strings are
+recommended, but anything `new Date(value)` understands is accepted.
+
+```ts
+type WhatsAppTimestamp = string | number | Date
+```
+
+## Messages
+
+`WhatsAppMessageData` is a discriminated union on `type`. Narrowing gives access to exactly the
+payload that type carries, and adding a member is a compile error in every renderer that must
+handle it.
+
+```ts
+interface WhatsAppMessageBase {
+  id: string
+  conversationId?: string
+  direction: 'inbound' | 'outbound'
+  status?: WhatsAppDeliveryStatus
+  timestamp: WhatsAppTimestamp
+  author?: { id?: string; name: string; avatarUrl?: string }
+  replyTo?: WhatsAppMessageReference
+  error?: { code?: string; message?: string; retryable?: boolean }
+  reactions?: { emoji: string; count?: number; reacted?: boolean }[]
+  forwarded?: boolean
+  /** Anything you need to carry along. Never read by the components. */
+  meta?: Record<string, unknown>
+}
+
+type WhatsAppMessageData =
+  | (WhatsAppMessageBase & { type: 'text'; text: string })
+  | (WhatsAppMessageBase & { type: 'image'; attachment: WhatsAppAttachment; caption?: string })
+  | (WhatsAppMessageBase & { type: 'video'; attachment: WhatsAppAttachment; caption?: string })
+  | (WhatsAppMessageBase & { type: 'audio'; attachment: WhatsAppAttachment; caption?: string })
+  | (WhatsAppMessageBase & { type: 'document'; attachment: WhatsAppAttachment; caption?: string })
+  | (WhatsAppMessageBase & { type: 'sticker'; attachment: WhatsAppAttachment; caption?: string })
+  | (WhatsAppMessageBase & { type: 'template'; template: WhatsAppTemplateInstance })
+  | (WhatsAppMessageBase & {
+      type: 'interactive'
+      interactive: WhatsAppInteractiveContent
+      reply?: { id: string; title?: string }
+    })
+  | (WhatsAppMessageBase & { type: 'location'; location: WhatsAppLocation })
+  | (WhatsAppMessageBase & { type: 'contacts'; contacts: WhatsAppContactCard[] })
+  | (WhatsAppMessageBase & { type: 'system'; text: string })
+  | (WhatsAppMessageBase & { type: 'unsupported'; text?: string })
+
+type WhatsAppDeliveryStatus = 'pending' | 'sent' | 'delivered' | 'read' | 'failed'
+```
+
+`meta` is the extension point for message types of your own: put your discriminator there and pick
+it up in `renderMessage`.
+
+## Conversations and contacts
+
+```ts
+interface WhatsAppConversationSummary {
+  id: string
+  contact: WhatsAppContact
+  lastMessage?: WhatsAppConversationPreview
+  unreadCount?: number
+  updatedAt?: WhatsAppTimestamp
+  status?: string
+  assignee?: { id: string; name: string; avatarUrl?: string }
+  pinned?: boolean
+  muted?: boolean
+  labels?: { id: string; name: string; color?: string }[]
+  meta?: Record<string, unknown>
+}
+
+/** The opened conversation: a summary plus what may be sent in it. */
+interface WhatsAppConversationData extends WhatsAppConversationSummary {
+  capabilities?: WhatsAppConversationCapabilities
+}
+
+interface WhatsAppContact {
+  id: string
+  name?: string
+  phoneNumber?: string
+  avatarUrl?: string
+  about?: string
+  email?: string
+  tags?: string[]
+  fields?: { key: string; label: string; value: string; href?: string }[]
+  meta?: Record<string, unknown>
+}
+```
+
+`status` is an open union: `'open' | 'pending' | 'resolved' | 'snoozed' | 'archived'` autocompletes
+but any string is accepted, because workflow states belong to your product.
+
+## Capabilities and the messaging window
+
+```ts
+interface WhatsAppConversationCapabilities {
+  /** @default true */
+  canSendFreeForm?: boolean
+  /** @default false */
+  canSendTemplates?: boolean
+  /** @default false */
+  canSendMedia?: boolean
+  /** @default false */
+  canSendInteractive?: boolean
+  /** @default false */
+  canUseEmoji?: boolean
+  /** @default false */
+  canReplyToMessage?: boolean
+  /** @default true */
+  canRetryFailed?: boolean
+  allowedMediaTypes?: WhatsAppMediaType[]
+  interactiveTypes?: ('button' | 'cta_url' | 'list')[]
+  maxTextLength?: number
+  mediaConstraints?: Partial<Record<WhatsAppMediaType, WhatsAppMediaConstraints>>
+  messagingWindow?: WhatsAppMessagingWindow
+  disabledReason?: string
+}
+
+interface WhatsAppMessagingWindow {
+  /** @default 'unknown' */
+  state: 'open' | 'closed' | 'unknown'
+  reasonCode?: string
+  reason?: string
+  expiresAt?: WhatsAppTimestamp
+}
+```
+
+`resolveCapabilities()` fills in the defaults and returns a `WhatsAppResolvedCapabilities` with
+every flag present, plus `windowClosed` and `canSendAnything`. It is what the composer reads, and
+it is exported so your own code can apply the same rules.
+
+## Media
+
+```ts
+type WhatsAppMediaType = 'image' | 'video' | 'audio' | 'document' | 'sticker'
+
+interface WhatsAppAttachment {
+  mediaType: WhatsAppMediaType
+  id?: string
+  url?: string
+  thumbnailUrl?: string
+  fileName?: string
+  mimeType?: string
+  size?: number
+  durationSeconds?: number
+  width?: number
+  height?: number
+  meta?: Record<string, unknown>
+}
+
+interface WhatsAppUpload {
+  id: string
+  fileName: string
+  mediaType: WhatsAppMediaType
+  status: 'pending' | 'uploading' | 'uploaded' | 'failed' | 'canceled'
+  progress?: number
+  mimeType?: string
+  size?: number
+  previewUrl?: string
+  /** Set once the upload finished. This is what ends up in the outgoing payload. */
+  attachment?: WhatsAppAttachment
+  error?: string
+}
+
+interface WhatsAppMediaConstraints {
+  maxFileSize?: number
+  accept?: string[]
+  maxFiles?: number
+}
+```
+
+## Templates
+
+```ts
+interface WhatsAppTemplate {
+  id: string
+  name: string
+  language: string
+  languageLabel?: string
+  category?: 'marketing' | 'utility' | 'authentication' | (string & {})
+  status?: 'approved' | 'pending' | 'rejected' | 'paused' | 'disabled' | (string & {})
+  components: WhatsAppTemplateComponent[]
+  description?: string
+}
+
+type WhatsAppTemplateComponent =
+  | {
+      type: 'header'
+      format?: 'text' | 'image' | 'video' | 'document' | 'location'
+      text?: string
+      parameters?: WhatsAppTemplateParameter[]
+      example?: WhatsAppAttachment
+    }
+  | { type: 'body'; text: string; parameters?: WhatsAppTemplateParameter[] }
+  | { type: 'footer'; text: string }
+  | { type: 'buttons'; buttons: WhatsAppTemplateButton[] }
+
+interface WhatsAppTemplateParameter {
+  key: string
+  label?: string
+  type?: 'text' | 'currency' | 'date_time' | 'image' | 'video' | 'document' | 'location'
+  required?: boolean
+  example?: string
+  description?: string
+  placeholder?: string
+  maxLength?: number
+}
+
+interface WhatsAppTemplateValues {
+  header?: Record<string, string>
+  body?: Record<string, string>
+  /** Keyed by button index, then by parameter key */
+  buttons?: Record<string, Record<string, string>>
+  headerMedia?: WhatsAppAttachment | null
+}
+```
+
+## Interactive content
+
+```ts
+type WhatsAppInteractiveContent =
+  | {
+      type: 'button'
+      header?: WhatsAppInteractiveHeader
+      body: string
+      footer?: string
+      buttons: { id: string; title: string }[]
+    }
+  | {
+      type: 'cta_url'
+      header?: WhatsAppInteractiveHeader
+      body: string
+      footer?: string
+      action: { displayText: string; url: string }
+    }
+  | {
+      type: 'list'
+      header?: WhatsAppInteractiveHeader
+      body: string
+      footer?: string
+      button: string
+      sections: { title?: string; rows: WhatsAppInteractiveListRow[] }[]
+    }
+```
+
+## Filters and pagination
+
+```ts
+interface WhatsAppInboxFilters {
+  query?: string
+  unreadOnly?: boolean
+  /** `null` means unassigned, `undefined` means no filter */
+  assigneeId?: string | null
+  status?: string | null
+  labels?: string[]
+}
+
+interface WhatsAppPaginationState {
+  hasMore?: boolean
+  loadingMore?: boolean
+  cursor?: string | null
+  total?: number
+}
+```
+
+## Starting a conversation and drafts
+
+```ts
+interface WhatsAppNewConversationPayload {
+  /** Exactly as the user typed it. */
+  phoneNumber: string
+  /** Digits with a leading `+`, convenient as a lookup key. */
+  normalizedPhoneNumber: string
+  name?: string
+}
+
+/**
+ * What happens to an unsent draft when the conversation changes.
+ * `preserve` keeps one draft per conversation, `reset` drops the one being left.
+ */
+type WhatsAppDraftBehavior = 'preserve' | 'reset'
+```
+
+## Outgoing payloads
+
+Everything the composer can ask you to send, as a discriminated union on `kind`.
+
+```ts
+interface WhatsAppOutgoingMessageBase {
+  conversationId: string
+  /** Generated by the composer, for reconciling the optimistic message */
+  clientId: string
+  replyTo?: string
+}
+
+type WhatsAppOutgoingMessage =
+  | (WhatsAppOutgoingMessageBase & { kind: 'text'; text: string })
+  | (WhatsAppOutgoingMessageBase & {
+      kind: 'media'
+      attachments: WhatsAppAttachment[]
+      caption?: string
+    })
+  | (WhatsAppOutgoingMessageBase & {
+      kind: 'template'
+      templateId?: string
+      name: string
+      language: string
+      values: WhatsAppTemplateValues
+      template: WhatsAppTemplate
+    })
+  | (WhatsAppOutgoingMessageBase & { kind: 'interactive'; interactive: WhatsAppInteractiveContent })
+```
+
+## Exported helpers
+
+The utilities the components use are all public, so your own code can reuse the same rules rather
+than reimplementing them.
+
+```ts
+import {
+  // capabilities
+  resolveCapabilities,
+  // messages
+  createClientId,
+  getContactDisplayName,
+  getConversationPreviewText,
+  getMessagePreviewText,
+  groupMessagesByDay,
+  sortConversationsByActivity,
+  // templates
+  createEmptyTemplateValues,
+  extractPlaceholders,
+  filterTemplates,
+  getTemplateParameters,
+  isTemplateSendable,
+  renderTemplateText,
+  validateTemplateValues,
+  // phone numbers
+  isValidPhoneNumber,
+  normalizePhoneNumber,
+  // media
+  getAcceptAttribute,
+  getMediaTypeFromMime,
+  matchesAccept,
+  validateFiles,
+  // formatting
+  formatConversationTime,
+  formatDayLabel,
+  formatDuration,
+  formatFileSize,
+  formatMessageTime,
+} from '@mantine-vue/whatsapp-inbox'
+```

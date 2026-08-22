@@ -220,3 +220,16 @@ export { UseMaskDemos } from './hooks/use-mask'
 export { UseRovingIndexDemos } from './hooks/use-roving-index'
 export { UseDragDemos } from './hooks/use-drag'
 export { UseSplitterDemos } from './hooks/use-splitter'
+
+export {
+  WhatsAppComposerDemos,
+  WhatsAppConversationDemos,
+  WhatsAppConversationListDemos,
+  WhatsAppCustomizationDemos,
+  WhatsAppInboxDemos,
+  WhatsAppInteractiveDemos,
+  WhatsAppMediaDemos,
+  WhatsAppMessagingWindowDemos,
+  WhatsAppModalDrawerDemos,
+  WhatsAppTemplatesDemos,
+} from './whatsapp-inbox'

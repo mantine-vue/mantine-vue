@@ -1,0 +1,180 @@
+import { Code } from '@mantine-vue/core'
+import { WhatsAppMediaDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.WhatsAppMedia)
+
+## Who does what
+
+The extension owns picking, validating and previewing files. **Your application owns the upload.**
+That split is what keeps the package independent of your storage, your signing scheme and your
+progress reporting.
+
+```
+user picks files
+  ──▶ composer validates them against `capabilities.mediaConstraints`
+  ──▶ emits `attachmentsAdd` with the accepted files
+  ──▶ you upload them and report `uploads` back
+  ──▶ composer renders progress, failures and retry
+  ──▶ send emits a media payload with the finished attachments
+```
+
+<Demo data={WhatsAppMediaDemos.uploads} />
+
+## Handling the upload
+
+```ts
+import { ref } from 'vue'
+import { getMediaTypeFromMime } from '@mantine-vue/whatsapp-inbox'
+import type { WhatsAppAttachmentsAddPayload, WhatsAppUpload } from '@mantine-vue/whatsapp-inbox'
+
+const uploads = ref<WhatsAppUpload[]>([])
+
+function patch(id: string, changes: Partial<WhatsAppUpload>) {
+  uploads.value = uploads.value.map((upload) =>
+    upload.id === id ? { ...upload, ...changes } : upload,
+  )
+}
+
+async function handleAttachmentsAdd({ files }: WhatsAppAttachmentsAddPayload) {
+  for (const file of files) {
+    const id = crypto.randomUUID()
+
+    uploads.value = [
+      ...uploads.value,
+      {
+        id,
+        fileName: file.name,
+        mediaType: getMediaTypeFromMime(file.type),
+        mimeType: file.type,
+        size: file.size,
+        status: 'uploading',
+        progress: 0,
+        previewUrl: URL.createObjectURL(file),
+      },
+    ]
+
+    try {
+      const attachment = await api.upload(file, (progress) => patch(id, { progress }))
+      patch(id, { status: 'uploaded', attachment })
+    } catch (error) {
+      patch(id, { status: 'failed', error: (error as Error).message })
+    }
+  }
+}
+```
+
+Only uploads with `status: 'uploaded'` and an `attachment` end up in the outgoing payload, and
+sending is blocked while any upload is still in flight.
+
+## Upload states
+
+<Demo data={WhatsAppMediaDemos.uploadStates} />
+
+<DataTable
+  head={['status', 'Rendered as']}
+  data={[
+    [<Code>pending</Code>, 'Indeterminate progress bar'],
+    [
+      <Code>uploading</Code>,
+      <>
+        Progress bar, determinate once you report <Code>progress</Code>, plus a cancel action
+      </>,
+    ],
+    [<Code>uploaded</Code>, 'File size and a remove action'],
+    [
+      <Code>failed</Code>,
+      <>
+        The <Code>error</Code> text with <Code>role="alert"</Code>, plus a retry action
+      </>,
+    ],
+    [
+      <Code>canceled</Code>,
+      'Treated as finished; drop it from the array when your cancel completes',
+    ],
+  ]}
+/>
+
+The corresponding events are `attachmentRemove`, `attachmentRetry` and `attachmentCancel`. None of
+them do anything on their own – they tell you what the user asked for.
+
+## Validation
+
+Constraints come from the conversation capabilities, never from a hard-coded provider table:
+
+```ts
+const capabilities = {
+  canSendMedia: true,
+  allowedMediaTypes: ['image', 'document'],
+  mediaConstraints: {
+    image: { maxFileSize: 5 * 1024 * 1024, accept: ['image/jpeg', 'image/png'] },
+    document: { maxFileSize: 100 * 1024 * 1024, maxFiles: 1 },
+  },
+}
+```
+
+Files that fail never reach `attachmentsAdd`. They arrive in `attachmentsReject` with a reason:
+
+```ts
+interface WhatsAppRejectedFile {
+  file: File
+  code: 'file-too-large' | 'file-invalid-type' | 'too-many-files'
+  message: string
+}
+```
+
+The `accept` list also drives the native file picker, so most rejections never happen in the first
+place. `validateFiles` and `getAcceptAttribute` are exported if you need the same logic elsewhere.
+
+## Received media
+
+`WhatsAppMediaAttachment` renders what arrived. `mediaType` picks the renderer, and a missing
+`url` degrades to a document row with the file name rather than an empty frame.
+
+<Demo data={WhatsAppMediaDemos.attachments} />
+
+```ts
+interface WhatsAppAttachment {
+  mediaType: 'image' | 'video' | 'audio' | 'document' | 'sticker'
+  url?: string
+  thumbnailUrl?: string
+  fileName?: string
+  mimeType?: string
+  size?: number
+  durationSeconds?: number
+  width?: number
+  height?: number
+}
+```
+
+Supplying `width` and `height` lets the browser reserve space before the image loads, which keeps
+the history from jumping as older messages come in.
+
+## Downloads and previews
+
+The download control is a real link with the `download` attribute, so it works without JavaScript
+and respects the browser's download settings. It also emits `download`, which is where you would
+hook analytics or a signed-URL refresh.
+
+`preview` is emitted when an image or sticker is activated – wire it to your own lightbox.
+
+```vue
+<WhatsAppInbox
+  @media-download="(attachment, message) => track('media_download', message.id)"
+  @media-preview="(attachment) => lightbox.open(attachment.url)"
+/>
+```
+
+## Replacing the renderer
+
+Use the `mediaAttachment` slot when your media needs something the built-in renderer does not do –
+signed URLs fetched on demand, a custom audio player, an image gallery:
+
+```vue
+<WhatsAppInbox>
+  <template #mediaAttachment="{ attachment, message }">
+    <MySignedMedia :attachment="attachment" :message-id="message.id" />
+  </template>
+</WhatsAppInbox>
+```

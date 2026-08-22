@@ -1,0 +1,228 @@
+import { Code } from '@mantine-vue/core'
+import { WhatsAppCustomizationDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.WhatsAppCustomization)
+
+## Labels and locale
+
+Every user-visible string the extension renders is a label, and every date goes through a
+replaceable formatter. One `WhatsAppInboxProvider` localizes the whole inbox.
+
+<Demo data={WhatsAppCustomizationDemos.labels} />
+
+```vue
+<WhatsAppInboxProvider
+  locale="ar"
+  :labels="{
+    composerPlaceholder: 'اكتب رسالة',
+    send: 'إرسال',
+    searchPlaceholder: 'ابحث في المحادثات',
+  }"
+>
+  <WhatsAppInbox v-bind="inboxProps" />
+</WhatsAppInboxProvider>
+```
+
+Some labels are functions, because they interpolate:
+
+```ts
+const labels = {
+  unreadCountLabel: (count: number) => `${count} unread`,
+  messageTooLong: (max: number) => `Maximum ${max} characters`,
+  fileTooLarge: (fileName: string, max: string) => `${fileName} exceeds ${max}`,
+}
+```
+
+Every component also takes its own `labels` prop, which merges over the provider's – overriding
+one key never drops the rest. `DEFAULT_WHATSAPP_INBOX_LABELS` and `mergeWhatsAppLabels` are
+exported if you want to build a translation file from the full list.
+
+## Formatters
+
+The built-in formatters use `Intl`. Replace any of them when you own a date library, or when times
+must be rendered in the contact's timezone rather than the agent's.
+
+```vue
+<WhatsAppInboxProvider
+  :formatters="{
+    messageTime: (value, locale) => dayjs(value).tz(contactTimezone).format('HH:mm'),
+    dayLabel: (value, locale, labels) => myDayLabel(value, labels),
+    fileSize: (bytes) => prettyBytes(bytes ?? 0),
+  }"
+>
+  <WhatsAppInbox v-bind="inboxProps" />
+</WhatsAppInboxProvider>
+```
+
+Formatters are `messageTime`, `fullTimestamp`, `dayLabel`, `conversationTime` and `fileSize`.
+Anything you leave out keeps the default.
+
+## Contact panel
+
+`WhatsAppContactPanel` merges the built-in rows – phone, email, about, status, assignee – with the
+`contact.fields` your backend supplies, so CRM data needs no custom markup.
+
+<Demo data={WhatsAppCustomizationDemos.contactPanel} />
+
+```ts
+const contact: WhatsAppContact = {
+  id: 'c-1',
+  name: 'Amina Haddad',
+  phoneNumber: '+973 3300 1122',
+  tags: ['VIP'],
+  fields: [
+    { key: 'customer-id', label: 'Customer id', value: 'CU-99312' },
+    { key: 'orders', label: 'Open orders', value: '2', href: '/customers/CU-99312/orders' },
+  ],
+}
+```
+
+Replace the body entirely with the `contactPanel` slot, or add to it with `contactPanelHeader` and
+`contactPanelFooter`.
+
+## Styling
+
+Standard Mantine Vue Styles API: `classNames`, `styles`, `vars` and `unstyled`, keyed by each
+component's style names, plus theme-level defaults through `Component.extend()`. Every selector is
+listed in the Styles API tab of each component's page.
+
+<Demo data={WhatsAppCustomizationDemos.styling} />
+
+Bubble colours are CSS variables, so a theme-wide override is a one-liner:
+
+```css
+.mantine-WhatsAppMessageBubble-bubbleRoot {
+  --wa-inbound-bg: var(--mantine-color-body);
+  --wa-outbound-bg: var(--mantine-color-teal-light);
+}
+```
+
+The conversation header and the contact panel header read one shared token, so their bottom
+borders line up across the inbox. Raise it when your header actions need more room:
+
+```css
+.mantine-WhatsAppInbox-inboxRoot {
+  --wa-header-height: 72px;
+}
+```
+
+Dark mode needs nothing extra: every colour used is a Mantine CSS variable, so the inbox follows
+the colour scheme.
+
+Theme defaults work the way they do everywhere else in Mantine:
+
+```ts
+import { createTheme } from '@mantine-vue/core'
+import { WhatsAppMessageBubble } from '@mantine-vue/whatsapp-inbox'
+
+export const theme = createTheme({
+  components: {
+    WhatsAppMessageBubble: WhatsAppMessageBubble.extend({
+      defaultProps: { radius: 'md', maxWidth: '65%' },
+    }),
+  },
+})
+```
+
+## Slots
+
+Slots are the first thing to reach for when a prop does not cover it. `WhatsAppInbox` forwards the
+slots of every component it renders.
+
+<DataTable
+  head={['Area', 'Slots']}
+  data={[
+    [
+      'Conversation list',
+      <>
+        <Code>conversationItem</Code>, <Code>conversationAvatar</Code>,{' '}
+        <Code>conversationPreview</Code>, <Code>listHeader</Code>, <Code>listFooter</Code>,{' '}
+        <Code>filters</Code>, <Code>emptyInbox</Code>, <Code>loadingInbox</Code>,{' '}
+        <Code>errorInbox</Code>
+      </>,
+    ],
+    [
+      'Conversation',
+      <>
+        <Code>conversationHeader</Code>, <Code>headerActions</Code>, <Code>emptyConversation</Code>,{' '}
+        <Code>loadingMessages</Code>, <Code>errorMessages</Code>
+      </>,
+    ],
+    [
+      'Messages',
+      <>
+        <Code>message</Code>, <Code>messageContent</Code>, <Code>messageFooter</Code>,{' '}
+        <Code>mediaAttachment</Code>
+      </>,
+    ],
+    [
+      'Composer',
+      <>
+        <Code>composerPrefix</Code>, <Code>composerSuffix</Code>, <Code>composerActions</Code>,{' '}
+        <Code>emojiPicker</Code>, <Code>attachmentPreview</Code>, <Code>templatePreview</Code>
+      </>,
+    ],
+    [
+      'Contact panel',
+      <>
+        <Code>contactPanel</Code>, <Code>contactPanelHeader</Code>, <Code>contactPanelFooter</Code>
+      </>,
+    ],
+  ]}
+/>
+
+Every slot is typed, so the payload is checked in the template.
+
+## Building your own layout
+
+`WhatsAppInbox` is a convenience, not a requirement. Every primitive is exported and works on its
+own, and `WhatsAppConversation` publishes its conversation and capabilities to the components
+below it, so a custom layout does not have to thread them through by hand.
+
+<Demo data={WhatsAppCustomizationDemos.composition} />
+
+```vue
+<template>
+  <MyThreeColumnLayout>
+    <template #left><MyOwnConversationList /></template>
+
+    <template #center>
+      <WhatsAppConversation :conversation="conversation" :capabilities="capabilities">
+        <template #conversationHeader>
+          <MyOwnHeader :conversation="conversation" />
+        </template>
+      </WhatsAppConversation>
+    </template>
+
+    <template #right><MyCrmSidebar /></template>
+  </MyThreeColumnLayout>
+</template>
+```
+
+Or drop a single primitive anywhere, with no provider at all:
+
+```vue
+<WhatsAppMessageBubble direction="inbound" :timestamp="message.timestamp">
+  {{ message.text }}
+</WhatsAppMessageBubble>
+```
+
+## Accessibility
+
+The extension is accessible out of the box, and the customization points are built so that
+overriding them does not silently break it:
+
+- the conversation list is a list of buttons; the selected row carries `aria-current`;
+- each row has one composed accessible name: contact, unread count, preview and time;
+- the message history is a `role="log"` region with an accessible name;
+- delivery states use a distinct glyph per state plus screen-reader text, never colour alone;
+- timestamps carry the full date as an accessible label and tooltip;
+- every control has a label, the composer input and file picker included;
+- the closed-window notice is `role="status"`; send and upload failures are `role="alert"`;
+- modal and drawer modes use Mantine's dialog behaviour: focus trap, Escape, focus return;
+- switching conversations moves focus into the composer.
+
+When you replace a row or a message with a slot, keep the accessible name: the simplest way is to
+put an `aria-label` on your control the way the built-in row does.

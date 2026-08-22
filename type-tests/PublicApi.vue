@@ -1,11 +1,16 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { Autocomplete, Box, Button, Transition } from '@mantine-vue/core'
+import { WhatsAppInbox } from '@mantine-vue/whatsapp-inbox'
+import type { WhatsAppOutgoingMessage } from '@mantine-vue/whatsapp-inbox'
 
 const value = ref('')
 const onModelValue = (nextValue: string) => {
   value.value = nextValue
 }
+
+const selectedConversationId = ref<string | null>(null)
+const onSend = (payload: WhatsAppOutgoingMessage) => payload.conversationId
 </script>
 
 <template>
@@ -22,4 +27,16 @@ const onModelValue = (nextValue: string) => {
   <Transition :mounted="true" v-slot="styles">
     <div :style="styles">Typed transition</div>
   </Transition>
+
+  <WhatsAppInbox
+    v-model:selected-conversation-id="selectedConversationId"
+    :conversations="[]"
+    :messages="[]"
+    @send="onSend"
+  >
+    <template #conversationItem="{ conversation, selected }">
+      {{ conversation.contact.name }} {{ selected }}
+    </template>
+    <template #message="{ message }">{{ message.id }}</template>
+  </WhatsAppInbox>
 </template>

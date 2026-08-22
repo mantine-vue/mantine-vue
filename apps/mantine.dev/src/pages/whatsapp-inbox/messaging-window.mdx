@@ -1,0 +1,125 @@
+import { Code } from '@mantine-vue/core'
+import { WhatsAppMessagingWindowDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.WhatsAppMessagingWindow)
+
+## The backend is authoritative
+
+WhatsApp only allows free-form messages inside a customer service window that opens when the
+contact writes to you. **The extension never computes whether that window is open.**
+
+That is deliberate. The rule depends on the provider's own clock, on messages the browser never
+saw, and on policy that changes without asking the frontend. A UI that guessed would either block
+a message the provider would have accepted, or let the user write one that is rejected after they
+hit send. So your backend reports the state and the components render it.
+
+```ts
+const capabilities = {
+  canSendFreeForm: true,
+  canSendTemplates: true,
+  messagingWindow: {
+    state: 'closed',
+    reasonCode: 'customer_service_window_expired',
+    reason: 'Amina last replied more than 24 hours ago, so only templates can be sent.',
+  },
+}
+```
+
+## The three states
+
+<Demo data={WhatsAppMessagingWindowDemos.closedWindow} />
+
+<DataTable
+  head={['state', 'Effect']}
+  data={[
+    [<Code>open</Code>, 'Everything the capabilities allow is available'],
+    [
+      <Code>closed</Code>,
+      'Free-form text, media and interactive messages are disabled; templates stay available',
+    ],
+    [
+      <Code>unknown</Code>,
+      'Treated as usable – the default when the backend did not report anything',
+    ],
+  ]}
+/>
+
+`unknown` is the safe default on purpose. A missing field should not lock an agent out of a
+conversation they are allowed to answer.
+
+## What closing the window does
+
+When `state` is `closed`, the composer:
+
+- disables the text input, the attachment control and the interactive editor;
+- renders an explanation using your `reason` when present, and a built-in sentence otherwise;
+- keeps approved templates available when `canSendTemplates` is set;
+- offers a **Send a template** action that opens the template selector.
+
+`canSendFreeForm`, `canSendMedia` and `canSendInteractive` are all forced to `false` while the
+window is closed, whatever the flags say – so you can keep sending the same capability object and
+let the window drive the difference.
+
+## Reason codes and copy
+
+`reasonCode` is machine readable, `reason` is the sentence shown to the user. Sending both lets
+you map your own copy per code while still having something useful to display if you have not.
+
+```ts
+const WINDOW_COPY: Record<string, string> = {
+  customer_service_window_expired: 'The contact has not replied in the last 24 hours.',
+  no_opt_in: 'This contact has not opted in to messages from your business yet.',
+  number_blocked: 'This contact blocked your business number.',
+}
+
+const reason = WINDOW_COPY[window.reasonCode] ?? window.reason
+```
+
+You can also override the copy per component with `title` and `description`, or through
+[labels](/whatsapp-inbox/customization).
+
+## The notice on its own
+
+`WhatsAppMessagingWindowNotice` renders nothing unless `state` is `closed`, so it can be mounted
+unconditionally – for example above your own composer.
+
+<Demo data={WhatsAppMessagingWindowDemos.notice} />
+
+```vue
+<WhatsAppMessagingWindowNotice
+  :messaging-window="capabilities.messagingWindow"
+  :templates-available="capabilities.canSendTemplates"
+  @template-action="openTemplates"
+/>
+```
+
+Set `templates-available` to `false` and the action is hidden, so the notice never points at
+something the user is not allowed to do.
+
+## Expiry hints
+
+An open window may carry `expiresAt`. The extension does not count down to it or close the window
+when it passes – that remains your backend's call – but the value is available for your own
+banner or countdown.
+
+```ts
+const capabilities = {
+  canSendFreeForm: true,
+  messagingWindow: { state: 'open', expiresAt: '2026-03-19T09:00:00Z' },
+}
+```
+
+## Testing the closed state
+
+Because the window is just data, testing it needs no clock manipulation and no fake provider:
+
+```ts
+mount(WhatsAppComposer, {
+  props: {
+    conversationId: 'c-1',
+    capabilities: { canSendTemplates: true, messagingWindow: { state: 'closed' } },
+  },
+})
+```

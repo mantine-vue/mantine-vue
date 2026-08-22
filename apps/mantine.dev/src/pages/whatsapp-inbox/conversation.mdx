@@ -1,0 +1,127 @@
+import { WhatsAppConversationDemos, WhatsAppCustomizationDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.WhatsAppConversation)
+
+## Usage
+
+`WhatsAppConversation` composes the header, the message history and the composer, and publishes
+the conversation and its capabilities to every component below it.
+
+<Demo data={WhatsAppConversationDemos.usage} />
+
+## Use it without the inbox
+
+This is the component you want when a conversation lives inside a screen of your own – a support
+ticket, an order page, a split view. It has no dependency on `WhatsAppInbox` and does not render a
+conversation list.
+
+```vue
+<WhatsAppConversation
+  :conversation="conversation"
+  :conversation-id="conversation.id"
+  :messages="messages"
+  :capabilities="capabilities"
+  style="height: 100%"
+  @send="handleSend"
+/>
+```
+
+`conversationId` falls back to `conversation.id`. Supplying only the id is enough when you have
+messages but no conversation record yet – which is exactly the case the modal was built for.
+
+## Conversation context
+
+`WhatsAppConversation` provides its conversation and resolved capabilities through a Vue
+`provide`, so the primitives inside it do not have to be told twice:
+
+```vue
+<WhatsAppConversation :conversation="conversation" :capabilities="capabilities">
+  <template #conversationHeader>
+    <MyOwnHeader :conversation="conversation" />
+  </template>
+</WhatsAppConversation>
+```
+
+`useWhatsAppConversationContext()` reads it from your own components. Props always win over the
+context, and every component still works with no provider at all.
+
+## Header
+
+`WhatsAppConversationHeader` renders the contact, an optional back control, your own actions and
+the contact panel toggle.
+
+<Demo data={WhatsAppCustomizationDemos.header} />
+
+`subtitle` defaults to the phone number when it differs from the displayed name – which is what
+makes two contacts with the same name distinguishable.
+
+## Focus when switching conversations
+
+Changing `conversationId` moves focus into the composer, so keyboard-driven triage works: pick a
+conversation with the keyboard and start typing. Turn it off with
+`:focus-composer-on-change="false"`.
+
+The message history also resets to the newest message on a conversation change rather than
+inheriting the previous scroll offset.
+
+## Unsent drafts
+
+Losing a half-written message to a mis-click is a real cost, so the default is to keep one draft
+per conversation and restore it when the user returns.
+
+```vue
+<!-- Default: keep a draft per conversation -->
+<WhatsAppConversation draft-behavior="preserve" />
+
+<!-- Drop the draft of the conversation being left -->
+<WhatsAppConversation draft-behavior="reset" />
+
+<!-- Own the map: persist it, share it between screens, restore it after a reload -->
+<WhatsAppConversation v-model:drafts="drafts" />
+
+<!-- A single controlled draft, which is how the modal and drawer use it -->
+<WhatsAppConversation v-model:draft="draft" />
+```
+
+`draft` wins over `drafts` when both are set, and `draftBehavior` does not apply to it: a
+controlled single value is entirely the consumer's to manage. Sending clears the draft of the
+conversation it was sent from, in both modes.
+
+## Forwarding props to the parts
+
+Three props pass configuration through to the components inside:
+
+```vue
+<WhatsAppConversation
+  :header-props="{ withContactToggle: true }"
+  :message-list-props="{ withDayDividers: false, autoScroll: false }"
+  :composer-props="{ sendOnEnter: false, maxRows: 10 }"
+/>
+```
+
+## Async states
+
+```vue
+<WhatsAppConversation
+  :messages-loading="messagesLoading"
+  :messages-error="messagesError"
+  :messages-pagination="{ hasMore, loadingMore, cursor }"
+  :sending="sending"
+  :send-error="sendError"
+  @load-older-messages="loadOlder"
+  @retry-load-messages="refetch"
+/>
+```
+
+<Demo data={WhatsAppConversationDemos.states} />
+
+## Exposed methods
+
+```ts
+const conversation = ref<WhatsAppConversationExposed | null>(null)
+
+conversation.value?.focusComposer()
+conversation.value?.scrollToBottom('smooth')
+```

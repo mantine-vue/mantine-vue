@@ -1,0 +1,172 @@
+import { WhatsAppTemplatesDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.WhatsAppTemplates)
+
+## Usage
+
+Templates are how you reach a contact outside the 24-hour window. `WhatsAppTemplateSelector`
+handles searching, filtering, previewing, filling in parameters and validating them – and then
+hands you a typed payload. It never calls the WhatsApp API.
+
+<Demo data={WhatsAppTemplatesDemos.selector} />
+
+Inside the composer the selector opens in a modal from the template control, or from the
+**Send a template** action of the closed-window notice. You only need the component directly when
+you build your own composer.
+
+## Template shape
+
+The model is a normalized view of what providers expose, not a copy of Meta's payload. Map your
+backend onto it once and the UI works with any provider.
+
+```ts
+import type { WhatsAppTemplate } from '@mantine-vue/whatsapp-inbox'
+
+const template: WhatsAppTemplate = {
+  id: 'appointment_reminder',
+  name: 'appointment_reminder',
+  language: 'en_US',
+  languageLabel: 'English (US)',
+  category: 'utility',
+  status: 'approved',
+  components: [
+    { type: 'header', format: 'text', text: 'Appointment reminder' },
+    { type: 'body', text: 'Hi {{1}}, your appointment is on {{2}}.' },
+    { type: 'footer', text: 'Reply STOP to opt out' },
+    {
+      type: 'buttons',
+      buttons: [
+        { type: 'quick_reply', text: 'Confirm' },
+        { type: 'url', text: 'Reschedule', url: 'https://example.com/{{1}}' },
+      ],
+    },
+  ],
+}
+```
+
+## Parameters
+
+A component may declare its placeholders explicitly through `parameters`, or leave them implicit
+in the text. Backends normalize templates differently, so the selector handles both: when
+`parameters` is missing it derives them from the `{{n}}` placeholders it finds.
+
+Declare them when you want labels, descriptions, examples or length limits:
+
+```ts
+{
+  type: 'body',
+  text: 'Hi {{name}}, your appointment is on {{date}}.',
+  parameters: [
+    { key: 'name', label: 'Customer name', example: 'Amina', maxLength: 60 },
+    { key: 'date', label: 'Appointment date', description: 'Formatted for the contact locale' },
+  ],
+}
+```
+
+Named placeholders work as well as positional ones – the key is whatever appears between the
+braces.
+
+## Validation
+
+Required parameters are validated before anything is emitted, and errors are shown per field.
+Nothing here knows which templates a given provider accepts; that stays a backend decision,
+surfaced through `status`.
+
+Templates whose `status` is not `approved` render as disabled rows rather than disappearing, so a
+user can see that a template exists but is not sendable yet. Set `:with-unavailable="false"` to
+hide them.
+
+## Preview
+
+The preview substitutes the values as they are typed. Placeholders without a value stay visible,
+so the user can see exactly which variables are still empty.
+
+<Demo data={WhatsAppTemplatesDemos.preview} />
+
+`WhatsAppTemplatePreview` is also what renders a template message in the history. When the
+definition is no longer available it falls back to `fallbackText`.
+
+## Media headers
+
+A template whose header expects an image, video or document needs a file – and the extension does
+not upload. Supply the picker through the `headerMedia` slot and hand back a ready
+`WhatsAppAttachment`.
+
+<Demo data={WhatsAppTemplatesDemos.headerMedia} />
+
+```vue
+<WhatsAppTemplateSelector :templates="templates" @submit="handleSubmit">
+  <template #headerMedia="{ value, setValue, error }">
+    <MyUploader :value="value" :error="error" @uploaded="setValue" />
+  </template>
+</WhatsAppTemplateSelector>
+```
+
+Submission is blocked until the media is set, and the error is passed to your slot so it can be
+rendered wherever it belongs in your control.
+
+## Sending
+
+```ts
+function handleSend(payload: WhatsAppOutgoingMessage) {
+  if (payload.kind === 'template') {
+    api.sendTemplate({
+      conversationId: payload.conversationId,
+      clientId: payload.clientId,
+      name: payload.name,
+      language: payload.language,
+      values: payload.values,
+    })
+  }
+}
+```
+
+`values` mirrors the template's shape:
+
+```ts
+interface WhatsAppTemplateValues {
+  header?: Record<string, string>
+  body?: Record<string, string>
+  /** Keyed by button index, then by parameter key */
+  buttons?: Record<string, Record<string, string>>
+  headerMedia?: WhatsAppAttachment | null
+}
+```
+
+The full `template` definition rides along in the payload, so your handler does not have to look
+it up again to build the provider request.
+
+## Controlled state
+
+Search, category, selection and values are all controllable when you need them to be:
+
+```vue
+<WhatsAppTemplateSelector
+  v-model:query="query"
+  v-model:category="category"
+  v-model:selected-template-id="selectedTemplateId"
+  v-model:values="values"
+  :templates="templates"
+/>
+```
+
+Leave them alone and the selector manages its own. Filtering happens on the array you pass, so a
+consumer that searches server-side simply passes the filtered list and leaves `query` empty.
+
+## Utilities
+
+The template helpers the selector uses are exported, in case you need them outside the UI:
+
+```ts
+import {
+  createEmptyTemplateValues,
+  extractPlaceholders,
+  filterTemplates,
+  getTemplateParameters,
+  isTemplateSendable,
+  renderTemplateText,
+  validateTemplateValues,
+} from '@mantine-vue/whatsapp-inbox'
+```

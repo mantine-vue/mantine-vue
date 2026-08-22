@@ -1,0 +1,141 @@
+import { Code } from '@mantine-vue/core'
+import { WhatsAppModalDrawerDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.WhatsAppModalDrawer)
+
+## Modal mode
+
+`WhatsAppInboxModal` opens a known conversation from another screen, without rendering the
+conversation list.
+
+<Demo data={WhatsAppModalDrawerDemos.modal} />
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue'
+import { WhatsAppInboxModal } from '@mantine-vue/whatsapp-inbox'
+
+const opened = ref(false)
+</script>
+
+<template>
+  <Button @click="opened = true">Message on WhatsApp</Button>
+
+  <WhatsAppInboxModal
+    v-model:opened="opened"
+    :conversation-id="customer.whatsappConversationId"
+    :messages="messages"
+    :capabilities="capabilities"
+    @send="handleSendMessage"
+  />
+</template>
+```
+
+A `conversationId` is all the modal needs. Pass `conversation` as well when you have the record –
+the dialog titles itself with the contact name, and the composer picks up the capabilities.
+
+## Drawer mode
+
+`WhatsAppInboxDrawer` is the same conversation experience in a side panel, for cases where the
+surrounding screen should stay visible.
+
+<Demo data={WhatsAppModalDrawerDemos.drawer} />
+
+```vue
+<WhatsAppInboxDrawer
+  v-model:opened="opened"
+  position="right"
+  size="md"
+  :conversation-id="lead.conversationId"
+  :conversation="conversation"
+  :messages="messages"
+  :capabilities="capabilities"
+  @send="handleSend"
+/>
+```
+
+The drawer stays usable in a narrow container: the composer collapses its action row before the
+input, and the history keeps its day dividers and scroll behaviour.
+
+## Layout
+
+Both dialogs lay their content out as a column, so the composer is pinned to the bottom and is
+visible the moment the dialog opens – no scrolling to find the input. The message history is the
+part that scrolls.
+
+The dialog keeps its normal header padding; only the body loses it, so the conversation can run
+edge to edge under a correctly aligned title.
+
+## Nothing is lost
+
+Both modes render the same `WhatsAppConversation`, so every feature and every restriction carries
+over: templates, media, interactive messages, delivery states, retry, and the
+[messaging window](/whatsapp-inbox/messaging-window).
+
+<Demo data={WhatsAppModalDrawerDemos.restrictions} />
+
+## The conversation header
+
+The dialog is already titled with the contact name, so the conversation header is off by default
+in both modes. Turn it back on when you want the avatar, subtitle and header actions:
+
+```vue
+<WhatsAppInboxModal v-model:opened="opened" with-header :conversation="conversation" />
+```
+
+## Passing everything else through
+
+Both components forward every prop and event of `WhatsAppConversation`, plus their own dialog
+props:
+
+```vue
+<WhatsAppInboxModal
+  v-model:opened="opened"
+  height="80vh"
+  :modal-props="{ size: 'xl', centered: true, zIndex: 400 }"
+/>
+
+<WhatsAppInboxDrawer
+  v-model:opened="opened"
+  :drawer-props="{ offset: 8, radius: 'md', withOverlay: false }"
+/>
+```
+
+Slots are forwarded too, so `#message`, `#composerActions`, `#emojiPicker` and the rest work
+exactly as they do in the full-page inbox.
+
+## Focus and dismissal
+
+Opening moves focus into the composer, because the point of these modes is that the user already
+knows who they are writing to. Turn it off with `:focus-composer-on-open="false"`.
+
+Everything else is Mantine's dialog behaviour: focus is trapped, Escape closes, and focus returns
+to the control that opened it. Dismissal emits both `update:opened` and `close`.
+
+## Choosing between them
+
+<DataTable
+  head={['', 'Modal', 'Drawer']}
+  data={[
+    ['Surrounding screen', 'Hidden behind an overlay', 'Stays visible'],
+    ['Best for', 'A focused reply, a quick send', 'Working alongside a record'],
+    [
+      'Width',
+      <>
+        <Code>size</Code> on <Code>Modal</Code>
+      </>,
+      <>
+        <Code>size</Code> and <Code>position</Code> on <Code>Drawer</Code>
+      </>,
+    ],
+    [
+      'Height',
+      <>
+        <Code>height</Code> prop, <Code>70vh</Code> by default
+      </>,
+      'Full height of the drawer',
+    ],
+  ]}
+/>

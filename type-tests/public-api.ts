@@ -27,6 +27,13 @@ import type {
   ThemeIconVariant,
 } from '@mantine-vue/core'
 import { ContextMenuProvider } from '@mantine-vue/contextmenu'
+import { WhatsAppInbox, WhatsAppInboxModal } from '@mantine-vue/whatsapp-inbox'
+import type {
+  WhatsAppConversationSummary,
+  WhatsAppMessageData,
+  WhatsAppMessagingWindow,
+  WhatsAppOutgoingMessage,
+} from '@mantine-vue/whatsapp-inbox'
 import type {
   ContextMenuItemOptions,
   ContextMenuOptions,
@@ -179,3 +186,76 @@ const invalidContextMenuItem: ContextMenuItemOptions = {
   items: [],
 }
 void invalidContextMenuItem
+
+/*
+ * WhatsApp inbox: the public surface a consumer integrates against, checked through the built
+ * declarations rather than the source, so a broken export map fails here.
+ */
+type WhatsAppInboxPublicProps = InstanceType<typeof WhatsAppInbox>['$props']
+type WhatsAppInboxModalPublicProps = InstanceType<typeof WhatsAppInboxModal>['$props']
+
+const whatsAppConversation: WhatsAppConversationSummary = {
+  id: 'conversation-1',
+  contact: { id: 'contact-1', name: 'Amina', phoneNumber: '+973 3300 1122' },
+  unreadCount: 2,
+  updatedAt: '2026-03-18T09:00:00.000Z',
+}
+
+const whatsAppMessage: WhatsAppMessageData = {
+  id: 'message-1',
+  type: 'image',
+  direction: 'inbound',
+  timestamp: '2026-03-18T09:00:00.000Z',
+  attachment: { mediaType: 'image', url: 'https://cdn.test/a.png' },
+}
+
+/** The outgoing union is exhaustive, so a `switch` needs no default branch. */
+function handleWhatsAppSend(payload: WhatsAppOutgoingMessage): string {
+  switch (payload.kind) {
+    case 'text':
+      return payload.text
+    case 'media':
+      return payload.attachments.map((attachment) => attachment.mediaType).join(',')
+    case 'template':
+      return `${payload.name}:${payload.language}`
+    case 'interactive':
+      return payload.interactive.type
+  }
+}
+
+const whatsAppInboxProps: WhatsAppInboxPublicProps = {
+  conversations: [whatsAppConversation],
+  messages: [whatsAppMessage],
+  selectedConversationId: 'conversation-1',
+  capabilities: {
+    canSendTemplates: true,
+    messagingWindow: { state: 'closed', reason: 'Window expired' },
+  },
+  onSend: handleWhatsAppSend,
+  'onUpdate:selectedConversationId': (conversationId) => conversationId ?? '',
+}
+
+const whatsAppModalProps: WhatsAppInboxModalPublicProps = {
+  opened: true,
+  conversationId: 'conversation-1',
+  messages: [whatsAppMessage],
+  'onUpdate:opened': (opened: boolean) => opened,
+}
+
+void whatsAppInboxProps
+void whatsAppModalProps
+
+const invalidWhatsAppMessage: WhatsAppMessageData = {
+  id: 'message-2',
+  type: 'text',
+  direction: 'inbound',
+  timestamp: 0,
+  text: 'Hello',
+  // @ts-expect-error A text message carries `text`, never an `attachment`.
+  attachment: { mediaType: 'image' },
+}
+void invalidWhatsAppMessage
+
+// @ts-expect-error The messaging window state is a closed union: the backend reports it verbatim.
+const invalidWindowState: WhatsAppMessagingWindow = { state: 'expired' }
+void invalidWindowState

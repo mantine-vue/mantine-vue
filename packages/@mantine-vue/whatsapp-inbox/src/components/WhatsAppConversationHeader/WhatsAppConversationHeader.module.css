@@ -1,0 +1,53 @@
+.conversationHeaderRoot {
+  display: flex;
+  align-items: center;
+  gap: var(--mantine-spacing-sm);
+  padding: var(--mantine-spacing-xs) var(--mantine-spacing-sm);
+  /*
+   * Shared with the contact panel header so the two bottom borders line up across the
+   * inbox, whatever each header happens to contain.
+   */
+  min-height: var(--wa-header-height, 64px);
+  border-bottom: 1px solid var(--mantine-color-default-border);
+  background-color: var(--mantine-color-body);
+  flex-shrink: 0;
+}
+
+.conversationHeaderBack {
+  flex-shrink: 0;
+}
+
+.conversationHeaderAvatar {
+  flex-shrink: 0;
+}
+
+.conversationHeaderBody {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  text-align: start;
+}
+
+.conversationHeaderName {
+  font-size: var(--mantine-font-size-sm);
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.conversationHeaderSubtitle {
+  font-size: var(--mantine-font-size-xs);
+  color: var(--mantine-color-dimmed);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.conversationHeaderActions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}

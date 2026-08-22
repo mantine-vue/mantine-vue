@@ -694,6 +694,7 @@ __metadata:
     "@mantine-vue/spotlight": "workspace:*"
     "@mantine-vue/table": "workspace:*"
     "@mantine-vue/tiptap": "workspace:*"
+    "@mantine-vue/whatsapp-inbox": "workspace:*"
     "@mdx-js/rollup": "npm:^3.1.0"
     "@phosphor-icons/vue": "npm:^2.2"
     "@tiptap/core": "npm:>=3.3.0"
@@ -1003,6 +1004,22 @@ __metadata:
 "@mantine-vue/utils@workspace:*, @mantine-vue/utils@workspace:packages/@mantine-vue/utils":
   version: 0.0.0-use.local
   resolution: "@mantine-vue/utils@workspace:packages/@mantine-vue/utils"
+  languageName: unknown
+  linkType: soft
+
+"@mantine-vue/whatsapp-inbox@workspace:*, @mantine-vue/whatsapp-inbox@workspace:packages/@mantine-vue/whatsapp-inbox":
+  version: 0.0.0-use.local
+  resolution: "@mantine-vue/whatsapp-inbox@workspace:packages/@mantine-vue/whatsapp-inbox"
+  dependencies:
+    "@mantine-vue/core": "workspace:*"
+    "@mantine-vue/hooks": "workspace:*"
+    "@vue/compiler-dom": "npm:^3.5.0"
+    "@vue/test-utils": "npm:^2.4.6"
+    vue: "npm:^3.5.0"
+  peerDependencies:
+    "@mantine-vue/core": 3.1.0
+    "@mantine-vue/hooks": 3.1.0
+    vue: ^3.5.0
   languageName: unknown
   linkType: soft
 

@@ -205,6 +205,23 @@ const OTHER_EXTENSIONS_PAGES: MdxNavItem[] = [
   { label: 'Rich text editor', link: '/x/tiptap' },
 ]
 
+const WHATSAPP_INBOX_PAGES: MdxNavItem[] = [
+  { label: 'Getting started', link: '/whatsapp-inbox/getting-started' },
+  { label: 'WhatsAppInbox', link: '/whatsapp-inbox/inbox' },
+  { label: 'Conversation list', link: '/whatsapp-inbox/conversation-list' },
+  { label: 'Conversation', link: '/whatsapp-inbox/conversation' },
+  { label: 'Messages', link: '/whatsapp-inbox/messages' },
+  { label: 'Composer', link: '/whatsapp-inbox/composer' },
+  { label: 'Messaging window', link: '/whatsapp-inbox/messaging-window' },
+  { label: 'Templates', link: '/whatsapp-inbox/templates' },
+  { label: 'Interactive messages', link: '/whatsapp-inbox/interactive-messages' },
+  { label: 'Media and uploads', link: '/whatsapp-inbox/media' },
+  { label: 'Modal and drawer', link: '/whatsapp-inbox/modal-and-drawer' },
+  { label: 'Backend integration', link: '/whatsapp-inbox/integration' },
+  { label: 'Customization', link: '/whatsapp-inbox/customization' },
+  { label: 'TypeScript model', link: '/whatsapp-inbox/types' },
+]
+
 const HOOKS_UI_AND_DOM_PAGES: MdxNavItem[] = [
   { label: 'use-click-outside', link: '/hooks/use-click-outside' },
   { label: 'use-collapse', link: '/hooks/use-collapse' },
@@ -420,6 +437,10 @@ export const MDX_NAV_DATA: MdxNavCategory[] = [
   {
     category: 'Form',
     groups: [{ title: 'Form', pages: FORM_PAGES }],
+  },
+  {
+    category: 'WhatsApp inbox',
+    groups: [{ title: 'WhatsApp inbox', pages: WHATSAPP_INBOX_PAGES }],
   },
   {
     category: 'Extensions',

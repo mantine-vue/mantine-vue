@@ -1,0 +1,21 @@
+.modalRoot {
+  display: contents;
+}
+
+/*
+ * The dialog is a column: the header keeps its own padding, and the body is the only part that
+ * loses it so the conversation can run edge to edge.
+ */
+.modalContent {
+  display: flex;
+  flex-direction: column;
+}
+
+.modalBody {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  height: var(--wa-modal-height, 70vh);
+  min-height: 0;
+  padding: 0;
+}
