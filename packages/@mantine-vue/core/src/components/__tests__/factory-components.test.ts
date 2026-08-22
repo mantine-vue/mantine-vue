@@ -63,7 +63,13 @@ const CASES: FactoryCase[] = [
   { name: 'Breadcrumbs', component: Breadcrumbs, tag: 'DIV' },
   { name: 'Timeline', component: Timeline, tag: 'DIV', statics: ['Item'] },
   { name: 'Loader', component: Loader, tag: 'SPAN', statics: ['defaultLoaders'] },
-  { name: 'Progress', component: Progress, tag: 'DIV', statics: ['Root', 'Section', 'Label'] },
+  {
+    name: 'Progress',
+    component: Progress,
+    tag: 'DIV',
+    required: { value: 50 },
+    statics: ['Root', 'Section', 'Label'],
+  },
   { name: 'ScrollArea', component: ScrollArea, tag: 'DIV', statics: ['Autosize'] },
   {
     name: 'TableScrollContainer',
