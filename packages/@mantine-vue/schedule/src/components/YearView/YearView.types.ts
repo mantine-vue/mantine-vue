@@ -1,3 +1,4 @@
+import type { VNodeChild } from 'vue'
 import type { BoxProps, Factory } from '@mantine-vue/core'
 import type { StylesApiProps } from '@mantine-vue/core/styles-api'
 import type {
@@ -6,7 +7,7 @@ import type {
   ForwardedProps,
   NativeButtonProps,
 } from '../../component-props'
-import type { DateLabelFormat, DateStringValue, DayOfWeek } from '../../types'
+import type { DateLabelFormat, DateStringValue, DayOfWeek, ScheduleEventData } from '../../types'
 import type { CombinedScheduleHeaderStylesNames } from '../ScheduleHeader/ScheduleHeader.types'
 import type {
   MonthYearSelectEmits,
@@ -57,6 +58,9 @@ export interface YearViewOwnProps extends BaseViewOwnProps, StylesApiProps<YearV
    */
   weekendDays?: DayOfWeek[]
 
+  /** If set, weekend columns are displayed. @default true */
+  withWeekendDays?: boolean
+
   /**
    * If set, week numbers are displayed in the first column of each month.
    * @default false
@@ -96,11 +100,19 @@ export interface YearViewOwnProps extends BaseViewOwnProps, StylesApiProps<YearV
   /** Returns extra props for the control of the given day. */
   getDayProps?: (date: DateStringValue) => NativeButtonProps
 
+  /** Replaces the content of a day cell. Default event indicators are omitted when set. */
+  renderDay?: (date: DateStringValue, events: ScheduleEventData[]) => VNodeChild
+
   /** Returns extra props for the control of the week that starts on the given day. */
   getWeekNumberProps?: (weekStartDate: DateStringValue) => NativeButtonProps
 
   /** Props passed to the year select in the header. */
   monthYearSelectProps?: ForwardedProps<MonthYearSelectProps, MonthYearSelectEmits>
+}
+
+export interface YearViewSlots {
+  /** Replaces the content of a day cell. */
+  day?: (props: { date: DateStringValue; events: ScheduleEventData[] }) => VNodeChild
 }
 
 export interface YearViewProps extends Omit<BoxProps, keyof YearViewOwnProps>, YearViewOwnProps {}
@@ -119,6 +131,7 @@ export interface YearViewEmits extends BaseViewEmits {
 export type YearViewFactory = Factory<{
   props: Omit<YearViewProps, 'rootRef'>
   emits: YearViewEmits
+  slots: YearViewSlots
   ref: HTMLDivElement
   element: 'div'
   stylesNames: YearViewStylesNames

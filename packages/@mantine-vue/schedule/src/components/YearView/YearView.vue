@@ -10,6 +10,7 @@ const defaultProps = {
   firstDayOfWeek: 1,
   weekdayFormat: 'dd',
   weekendDays: [0, 6],
+  withWeekendDays: true,
   withWeekDays: true,
   highlightToday: true,
   withOutsideDays: true,
@@ -45,7 +46,7 @@ import { handleGridKeydown } from '../keyboard-navigation'
 import { ScheduleHeaderBase, createHeaderNavigation } from '../ScheduleHeader/ScheduleHeaderBase'
 import { getExpandedEvents, useStaticStyles } from '../shared'
 import { getYearViewEvents } from './get-year-view-events/get-year-view-events'
-import type { YearViewEmits } from './YearView.types'
+import type { YearViewEmits, YearViewSlots } from './YearView.types'
 import classes from './YearView.module.css'
 
 defineOptions({
@@ -70,12 +71,14 @@ const rawProps = withDefaults(defineProps<YearViewOwnProps>(), {
   firstDayOfWeek: undefined,
   weekdayFormat: undefined,
   weekendDays: undefined,
+  withWeekendDays: undefined,
   withWeekDays: undefined,
   consistentWeeks: undefined,
   highlightToday: undefined,
   withOutsideDays: undefined,
   monthsListFormat: undefined,
   getDayProps: undefined,
+  renderDay: undefined,
   getWeekNumberProps: undefined,
   monthYearSelectProps: undefined,
   classNames: undefined,
@@ -84,6 +87,7 @@ const rawProps = withDefaults(defineProps<YearViewOwnProps>(), {
 })
 
 const emit = defineEmits<YearViewEmits>()
+defineSlots<YearViewSlots>()
 
 const attrs = useAttrs()
 
@@ -143,8 +147,23 @@ const weekdays = computed(() =>
     locale: props.locale || 'en',
     format: props.weekdayFormat!,
     firstDayOfWeek: props.firstDayOfWeek,
-  }),
+  }).filter((_, index) => !hiddenWeekendColumns.value.has(index)),
 )
+
+const hiddenWeekendColumns = computed(() => {
+  if (props.withWeekendDays !== false) return new Set<number>()
+  return new Set(
+    Array.from({ length: 7 }, (_, index) => index).filter((index) =>
+      props.weekendDays!.includes(((props.firstDayOfWeek! + index) % 7) as DayOfWeek),
+    ),
+  )
+})
+
+const columnsCount = computed(() => 7 - hiddenWeekendColumns.value.size)
+const visibleWeek = (week: DateStringValue[]) =>
+  props.withWeekendDays === false
+    ? week.filter((date) => !props.weekendDays!.includes(dayjs(date).day() as DayOfWeek))
+    : week
 
 /**
  * Every month with the grid offset its cells start at, so a single roving tabindex can walk
@@ -161,13 +180,13 @@ const months = computed(() => {
       consistentWeeks: props.consistentWeeks,
     })
     const entry = { month, monthIndex, weeks, offset }
-    offset += weeks.length * COLUMNS
+    offset += weeks.length * columnsCount.value
     return entry
   })
 })
 
 const totalYearGridCells = computed(() =>
-  months.value.reduce((total, { weeks }) => total + weeks.length * COLUMNS, 0),
+  months.value.reduce((total, { weeks }) => total + weeks.length * columnsCount.value, 0),
 )
 
 const headerControl = computed(() => ({
@@ -189,8 +208,7 @@ const weekNumberProps = (weekStart: string | Date) =>
 
 const isOutside = (date: string | Date, month: dayjs.Dayjs) => !dayjs(date).isSame(month, 'month')
 
-const dayEvents = (date: string | Date) =>
-  (eventsByDay.value[dayjs(date).format('YYYY-MM-DD')] || []).slice(0, MAX_DAY_INDICATORS)
+const dayEvents = (date: string | Date) => eventsByDay.value[dayjs(date).format('YYYY-MM-DD')] || []
 
 const indicatorStyle = (event: ScheduleEventData) => ({
   background: `var(--mantine-color-${event.color}-6, ${event.color})`,
@@ -200,7 +218,7 @@ const handleDayKeydown = (nativeEvent: KeyboardEvent, gridIndex: number) => {
   handleGridKeydown({
     event: nativeEvent,
     index: gridIndex,
-    columns: COLUMNS,
+    columns: columnsCount.value,
     total: totalYearGridCells.value,
     getControl: (index) => {
       const control =
@@ -214,7 +232,11 @@ const handleDayKeydown = (nativeEvent: KeyboardEvent, gridIndex: number) => {
 </script>
 
 <template>
-  <Box v-bind="{ ...attrs, ...getStyles('yearView') }">
+  <Box
+    v-bind="{ ...attrs, ...getStyles('yearView') }"
+    :style="[getStyles('yearView').style, { '--year-view-columns': columnsCount }, attrs.style]"
+    :data-without-weekend-days="hiddenWeekendColumns.size > 0 || undefined"
+  >
     <ScheduleHeaderBase
       v-if="props.withHeader"
       view="year"
@@ -279,7 +301,7 @@ const handleDayKeydown = (nativeEvent: KeyboardEvent, gridIndex: number) => {
             {{ getWeekNumber(week) }}
           </UnstyledButton>
 
-          <template v-for="(date, dayIndex) in week" :key="toDateString(date)">
+          <template v-for="(date, dayIndex) in visibleWeek(week)" :key="toDateString(date)">
             <div
               v-if="isOutside(date, month) && !props.withOutsideDays"
               v-bind="staticStyles('yearViewDay')"
@@ -293,7 +315,7 @@ const handleDayKeydown = (nativeEvent: KeyboardEvent, gridIndex: number) => {
                 ...getStyles('yearViewDay', { className: dayProps(date).class }),
               }"
               :disabled="isStatic"
-              :data-year-grid-index="offset + weekIndex * COLUMNS + dayIndex"
+              :data-year-grid-index="offset + weekIndex * columnsCount + dayIndex"
               :data-outside="isOutside(date, month) || undefined"
               :data-weekend="
                 props.weekendDays!.includes(dayjs(date).day() as DayOfWeek) || undefined
@@ -310,19 +332,27 @@ const handleDayKeydown = (nativeEvent: KeyboardEvent, gridIndex: number) => {
               @keydown="
                 isStatic
                   ? undefined
-                  : handleDayKeydown($event, offset + weekIndex * COLUMNS + dayIndex)
+                  : handleDayKeydown($event, offset + weekIndex * columnsCount + dayIndex)
               "
               @click="emit('dayClick', toDateString(date), $event)"
             >
-              {{ dayjs(date).date() }}
-              <span v-if="dayEvents(date).length" v-bind="getStyles('yearViewDayIndicators')">
-                <span
-                  v-for="event in dayEvents(date)"
-                  :key="event.id"
-                  v-bind="getStyles('yearViewDayIndicator')"
-                  :style="indicatorStyle(event)"
+              <slot name="day" :date="toDateString(date)" :events="dayEvents(date)">
+                <component
+                  :is="() => props.renderDay!(toDateString(date), dayEvents(date))"
+                  v-if="props.renderDay"
                 />
-              </span>
+                <template v-else>
+                  {{ dayjs(date).date() }}
+                  <span v-if="dayEvents(date).length" v-bind="getStyles('yearViewDayIndicators')">
+                    <span
+                      v-for="event in dayEvents(date).slice(0, MAX_DAY_INDICATORS)"
+                      :key="event.id"
+                      v-bind="getStyles('yearViewDayIndicator')"
+                      :style="indicatorStyle(event)"
+                    />
+                  </span>
+                </template>
+              </slot>
             </UnstyledButton>
           </template>
         </div>
