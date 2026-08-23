@@ -66,10 +66,13 @@ const getStyles = useStyles({
   varsResolver,
 })
 const iconStyles = computed(() => getStyles('icon'))
+const indeterminate = computed(() =>
+  typeof props.indeterminate === 'boolean' ? props.indeterminate : cardContext?.indeterminate,
+)
 const checked = computed(() =>
-  typeof props.checked === 'boolean' || props.indeterminate
+  typeof props.checked === 'boolean' || typeof props.indeterminate === 'boolean'
     ? props.checked || props.indeterminate
-    : cardContext?.checked || false,
+    : cardContext?.checked || cardContext?.indeterminate || false,
 )
 
 const rootElement = ref<Element | null>(null)
@@ -90,13 +93,13 @@ defineExpose({ rootElement })
       ...getStyles('indicator', { className: attrs.class, style: attrs.style as any }),
     }"
     :variant="props.variant"
-    :mod="[{ checked, indeterminate: props.indeterminate, disabled: props.disabled }, props.mod]"
+    :mod="[{ checked, indeterminate, disabled: props.disabled }, props.mod]"
   >
-    <slot name="icon" v-bind="{ indeterminate: props.indeterminate, ...iconStyles }">
+    <slot name="icon" v-bind="{ indeterminate, ...iconStyles }">
       <component
         :is="props.icon || CheckboxIcon"
         v-bind="iconStyles"
-        :indeterminate="props.indeterminate"
+        :indeterminate="indeterminate"
       />
     </slot>
   </Box>

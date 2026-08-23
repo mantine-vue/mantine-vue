@@ -82,6 +82,9 @@ provide(CheckboxCardContextKey, {
   get checked() {
     return checked.value
   },
+  get indeterminate() {
+    return props.indeterminate
+  },
 })
 
 const cardStyles = computed(() =>
@@ -115,9 +118,12 @@ defineExpose({ rootElement })
     :rootRef="setRootRef"
     v-bind="{ ...forwardedAttrs, ...cardStyles }"
     __static-selector="CheckboxCard"
-    :mod="[{ 'with-border': props.withBorder, checked }, props.mod]"
+    :mod="[
+      { 'with-border': props.withBorder, checked, indeterminate: props.indeterminate },
+      props.mod,
+    ]"
     role="checkbox"
-    :aria-checked="checked"
+    :aria-checked="props.indeterminate ? 'mixed' : checked"
     @click="onClick"
   >
     <slot />
