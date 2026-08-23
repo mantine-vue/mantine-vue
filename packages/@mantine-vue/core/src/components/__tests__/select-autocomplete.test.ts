@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { defineComponent, h, ref } from 'vue'
+import { defineComponent, h, nextTick, ref } from 'vue'
 import { mount } from '@vue/test-utils'
 import { Autocomplete, MantineProvider, Select } from '../../index'
 
@@ -77,6 +77,7 @@ describe('@mantine-vue/core Select', () => {
       searchable: true,
     })
     const input = wrapper.find('input:not([type="hidden"])')
+    ;(input.element as HTMLInputElement).focus()
     await input.setValue('ap')
     expect(wrapper.findAll('[data-combobox-option]')).toHaveLength(2)
     expect(wrapper.text()).toContain('Apple')
@@ -106,6 +107,17 @@ describe('@mantine-vue/core Select', () => {
     await wrapper.find('button').trigger('click')
     expect(value.value).toBeNull()
     expect((wrapper.find('input[type="hidden"]').element as HTMLInputElement).value).toBe('')
+  })
+
+  it('accepts an unambiguous Chrome autocomplete label without opening the dropdown', async () => {
+    const wrapper = render(Select, { data: ['Apple', 'Banana'] })
+    const input = wrapper.find('input:not([type="hidden"])')
+    ;(input.element as HTMLInputElement).value = 'Banana'
+    input.element.dispatchEvent(new Event('input', { bubbles: true }))
+    await nextTick()
+
+    expect((wrapper.find('input[type="hidden"]').element as HTMLInputElement).value).toBe('Banana')
+    expect(input.attributes('aria-expanded')).toBe('false')
   })
 
   it('empties the input and drops the clear button on the same tick', async () => {

@@ -9,7 +9,9 @@ import {
   ComboboxTarget,
   OptionsDropdown,
   getOptionsLockup,
+  getOptionByLabel,
   getParsedComboboxData,
+  isExternalInputChange,
   useCombobox,
   type ComboboxItem,
 } from '../Combobox'
@@ -196,6 +198,17 @@ function onOptionSubmit(value: string) {
 }
 
 function onInput(event: Event) {
+  if (isExternalInputChange(event)) {
+    if (!readOnly.value) {
+      const option = getOptionByLabel(lockup.value, (event.currentTarget as HTMLInputElement).value)
+      if (option && String(option.value) !== String(current())) {
+        changeValue(option.value, option)
+        if (!controlled()) internalSearch.value = option.label
+      }
+    }
+    return
+  }
+
   setSearch((event.currentTarget as HTMLInputElement).value)
   combobox.openDropdown()
 }

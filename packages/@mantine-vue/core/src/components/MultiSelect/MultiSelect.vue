@@ -25,7 +25,9 @@ import {
   ComboboxHiddenInput,
   OptionsDropdown,
   getOptionsLockup,
+  getOptionByLabel,
   getParsedComboboxData,
+  isExternalInputChange,
   useCombobox,
 } from '../Combobox'
 import { Pill, PillGroup } from '../Pill'
@@ -225,6 +227,16 @@ function onInputClick() {
 }
 
 function onFieldInput(event: Event) {
+  if (isExternalInputChange(event)) {
+    if (!readOnly.value) {
+      const option = getOptionByLabel(lockup.value, (event.currentTarget as HTMLInputElement).value)
+      if (option && !values.value.includes(option.value) && values.value.length < props.maxValues) {
+        setValue([...values.value, option.value])
+      }
+    }
+    return
+  }
+
   setSearch((event.target as HTMLInputElement).value)
   combobox.openDropdown()
 }

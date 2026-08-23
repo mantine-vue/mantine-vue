@@ -55,6 +55,8 @@ export {
   isEmptyComboboxData,
   validateOptions,
   movePill,
+  getOptionByLabel,
+  isExternalInputChange,
 } from './data-utils'
 export type {
   ComboboxData,
