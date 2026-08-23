@@ -41,6 +41,10 @@ export function useFloatingIndicator({
 
     const targetRect = targetElement.getBoundingClientRect()
     const parentRect = parentElement.getBoundingClientRect()
+    const scaleX =
+      parentElement.offsetWidth === 0 ? 1 : parentRect.width / parentElement.offsetWidth
+    const scaleY =
+      parentElement.offsetHeight === 0 ? 1 : parentRect.height / parentElement.offsetHeight
     const targetStyle = window.getComputedStyle(targetElement)
     const parentStyle = window.getComputedStyle(parentElement)
     const borderTopWidth =
@@ -48,9 +52,9 @@ export function useFloatingIndicator({
     const borderLeftWidth =
       toNumber(targetStyle.borderLeftWidth) + toNumber(parentStyle.borderLeftWidth)
 
-    floatingElement.style.transform = `translateY(${targetRect.top - parentRect.top - borderTopWidth}px) translateX(${targetRect.left - parentRect.left - borderLeftWidth}px)`
-    floatingElement.style.width = `${targetRect.width}px`
-    floatingElement.style.height = `${targetRect.height}px`
+    floatingElement.style.transform = `translateY(${(targetRect.top - parentRect.top) / scaleY - borderTopWidth}px) translateX(${(targetRect.left - parentRect.left) / scaleX - borderLeftWidth}px)`
+    floatingElement.style.width = `${targetRect.width / scaleX}px`
+    floatingElement.style.height = `${targetRect.height / scaleY}px`
   }
 
   const updatePositionWithoutAnimation = () => {
