@@ -14,6 +14,8 @@ export interface InlineCodeHighlightProps {
   radius?: string | number
   /** Adds border to the root element. @default false */
   withBorder?: boolean
+  /** If set, indentation of the first line is preserved. @default false */
+  withFirstLineIndentation?: boolean
   /** CSS classes applied to component elements. */
   classNames?: any
   /** Inline styles applied to component elements. */

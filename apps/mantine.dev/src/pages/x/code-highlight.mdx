@@ -87,6 +87,13 @@ After that, you can use the `CodeHighlight` component in your application:
 
 All further code highlighting examples on this page use the shiki adapter.
 
+To load Shiki grammars on demand, pass `resolveLanguage` to `createShikiAdapter`. The resolver
+can return a language registration or a dynamic import accepted by Shiki's `loadLanguage`.
+`CodeHighlight` requests its current language automatically.
+
+Set `withFirstLineIndentation` when the indentation before the first code line is meaningful.
+The same normalized value is highlighted, displayed, numbered, and copied.
+
 ## Usage with highlight.js
 
 [Highlight.js](https://highlightjs.org/) provides less accurate highlighting compared to shiki,

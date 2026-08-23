@@ -11,7 +11,19 @@ export function provideCodeHighlightAdapterContext(value: CodeHighlightProviderC
 
 export function useHighlight() {
   const ctx = inject<CodeHighlightProviderContext | null>(CodeHighlightContext, null)
-  return ctx?.highlight || plainTextAdapter.getHighlighter(null)
+  const fallback = plainTextAdapter.getHighlighter(null)
+  return (input: Parameters<CodeHighlightProviderContext['highlight']>[0]) =>
+    (ctx?.highlight || fallback)(input)
+}
+
+export function useLoadLanguage() {
+  const ctx = inject<CodeHighlightProviderContext | null>(CodeHighlightContext, null)
+  return ctx?.loadLanguage || (() => {})
+}
+
+export function useIsLanguageLoaded() {
+  const ctx = inject<CodeHighlightProviderContext | null>(CodeHighlightContext, null)
+  return ctx?.isLanguageLoaded || (() => true)
 }
 
 export const CodeHighlightAdapterProvider = CodeHighlightAdapterProviderComponent

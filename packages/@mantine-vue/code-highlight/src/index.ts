@@ -7,7 +7,11 @@ export { useCodeHighlightContext } from './CodeHighlight/CodeHighlight.context'
 export {
   CodeHighlightAdapterProvider,
   useHighlight,
+  useIsLanguageLoaded,
+  useLoadLanguage,
 } from './CodeHighlightProvider/CodeHighlightProvider'
+export { normalizeCode } from './normalize-code'
+export type { NormalizeCodeOptions } from './normalize-code'
 
 export { createHighlightJsAdapter } from './CodeHighlightProvider/adapters/highlight-js-adapter'
 export {

@@ -50,6 +50,8 @@ export interface CodeHighlightSettings {
   controls?: VNodeChild[] | (() => VNodeChild)
   /** Set to use dark or light color scheme. When using shiki adapter, you can use loaded themes here. */
   codeColorScheme?: 'dark' | 'light' | (string & {})
+  /** If set, indentation of the first line is preserved. @default false */
+  withFirstLineIndentation?: boolean
 }
 
 export interface CodeHighlightProps extends CodeHighlightSettings {
