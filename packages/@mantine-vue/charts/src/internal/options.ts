@@ -204,13 +204,35 @@ export function scatterOption(props: Props, bubble = false): EChartsOption {
     legend: { show: bool(props.withLegend, false), ...obj(props.legendProps) },
     tooltip: { trigger: 'item', show: bool(props.withTooltip, true), ...obj(props.tooltipProps) },
     xAxis: { type: 'value', show: bool(props.withXAxis, true), ...obj(props.xAxisProps) },
-    yAxis: { type: 'value', show: bool(props.withYAxis, true), ...obj(props.yAxisProps) },
+    yAxis: props.withRightYAxis
+      ? [
+          {
+            type: 'value',
+            show: bool(props.withYAxis, true),
+            name: props.yAxisLabel as string,
+            ...obj(props.yAxisProps),
+          },
+          {
+            type: 'value',
+            show: true,
+            position: 'right',
+            name: props.rightYAxisLabel as string,
+            ...obj(props.rightYAxisProps),
+          },
+        ]
+      : {
+          type: 'value',
+          show: bool(props.withYAxis, true),
+          name: props.yAxisLabel as string,
+          ...obj(props.yAxisProps),
+        },
     series: (series.length
       ? series
       : [{ name: String(props.name ?? 'value'), color: props.color as string }]
     ).map((item) => ({
       type: 'scatter',
       name: item.label ?? item.name,
+      yAxisIndex: item.yAxisId === 'right' ? 1 : 0,
       data: data
         .filter((entry) => !entry.name || entry.name === item.name)
         .map((entry) => [entry[xKey], entry[yKey], entry[zKey], entry]),
