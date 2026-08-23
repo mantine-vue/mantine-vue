@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { computed, h, ref, watch, useAttrs, useSlots, type VNodeChild } from 'vue'
+import { computed, h, onBeforeUnmount, ref, watch, useAttrs, useSlots, type VNodeChild } from 'vue'
 import { useId } from '@mantine-vue/hooks'
 import { resolveNode } from '../../core'
 import { CheckIcon } from '../Checkbox'
 import { AccordionChevron } from '../Accordion'
-import { Combobox, useCombobox } from '../Combobox'
+import { Combobox, isExternalInputChange, useCombobox } from '../Combobox'
 import { InputBase } from '../InputBase'
 import { ScrollArea } from '../ScrollArea'
 import { UnstyledButton } from '../UnstyledButton'
@@ -34,6 +34,7 @@ const props = withDefaults(defineProps<CascaderProps>(), {
   checkIconPosition: 'right',
   withColumns: true,
   expandTrigger: 'click',
+  safeAreaPolygon: true,
   searchable: false,
   columnWidth: 200,
   maxDisplayedLevels: 3,
@@ -185,6 +186,63 @@ const handleOptionMouseEnter = (level: number, option: CascaderOption) => {
   else activePath.value = [...activePath.value.slice(0, level), option.value]
 }
 
+const columnElements: Record<number, HTMLElement | null> = {}
+const blockedLevel = ref<number | null>(null)
+let pendingOption: { level: number; option: CascaderOption } | null = null
+let removeSafeAreaListener = () => {}
+
+const disarmSafeArea = () => {
+  removeSafeAreaListener()
+  removeSafeAreaListener = () => {}
+  blockedLevel.value = null
+  pendingOption = null
+}
+
+function pointInTriangle(
+  point: { x: number; y: number },
+  a: { x: number; y: number },
+  b: { x: number; y: number },
+  c: { x: number; y: number },
+) {
+  const sign = (p1: typeof point, p2: typeof point, p3: typeof point) =>
+    (p1.x - p3.x) * (p2.y - p3.y) - (p2.x - p3.x) * (p1.y - p3.y)
+  const d1 = sign(point, a, b)
+  const d2 = sign(point, b, c)
+  const d3 = sign(point, c, a)
+  return !((d1 < 0 || d2 < 0 || d3 < 0) && (d1 > 0 || d2 > 0 || d3 > 0))
+}
+
+const armSafeArea = (
+  level: number,
+  reference: HTMLElement,
+  floating: HTMLElement,
+  event: MouseEvent,
+) => {
+  disarmSafeArea()
+  const options = typeof props.safeAreaPolygon === 'object' ? props.safeAreaPolygon : undefined
+  const buffer = options?.buffer ?? 0.5
+  const rect = floating.getBoundingClientRect()
+  const referenceRect = reference.getBoundingClientRect()
+  const opensRight = rect.left >= referenceRect.right
+  const edgeX = opensRight ? rect.left + buffer : rect.right - buffer
+  const a = { x: event.clientX, y: event.clientY }
+  const b = { x: edgeX, y: rect.top - buffer }
+  const c = { x: edgeX, y: rect.bottom + buffer }
+  blockedLevel.value = level
+
+  const onMouseMove = (moveEvent: MouseEvent) => {
+    if (pointInTriangle({ x: moveEvent.clientX, y: moveEvent.clientY }, a, b, c)) return
+    const pending = pendingOption
+    disarmSafeArea()
+    if (pending) handleOptionMouseEnter(pending.level, pending.option)
+  }
+  floating.ownerDocument.addEventListener('mousemove', onMouseMove)
+  removeSafeAreaListener = () =>
+    floating.ownerDocument.removeEventListener('mousemove', onMouseMove)
+}
+
+onBeforeUnmount(disarmSafeArea)
+
 const flatPaths = computed(() => flattenCascaderPaths(props.data))
 const isSearching = computed(
   () => props.searchable && search.value.trim().length > 0 && search.value !== displayString.value,
@@ -308,6 +366,7 @@ const renderColumns = () => {
       class: classes.columnsList,
       role: 'presentation',
       onMouseleave: () => {
+        disarmSafeArea()
         if (props.expandTrigger === 'hover') resetActivePath()
       },
       onMousemove: () => (keyboardNav.value = false),
@@ -320,6 +379,9 @@ const renderColumns = () => {
         return h(
           'div',
           {
+            ref: (element: HTMLElement | null) => {
+              columnElements[level] = element
+            },
             class: classes.column,
             'data-last': isLast || undefined,
             style: {
@@ -332,7 +394,7 @@ const renderColumns = () => {
                   ? `${props.columnWidth}px`
                   : props.columnWidth,
             },
-          },
+          } as any,
           [
             h(
               ScrollArea.Autosize,
@@ -369,7 +431,39 @@ const renderColumns = () => {
                           'data-disabled': option.disabled || undefined,
                           onMousedown: (event: MouseEvent) => event.preventDefault(),
                           onClick: () => handleOptionClick(level, option),
-                          onMouseenter: () => handleOptionMouseEnter(level, option),
+                          onMouseenter: () => {
+                            if (option.disabled) return
+                            if (blockedLevel.value !== null && level <= blockedLevel.value) {
+                              pendingOption = { level, option }
+                              return
+                            }
+                            handleOptionMouseEnter(level, option)
+                          },
+                          onMouseleave: (event: MouseEvent) => {
+                            if (
+                              pendingOption?.level === level &&
+                              pendingOption.option.value === option.value
+                            ) {
+                              pendingOption = null
+                            }
+                            if (
+                              props.expandTrigger !== 'hover' ||
+                              !props.safeAreaPolygon ||
+                              option.disabled ||
+                              activePath.value[level] !== option.value
+                            ) {
+                              return
+                            }
+                            const floating = columnElements[level + 1]
+                            if (floating) {
+                              armSafeArea(
+                                level,
+                                event.currentTarget as HTMLElement,
+                                floating,
+                                event,
+                              )
+                            }
+                          },
                         },
                         () => [
                           selected && props.withCheckIcon && props.checkIconPosition === 'left'
@@ -579,6 +673,7 @@ const renderRoot = (): VNodeChild => {
                   __clearSectionMode: props.clearSectionMode,
                   rightSectionPointerEvents: (attrs as any).rightSectionPointerEvents || 'none',
                   onInput: (event: Event) => {
+                    if (isExternalInputChange(event)) return
                     setSearch((event.target as HTMLInputElement).value)
                     if (canInteract.value) combobox.openDropdown('keyboard')
                   },
