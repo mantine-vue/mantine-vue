@@ -97,6 +97,9 @@ export interface ColorInputProps {
    */
   swatchesPerRow?: number
 
+  /** If set, the picker and popover take the full width of the input. @default false */
+  fullWidth?: boolean
+
   /** Any other prop is forwarded to the underlying `InputBase`. */
   [key: string]: any
 }
