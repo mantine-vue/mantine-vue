@@ -1,4 +1,4 @@
-import { ref, toRaw, type Ref } from 'vue'
+import { computed, ref, toRaw, type Ref } from 'vue'
 import {
   getDataPath,
   getPath,
@@ -364,6 +364,7 @@ export function useForm<
         }
       }
     },
+    useWatchValue: (path) => computed(() => getPath(path, values.value)),
     values,
     initialized,
     errors,

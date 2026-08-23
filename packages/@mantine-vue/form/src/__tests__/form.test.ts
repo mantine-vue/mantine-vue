@@ -12,6 +12,15 @@ describe('@mantine-vue/form', () => {
     expect(form.isTouched('name')).toBe(true)
   })
 
+  it('returns a reactive computed field value from useWatchValue', () => {
+    const form = useForm({ initialValues: { user: { name: 'Ada' } } })
+    const name = form.useWatchValue('user.name')
+
+    expect(name.value).toBe('Ada')
+    form.setFieldValue('user.name', 'Grace')
+    expect(name.value).toBe('Grace')
+  })
+
   it('validates values with Mantine-like validators', () => {
     const form = useForm({
       initialValues: { email: '' },
