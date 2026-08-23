@@ -110,6 +110,20 @@ const slots = useSlots()
 const attrs = useAttrs()
 const props = useProps('Tooltip', defaults, rawProps)
 
+let interactiveCloseTimer: ReturnType<typeof setTimeout> | undefined
+const cancelInteractiveClose = () => {
+  clearTimeout(interactiveCloseTimer)
+  interactiveCloseTimer = undefined
+}
+const closeFromPointer = () => {
+  cancelInteractiveClose()
+  if (props.interactive) {
+    interactiveCloseTimer = setTimeout(tooltip.close, 50)
+  } else {
+    tooltip.close()
+  }
+}
+
 const { dir } = useDirection()
 
 const tooltip = useTooltip({
@@ -148,12 +162,13 @@ const getStyles = useStyles({
 const referenceHandlers = () => ({
   onMouseenter: () => {
     if ((props.events ?? defaults.events).hover) {
+      cancelInteractiveClose()
       tooltip.open()
     }
   },
   onMouseleave: () => {
     if ((props.events ?? defaults.events).hover) {
-      tooltip.close()
+      closeFromPointer()
     }
   },
   onFocus: () => {
@@ -207,7 +222,10 @@ function unbindExternal() {
 }
 
 onMounted(() => props.target && bindExternal())
-onBeforeUnmount(unbindExternal)
+onBeforeUnmount(() => {
+  cancelInteractiveClose()
+  unbindExternal()
+})
 
 const arrowPosition = computed(() => props.arrowPosition ?? 'side')
 
@@ -301,6 +319,9 @@ const renderReference = Object.assign(
           role="tooltip"
           :data-multiline="props.multiline || undefined"
           :data-fixed="props.floatingStrategy === 'fixed' || undefined"
+          :data-interactive="props.interactive && mounted ? true : undefined"
+          @mouseenter="props.interactive && (cancelInteractiveClose(), tooltip.open())"
+          @mouseleave="props.interactive && closeFromPointer()"
         >
           <component :is="renderLabel" />
           <FloatingArrow

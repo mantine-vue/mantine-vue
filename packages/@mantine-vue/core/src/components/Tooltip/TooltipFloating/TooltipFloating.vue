@@ -105,6 +105,10 @@ const getStyles = useStyles({
 })
 
 function move(event: MouseEvent) {
+  if (!Number.isFinite(event.clientX) || !Number.isFinite(event.clientY)) {
+    return
+  }
+
   const valueOffset = props.offset ?? 10
 
   // The offset is applied along whichever axis the resolved placement uses.
@@ -146,8 +150,8 @@ const tooltipStyle = computed(() => [
     zIndex: props.zIndex,
     // Hidden with CSS rather than unmounted, so the floating position survives.
     display: !props.disabled && opened.value ? 'block' : 'none',
-    top: state.y.value == null ? '' : `${Math.round(state.y.value)}px`,
-    left: state.x.value == null ? '' : `${Math.round(state.x.value)}px`,
+    top: Number.isFinite(state.y.value) ? `${Math.round(state.y.value!)}px` : '',
+    left: Number.isFinite(state.x.value) ? `${Math.round(state.x.value!)}px` : '',
   },
 ])
 
