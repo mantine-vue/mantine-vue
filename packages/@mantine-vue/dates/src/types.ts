@@ -396,8 +396,10 @@ export interface DateInputProps extends PickerInputBaseProps {
   modelValue?: string | Date | null
   /** Initial uncontrolled date value. */
   defaultValue?: string | Date | null
-  /** `dayjs` format to display input value @default 'MMMM D, YYYY' */
-  valueFormat?: string
+  /** `dayjs` format or a function that formats the canonical value. @default 'MMMM D, YYYY' */
+  valueFormat?: string | ((date: DateStringValue) => string)
+  /** If set, parsing preserves the time part of the value. @default false */
+  withTime?: boolean
   /** Custom text-to-date parser. */
   dateParser?: (value: string) => DateStringValue | null
   /** Locale used to parse and format dates. */
@@ -598,8 +600,8 @@ export interface MiniCalendarProps extends DatesStyleProps {
   minDate?: string | Date
   /** Number of days to display in the calendar @default 7 */
   numberOfDays?: number
-  /** Dayjs format string for month label @default 'MMM' */
-  monthLabelFormat?: string
+  /** `dayjs` format or a function that returns the month label. @default 'MMM' */
+  monthLabelFormat?: string | ((date: DateStringValue) => string)
   /** Returns additional props for a day control. */
   getDayProps?: (date: DateStringValue) => ControlProps
   /** Component size @default 'sm' */

@@ -11,6 +11,7 @@ defineOptions({ name: 'DateInput', inheritAttrs: false })
 const props = withDefaults(defineProps<DateInputProps>(), {
   valueFormat: 'MMMM D, YYYY',
   clearable: false,
+  withTime: false,
 })
 const emit = defineEmits<{ 'update:modelValue': [value: DateValue]; change: [value: DateValue] }>()
 const attrs = useAttrs()
@@ -27,9 +28,11 @@ const [value, setValue] = useUncontrolled<DateValue>({
 })
 const format = (next: DateValue) =>
   next
-    ? dayjs(next)
-        .locale(props.locale || 'en')
-        .format(props.valueFormat)
+    ? typeof props.valueFormat === 'function'
+      ? props.valueFormat(toDateString(next)!)
+      : dayjs(next)
+          .locale(props.locale || 'en')
+          .format(props.valueFormat)
     : ''
 const inputValue = ref(format(value.value))
 const opened = ref(false)
@@ -37,9 +40,20 @@ watch(value, (next) => {
   if (!opened.value) inputValue.value = format(next)
 })
 function parse(raw: string) {
-  const parsed = props.dateParser
-    ? props.dateParser(raw)
-    : dateStringParser(raw, props.valueFormat, props.locale)
+  let parsed: string | null
+  if (props.dateParser) {
+    parsed = props.dateParser(raw)
+  } else if (typeof props.valueFormat === 'function') {
+    const value = dayjs(raw)
+    parsed = value.isValid()
+      ? value.format(props.withTime ? 'YYYY-MM-DD HH:mm:ss' : 'YYYY-MM-DD')
+      : null
+  } else {
+    const value = dayjs(raw, props.valueFormat, props.locale || 'en', true)
+    parsed = value.isValid()
+      ? value.format(props.withTime ? 'YYYY-MM-DD HH:mm:ss' : 'YYYY-MM-DD')
+      : dateStringParser(raw, props.valueFormat, props.locale)
+  }
   return parsed && isDateValid({ date: parsed, minDate: props.minDate, maxDate: props.maxDate })
     ? parsed
     : null

@@ -105,7 +105,9 @@ const nextContent = () => props.nextControlProps?.children
         :data-selected="(value && item.isSame(value, 'day')) || undefined"
         @click="select(item, $event)"
         ><span :class="classes.miniCalendarDayMonth">{{
-          item.locale(props.locale || context.locale).format(props.monthLabelFormat)
+          typeof props.monthLabelFormat === 'function'
+            ? props.monthLabelFormat(item.format('YYYY-MM-DD') as DateStringValue)
+            : item.locale(props.locale || context.locale).format(props.monthLabelFormat)
         }}</span
         ><span :class="classes.miniCalendarDayNumber">{{ item.date() }}</span></UnstyledButton
       >
