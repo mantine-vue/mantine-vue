@@ -13,7 +13,7 @@ const varsResolver = createVarsResolver<any>((_, { size }) => ({
   },
 }))
 
-const defaultProps = { variant: 'default', size: 'sm' } as const
+const defaultProps = { variant: 'default', size: 'sm', visibilityToggleFocusable: false } as const
 
 export { mergedClasses, varsResolver, defaultProps }
 </script>
@@ -143,7 +143,7 @@ const visibilityToggleButton = computed(() =>
       disabled: props.disabled,
       radius: props.radius,
       'aria-pressed': visible.value,
-      tabIndex: -1,
+      tabIndex: props.visibilityToggleFocusable ? 0 : -1,
       'aria-label':
         props.visibilityToggleButtonProps?.['aria-label'] || 'Toggle password visibility',
       variant: props.visibilityToggleButtonProps?.variant ?? 'subtle',
@@ -162,7 +162,7 @@ const visibilityToggleButton = computed(() =>
       onKeydown: (event: KeyboardEvent) => {
         props.visibilityToggleButtonProps?.onKeydown?.(event)
 
-        if (event.key === ' ') {
+        if (event.key === ' ' || event.key === 'Enter') {
           event.preventDefault()
           toggleVisibility()
         }
