@@ -64,12 +64,12 @@ const title = computed(() => resolveNode(props.title, slots.title))
 const renderIcon = () => icon.value
 const renderTitle = () => title.value
 const closeButtonAttrs = computed(() => {
-  const { onClick: _onClick, ...rest } = props.closeButtonProps ?? {}
+  const { onClick: _onClick, ...rest } = (props.closeButtonProps ?? {}) as Record<string, any>
   return rest
 })
 
 function handleClose(event: MouseEvent) {
-  props.closeButtonProps?.onClick?.(event)
+  ;(props.closeButtonProps as Record<string, any> | undefined)?.onClick?.(event)
   emit('close')
 }
 
