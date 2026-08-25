@@ -5,7 +5,8 @@ import { getCanonicalUrl, getPageTitle, getStructuredData, SITE_NAME } from '../
 import type { SeoPage } from '../src/seo'
 import { SEO_PAGES } from './seo-pages'
 
-const seoBlock = /<!-- seo:start -->[\s\S]*?<!-- seo:end -->/
+const seoElements =
+  /<(title|script)\b[^>]*data-seo="true"[^>]*>[\s\S]*?<\/\1>|<(?:meta|link)\b[^>]*data-seo="true"[^>]*\/?>/gi
 
 function escapeHtml(value: string) {
   return value.replace(/[<>&'"]/g, (character) => {
@@ -52,21 +53,33 @@ function renderSeoHead(page: SeoPage) {
   const canonicalUrl = getCanonicalUrl(page.path)
   const structuredData = JSON.stringify(getStructuredData(page)).replace(/</g, '\\u003c')
 
-  return `<!-- seo:start -->
-    <title>${escapeHtml(title)}</title>
-    <meta name="description" content="${escapeHtml(page.description)}" />
-    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
-    <link rel="canonical" href="${canonicalUrl}" />
-    <meta property="og:site_name" content="${SITE_NAME}" />
-    <meta property="og:type" content="article" />
-    <meta property="og:title" content="${escapeHtml(title)}" />
-    <meta property="og:description" content="${escapeHtml(page.description)}" />
-    <meta property="og:url" content="${canonicalUrl}" />
-    <meta name="twitter:card" content="summary" />
-    <meta name="twitter:title" content="${escapeHtml(title)}" />
-    <meta name="twitter:description" content="${escapeHtml(page.description)}" />
-    <script id="seo-structured-data" type="application/ld+json">${structuredData}</script>
-    <!-- seo:end -->`
+  return `<title data-seo="true">${escapeHtml(title)}</title>
+    <meta data-seo="true" name="description" content="${escapeHtml(page.description)}" />
+    <meta data-seo="true" name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
+    <link data-seo="true" rel="canonical" href="${canonicalUrl}" />
+    <meta data-seo="true" property="og:site_name" content="${SITE_NAME}" />
+    <meta data-seo="true" property="og:type" content="article" />
+    <meta data-seo="true" property="og:title" content="${escapeHtml(title)}" />
+    <meta data-seo="true" property="og:description" content="${escapeHtml(page.description)}" />
+    <meta data-seo="true" property="og:url" content="${canonicalUrl}" />
+    <meta data-seo="true" name="twitter:card" content="summary" />
+    <meta data-seo="true" name="twitter:title" content="${escapeHtml(title)}" />
+    <meta data-seo="true" name="twitter:description" content="${escapeHtml(page.description)}" />
+    <script data-seo="true" id="seo-structured-data" type="application/ld+json">${structuredData}</script>`
+}
+
+function replaceSeoHead(indexHtml: string, page: SeoPage) {
+  const withoutDefaultSeo = indexHtml.replace(seoElements, '')
+
+  if (withoutDefaultSeo === indexHtml) {
+    throw new Error('Could not find data-seo elements in the built index.html')
+  }
+
+  if (!withoutDefaultSeo.includes('</head>')) {
+    throw new Error('Could not find the closing head tag in the built index.html')
+  }
+
+  return withoutDefaultSeo.replace('</head>', `  ${renderSeoHead(page)}\n  </head>`)
 }
 
 /**
@@ -91,15 +104,11 @@ export function seoSnapshotsPlugin(): Plugin {
       const indexPath = resolve(outputDirectory, 'index.html')
       const indexHtml = await readFile(indexPath, 'utf8')
 
-      if (!seoBlock.test(indexHtml)) {
-        throw new Error('Could not find the SEO marker block in the built index.html')
-      }
-
       await Promise.all(
         SEO_PAGES.map(async (page) => {
           const outputPath = resolve(outputDirectory, `.${page.path}.html`)
           await mkdir(dirname(outputPath), { recursive: true })
-          await writeFile(outputPath, indexHtml.replace(seoBlock, renderSeoHead(page)), 'utf8')
+          await writeFile(outputPath, replaceSeoHead(indexHtml, page), 'utf8')
         }),
       )
     },
