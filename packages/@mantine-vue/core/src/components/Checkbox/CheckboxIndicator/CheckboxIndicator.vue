@@ -44,6 +44,7 @@ const props = withDefaults(defineProps<CheckboxIndicatorOwnProps>(), {
   autoContrast: undefined,
   icon: undefined,
   checked: undefined,
+  indeterminate: undefined,
   variant: 'filled',
   mod: undefined,
   classNames: undefined,
