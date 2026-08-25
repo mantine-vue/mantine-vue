@@ -20,3 +20,6 @@ You can change localization both on component level with `locale` prop and
 globally with [DatesProvider](/dates/getting-started).
 
 <Demo data={MiniCalendarDemos.locale} />
+
+`monthLabelFormat` accepts either a dayjs format string or a function that receives the day as
+`YYYY-MM-DD` and returns the month label.

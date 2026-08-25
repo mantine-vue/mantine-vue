@@ -1,4 +1,4 @@
-import { mount } from '@vue/test-utils'
+import { flushPromises, mount } from '@vue/test-utils'
 import { describe, expect, it, vi } from 'vitest'
 import { h, nextTick } from 'vue'
 import { MantineProvider } from '@mantine-vue/core'
@@ -7,6 +7,8 @@ import {
   CodeHighlightAdapterProvider,
   CodeHighlightTabs,
   createHighlightJsAdapter,
+  createShikiAdapter,
+  normalizeCode,
   stripShikiCodeBlocks,
 } from '../index'
 
@@ -111,5 +113,38 @@ describe('@mantine-vue/code-highlight', () => {
 
   it('strips shiki pre and code wrappers', () => {
     expect(stripShikiCodeBlocks('<pre class="x"><code>let a = 1;</code></pre>')).toBe('let a = 1;')
+  })
+
+  it('preserves first-line indentation when requested', () => {
+    expect(normalizeCode('\n    first\n  second\n', { withFirstLineIndentation: true })).toBe(
+      '    first\n  second',
+    )
+    expect(normalizeCode('\n    first\n  second\n')).toBe('first\n  second')
+  })
+
+  it('loads Shiki languages on demand', async () => {
+    const loaded: string[] = []
+    const loadLanguage = vi.fn(async (language: string) => loaded.push(language))
+    const adapter = createShikiAdapter(
+      async () => ({
+        getLoadedLanguages: () => loaded,
+        loadLanguage,
+        codeToHtml: (code: string) => `<pre><code><span>${code}</span></code></pre>`,
+      }),
+      { resolveLanguage: (language) => language },
+    )
+    const wrapper = mountWithProvider(() =>
+      h(CodeHighlightAdapterProvider, { adapter }, () =>
+        h(CodeHighlight, { code: 'const value = 1', language: 'typescript' }),
+      ),
+    )
+    await nextTick()
+    await flushPromises()
+    await nextTick()
+    await flushPromises()
+    await nextTick()
+
+    expect(loadLanguage).toHaveBeenCalledWith('typescript')
+    expect(wrapper.get('code').html()).toContain('<span>const value = 1</span>')
   })
 })

@@ -20,7 +20,9 @@ function toggleSourceCode() {
   if (active.value) {
     ctx.editor.commands.setContent(ctx.editor.getText(), { emitUpdate: true })
   } else {
-    ctx.editor.commands.setContent(`<textarea>${ctx.editor.getHTML()}</textarea>`)
+    ctx.editor.commands.setContent(`<textarea>${ctx.editor.getHTML()}</textarea>`, {
+      emitUpdate: false,
+    })
   }
 
   active.value = !active.value

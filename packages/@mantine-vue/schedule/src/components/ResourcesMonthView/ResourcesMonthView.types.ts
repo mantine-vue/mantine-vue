@@ -3,6 +3,7 @@ import type { BoxProps, Factory, ScrollAreaProps } from '@mantine-vue/core'
 import type { StylesApiProps } from '@mantine-vue/core/styles-api'
 import type {
   EventSlots,
+  EventDropData,
   ForwardedProps,
   NativeButtonProps,
   RenderEvent,
@@ -54,6 +55,8 @@ export type ResourcesMonthViewOwnStylesNames =
   | 'resourcesMonthViewRow'
   | 'resourcesMonthViewRowSlots'
   | 'resourcesMonthViewCell'
+  | 'resourcesMonthViewEventWrapper'
+  | 'resourcesMonthViewResizeHandle'
   | 'resourcesMonthViewGroupColumn'
   | 'resourcesMonthViewGroupColumnEmpty'
 
@@ -243,6 +246,12 @@ export interface ResourcesMonthViewOwnProps extends StylesApiProps<ResourcesMont
    */
   canDragEvent?: (event: ScheduleEventData) => boolean
 
+  /** If set, event start and end edges can be dragged across day cells. @default false */
+  withEventResize?: boolean
+
+  /** Returns whether the given event may be resized. @default () => true */
+  canResizeEvent?: (event: ScheduleEventData) => boolean
+
   /**
    * If set, items dragged in from outside the schedule can be dropped on a day cell, which emits
    * `externalEventDrop`. Enabling event drag and drop turns this on as well.
@@ -315,6 +324,9 @@ export interface ResourcesMonthViewEmits {
 
   /** Emitted when an item from outside the schedule is dropped. */
   externalEventDrop: [data: ResourceExternalDropData]
+
+  /** Emitted when an event resize gesture completes. */
+  eventResize: [data: EventDropData]
 }
 
 export type ResourcesMonthViewFactory = Factory<{

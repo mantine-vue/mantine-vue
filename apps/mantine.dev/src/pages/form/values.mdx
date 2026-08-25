@@ -32,6 +32,12 @@ form.getValues()
 form.getInitialValues()
 ```
 
+Use `form.useWatchValue(path)` when a component needs a readonly computed value for one field:
+
+```ts
+const firstName = form.useWatchValue('user.firstName')
+```
+
 ## Set values
 
 `setValues` shallow merges the given object into current values, matching React Mantine behavior. You can also pass a function that receives current values.

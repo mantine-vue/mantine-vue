@@ -22,7 +22,7 @@ const clipboard = useClipboard()
     variant="none"
     :tooltip-label="clipboard.copied.value ? props.copiedLabel : props.copyLabel"
     :aria-label="clipboard.copied.value ? props.copiedLabel : `${props.copyLabel} code`"
-    @click="clipboard.copy(props.code.trim())"
+    @click="clipboard.copy(props.code)"
   >
     <CopyIcon :copied="clipboard.copied.value" />
   </CodeHighlightControl>

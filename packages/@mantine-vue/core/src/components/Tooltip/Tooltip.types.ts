@@ -185,6 +185,9 @@ export interface TooltipProps extends TooltipBaseProps {
    */
   events?: { hover: boolean; focus: boolean; touch: boolean }
 
+  /** If set, the tooltip stays open while the pointer moves from the target to the tooltip and remains over it. @default false */
+  interactive?: boolean
+
   /**
    * If set, the tooltip is positioned for a target that wraps across lines.
    *

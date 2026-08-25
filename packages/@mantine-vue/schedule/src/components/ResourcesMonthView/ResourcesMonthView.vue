@@ -15,6 +15,7 @@ const defaultProps = {
   mode: 'default',
   maxEventsPerTimeSlot: 2,
   recurrenceExpansionLimit: 2000,
+  withEventResize: false,
 } satisfies Partial<ResourcesMonthViewOwnProps>
 
 /** View levels the header offers – a resource schedule has no year view. */
@@ -44,8 +45,24 @@ export { defaultProps, varsResolver, clampMaxRows, RESOURCE_VIEWS, MORE_EVENTS_H
 
 <script setup lang="ts">
 import dayjs from 'dayjs'
-import { computed, nextTick, onMounted, ref, shallowRef, useAttrs, useSlots } from 'vue'
-import { Box, ScrollArea, UnstyledButton, useProps, useStyles } from '@mantine-vue/core'
+import {
+  computed,
+  nextTick,
+  onBeforeUnmount,
+  onMounted,
+  ref,
+  shallowRef,
+  useAttrs,
+  useSlots,
+} from 'vue'
+import {
+  Box,
+  ScrollArea,
+  UnstyledButton,
+  useProps,
+  useSafeMantineTheme,
+  useStyles,
+} from '@mantine-vue/core'
 import { getLabel } from '../../labels'
 import type {
   DateStringValue,
@@ -120,6 +137,8 @@ const rawProps = withDefaults(defineProps<ResourcesMonthViewOwnProps>(), {
   maxEventsPerTimeSlot: undefined,
   moreEventsProps: undefined,
   recurrenceExpansionLimit: undefined,
+  withEventResize: undefined,
+  canResizeEvent: undefined,
   classNames: undefined,
   styles: undefined,
   vars: undefined,
@@ -133,6 +152,7 @@ const slots = useSlots()
 const attrs = useAttrs()
 
 const props = useProps('ResourcesMonthView', defaultProps, rawProps)
+const theme = useSafeMantineTheme()
 
 const getStyles = useStyles({
   name: 'ResourcesMonthView',
@@ -202,11 +222,34 @@ const expandedEvents = computed(() =>
   }),
 )
 
+type ResizeEdge = 'start' | 'end'
+type ResizeState = {
+  event: ScheduleEventData
+  edge: ResizeEdge
+  resourceIndex: number
+  originalStart: DateTimeStringValue
+  originalEnd: DateTimeStringValue
+  start: DateTimeStringValue
+  end: DateTimeStringValue
+  dayIndex: number
+}
+const resizeState = shallowRef<ResizeState | null>(null)
+let justResized = false
+
+const effectiveEvents = computed(() => {
+  const state = resizeState.value
+  return state
+    ? expandedEvents.value.map((event) =>
+        event.id === state.event.id ? { ...event, start: state.start, end: state.end } : event,
+      )
+    : expandedEvents.value
+})
+
 const rowLayouts = computed(() =>
   ordered.value.orderedResources.map((resource) =>
     getResourcesMonthViewLayout({
       days: days.value,
-      events: expandedEvents.value,
+      events: effectiveEvents.value,
       resourceId: resource.id,
       maxRows: maxRows.value,
     }),
@@ -499,6 +542,134 @@ const dragStart = (event: ScheduleEventData) => {
 
 const dragEnd = () => dragState.endEventDrag()
 
+const isResizableEvent = (event: ScheduleEventData) =>
+  Boolean(props.withEventResize) &&
+  !isStatic.value &&
+  event.display !== 'background' &&
+  (props.canResizeEvent?.(event) ?? true)
+
+const isResizingEvent = (event: ScheduleEventData) => resizeState.value?.event.id === event.id
+
+const calculateResizeDates = (event: ScheduleEventData, edge: ResizeEdge, targetDay: string) => {
+  const originalStart = dayjs(event.start)
+  const originalEnd = dayjs(event.end)
+  const target = dayjs(targetDay).startOf('day')
+  const endAtMidnight =
+    originalEnd.hour() === 0 && originalEnd.minute() === 0 && originalEnd.second() === 0
+  const endDay = endAtMidnight
+    ? originalEnd.subtract(1, 'day').startOf('day')
+    : originalEnd.startOf('day')
+  const withTime = (day: dayjs.Dayjs, source: dayjs.Dayjs) =>
+    day.startOf('day').hour(source.hour()).minute(source.minute()).second(source.second())
+
+  if (edge === 'start') {
+    let start = withTime(target.isAfter(endDay) ? endDay : target, originalStart)
+    if (!start.isBefore(originalEnd)) start = start.subtract(1, 'day')
+    return {
+      start: start.format('YYYY-MM-DD HH:mm:ss') as DateTimeStringValue,
+      end: originalEnd.format('YYYY-MM-DD HH:mm:ss') as DateTimeStringValue,
+    }
+  }
+
+  const day = target.isBefore(originalStart.startOf('day')) ? originalStart.startOf('day') : target
+  let end = endAtMidnight ? day.add(1, 'day').startOf('day') : withTime(day, originalEnd)
+  if (!end.isAfter(originalStart)) end = end.add(1, 'day')
+  return {
+    start: originalStart.format('YYYY-MM-DD HH:mm:ss') as DateTimeStringValue,
+    end: end.format('YYYY-MM-DD HH:mm:ss') as DateTimeStringValue,
+  }
+}
+
+const handleResizeMove = (event: PointerEvent) => {
+  const state = resizeState.value
+  if (!state) return
+  const dayIndex = (controls[state.resourceIndex] ?? []).findIndex((cell) => {
+    if (!cell) return false
+    const rect = cell.getBoundingClientRect()
+    return event.clientX >= rect.left && event.clientX <= rect.right
+  })
+  if (dayIndex < 0 || dayIndex === state.dayIndex || !days.value[dayIndex]) return
+  resizeState.value = {
+    ...state,
+    ...calculateResizeDates(state.event, state.edge, days.value[dayIndex]),
+    dayIndex,
+  }
+}
+
+const stopResizeListeners = () => {
+  document.removeEventListener('pointermove', handleResizeMove)
+  document.removeEventListener('pointerup', handleResizeEnd)
+  document.removeEventListener('pointercancel', handleResizeCancel)
+}
+
+const finishResize = (emitChange: boolean) => {
+  const state = resizeState.value
+  stopResizeListeners()
+  resizeState.value = null
+  if (
+    emitChange &&
+    state &&
+    (state.start !== state.originalStart || state.end !== state.originalEnd)
+  ) {
+    emit('eventResize', {
+      eventId: state.event.id,
+      newStart: state.start,
+      newEnd: state.end,
+      event: state.event,
+    })
+  }
+  justResized = true
+  requestAnimationFrame(() => (justResized = false))
+}
+function handleResizeEnd() {
+  finishResize(true)
+}
+function handleResizeCancel() {
+  finishResize(false)
+}
+
+const handleResizeStart = (
+  event: ScheduleEventData,
+  edge: ResizeEdge,
+  resourceIndex: number,
+  pointerEvent: PointerEvent,
+) => {
+  if (!isResizableEvent(event)) return
+  pointerEvent.preventDefault()
+  pointerEvent.stopPropagation()
+  const start = dayjs(event.start).format('YYYY-MM-DD HH:mm:ss') as DateTimeStringValue
+  const end = dayjs(event.end).format('YYYY-MM-DD HH:mm:ss') as DateTimeStringValue
+  resizeState.value = {
+    event,
+    edge,
+    resourceIndex,
+    originalStart: start,
+    originalEnd: end,
+    start,
+    end,
+    dayIndex: -1,
+  }
+  document.addEventListener('pointermove', handleResizeMove)
+  document.addEventListener('pointerup', handleResizeEnd)
+  document.addEventListener('pointercancel', handleResizeCancel)
+}
+
+onBeforeUnmount(stopResizeListeners)
+
+const emitEventClick = (event: ScheduleEventData, nativeEvent: MouseEvent) => {
+  if (!isStatic.value && !justResized) emit('eventClick', event, nativeEvent)
+}
+
+const eventWrapperStyle = (event: ScheduleEventData, style: Record<string, unknown>) => {
+  const colors = theme.value.variantColorResolver({
+    color: event.color || theme.value.primaryColor,
+    theme: theme.value,
+    variant: event.variant || 'light',
+    autoContrast: true,
+  })
+  return { ...style, '--event-color': colors.color }
+}
+
 const changeDate = (value: DateStringValue) => emit('dateChange', value)
 const changeView = (view: ScheduleViewLevel) => emit('viewChange', view)
 </script>
@@ -507,7 +678,8 @@ const changeView = (view: ScheduleViewLevel) => emit('viewChange', view)
   <Box
     v-bind="{ ...attrs, ...getStyles('resourcesMonthView') }"
     :root-ref="setRootElement"
-    :data-event-interaction="dropTarget ? true : undefined"
+    :data-event-interaction="dropTarget || resizeState ? true : undefined"
+    :data-resizing="resizeState ? true : undefined"
   >
     <template v-if="props.withHeader">
       <slot name="header" :month="monthString">
@@ -637,42 +809,96 @@ const changeView = (view: ScheduleViewLevel) => emit('viewChange', view)
               @dragleave="handleRowDragLeave($event)"
               @drop="withDragHandlers ? handleRowDrop($event, resource, resourceIndex) : undefined"
             >
-              <ScheduleEvent
+              <Box
                 v-for="entry in singleDayEvents(resourceIndex)"
                 :key="`${entry.event.id}-${entry.dayIndex}`"
-                :event="entry.event"
-                auto-size
-                nowrap
-                :radius="props.radius"
-                :mode="props.mode"
-                :draggable="isDraggableEvent(entry.event)"
-                :style="singleEventStyle(entry)"
-                v-bind="{ ...eventRenderers, ...stylesApi }"
-                @event-drag-start="dragStart"
-                @event-drag-end="dragEnd"
-                @click="
-                  isStatic ? undefined : emit('eventClick', entry.event, $event as MouseEvent)
-                "
-              />
+                v-bind="getStyles('resourcesMonthViewEventWrapper')"
+                :style="eventWrapperStyle(entry.event, singleEventStyle(entry))"
+                :data-resizing="isResizingEvent(entry.event) || undefined"
+              >
+                <ScheduleEvent
+                  :event="entry.event"
+                  auto-size
+                  nowrap
+                  :radius="props.radius"
+                  :mode="props.mode"
+                  :draggable="isDraggableEvent(entry.event)"
+                  :is-resizing="isResizingEvent(entry.event)"
+                  style="width: 100%; height: 100%"
+                  v-bind="{ ...eventRenderers, ...stylesApi }"
+                  @event-drag-start="dragStart"
+                  @event-drag-end="dragEnd"
+                  @click="emitEventClick(entry.event, $event as MouseEvent)"
+                />
+                <div
+                  v-if="isResizableEvent(entry.event)"
+                  v-bind="getStyles('resourcesMonthViewResizeHandle')"
+                  data-edge="start"
+                  :data-active="
+                    (isResizingEvent(entry.event) && resizeState?.edge === 'start') || undefined
+                  "
+                  @pointerdown="handleResizeStart(entry.event, 'start', resourceIndex, $event)"
+                />
+                <div
+                  v-if="isResizableEvent(entry.event)"
+                  v-bind="getStyles('resourcesMonthViewResizeHandle')"
+                  data-edge="end"
+                  :data-active="
+                    (isResizingEvent(entry.event) && resizeState?.edge === 'end') || undefined
+                  "
+                  @pointerdown="handleResizeStart(entry.event, 'end', resourceIndex, $event)"
+                />
+              </Box>
 
-              <ScheduleEvent
+              <Box
                 v-for="segment in rowLayouts[resourceIndex].segments"
                 :key="`${segment.event.id}-${segment.start}`"
-                :event="segment.event"
-                :hanging="segment.hanging"
-                auto-size
-                nowrap
-                :radius="props.radius"
-                :mode="props.mode"
-                :draggable="isDraggableEvent(segment.event)"
-                :style="segmentStyle(segment)"
-                v-bind="{ ...eventRenderers, ...stylesApi }"
-                @event-drag-start="dragStart"
-                @event-drag-end="dragEnd"
-                @click="
-                  isStatic ? undefined : emit('eventClick', segment.event, $event as MouseEvent)
-                "
-              />
+                v-bind="getStyles('resourcesMonthViewEventWrapper')"
+                :style="eventWrapperStyle(segment.event, segmentStyle(segment))"
+                :data-resizing="isResizingEvent(segment.event) || undefined"
+              >
+                <ScheduleEvent
+                  :event="segment.event"
+                  :hanging="segment.hanging"
+                  auto-size
+                  nowrap
+                  :radius="props.radius"
+                  :mode="props.mode"
+                  :draggable="isDraggableEvent(segment.event)"
+                  :is-resizing="isResizingEvent(segment.event)"
+                  style="width: 100%; height: 100%"
+                  v-bind="{ ...eventRenderers, ...stylesApi }"
+                  @event-drag-start="dragStart"
+                  @event-drag-end="dragEnd"
+                  @click="emitEventClick(segment.event, $event as MouseEvent)"
+                />
+                <div
+                  v-if="
+                    isResizableEvent(segment.event) &&
+                    segment.hanging !== 'start' &&
+                    segment.hanging !== 'both'
+                  "
+                  v-bind="getStyles('resourcesMonthViewResizeHandle')"
+                  data-edge="start"
+                  :data-active="
+                    (isResizingEvent(segment.event) && resizeState?.edge === 'start') || undefined
+                  "
+                  @pointerdown="handleResizeStart(segment.event, 'start', resourceIndex, $event)"
+                />
+                <div
+                  v-if="
+                    isResizableEvent(segment.event) &&
+                    segment.hanging !== 'end' &&
+                    segment.hanging !== 'both'
+                  "
+                  v-bind="getStyles('resourcesMonthViewResizeHandle')"
+                  data-edge="end"
+                  :data-active="
+                    (isResizingEvent(segment.event) && resizeState?.edge === 'end') || undefined
+                  "
+                  @pointerdown="handleResizeStart(segment.event, 'end', resourceIndex, $event)"
+                />
+              </Box>
 
               <template
                 v-for="entry in cellsWithHiddenEvents(resourceIndex)"

@@ -15,6 +15,11 @@ export interface CascaderFormatValueInput {
 
 export type CascaderFormatValue = (input: CascaderFormatValueInput) => string
 
+export interface CascaderSafeAreaPolygonOptions {
+  buffer?: number
+  requireIntent?: boolean
+}
+
 export interface CascaderSlots {
   label?: () => VNodeChild
   description?: () => VNodeChild
@@ -90,6 +95,9 @@ export interface CascaderProps {
    * @default 'click'
    */
   expandTrigger?: 'click' | 'hover'
+
+  /** Keeps the current column open while the pointer travels toward its child column. @default true */
+  safeAreaPolygon?: boolean | CascaderSafeAreaPolygonOptions
 
   /**
    * If set, the input can be typed into to search the whole tree, which replaces the

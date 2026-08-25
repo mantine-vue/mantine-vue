@@ -44,6 +44,25 @@ export function getOptionsLockup<Value extends Primitive = string>(
   )
   return result
 }
+
+/** Finds one enabled option by label, ignoring casing and surrounding whitespace. */
+export function getOptionByLabel<Value extends Primitive = string>(
+  optionsLockup: Record<PropertyKey, ComboboxItem<Value>>,
+  label: string,
+): ComboboxItem<Value> | undefined {
+  const normalized = label.trim().toLowerCase()
+  if (!normalized) return undefined
+  const matches = Object.values(optionsLockup).filter(
+    (option) => !option.disabled && option.label.trim().toLowerCase() === normalized,
+  )
+  return matches.length === 1 ? matches[0] : undefined
+}
+
+/** Detects browser autofill and extension writes, which occur without focusing the input. */
+export function isExternalInputChange(event: Event) {
+  const target = event.currentTarget as HTMLInputElement | null
+  return !!target && target.ownerDocument.activeElement !== target
+}
 export function defaultOptionsFilter<Value extends Primitive>({
   options,
   search,

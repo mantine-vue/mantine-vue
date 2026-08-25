@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, useAttrs } from 'vue'
+import { computed, ref, useAttrs, watch } from 'vue'
 import { useUncontrolled } from '@mantine-vue/hooks'
 import { padTime } from '../../utils'
 import type { SpinInputEmits, SpinInputProps } from '../../types'
@@ -22,15 +22,28 @@ const emit = defineEmits<
   }
 >()
 const attrs = useAttrs()
+const inputRef = ref<HTMLInputElement | null>(null)
+let emittedValue: number | null | undefined
 const [value, setValue] = useUncontrolled<number | null>({
   value: computed(() => props.modelValue),
   defaultValue: props.defaultValue,
   finalValue: null,
   onChange: (next) => {
+    emittedValue = next
     emit('update:modelValue', next)
     emit('change', next)
   },
 })
+
+watch(
+  () => props.modelValue,
+  (next) => {
+    const externalChange = next !== emittedValue
+    emittedValue = undefined
+    if (externalChange && document.activeElement === inputRef.value) inputRef.value?.select()
+  },
+  { flush: 'post' },
+)
 const finiteMax = () => Number.isFinite(props.max)
 const maxDigit = () => (finiteMax() ? Number(props.max.toFixed(0)[0]) : Infinity)
 const arrowsMax = () => props.max + 1 - props.step
@@ -135,6 +148,7 @@ function select(event: FocusEvent | MouseEvent) {
 
 <template>
   <input
+    ref="inputRef"
     v-bind="attrs"
     type="text"
     role="spinbutton"

@@ -78,4 +78,22 @@ describe('@mantine-vue/hooks/use-debounced-value', () => {
     vi.advanceTimersByTime(200)
     expect(result[0].value).toBe('c')
   })
+
+  it('emits only the leading and final values in a burst', async () => {
+    const { source, result } = renderDebouncedValue('', 500, { leading: true })
+    const emitted = ['']
+
+    for (const next of ['a', 'ab', 'abc']) {
+      source.value = next
+      await nextTick()
+      if (emitted.at(-1) !== result[0].value) emitted.push(result[0].value)
+      vi.advanceTimersByTime(100)
+    }
+
+    vi.advanceTimersByTime(500)
+    if (emitted.at(-1) !== result[0].value) emitted.push(result[0].value)
+
+    expect(result[0].value).toBe('abc')
+    expect(emitted).toStrictEqual(['', 'a', 'abc'])
+  })
 })

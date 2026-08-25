@@ -1,6 +1,6 @@
 import type { BoxMod, BoxProps, StylesApiProps, Factory } from '../../core'
 
-export type RollingNumberStylesNames = 'root' | 'digit' | 'digitColumn' | 'char'
+export type RollingNumberStylesNames = 'root' | 'copyValue' | 'digit' | 'digitColumn' | 'char'
 
 export type RollingNumberCssVariables = {
   root: '--rn-duration' | '--rn-timing-function'

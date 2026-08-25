@@ -128,6 +128,7 @@ defineExpose({ rootElement })
     :role="props.withLiveRegion ? 'status' : 'img'"
     :aria-label="accessibleValue"
   >
+    <span v-bind="getStyles('copyValue')" aria-hidden="true">{{ accessibleValue }}</span>
     <template v-for="slot in renderSlots" :key="slot.key">
       <DigitColumn
         v-if="slot.type === 'digit'"

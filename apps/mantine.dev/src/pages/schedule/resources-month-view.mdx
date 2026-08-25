@@ -20,6 +20,12 @@ Events can move between days and resources. The `eventDrop` payload carries the 
 
 <Demo data={ResourcesMonthViewDemos.dragDrop} />
 
+## Event resize
+
+Set `withEventResize` to display draggable start and end handles. When a resize completes,
+`eventResize` emits the original event with `eventId`, `newStart`, and `newEnd`. Use
+`canResizeEvent` to disable resizing for individual events.
+
 ## Event form
 
 Use the `dayClick` event, `withDragSlotSelect` and the `slotDragEnd` event to create events for a resource.

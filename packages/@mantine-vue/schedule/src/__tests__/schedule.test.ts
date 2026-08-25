@@ -874,6 +874,55 @@ describe('@mantine-vue/schedule', () => {
     expect(wrapper.findAll('.custom-month-cell')).toHaveLength(62)
   })
 
+  it('resizes events across ResourcesMonthView day cells', async () => {
+    const onEventResize = vi.fn()
+    const wrapper = mountWithProviderAttached(ResourcesMonthView, {
+      date: '2026-07-15',
+      resources: [resources[0]],
+      events: [{ ...events[0], resourceId: 'room-a' }],
+      withEventResize: true,
+      onEventResize,
+    })
+    const cells = wrapper.findAll('button[class*="resourcesMonthViewCell"]')
+    cells.forEach((cell, index) => {
+      Object.defineProperty(cell.element, 'getBoundingClientRect', {
+        value: () => ({ left: index * 80, right: (index + 1) * 80, width: 80 }),
+      })
+    })
+    const handles = wrapper.findAll('[class*="resourcesMonthViewResizeHandle"]')
+    expect(handles).toHaveLength(2)
+    handles[1].element.dispatchEvent(
+      new MouseEvent('pointerdown', { bubbles: true, cancelable: true, clientX: 1200 }),
+    )
+    document.dispatchEvent(
+      new MouseEvent('pointermove', { bubbles: true, cancelable: true, clientX: 1320 }),
+    )
+    document.dispatchEvent(new MouseEvent('pointerup', { bubbles: true, cancelable: true }))
+    await nextTick()
+
+    expect(onEventResize).toHaveBeenCalledWith(
+      expect.objectContaining({
+        eventId: 1,
+        newStart: '2026-07-15 09:00:00',
+        newEnd: '2026-07-17 10:00:00',
+      }),
+    )
+    wrapper.unmount()
+  })
+
+  it('hides weekend columns and uses YearView day renderers', () => {
+    const renderDay = vi.fn((date: string) => `Rendered ${date}`)
+    const wrapper = mountWithProvider(YearView, {
+      date: '2026-07-15',
+      withWeekendDays: false,
+      renderDay,
+    })
+
+    expect(wrapper.get('[class*="yearView"]').attributes('data-without-weekend-days')).toBe('true')
+    expect(wrapper.text()).toContain('Rendered')
+    expect(renderDay).toHaveBeenCalled()
+  })
+
   it('supports forcing the week indicator onto the matching weekday', () => {
     const wrapper = mountWithProvider(WeekView, {
       date: '2026-07-15',

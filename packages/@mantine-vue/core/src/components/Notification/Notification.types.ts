@@ -8,6 +8,7 @@ import type {
   StylesApiProps,
   Factory,
 } from '../../core'
+import type { CloseButtonProps } from '../CloseButton'
 
 export type NotificationStylesNames =
   | 'root'
@@ -65,7 +66,7 @@ export interface NotificationOwnProps extends StylesApiProps<NotificationFactory
   withCloseButton?: boolean
 
   /** Props passed down to the close button */
-  closeButtonProps?: Record<string, any>
+  closeButtonProps?: CloseButtonProps
 
   /** Props passed down to the `Loader` component */
   loaderProps?: Record<string, any>

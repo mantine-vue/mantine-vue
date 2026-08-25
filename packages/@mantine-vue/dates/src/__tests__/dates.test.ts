@@ -141,6 +141,26 @@ describe('@mantine-vue/dates utilities', () => {
 })
 
 describe('@mantine-vue/dates render slots', () => {
+  it('supports callable DateInput and MiniCalendar formatters', () => {
+    const wrapper = mount({
+      render: () =>
+        h(MantineProvider, { env: 'test' }, () => [
+          h(DateInput, {
+            modelValue: '2024-01-15',
+            valueFormat: (value: string) => `Date ${value}`,
+          }),
+          h(MiniCalendar, {
+            defaultDate: '2024-01-15',
+            numberOfDays: 1,
+            monthLabelFormat: (value: string) => `Month ${value}`,
+          }),
+        ]),
+    })
+
+    expect((wrapper.get('input').element as HTMLInputElement).value).toBe('Date 2024-01-15')
+    expect(wrapper.text()).toContain('Month 2024-01-15')
+  })
+
   it('supports renderDay slot and keeps the renderDay prop authoritative', () => {
     const slotted = mount({
       render: () =>

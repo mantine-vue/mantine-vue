@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, h, ref, useAttrs, useSlots, type VNodeChild } from 'vue'
-import { Combobox, useCombobox } from '../Combobox'
+import { Combobox, isExternalInputChange, useCombobox } from '../Combobox'
 import { InputBase } from '../InputBase'
 import { Pill } from '../Pill'
 import { PillsInput } from '../PillsInput'
@@ -263,6 +263,7 @@ const renderRoot = (): VNodeChild => {
       disabled,
       placeholder: !hasValue ? (attrs as any).placeholder : undefined,
       onInput: (event: Event) => {
+        if (isExternalInputChange(event)) return
         setSearch((event.target as HTMLInputElement).value)
         combobox.openDropdown()
       },
@@ -331,6 +332,7 @@ const renderRoot = (): VNodeChild => {
           rightSection,
           rightSectionPointerEvents: canClear ? 'all' : 'none',
           onInput: (event: Event) => {
+            if (isExternalInputChange(event)) return
             setSearch((event.target as HTMLInputElement).value)
             combobox.openDropdown()
           },

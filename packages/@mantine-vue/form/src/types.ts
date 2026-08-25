@@ -1,4 +1,4 @@
-import type { Ref } from 'vue'
+import type { ComputedRef, Ref } from 'vue'
 
 export type FormErrors = Record<string, any>
 export type FormStatus = Record<string, boolean>
@@ -66,6 +66,8 @@ export interface UseFormReturnType<Values extends Record<string, any>, Transform
       dirty: boolean
     }) => void,
   ) => () => void
+  /** Returns a readonly computed ref that updates when the value at `path` changes. */
+  useWatchValue: <Path extends keyof Values | string>(path: Path) => ComputedRef<any>
   getValues: () => Values
   getInitialValues: () => Values
   setInitialValues: (values: Values) => void

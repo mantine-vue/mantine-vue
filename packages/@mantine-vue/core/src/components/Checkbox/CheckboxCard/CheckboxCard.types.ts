@@ -10,6 +10,8 @@ export type CheckboxCardCssVariables = {
 export interface CheckboxCardContextValue {
   /** Checked state of the enclosing card, read by `Checkbox.Indicator`. */
   checked: boolean
+  /** Indeterminate state of the enclosing card. */
+  indeterminate?: boolean
 }
 
 export interface CheckboxCardSlots {
@@ -30,6 +32,9 @@ export interface CheckboxCardOwnProps extends StylesApiProps<CheckboxCardFactory
 
   /** Uncontrolled initial checked state. */
   defaultChecked?: boolean
+
+  /** Indeterminate state. If set, `checked` is ignored for accessibility and `aria-checked` is `mixed`. */
+  indeterminate?: boolean
 
   /**
    * If set, the card has a border.

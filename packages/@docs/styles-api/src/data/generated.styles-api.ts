@@ -4541,6 +4541,8 @@ export const ResourcesMonthViewStylesApi: StylesApiData<
   | 'resourcesMonthViewResourceLabel'
   | 'resourcesMonthViewRowSlots'
   | 'resourcesMonthViewCell'
+  | 'resourcesMonthViewEventWrapper'
+  | 'resourcesMonthViewResizeHandle'
   | 'resourcesMonthViewInner'
   | 'resourcesMonthViewGroupColumn'
   | 'resourcesMonthViewGroupColumnEmpty'
@@ -4569,6 +4571,8 @@ export const ResourcesMonthViewStylesApi: StylesApiData<
     resourcesMonthViewResourceLabel: 'Resource label element',
     resourcesMonthViewRowSlots: 'Container for all day cells in a row',
     resourcesMonthViewCell: 'Individual day cell element',
+    resourcesMonthViewEventWrapper: 'Event wrapper element',
+    resourcesMonthViewResizeHandle: 'Event resize handle element',
     resourcesMonthViewInner: 'Inner container wrapping day labels and rows',
     resourcesMonthViewGroupColumn: 'Group label column element',
     resourcesMonthViewGroupColumnEmpty: 'Empty group column cell for ungrouped resources',
@@ -4590,6 +4594,7 @@ export const ResourcesMonthViewStylesApi: StylesApiData<
       '--resources-month-view-day-width': 'Controls `width` of each day column',
       '--resources-month-view-row-height': 'Controls `height` of each resource row',
       '--resources-month-view-group-label-width': 'Controls `width` of the group label column',
+      '--event-color': 'Controls the event color',
     },
   },
   modifiers: [
@@ -4627,6 +4632,16 @@ export const ResourcesMonthViewStylesApi: StylesApiData<
       modifier: 'data-static',
       selector: 'resourcesMonthView',
       condition: '`mode="static"` is set',
+    },
+    {
+      modifier: 'data-resizing',
+      selector: 'resourcesMonthViewEventWrapper',
+      condition: 'This event is being resized',
+    },
+    {
+      modifier: 'data-active',
+      selector: 'resourcesMonthViewResizeHandle',
+      condition: 'Resize handle is actively being dragged',
     },
     {
       modifier: 'data-event-interaction',
@@ -5002,9 +5017,12 @@ export const RingProgressStylesApi: StylesApiData<'curve' | 'label' | 'root' | '
   },
 }
 
-export const RollingNumberStylesApi: StylesApiData<'char' | 'digit' | 'digitColumn' | 'root'> = {
+export const RollingNumberStylesApi: StylesApiData<
+  'char' | 'copyValue' | 'digit' | 'digitColumn' | 'root'
+> = {
   selectors: {
     char: 'char element',
+    copyValue: 'Visually hidden copyable value element',
     digit: 'digit element',
     digitColumn: 'digit column element',
     root: 'Root element',
@@ -6991,6 +7009,7 @@ export const YearViewStylesApi: StylesApiData<
   vars: {
     yearView: {
       '--year-view-radius': 'Controls `border-radius` of the year view',
+      '--year-view-columns': 'Controls the number of columns in the year view',
     },
   },
   modifiers: [

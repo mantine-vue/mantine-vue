@@ -22,6 +22,9 @@ Set `:with-week-days="false"` to hide the weekday names row in each month.
 
 <Demo data={YearViewDemos.withoutWeekDays} />
 
+Set `:with-weekend-days="false"` to remove weekend columns. Customize day contents with the
+`renderDay` prop or the `day` scoped slot; both receive the date and events for that day.
+
 ## Hide outside days
 
 Set `:with-outside-days="false"` to hide days from adjacent months.

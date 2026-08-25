@@ -66,6 +66,9 @@ export interface PasswordInputOwnProps extends StylesApiProps {
   /** Props passed down to the visibility toggle `ActionIcon`. */
   visibilityToggleButtonProps?: Record<string, any>
 
+  /** If set, the visibility toggle is included in the keyboard tab order. @default false */
+  visibilityToggleFocusable?: boolean
+
   /** Controlled visibility state of the password. Bound with `v-model:visible`. */
   visible?: boolean
 

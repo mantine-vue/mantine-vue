@@ -33,11 +33,15 @@ export function useDebouncedValue<T>(
   let cooldown = false
   let latestValue = toValue(value)
 
-  const cancel = () => {
+  const clearTimer = () => {
     if (timeout) {
       clearTimeout(timeout)
       timeout = undefined
     }
+  }
+
+  const cancel = () => {
+    clearTimer()
     cooldown = false
   }
 
@@ -52,6 +56,7 @@ export function useDebouncedValue<T>(
     () => toValue(value),
     (nextValue) => {
       latestValue = nextValue
+      clearTimer()
 
       if (!cooldown && options.leading) {
         cooldown = true
@@ -61,7 +66,6 @@ export function useDebouncedValue<T>(
           timeout = undefined
         }, wait)
       } else {
-        cancel()
         timeout = setTimeout(() => {
           cooldown = false
           timeout = undefined

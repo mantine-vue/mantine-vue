@@ -8,6 +8,7 @@ import {
   OptionsDropdown,
   getOptionsLockup,
   getParsedComboboxData,
+  isExternalInputChange,
   useCombobox,
 } from '../Combobox'
 import { Pill, PillGroup } from '../Pill'
@@ -210,6 +211,8 @@ function onOptionSubmit(raw: string) {
 }
 
 function onFieldInput(event: Event) {
+  if (isExternalInputChange(event)) return
+
   const input = (event.target as HTMLInputElement).value
 
   if (props.splitChars.some((char) => input.includes(char))) {

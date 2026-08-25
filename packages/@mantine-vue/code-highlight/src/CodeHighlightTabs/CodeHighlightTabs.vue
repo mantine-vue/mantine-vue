@@ -116,6 +116,7 @@ const fileIconResolver = computed(
       :controls="props.controls"
       :code-color-scheme="props.codeColorScheme"
       :with-line-numbers="props.withLineNumbers"
+      :with-first-line-indentation="props.withFirstLineIndentation"
       __with-offset
       __static-selector="CodeHighlightTabs"
       @expanded-change="setExpanded"

@@ -180,6 +180,9 @@ const activeViewProps = computed(() => {
     case 'month':
       return {
         ...sharedProps.value,
+        withEventResize: isStatic.value ? false : props.withEventResize,
+        canResizeEvent: props.canResizeEvent,
+        onEventResize: (data: any) => emit('eventResize', data),
         onDayClick: (data: any) => emit('dayClick', data),
         ...props.monthViewProps,
       }

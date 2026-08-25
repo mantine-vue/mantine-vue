@@ -76,6 +76,7 @@ describe('@mantine-vue/core multi-value inputs', () => {
     const onMaxTags = vi.fn()
     const wrapper = render(TagsInput, { defaultValue: ['Vue'], maxTags: 2, onDuplicate, onMaxTags })
     const input = wrapper.find('input:not([type="hidden"])')
+    ;(input.element as HTMLInputElement).focus()
     await input.setValue('vue')
     await input.trigger('keydown', { key: 'Enter' })
     expect(onDuplicate).toHaveBeenCalledWith('vue')
@@ -105,7 +106,7 @@ describe('@mantine-vue/core multi-value inputs', () => {
 
     expect(wrapper.get('.pill-slot').text()).toBe('Slot: Vue')
     const input = wrapper.find('input:not([type="hidden"])')
-    await input.trigger('focus')
+    ;(input.element as HTMLInputElement).focus()
     await input.setValue('missing')
 
     expect(wrapper.get('.empty-slot').text()).toBe('No matches')

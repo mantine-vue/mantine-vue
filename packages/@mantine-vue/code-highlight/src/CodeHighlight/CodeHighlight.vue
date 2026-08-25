@@ -15,7 +15,7 @@ export { varsResolver }
 </script>
 
 <script setup lang="ts">
-import { computed, useAttrs, useSlots } from 'vue'
+import { computed, useAttrs, useSlots, watchEffect } from 'vue'
 import {
   Box,
   ScrollArea,
@@ -25,7 +25,12 @@ import {
   useStyles,
 } from '@mantine-vue/core'
 import { useUncontrolled } from '@mantine-vue/hooks'
-import { useHighlight } from '../CodeHighlightProvider/CodeHighlightProvider'
+import {
+  useHighlight,
+  useIsLanguageLoaded,
+  useLoadLanguage,
+} from '../CodeHighlightProvider/CodeHighlightProvider'
+import { normalizeCode } from '../normalize-code'
 import { provideCodeHighlightContext } from './CodeHighlight.context'
 import CopyCodeButton from './CopyCodeButton/CopyCodeButton.vue'
 import ExpandCodeButton from './ExpandCodeButton/ExpandCodeButton.vue'
@@ -80,6 +85,13 @@ const [expanded, setExpanded] = useUncontrolled<boolean>({
   },
 })
 const highlight = useHighlight()
+const loadLanguage = useLoadLanguage()
+const isLanguageLoaded = useIsLanguageLoaded()
+const normalizedCode = computed(() =>
+  normalizeCode(props.code, { withFirstLineIndentation: props.withFirstLineIndentation }),
+)
+
+watchEffect(() => loadLanguage(props.language))
 
 function resolveColorScheme(value: 'light' | 'dark' | 'auto'): 'light' | 'dark' {
   if (value !== 'auto') return value
@@ -89,13 +101,14 @@ function resolveColorScheme(value: 'light' | 'dark' | 'auto'): 'light' | 'dark' 
     : 'light'
 }
 
-const highlighted = computed(() =>
-  highlight({
-    code: props.code.trim(),
+const highlighted = computed(() => {
+  isLanguageLoaded(props.language)
+  return highlight({
+    code: normalizedCode.value,
     language: props.language,
     colorScheme: props.codeColorScheme ?? resolveColorScheme(mantine.colorScheme.value),
-  }),
-)
+  })
+})
 const renderedControls = computed(() => {
   const value =
     props.controls !== undefined
@@ -108,12 +121,7 @@ const renderedControls = computed(() => {
 const shouldDisplayControls = computed(
   () => renderedControls.value.length > 0 || props.withExpandButton || props.withCopyButton,
 )
-const lineNumbers = computed(() =>
-  props.code
-    .trim()
-    .split('\n')
-    .map((_, index) => index + 1),
-)
+const lineNumbers = computed(() => normalizedCode.value.split('\n').map((_, index) => index + 1))
 const renderControls = () => renderedControls.value
 
 provideCodeHighlightContext({
@@ -149,7 +157,7 @@ provideCodeHighlightContext({
       }),
     }"
     :data-with-border="props.withBorder || undefined"
-    >{{ props.code.trim() }}</code
+    >{{ normalizedCode }}</code
   >
   <Box
     v-else
@@ -173,7 +181,7 @@ provideCodeHighlightContext({
       />
       <CopyCodeButton
         v-if="props.withCopyButton"
-        :code="props.code"
+        :code="normalizedCode"
         :copied-label="props.copiedLabel"
         :copy-label="props.copyLabel"
       />
@@ -214,7 +222,7 @@ provideCodeHighlightContext({
               style: highlighted.codeElementProps?.style,
             }),
           }"
-        >{{ props.code.trim() }}</code></pre>
+        >{{ normalizedCode }}</code></pre>
       </div>
     </ScrollArea>
     <UnstyledButton

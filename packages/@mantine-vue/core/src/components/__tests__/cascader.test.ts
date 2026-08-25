@@ -180,4 +180,29 @@ describe('@mantine-vue/core Cascader', () => {
     expect(wrapper.get('[role="option"]').text()).toContain('Prop: Frameworks')
     expect(wrapper.get('[role="option"]').text()).not.toContain('Slot:')
   })
+
+  it('keeps the active branch while the pointer crosses its safe area', async () => {
+    const wrapper = render({ expandTrigger: 'hover', safeAreaPolygon: { requireIntent: false } })
+    await nextTick()
+    const root = wrapper.get('[role="option"]')
+    await root.trigger('mouseenter')
+    await nextTick()
+    const vueOption = wrapper.findAll('[role="option"]')[1]
+    await vueOption.trigger('mouseenter')
+    await nextTick()
+    const options = wrapper.findAll('[role="option"]')
+    const childColumn = options[3].element.closest('[role="listbox"]')!.parentElement!
+    Object.defineProperty(vueOption.element, 'getBoundingClientRect', {
+      value: () => ({ left: 0, right: 200, top: 0, bottom: 30, width: 200, height: 30 }),
+    })
+    Object.defineProperty(childColumn, 'getBoundingClientRect', {
+      value: () => ({ left: 200, right: 400, top: 0, bottom: 300, width: 200, height: 300 }),
+    })
+    await vueOption.trigger('mouseleave', { clientX: 195, clientY: 15 })
+    await options[2].trigger('mouseenter')
+    document.dispatchEvent(new MouseEvent('mousemove', { clientX: 198, clientY: 100 }))
+    await nextTick()
+
+    expect(wrapper.text()).toContain('Vue 3')
+  })
 })

@@ -219,6 +219,7 @@ function onColorSwatchClick() {
     :opened="opened"
     :with-roles="false"
     :disabled="pickerDisabled"
+    :width="props.fullWidth ? 'target' : undefined"
     __static-selector="ColorInput"
     @update:opened="onPopoverChange"
   >
@@ -261,6 +262,7 @@ function onColorSwatchClick() {
         :with-picker="props.withPicker"
         :focusable="false"
         :size="(attrs as any).size"
+        :full-width="props.fullWidth"
         @change="onPickerChange"
         @change-end="onPickerChangeEnd"
         @color-swatch-click="onColorSwatchClick"
