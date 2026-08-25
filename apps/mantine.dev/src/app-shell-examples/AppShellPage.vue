@@ -17,6 +17,7 @@ import {
   UnstyledButton,
 } from '@mantine-vue/core'
 import { PhArrowLeft, PhCode, PhList, PhSquaresFour } from '@phosphor-icons/vue'
+import PageHead from '@/components/PageHead/PageHead.vue'
 
 interface AppShellExample {
   id: string
@@ -467,7 +468,6 @@ function handleHeadroom() {
 }
 
 onMounted(() => {
-  document.title = 'AppShell examples | Mantine Vue'
   lastScrollY = window.scrollY
   window.addEventListener('scroll', handleHeadroom, { passive: true })
 })
@@ -478,6 +478,10 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
+  <PageHead
+    title="AppShell examples"
+    description="Explore responsive application shell layouts built with the Mantine Vue AppShell component."
+  />
   <div class="app-shell-page">
     <pre v-if="isCode" class="code"><code>{{ active.code }}</code></pre>
 
