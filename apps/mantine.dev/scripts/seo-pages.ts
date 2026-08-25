@@ -1,0 +1,25 @@
+import { MDX_DATA } from '../src/mdx/mdx-data'
+import type { SeoPage } from '../src/seo'
+
+const customPages: SeoPage[] = [
+  {
+    path: '/app-shell',
+    title: 'AppShell examples',
+    description:
+      'Explore responsive application shell layouts built with the Mantine Vue AppShell component.',
+  },
+  {
+    path: '/colors-generator',
+    title: 'Colors generator',
+    description: 'Generate accessible color palettes for your Mantine Vue theme.',
+  },
+]
+
+export const SEO_PAGES: SeoPage[] = [
+  ...Object.values(MDX_DATA).map(({ slug, title, description }) => ({
+    path: slug,
+    title,
+    description: description!,
+  })),
+  ...customPages,
+].sort((a, b) => a.path.localeCompare(b.path))

@@ -3,6 +3,7 @@ import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import mdx from '@mdx-js/rollup'
 import rehypeSlug from 'rehype-slug'
+import { seoSnapshotsPlugin } from './scripts/seo-snapshots-plugin'
 
 const alias = (p: string) => fileURLToPath(new URL(p, import.meta.url))
 
@@ -18,6 +19,7 @@ export default defineConfig({
       }),
     },
     vue(),
+    seoSnapshotsPlugin(),
   ],
   resolve: {
     alias: {

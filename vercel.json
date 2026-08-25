@@ -3,9 +3,11 @@
   "installCommand": "corepack enable && corepack prepare yarn@4.16.0 --activate && corepack yarn install --immutable",
   "buildCommand": "corepack yarn docs:build && corepack yarn showcase:build",
   "outputDirectory": "apps/mantine.dev/dist",
+  "cleanUrls": true,
+  "redirects": [{ "source": "/", "destination": "/getting-started", "permanent": true }],
   "rewrites": [
-    { "source": "/showcase", "destination": "/showcase/index.html" },
-    { "source": "/showcase/(.*)", "destination": "/showcase/index.html" },
-    { "source": "/(.*)", "destination": "/index.html" }
+    { "source": "/showcase", "destination": "/showcase/index" },
+    { "source": "/showcase/(.*)", "destination": "/showcase/index" },
+    { "source": "/(.*)", "destination": "/index" }
   ]
 }
