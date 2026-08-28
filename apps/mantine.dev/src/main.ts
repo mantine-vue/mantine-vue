@@ -1,10 +1,10 @@
-import { createApp, h } from 'vue'
+import { computed, createApp, h } from 'vue'
 import { DirectionProvider, MantineProvider } from '@mantine-vue/core'
 import { CodeHighlightAdapterProvider } from '@mantine-vue/code-highlight'
 import { ContextMenuProvider } from '@mantine-vue/contextmenu'
 import App from './App.vue'
 import { router } from './router'
-import { theme } from './theme'
+import { primaryColor, theme } from './theme'
 import { docsShikiAdapter } from './code-highlight-adapter'
 
 // Mantine global styles (baseline, css variables, default theme variables).
@@ -18,14 +18,18 @@ import './styles.css'
 
 const app = createApp({
   name: 'Root',
-  render: () =>
-    h(DirectionProvider, { initialDirection: 'ltr' }, () =>
-      h(MantineProvider, { theme, defaultColorScheme: 'auto' }, () =>
-        h(ContextMenuProvider, null, () =>
-          h(CodeHighlightAdapterProvider, { adapter: docsShikiAdapter }, () => h(App)),
+  setup() {
+    const docsTheme = computed(() => ({ ...theme, primaryColor: primaryColor.value }))
+
+    return () =>
+      h(DirectionProvider, { initialDirection: 'ltr' }, () =>
+        h(MantineProvider, { theme: docsTheme.value, defaultColorScheme: 'auto' }, () =>
+          h(ContextMenuProvider, null, () =>
+            h(CodeHighlightAdapterProvider, { adapter: docsShikiAdapter }, () => h(App)),
+          ),
         ),
-      ),
-    ),
+      )
+  },
 })
 
 app.use(router)

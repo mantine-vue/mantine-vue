@@ -1,7 +1,13 @@
 <script setup lang="ts">
 import { watchEffect } from 'vue'
 import { useRoute } from 'vue-router'
-import { DEFAULT_DESCRIPTION, getCanonicalUrl, getPageTitle, getStructuredData } from '@/seo'
+import {
+  DEFAULT_DESCRIPTION,
+  SOCIAL_IMAGE_URL,
+  getCanonicalUrl,
+  getPageTitle,
+  getStructuredData,
+} from '@/seo'
 
 const props = defineProps<{
   title: string | undefined
@@ -56,9 +62,14 @@ watchEffect(() => {
   setMeta('property', 'og:description', description)
   setMeta('property', 'og:type', 'article')
   setMeta('property', 'og:url', canonicalUrl)
-  setMeta('name', 'twitter:card', 'summary')
+  setMeta('property', 'og:image', SOCIAL_IMAGE_URL)
+  setMeta('property', 'og:image:width', '1200')
+  setMeta('property', 'og:image:height', '630')
+  setMeta('property', 'og:image:alt', 'Mantine Vue — Build interfaces that feel inevitable.')
+  setMeta('name', 'twitter:card', 'summary_large_image')
   setMeta('name', 'twitter:title', title)
   setMeta('name', 'twitter:description', description)
+  setMeta('name', 'twitter:image', SOCIAL_IMAGE_URL)
   setCanonical(canonicalUrl)
   setStructuredData(pageTitle, description, route.path)
 })

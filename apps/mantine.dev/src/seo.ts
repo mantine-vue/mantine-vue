@@ -1,5 +1,6 @@
 export const SITE_NAME = 'Mantine Vue'
 export const SITE_URL = 'https://mantine-vue.dev'
+export const SOCIAL_IMAGE_URL = `${SITE_URL}/og.png`
 export const DEFAULT_TITLE = 'Mantine Vue – Vue 3 components and composables'
 export const DEFAULT_DESCRIPTION =
   'Build accessible Vue 3 applications with 100+ customizable components and composables, native dark theme support, and a focus on developer experience.'

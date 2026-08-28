@@ -1,7 +1,13 @@
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { dirname, resolve } from 'node:path'
 import type { Plugin, ResolvedConfig } from 'vite'
-import { getCanonicalUrl, getPageTitle, getStructuredData, SITE_NAME } from '../src/seo'
+import {
+  getCanonicalUrl,
+  getPageTitle,
+  getStructuredData,
+  SITE_NAME,
+  SOCIAL_IMAGE_URL,
+} from '../src/seo'
 import type { SeoPage } from '../src/seo'
 import { SEO_PAGES } from './seo-pages'
 
@@ -62,9 +68,14 @@ function renderSeoHead(page: SeoPage) {
     <meta data-seo="true" property="og:title" content="${escapeHtml(title)}" />
     <meta data-seo="true" property="og:description" content="${escapeHtml(page.description)}" />
     <meta data-seo="true" property="og:url" content="${canonicalUrl}" />
-    <meta data-seo="true" name="twitter:card" content="summary" />
+    <meta data-seo="true" property="og:image" content="${SOCIAL_IMAGE_URL}" />
+    <meta data-seo="true" property="og:image:width" content="1200" />
+    <meta data-seo="true" property="og:image:height" content="630" />
+    <meta data-seo="true" property="og:image:alt" content="Mantine Vue — Build interfaces that feel inevitable." />
+    <meta data-seo="true" name="twitter:card" content="summary_large_image" />
     <meta data-seo="true" name="twitter:title" content="${escapeHtml(title)}" />
     <meta data-seo="true" name="twitter:description" content="${escapeHtml(page.description)}" />
+    <meta data-seo="true" name="twitter:image" content="${SOCIAL_IMAGE_URL}" />
     <script data-seo="true" id="seo-structured-data" type="application/ld+json">${structuredData}</script>`
 }
 
@@ -105,7 +116,7 @@ export function seoSnapshotsPlugin(): Plugin {
       const indexHtml = await readFile(indexPath, 'utf8')
 
       await Promise.all(
-        SEO_PAGES.map(async (page) => {
+        SEO_PAGES.filter((page) => page.path !== '/').map(async (page) => {
           const outputPath = resolve(outputDirectory, `.${page.path}.html`)
           await mkdir(dirname(outputPath), { recursive: true })
           await writeFile(outputPath, replaceSeoHead(indexHtml, page), 'utf8')

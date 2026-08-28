@@ -38,7 +38,11 @@ function waitForHashTarget(hash: string) {
 }
 
 const routes: RouteRecordRaw[] = [
-  { path: '/', redirect: '/getting-started' },
+  {
+    path: '/',
+    name: 'home',
+    component: () => import('./pages/HomePage.vue'),
+  },
   {
     path: '/getting-started',
     name: 'getting-started',
