@@ -25,6 +25,7 @@ const activeCategory = computed(() => getActiveCategory(route.path))
 const mainLinksData = [
   // { link: 'https://ui.mantine.dev', label: 'Mantine UI' },
   // { link: 'https://help.mantine.dev', label: 'FAQ' },
+  { link: '/getting-started', label: 'Documentation', reload: false },
   { link: '/colors-generator', label: 'Colors generator', reload: false },
   // `reload: true` forces a full page navigation because the showcase is a
   // separate SPA served at /showcase, not a route inside the docs router.
@@ -50,6 +51,7 @@ function isExternal(link: string) {
       <div class="headerMain">
         <div class="headerMainWrapper">
           <Burger
+            v-if="withNav"
             :opened="ctx.navbarOpened"
             :size="20"
             :line-size="2"

@@ -12,6 +12,7 @@ import Shell from './components/Shell/Shell.vue'
 
 const route = useRoute()
 const withoutShell = computed(() => route.path === '/app-shell')
+const isLandingPage = computed(() => route.path === '/')
 </script>
 
 <template>
@@ -22,6 +23,14 @@ const withoutShell = computed(() => route.path === '/app-shell')
   <Search />
   <ModalsProviderDemo>
     <RouterView v-if="withoutShell" />
+    <Shell
+      v-else-if="isLandingPage"
+      :with-nav="false"
+      :with-navbar="false"
+      :with-mobile-navbar="false"
+    >
+      <RouterView />
+    </Shell>
     <Shell v-else>
       <RouterView />
     </Shell>

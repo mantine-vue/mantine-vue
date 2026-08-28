@@ -4,7 +4,6 @@
   "buildCommand": "corepack yarn docs:build && corepack yarn showcase:build",
   "outputDirectory": "apps/mantine.dev/dist",
   "cleanUrls": true,
-  "redirects": [{ "source": "/", "destination": "/getting-started", "permanent": true }],
   "rewrites": [
     { "source": "/showcase", "destination": "/showcase/index" },
     { "source": "/showcase/(.*)", "destination": "/showcase/index" },

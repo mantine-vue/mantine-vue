@@ -3,6 +3,12 @@ import type { SeoPage } from '../src/seo'
 
 const customPages: SeoPage[] = [
   {
+    path: '/',
+    title: 'Mantine Vue – Vue 3 components and composables',
+    description:
+      'Build accessible Vue 3 applications with 100+ customizable components and composables, native dark theme support, and a focus on developer experience.',
+  },
+  {
     path: '/app-shell',
     title: 'AppShell examples',
     description:
