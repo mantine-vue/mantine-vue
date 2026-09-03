@@ -1,0 +1,70 @@
+import { ActionBarDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.ActionBar)
+
+## Usage
+
+`ActionBar` is a fixed-position bottom bar that appears when items are selected and provides
+contextual bulk actions. It is built with [Affix](/core/affix), [Transition](/core/transition)
+and [Paper](/core/paper).
+
+Content is composed freely with existing components. Use `ActionBar.Divider` to separate groups
+and `ActionBar.CloseButton` to emit `update:opened` and `close`.
+
+<Demo data={ActionBarDemos.usage} />
+
+The root has `role="group"` and dividers have `role="separator"`. Set `aria-label` to describe
+what the actions apply to.
+
+## With ActionIcon buttons
+
+<Demo data={ActionBarDemos.withActions} />
+
+## Placement
+
+The bar is centered at the bottom by default. Change it with `position`. For non-centered
+positions, remove the automatic inline margin through the Styles API.
+
+<Demo data={ActionBarDemos.placement} />
+
+## Close on Escape
+
+Set `closeOnEscape` to close the bar when Escape is pressed. It is disabled by default.
+
+<Demo data={ActionBarDemos.closeOnEscape} />
+
+## Controlled state
+
+Use `v-model:opened` for two-way state, or combine `opened`, `update:opened` and `close` manually.
+`ActionBar.CloseButton` and Escape handling both update the same state.
+
+## Transitions
+
+The default transition is `{ transition: 'pop', duration: 200 }`. Customize it with
+`transitionProps`:
+
+```vue
+<ActionBar v-model:opened="opened" :transition-props="{ transition: 'slide-up', duration: 300 }">
+  <Button>Delete</Button>
+</ActionBar>
+```
+
+## keepMounted
+
+Set `keepMounted` to preserve child state while closed. The root remains mounted with
+`display: none`.
+
+```vue
+<ActionBar :opened="false" keep-mounted>
+  <Button>Delete</Button>
+</ActionBar>
+```
+
+## Rendering in a portal
+
+`ActionBar` renders in a [Portal](/core/portal) by default. Set `withinPortal="false"` to render
+in place, or use `portalProps` to configure the portal.
+
+<StylesApiSelectors component="ActionBar" />
