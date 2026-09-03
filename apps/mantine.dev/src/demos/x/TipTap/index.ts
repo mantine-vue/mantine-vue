@@ -10,6 +10,9 @@ import { bubbleMenu } from './TipTap.demo.bubbleMenu'
 import { floatingMenu } from './TipTap.demo.floatingMenu'
 import { customControl } from './TipTap.demo.customControl'
 import { icons } from './TipTap.demo.icons'
+import { table } from './TipTap.demo.table'
+import { details } from './TipTap.demo.details'
+import { invisibleCharacters } from './TipTap.demo.invisibleCharacters'
 
 export const TipTapDemos = {
   usage,
@@ -24,4 +27,7 @@ export const TipTapDemos = {
   floatingMenu,
   customControl,
   icons,
+  table,
+  details,
+  invisibleCharacters,
 }

@@ -1,4 +1,5 @@
-import type { NotificationData } from '../../notifications.store'
+import type { VNodeChild } from 'vue'
+import type { NotificationData, NotificationPosition } from '../../notifications.store'
 
 /** Internal props accepted by `NotificationContainer`. */
 export interface NotificationContainerProps {
@@ -14,6 +15,22 @@ export interface NotificationContainerProps {
   allowScrollDismiss: boolean
   /** Pauses the auto-close timer. */
   paused: boolean
+  /** Custom renderer used instead of the default Notification component. */
+  renderNotification?: ((notification: NotificationData) => VNodeChild) | null
+  /** Notification layout inherited from the notifications container. */
+  layout?: 'default' | 'stacked'
+  /** Zero-based position of the notification in its stack. */
+  stackIndex?: number
+  /** Total number of notifications in the stack. */
+  stackSize?: number
+  /** Screen position used to determine stack expansion direction. */
+  stackPosition?: NotificationPosition
+  /** Determines whether the notification stack is expanded. */
+  stackExpanded?: boolean
+  /** Pixel offset applied when the notification stack is expanded. */
+  stackExpandedOffset?: number
+  /** Current transition state used to coordinate stacked transforms. */
+  transitionState?: 'entered' | 'exited' | 'exiting'
 }
 
 /** Events emitted by `NotificationContainer`. */
@@ -24,4 +41,6 @@ export interface NotificationContainerEmits {
   hoverStart: []
   /** Emitted when the pointer leaves the notification. */
   hoverEnd: []
+  expandRequest: []
+  heightChange: [height: number]
 }

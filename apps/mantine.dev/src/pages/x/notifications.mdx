@@ -94,6 +94,7 @@ import {
 - `onClose` – called when the notification is unmounted
 - `onOpen` – called when the notification is mounted
 - `autoClose` – defines timeout in ms after which the notification will be automatically closed; use `false` to disable auto close
+- `priority` – controls which notifications occupy visible slots when `limit` is reached; higher values are shown first
 - `message` – required notification body
 - `color, icon, title, radius, className, style, loading` – props passed down to the [Notification](/core/notification/) component
 
@@ -205,6 +206,14 @@ and displayed when a notification from the current state is hidden.
 
 <Demo data={NotificationsDemos.limit} />
 
+## Priority
+
+Notifications use insertion order when priorities are equal. Set `priority` in `show` or `update`
+to promote urgent items when the visible limit is reached. Priority is applied independently per
+position. A high-priority notification can move a visible lower-priority item back to the queue.
+
+<Demo data={NotificationsDemos.priority} />
+
 ## Remove notifications from state and queue
 
 To remove a specific notification from state or queue, use the `notifications.hide` function:
@@ -278,6 +287,22 @@ import { Notifications } from '@mantine-vue/notifications'
   <Notifications pause-reset-on-hover="notification" />
 </template>
 ```
+
+## Custom notification rendering
+
+Use `renderNotification` on `Notifications`, or on an individual notification, to replace the
+default `Notification` content while retaining transitions and dismiss interactions. Returning
+`null` from a per-notification override uses the global renderer.
+
+<Demo data={NotificationsDemos.renderNotification} />
+
+## Stacked layout
+
+Set `layout="stacked"` to collapse notifications at each position. The stack expands on hover,
+keyboard focus or touch. Hidden items are inert and their auto-close timers are paused until the
+stack is expanded.
+
+<Demo data={NotificationsDemos.stacked} />
 
 ## Subscribe to notifications state
 

@@ -16,6 +16,14 @@ Foreground all-day events are pinned to the top of their resource row. Backgroun
 
 <Demo data={ResourcesDayViewDemos.allDayEvents} />
 
+## Interactive background events
+
+Set `withInteractiveBackgroundEvents` to make background events focusable and clickable.
+The `eventClick` payload retains the event `resourceId`. Background events still cannot be
+dragged or resized.
+
+<Demo data={ResourcesDayViewDemos.interactiveBackgroundEvents} />
+
 ## Time range and intervals
 
 Use `startTime`, `endTime` and `intervalMinutes` to control the visible time range and granularity.
@@ -51,6 +59,12 @@ The `eventDrop` payload includes the target `resourceId`, so events can move bet
 
 <Demo data={ResourcesDayViewDemos.dragDrop} />
 
+## Drag interval
+
+Set `eventDragInterval` to use a drag snap step that differs from `intervalMinutes`.
+
+<Demo data={ResourcesDayViewDemos.eventDragInterval} />
+
 ## External and bidirectional drag and drop
 
 <Demo data={ResourcesDayViewDemos.externalDragDrop} />
@@ -59,6 +73,12 @@ The `eventDrop` payload includes the target `resourceId`, so events can move bet
 ## Event resize and event form
 
 <Demo data={ResourcesDayViewDemos.eventResize} />
+
+## Resize interval
+
+Set `eventResizeInterval` to use a resize snap step that differs from `intervalMinutes`.
+
+<Demo data={ResourcesDayViewDemos.eventResizeInterval} />
 <Demo data={ResourcesDayViewDemos.eventForm} />
 
 ## Business hours

@@ -46,6 +46,20 @@ describe('@mantine-vue/tiptap', () => {
       'TaskListSink',
       'TaskListLift',
       'SourceCode',
+      'TableInsert',
+      'TableColumnBefore',
+      'TableColumnAfter',
+      'TableColumnDelete',
+      'TableRowBefore',
+      'TableRowAfter',
+      'TableRowDelete',
+      'TableMergeCells',
+      'TableSplitCell',
+      'TableToggleHeaderColumn',
+      'TableToggleHeaderRow',
+      'TableDelete',
+      'Details',
+      'InvisibleCharacters',
     ] as const) {
       expect(RichTextEditor[key]).toBeTruthy()
     }

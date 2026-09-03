@@ -29,6 +29,17 @@ import {
   IconSuperscript,
   IconUnderline,
   IconUnlink,
+  IconTableOff,
+  IconColumnInsertLeft,
+  IconColumnInsertRight,
+  IconColumnRemove,
+  IconRowInsertTop,
+  IconRowInsertBottom,
+  IconRowRemove,
+  IconTableHeaderRow,
+  IconTableHeaderColumn,
+  IconTableMergeCells,
+  IconTableSplitCell,
 } from '../icons/Icons'
 import { createControl } from './RichTextEditorControl'
 
@@ -209,4 +220,70 @@ export const TaskListLiftControl = createControl({
   icon: IconIndentDecrease,
   operation: { name: 'liftListItem', attributes: 'taskItem' },
   isDisabled: (editor) => !editor?.can().liftListItem('taskItem'),
+})
+export const TableDeleteControl = createControl({
+  label: 'tableDeleteControlLabel',
+  icon: IconTableOff,
+  operation: { name: 'deleteTable' },
+  isDisabled: (editor) => !(editor.can() as any).deleteTable?.(),
+})
+export const TableColumnBeforeControl = createControl({
+  label: 'tableColumnBeforeControlLabel',
+  icon: IconColumnInsertLeft,
+  operation: { name: 'addColumnBefore' },
+  isDisabled: (editor) => !(editor.can() as any).addColumnBefore?.(),
+})
+export const TableColumnAfterControl = createControl({
+  label: 'tableColumnAfterControlLabel',
+  icon: IconColumnInsertRight,
+  operation: { name: 'addColumnAfter' },
+  isDisabled: (editor) => !(editor.can() as any).addColumnAfter?.(),
+})
+export const TableColumnDeleteControl = createControl({
+  label: 'tableColumnDeleteControlLabel',
+  icon: IconColumnRemove,
+  operation: { name: 'deleteColumn' },
+  isDisabled: (editor) => !(editor.can() as any).deleteColumn?.(),
+})
+export const TableRowBeforeControl = createControl({
+  label: 'tableRowBeforeControlLabel',
+  icon: IconRowInsertTop,
+  operation: { name: 'addRowBefore' },
+  isDisabled: (editor) => !(editor.can() as any).addRowBefore?.(),
+})
+export const TableRowAfterControl = createControl({
+  label: 'tableRowAfterControlLabel',
+  icon: IconRowInsertBottom,
+  operation: { name: 'addRowAfter' },
+  isDisabled: (editor) => !(editor.can() as any).addRowAfter?.(),
+})
+export const TableRowDeleteControl = createControl({
+  label: 'tableRowDeleteControlLabel',
+  icon: IconRowRemove,
+  operation: { name: 'deleteRow' },
+  isDisabled: (editor) => !(editor.can() as any).deleteRow?.(),
+})
+export const TableToggleHeaderRowControl = createControl({
+  label: 'tableToggleHeaderRowControlLabel',
+  icon: IconTableHeaderRow,
+  operation: { name: 'toggleHeaderRow' },
+  isDisabled: (editor) => !(editor.can() as any).toggleHeaderRow?.(),
+})
+export const TableToggleHeaderColumnControl = createControl({
+  label: 'tableToggleHeaderColumnControlLabel',
+  icon: IconTableHeaderColumn,
+  operation: { name: 'toggleHeaderColumn' },
+  isDisabled: (editor) => !(editor.can() as any).toggleHeaderColumn?.(),
+})
+export const TableMergeCellsControl = createControl({
+  label: 'tableMergeCellsControlLabel',
+  icon: IconTableMergeCells,
+  operation: { name: 'mergeCells' },
+  isDisabled: (editor) => !(editor.can() as any).mergeCells?.(),
+})
+export const TableSplitCellControl = createControl({
+  label: 'tableSplitCellControlLabel',
+  icon: IconTableSplitCell,
+  operation: { name: 'splitCell' },
+  isDisabled: (editor) => !(editor.can() as any).splitCell?.(),
 })

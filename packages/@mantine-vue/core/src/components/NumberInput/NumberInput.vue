@@ -478,7 +478,7 @@ function onFocus(event: FocusEvent) {
 
   if (props.selectAllOnFocus) {
     // Deferred: the browser sets its own selection after the focus event.
-    setTimeout(() => (event.currentTarget as HTMLInputElement).select(), 0)
+    window.setTimeout(() => inputRef.value?.select(), 0)
   } else {
     scheduleCaretClamp(event.currentTarget as HTMLInputElement)
   }

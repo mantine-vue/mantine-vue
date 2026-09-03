@@ -4,6 +4,7 @@ export interface StepperContextValue {
   getStyles: (selector: string, options?: Record<string, any>) => any
   orientation: 'horizontal' | 'vertical'
   iconPosition: 'left' | 'right'
+  labelPosition?: 'right' | 'bottom'
 }
 
 export const [provideStepperContext, useStepperContext] = createSafeContext<StepperContextValue>(

@@ -6,6 +6,7 @@ import { clean } from './Notifications.demo.clean'
 import { update } from './Notifications.demo.update'
 import { autoclose } from './Notifications.demo.autoclose'
 import { store } from './Notifications.demo.store'
+import { priority, renderNotification, stacked } from './Notifications.demo.newFeatures'
 
 export const NotificationsDemos = {
   base,
@@ -16,4 +17,7 @@ export const NotificationsDemos = {
   update,
   autoclose,
   store,
+  priority,
+  renderNotification,
+  stacked,
 }

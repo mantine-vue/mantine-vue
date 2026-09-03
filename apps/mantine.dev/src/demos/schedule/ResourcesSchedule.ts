@@ -79,6 +79,19 @@ const events: ScheduleEventData[] = [
   },
 ]
 
+const eventsWithBackground: ScheduleEventData[] = [
+  ...events,
+  {
+    id: 'tokyo-maintenance',
+    title: 'Room maintenance',
+    start: '2026-07-15 08:00:00',
+    end: '2026-07-15 12:00:00',
+    color: 'gray',
+    resourceId: 'tokyo',
+    display: 'background',
+  },
+]
+
 const keys = [
   'usage',
   'controlled',
@@ -88,6 +101,8 @@ const keys = [
   'eventForm',
   'externalDragDrop',
   'eventResize',
+  'interactiveBackgroundEvents',
+  'eventIntervals',
   'staticMode',
 ] as const
 
@@ -114,6 +129,22 @@ export const ResourcesScheduleDemos = createDemoRegistry(
       codeProps:
         ":day-view-props=\"{ startTime: '08:00:00', endTime: '18:00:00', intervalMinutes: 30 }\"\n    :week-view-props=\"{ startTime: '09:00:00', endTime: '17:00:00' }\"\n    :month-view-props=\"{ withWeekendDays: false }\"",
       description: 'Pass view-specific props with dayViewProps, weekViewProps and monthViewProps.',
+    },
+    interactiveBackgroundEvents: {
+      events: eventsWithBackground,
+      props: { withInteractiveBackgroundEvents: true },
+      codeProps: 'with-interactive-background-events',
+      description: 'Background events keep their resource and become keyboard/click interactive.',
+    },
+    eventIntervals: {
+      props: {
+        withEventsDragAndDrop: true,
+        withEventResize: true,
+        eventDragInterval: 15,
+        eventResizeInterval: 15,
+      },
+      codeProps:
+        'with-events-drag-and-drop\n    with-event-resize\n    :event-drag-interval="15"\n    :event-resize-interval="15"',
     },
   },
   {

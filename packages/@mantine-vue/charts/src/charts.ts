@@ -3,15 +3,20 @@ import type { DefineComponent, HTMLAttributes, VNodeChild } from 'vue'
 import { createChartComponent } from './internal/component'
 import {
   cartesianOption,
+  candlestickOption,
+  gaugeOption,
   heatmapOption,
+  matrixOption,
   radarOption,
   radialBarOption,
   radialOption,
   scatterOption,
   simpleOption,
   sparklineOption,
+  waffleOption,
 } from './internal/options'
 import type {
+  BaseChartStylesNames,
   ChartData,
   ChartOptionProps,
   ChartRootProps,
@@ -64,7 +69,7 @@ export interface LineChartProps extends GridChartBaseProps {
 }
 export interface AreaChartProps extends GridChartBaseProps {
   series: AreaChartSeries[]
-  type?: 'default' | 'stacked' | 'percent' | 'split'
+  type?: 'default' | 'stacked' | 'percent' | 'split' | 'stream'
   withGradient?: boolean
   curveType?: AreaChartCurveType
   withDots?: boolean
@@ -289,6 +294,105 @@ export interface HeatmapProps extends ChartRootProps {
   legendLabels?: [string, string]
 }
 
+export interface GaugeChartSection {
+  value: number
+  color: MantineColor
+}
+export interface GaugeChartProps extends ChartRootProps {
+  value: number
+  min?: number
+  max?: number
+  target?: number
+  sections?: GaugeChartSection[]
+  thickness?: number
+  size?: number
+  startAngle?: number
+  endAngle?: number
+  label?: VNodeChild
+  valueFormatter?: (value: number) => string
+  trackColor?: MantineColor
+  filledColor?: MantineColor
+  targetColor?: MantineColor
+  targetSize?: number
+  roundCaps?: boolean
+}
+
+export interface WaffleChartCell {
+  name: string
+  value: number
+  color: MantineColor
+  key?: string | number
+}
+export interface WaffleChartProps extends ChartRootProps {
+  data: WaffleChartCell[]
+  rows?: number
+  columns?: number
+  total?: number
+  gap?: number
+  cellRadius?: number
+  cellSize?: number
+  emptyColor?: MantineColor
+  withTooltip?: boolean
+  getTooltipLabel?: (cell: WaffleChartCell & { count: number }) => VNodeChild
+  withLegend?: boolean
+  legendPosition?: 'top' | 'bottom' | 'left' | 'right'
+  fillDirection?: 'left-to-right' | 'right-to-left' | 'top-to-bottom' | 'bottom-to-top'
+  size?: number
+}
+
+export interface MatrixChartCell {
+  x: string
+  y: string
+  value: number | null
+}
+export type MatrixChartData = MatrixChartCell[]
+export interface MatrixChartProps extends ChartRootProps {
+  data: MatrixChartData
+  xLabels?: string[]
+  yLabels?: string[]
+  domain?: [number, number]
+  colors?: MantineColor[]
+  cellSize?: number
+  gap?: number
+  cellRadius?: number
+  withTooltip?: boolean
+  getTooltipLabel?: (cell: MatrixChartCell) => VNodeChild
+  tooltipProps?: ChartOptionProps
+  getCellProps?: (cell: MatrixChartCell) => Record<string, unknown>
+  yLabelsWidth?: number
+  xLabelsHeight?: number
+  xLabelsPosition?: 'top' | 'bottom'
+  fontSize?: number
+  emptyColor?: MantineColor
+  withLegend?: boolean
+  legendLabels?: [string, string]
+  withXLabels?: boolean
+  withYLabels?: boolean
+  xLabelsRotation?: number
+}
+
+export interface CandlestickChartDataKeys {
+  open: string
+  high: string
+  low: string
+  close: string
+}
+export interface CandlestickChartLabels {
+  open: string
+  high: string
+  low: string
+  close: string
+}
+export interface CandlestickChartProps extends GridChartBaseProps {
+  dataKeys?: CandlestickChartDataKeys
+  labels?: Partial<CandlestickChartLabels>
+  upColor?: MantineColor
+  downColor?: MantineColor
+  maxCandleWidth?: number
+  candleStrokeWidth?: number
+  composedChartProps?: ChartOptionProps
+}
+
 export interface BarsListBarData {
   name: string
   value: number
@@ -376,6 +480,22 @@ export const BarsList = createChartComponent('BarsList', (p) =>
     'bar',
   ),
 ) as PublicComponent<BarsListProps>
+export const GaugeChart = createChartComponent(
+  'GaugeChart',
+  gaugeOption,
+) as PublicComponent<GaugeChartProps>
+export const WaffleChart = createChartComponent(
+  'WaffleChart',
+  waffleOption,
+) as PublicComponent<WaffleChartProps>
+export const MatrixChart = createChartComponent(
+  'MatrixChart',
+  matrixOption,
+) as PublicComponent<MatrixChartProps>
+export const CandlestickChart = createChartComponent(
+  'CandlestickChart',
+  candlestickOption,
+) as PublicComponent<CandlestickChartProps>
 
 export type AreaChartStylesNames =
   | 'area'
@@ -438,6 +558,24 @@ export type HeatmapStylesNames =
   | 'legendLabel'
   | 'legendRect'
 export type BarsListStylesNames = 'root' | 'bar' | 'barLabel' | 'barValue' | 'labelsRow'
+export type GaugeChartStylesNames = 'root' | 'track' | 'section' | 'needle' | 'label'
+export type WaffleChartStylesNames =
+  | 'root'
+  | 'grid'
+  | 'cell'
+  | 'legend'
+  | 'legendItem'
+  | 'legendSwatch'
+  | 'legendLabel'
+export type MatrixChartStylesNames =
+  | 'root'
+  | 'cell'
+  | 'xLabel'
+  | 'yLabel'
+  | 'legend'
+  | 'legendLabel'
+  | 'legendRect'
+export type CandlestickChartStylesNames = 'candle' | BaseChartStylesNames | ChartTooltipStylesNames
 
 export type ChartTooltipStylesNames =
   | 'tooltip'

@@ -12,3 +12,9 @@ export default Layout(MDX_DATA.LineChart)
 ## Curve type
 
 Use `curveType` to select linear, natural, monotone, bump, or step interpolation. Null values are connected by default; set `:connectNulls="false"` to preserve gaps.
+
+## Reference areas and dots
+
+Use `referenceAreas` to highlight x/y ranges and `referenceDots` to annotate exact points.
+
+<Demo data={ChartsDemos.lineChartReferences} />

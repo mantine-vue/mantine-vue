@@ -199,6 +199,71 @@ To use tasks, you will need to install additional packages:
 
 <Demo data={TipTapDemos.tasks} />
 
+## Table
+
+Install and register `TableKit`, which bundles the required table, row, header and cell nodes:
+
+<InstallScript packages="@tiptap/extension-table" />
+
+<Demo data={TipTapDemos.table} />
+
+Available controls:
+
+- `TableInsert` opens a grid for selecting dimensions and supports `maxColumns`, `maxRows`,
+  `withHeaderRow` and `popoverProps`.
+- `TableDelete` removes the table.
+- `TableColumnBefore`, `TableColumnAfter`, and `TableColumnDelete` manage columns.
+- `TableRowBefore`, `TableRowAfter`, and `TableRowDelete` manage rows.
+- `TableToggleHeaderRow` and `TableToggleHeaderColumn` toggle headers.
+- `TableMergeCells` and `TableSplitCell` manage selected cells.
+
+Controls are disabled when the extension is absent. Controls other than `TableInsert` also require
+the cursor to be inside a table.
+
+## Details
+
+Install and register `Details`, `DetailsSummary`, and `DetailsContent`:
+
+<InstallScript packages="@tiptap/extension-details" />
+
+<Demo data={TipTapDemos.details} />
+
+`RichTextEditor.Details` wraps the current block in a details node or removes the surrounding node.
+It is disabled when the extension is unavailable.
+
+## Invisible characters
+
+Install the extension with `visible: false` when marks should initially be hidden:
+
+<InstallScript packages="@tiptap/extension-invisible-characters" />
+
+<Demo data={TipTapDemos.invisibleCharacters} />
+
+`RichTextEditor.InvisibleCharacters` toggles spaces, paragraph breaks and hard-break markers. Its
+active state follows extension storage and it is disabled when the command is unavailable.
+
+## Removing paragraph wrappers
+
+Tiptap table cells and list items allow block content by default, which produces markup such as
+`<td><p>Text</p></td>`. Override a node schema with `content: 'inline*'` only when a cell must be
+single-line:
+
+```ts
+import { TableCell, TableHeader, TableKit } from '@tiptap/extension-table'
+
+const editor = useEditor({
+  extensions: [
+    StarterKit,
+    TableKit.configure({ tableCell: false, tableHeader: false }),
+    TableCell.extend({ content: 'inline*' }),
+    TableHeader.extend({ content: 'inline*' }),
+  ],
+})
+```
+
+Inline-only cells cannot contain multiple paragraphs or other block nodes; keep the default schema
+unless that restriction is intended.
+
 ## Typography styles
 
 By default, `RichTextEditor` renders content with [Typography](/core/typography) and some additional styles.

@@ -45,9 +45,26 @@ export interface RichTextEditorLabels {
   tasksControlLabel: string
   tasksSinkLabel: string
   tasksLiftLabel: string
+  tableInsertControlLabel?: string
+  tableInsertLabel?: (columns: number, rows: number) => string
+  tableDeleteControlLabel?: string
+  tableColumnBeforeControlLabel?: string
+  tableColumnAfterControlLabel?: string
+  tableColumnDeleteControlLabel?: string
+  tableRowBeforeControlLabel?: string
+  tableRowAfterControlLabel?: string
+  tableRowDeleteControlLabel?: string
+  tableToggleHeaderRowControlLabel?: string
+  tableToggleHeaderColumnControlLabel?: string
+  tableMergeCellsControlLabel?: string
+  tableSplitCellControlLabel?: string
+  detailsControlLabel?: string
+  invisibleCharactersControlLabel?: string
 }
 
-export const DEFAULT_LABELS: RichTextEditorLabels = {
+export type ResolvedRichTextEditorLabels = Required<RichTextEditorLabels>
+
+export const DEFAULT_LABELS: ResolvedRichTextEditorLabels = {
   linkControlLabel: 'Link',
   colorPickerControlLabel: 'Text color',
   highlightControlLabel: 'Highlight text',
@@ -83,6 +100,21 @@ export const DEFAULT_LABELS: RichTextEditorLabels = {
   tasksControlLabel: 'Task list',
   tasksSinkLabel: 'Decrease task level',
   tasksLiftLabel: 'Increase task level',
+  tableInsertControlLabel: 'Insert table',
+  tableInsertLabel: (columns, rows) => `Insert ${columns} × ${rows} table`,
+  tableDeleteControlLabel: 'Delete table',
+  tableColumnBeforeControlLabel: 'Add column before',
+  tableColumnAfterControlLabel: 'Add column after',
+  tableColumnDeleteControlLabel: 'Delete column',
+  tableRowBeforeControlLabel: 'Add row before',
+  tableRowAfterControlLabel: 'Add row after',
+  tableRowDeleteControlLabel: 'Delete row',
+  tableToggleHeaderRowControlLabel: 'Toggle header row',
+  tableToggleHeaderColumnControlLabel: 'Toggle header column',
+  tableMergeCellsControlLabel: 'Merge cells',
+  tableSplitCellControlLabel: 'Split cell',
+  detailsControlLabel: 'Toggle collapsible section',
+  invisibleCharactersControlLabel: 'Toggle invisible characters',
   linkEditorInputLabel: 'Enter URL',
   linkEditorInputPlaceholder: 'https://example.com/',
   linkEditorExternalLink: 'Open link in a new tab',

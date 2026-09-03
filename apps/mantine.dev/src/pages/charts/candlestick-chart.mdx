@@ -1,0 +1,69 @@
+import { CandlestickChartDemos } from '@/demos/charts'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.CandlestickChart)
+
+## Usage
+
+`CandlestickChart` displays open, high, low and close values. Rising candles use `upColor`,
+falling candles use `downColor`; the wick spans low to high and the body spans open to close.
+
+<Demo data={CandlestickChartDemos.usage} />
+
+The y-axis domain is based on the lowest low and highest high instead of starting at zero.
+Override it through `yAxisProps` when needed.
+
+## Data
+
+Each item contains the x-axis value and four numeric OHLC values:
+
+```ts
+interface CandlestickChartData {
+  date: string
+  open: number
+  high: number
+  low: number
+  close: number
+}
+```
+
+## Custom data keys
+
+The default keys are `open`, `high`, `low`, and `close`. Map another schema with `dataKeys`.
+
+<Demo data={CandlestickChartDemos.dataKeys} />
+
+## Colors
+
+<Demo data={CandlestickChartDemos.colors} />
+
+## Candle width
+
+Use `maxCandleWidth` to keep candles from becoming excessively wide with small datasets.
+
+<Demo data={CandlestickChartDemos.maxCandleWidth} />
+
+## Value formatter
+
+`valueFormatter` formats the y-axis and tooltip values.
+
+<Demo data={CandlestickChartDemos.valueFormatter} />
+
+## Tooltip labels
+
+Override the default Open/High/Low/Close labels:
+
+<Demo data={CandlestickChartDemos.tooltipLabels} />
+
+## Axis labels
+
+<Demo data={CandlestickChartDemos.axisLabels} />
+
+## Reference lines
+
+Reference lines can mark support, resistance and other thresholds.
+
+<Demo data={CandlestickChartDemos.referenceLines} />
+
+<StylesApiSelectors component="CandlestickChart" />

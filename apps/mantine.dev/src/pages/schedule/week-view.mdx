@@ -185,6 +185,12 @@ Enable drag and drop by setting `withEventsDragAndDrop` prop. Events can be drag
 
 <Demo data={WeekViewDemos.dragDrop} />
 
+## Drag interval
+
+Set `eventDragInterval` to use a drag snap step that differs from `intervalMinutes`.
+
+<Demo data={WeekViewDemos.eventDragInterval} />
+
 ## Restrict draggable events
 
 Use `canDragEvent` callback to control which events can be dragged.
@@ -218,6 +224,12 @@ edge of an event to adjust its start or end time. Listen for the `eventResize` e
 the resize. Use `canResizeEvent` to control which events can be resized.
 
 <Demo data={WeekViewDemos.eventResize} />
+
+## Resize interval
+
+Set `eventResizeInterval` to use a resize snap step that differs from `intervalMinutes`.
+
+<Demo data={WeekViewDemos.eventResizeInterval} />
 
 ## Restrict resizable events
 
@@ -256,6 +268,13 @@ non-interactive block behind regular events. Background events are useful for ma
 unavailability, lunch breaks, focus time, or other blocked periods.
 
 <Demo data={WeekViewDemos.backgroundEvents} />
+
+## Interactive background events
+
+Set `withInteractiveBackgroundEvents` to make background events focusable and clickable.
+They emit `eventClick` like regular events, but still cannot be dragged or resized.
+
+<Demo data={WeekViewDemos.interactiveBackgroundEvents} />
 
 ## Custom background event styles with drag and drop blocking
 

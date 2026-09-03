@@ -1,4 +1,4 @@
-import { type Ref } from 'vue'
+import { type Ref, type VNodeChild } from 'vue'
 import { createStore, type MantineStore } from '@mantine-vue/store'
 
 export type NotificationPosition =
@@ -26,6 +26,8 @@ export interface NotificationData extends Record<`data-${string}`, any> {
   onClose?: (props: NotificationData) => void
   /** Called when notification opens. */
   onOpen?: (props: NotificationData) => void
+  /** Custom renderer that replaces the default notification. Set to `null` to use default rendering when a global renderer is configured. */
+  renderNotification?: ((notification: NotificationData) => VNodeChild) | null
   style?: any
   withCloseButton?: boolean
   [key: string]: any
@@ -44,7 +46,7 @@ function randomId() {
   return `mantine-${Math.random().toString(36).slice(2, 11)}`
 }
 
-interface SequencedNotificationData extends NotificationData {
+export interface SequencedNotificationData extends NotificationData {
   __sequence?: number
 }
 

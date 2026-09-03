@@ -68,6 +68,7 @@ type ResourcesScheduleCommonProps =
   | 'onEventResize'
   | 'canResizeEvent'
   | 'recurrenceExpansionLimit'
+  | 'withInteractiveBackgroundEvents'
   | 'classNames'
   | 'styles'
   | 'unstyled'
@@ -180,6 +181,9 @@ export interface ResourcesScheduleOwnProps extends StylesApiProps<ResourcesSched
    * @default () => true
    */
   canResizeEvent?: (event: ScheduleEventData) => boolean
+
+  /** If set, background events can be focused and clicked in day and week views. */
+  withInteractiveBackgroundEvents?: boolean
 
   /**
    * Maximum number of instances generated per recurring series.

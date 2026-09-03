@@ -5,6 +5,7 @@ import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { spawnSync } from 'node:child_process'
 import { createRequire } from 'node:module'
+import { getPackageBuildOrder, readPackages } from './read-packages'
 
 export interface DeclarationPackage {
   name: string
@@ -16,26 +17,7 @@ const repositoryRoot = resolve(dirname(fileURLToPath(import.meta.url)), '../..')
 const require = createRequire(import.meta.url)
 
 function getPackages(): DeclarationPackage[] {
-  const packagePaths = [
-    'utils',
-    'hooks',
-    'store',
-    'core',
-    'code-highlight',
-    'contextmenu',
-    'dates',
-    'form',
-    'notifications',
-    'nprogress',
-    'schedule',
-    'spotlight',
-    'tiptap',
-  ].map((name) => join(repositoryRoot, 'packages', '@mantine-vue', name))
-
-  return packagePaths.map((path) => {
-    const manifest = JSON.parse(readFileSync(join(path, 'package.json'), 'utf8'))
-    return { name: manifest.name, path, private: manifest.private }
-  })
+  return getPackageBuildOrder(readPackages(join(repositoryRoot, 'packages')))
 }
 
 export function generateDeclarations(packages: DeclarationPackage[] = getPackages()) {

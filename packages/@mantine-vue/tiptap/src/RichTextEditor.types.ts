@@ -36,11 +36,25 @@ import type {
   TaskListControl,
   TaskListSinkControl,
   TaskListLiftControl,
+  TableDeleteControl,
+  TableColumnBeforeControl,
+  TableColumnAfterControl,
+  TableColumnDeleteControl,
+  TableRowBeforeControl,
+  TableRowAfterControl,
+  TableRowDeleteControl,
+  TableToggleHeaderRowControl,
+  TableToggleHeaderColumnControl,
+  TableMergeCellsControl,
+  TableSplitCellControl,
 } from './RichTextEditorControl/controls'
 import type { RichTextEditorColorControl } from './RichTextEditorControl/RichTextEditorColorControl'
 import type { RichTextEditorColorPickerControl } from './RichTextEditorControl/RichTextEditorColorPickerControl'
 import type { RichTextEditorLinkControl } from './RichTextEditorControl/RichTextEditorLinkControl'
 import type { RichTextEditorSourceCodeControl } from './RichTextEditorControl/RichTextEditorSourceCodeControl'
+import type { RichTextEditorTableInsertControl } from './RichTextEditorControl/RichTextEditorTableInsertControl'
+import type { RichTextEditorDetailsControl } from './RichTextEditorControl/RichTextEditorDetailsControl'
+import type { RichTextEditorInvisibleCharactersControl } from './RichTextEditorControl/RichTextEditorInvisibleCharactersControl'
 import type { RichTextEditorControlsGroup } from './RichTextEditorControlsGroup/RichTextEditorControlsGroup'
 import type { RichTextEditorToolbar } from './RichTextEditorToolbar/RichTextEditorToolbar'
 
@@ -59,6 +73,10 @@ export type RichTextEditorStylesNames =
   | 'linkEditor'
   | 'linkEditorInput'
   | 'linkEditorExternalControl'
+  | 'tableInsertDropdown'
+  | 'tableInsertGrid'
+  | 'tableInsertCell'
+  | 'tableInsertLabel'
 
 export interface RichTextEditorOwnProps extends StylesApiProps<RichTextEditorFactory> {
   /** Tiptap editor instance. */
@@ -134,5 +152,19 @@ export type RichTextEditorFactory = Factory<{
     TaskListSink: typeof TaskListSinkControl
     TaskListLift: typeof TaskListLiftControl
     SourceCode: typeof RichTextEditorSourceCodeControl
+    TableInsert: typeof RichTextEditorTableInsertControl
+    TableDelete: typeof TableDeleteControl
+    TableColumnBefore: typeof TableColumnBeforeControl
+    TableColumnAfter: typeof TableColumnAfterControl
+    TableColumnDelete: typeof TableColumnDeleteControl
+    TableRowBefore: typeof TableRowBeforeControl
+    TableRowAfter: typeof TableRowAfterControl
+    TableRowDelete: typeof TableRowDeleteControl
+    TableToggleHeaderRow: typeof TableToggleHeaderRowControl
+    TableToggleHeaderColumn: typeof TableToggleHeaderColumnControl
+    TableMergeCells: typeof TableMergeCellsControl
+    TableSplitCell: typeof TableSplitCellControl
+    Details: typeof RichTextEditorDetailsControl
+    InvisibleCharacters: typeof RichTextEditorInvisibleCharactersControl
   }
 }>

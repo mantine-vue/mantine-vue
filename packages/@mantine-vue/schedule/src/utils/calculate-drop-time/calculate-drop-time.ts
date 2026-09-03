@@ -1,5 +1,6 @@
 import dayjs from 'dayjs'
 import { AnyDateValue, ScheduleEventData } from '../../types'
+import { clampIntervalMinutes } from '../clamp-interval-minutes/clamp-interval-minutes'
 import { parseTimeString } from '../parse-time-string/parse-time-string'
 
 export interface CalculateDropTimeInput {
@@ -20,6 +21,21 @@ export interface CalculateDropTimeInput {
 
   /** Minutes per slot */
   intervalMinutes?: number
+
+  /** Pointer offset along the time axis within the target slot, in px. */
+  slotOffset?: number
+
+  /** Size of the target slot along the time axis, in px. */
+  slotSize?: number
+
+  /** Snap step for the resulting start time, in minutes. */
+  dragIntervalMinutes?: number
+
+  /** Start time boundary of the schedule in HH:mm:ss format. */
+  startTime?: string
+
+  /** End time boundary of the schedule in HH:mm:ss format. */
+  endTime?: string
 }
 
 export interface CalculateDropTimeResult {
@@ -37,6 +53,11 @@ export function calculateDropTime({
   mouseYOffset = 0,
   slotHeight = 64,
   intervalMinutes = 15,
+  slotOffset,
+  slotSize,
+  dragIntervalMinutes,
+  startTime,
+  endTime,
 }: CalculateDropTimeInput): CalculateDropTimeResult {
   const eventDuration = dayjs(draggedEvent.end).diff(dayjs(draggedEvent.start), 'millisecond')
 
@@ -47,8 +68,42 @@ export function calculateDropTime({
 
   let finalTargetTime = baseTargetTime
 
-  if (mouseYOffset > 0 && slotHeight > 0) {
-    const offsetRatio = mouseYOffset / slotHeight
+  const offset = slotOffset ?? mouseYOffset
+  const size = slotSize ?? slotHeight
+
+  if (dragIntervalMinutes != null) {
+    const clampedDrag = clampIntervalMinutes(dragIntervalMinutes)
+    const gridInterval = clampIntervalMinutes(intervalMinutes)
+    const slotStartMinutes = parsedTime.hours * 60 + parsedTime.minutes
+    const offsetRatio = size > 0 ? offset / size : 0
+    const rawStartMinutes = slotStartMinutes + offsetRatio * gridInterval
+    let snappedStartMinutes = Math.round(rawStartMinutes / clampedDrag) * clampedDrag
+
+    const parsedEnd = endTime ? parseTimeString(endTime) : null
+    const parsedStart = startTime ? parseTimeString(startTime) : null
+    const maxStart = parsedEnd
+      ? Math.floor((parsedEnd.hours * 60 + parsedEnd.minutes - 1) / clampedDrag) * clampedDrag
+      : null
+    const minStart = parsedStart
+      ? Math.ceil((parsedStart.hours * 60 + parsedStart.minutes) / clampedDrag) * clampedDrag
+      : null
+
+    if (minStart !== null && maxStart !== null && minStart > maxStart) {
+      snappedStartMinutes = parsedStart!.hours * 60 + parsedStart!.minutes
+    } else {
+      if (maxStart !== null) snappedStartMinutes = Math.min(snappedStartMinutes, maxStart)
+      if (minStart !== null) snappedStartMinutes = Math.max(snappedStartMinutes, minStart)
+    }
+
+    const dayOffset = Math.floor(snappedStartMinutes / 1440)
+    const minutesInDay = snappedStartMinutes - dayOffset * 1440
+    finalTargetTime = targetDay
+      .add(dayOffset, 'day')
+      .hour(Math.floor(minutesInDay / 60))
+      .minute(minutesInDay % 60)
+      .second(0)
+  } else if (offset > 0 && size > 0) {
+    const offsetRatio = offset / size
     const offsetMinutes = Math.round(offsetRatio * intervalMinutes)
     finalTargetTime = baseTargetTime.add(offsetMinutes, 'minute')
   }

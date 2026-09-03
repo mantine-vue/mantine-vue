@@ -1,5 +1,10 @@
+import type { VNodeChild } from 'vue'
 import type { ClassNames, Styles, Vars } from '@mantine-vue/core'
-import type { NotificationPosition, NotificationsStore } from '../../notifications.store'
+import type {
+  NotificationData,
+  NotificationPosition,
+  NotificationsStore,
+} from '../../notifications.store'
 
 export type NotificationsStylesNames = 'root' | 'notification'
 
@@ -35,6 +40,10 @@ export interface NotificationsProps {
   withinPortal?: boolean
   /** Determines which notifications should pause auto close on hover, `'all'` – pauses auto close for all notifications when any notification is hovered, `'notification'` – pauses auto close only for the hovered notification. @default 'all' */
   pauseResetOnHover?: 'all' | 'notification'
+  /** Custom render function that replaces the default notification. Can be overridden per notification. */
+  renderNotification?: (notification: NotificationData) => VNodeChild
+  /** Controls notification layout. @default 'default' */
+  layout?: 'default' | 'stacked'
   /** CSS classes applied to component elements. */
   classNames?: ClassNames<NotificationsProps>
   /** Inline styles applied to component elements. */

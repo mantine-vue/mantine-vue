@@ -75,6 +75,7 @@ const keys = [
   'usage',
   'staticMode',
   'dragDrop',
+  'eventResize',
   'eventForm',
   'renderEvent',
   'renderResourceLabel',

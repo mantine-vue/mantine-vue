@@ -142,6 +142,9 @@ export interface ScheduleOwnProps extends StylesApiProps<ScheduleFactory> {
    */
   canResizeEvent?: (event: ScheduleEventData) => boolean
 
+  /** If set, background events can be focused and clicked in day, week and month views. */
+  withInteractiveBackgroundEvents?: boolean
+
   /**
    * Maximum number of instances generated per recurring series.
    * @default 2000

@@ -16,11 +16,25 @@ All-day events span the correct day columns within their assigned resource row.
 
 <Demo data={ResourcesWeekViewDemos.allDayEvents} />
 
+## Interactive background events
+
+Set `withInteractiveBackgroundEvents` to make background events focusable and clickable.
+The `eventClick` payload retains the event `resourceId`. Background events still cannot be
+dragged or resized.
+
+<Demo data={ResourcesWeekViewDemos.interactiveBackgroundEvents} />
+
 ## Drag and drop and event form
 
 Events can move across resources, times and days. Drop payloads include the target `resourceId`.
 
 <Demo data={ResourcesWeekViewDemos.dragDrop} />
+
+## Drag interval
+
+Set `eventDragInterval` to use a drag snap step that differs from `intervalMinutes`.
+
+<Demo data={ResourcesWeekViewDemos.eventDragInterval} />
 <Demo data={ResourcesWeekViewDemos.eventForm} />
 
 ## Time range and intervals
@@ -71,6 +85,12 @@ Use render props with VNodes or the `resourceLabel` and `groupLabel` named slots
 Resize is constrained to the event's day, matching Mantine React.
 
 <Demo data={ResourcesWeekViewDemos.eventResize} />
+
+## Resize interval
+
+Set `eventResizeInterval` to use a resize snap step that differs from `intervalMinutes`.
+
+<Demo data={ResourcesWeekViewDemos.eventResizeInterval} />
 <Demo data={ResourcesWeekViewDemos.staticMode} />
 
 ## Keyboard navigation

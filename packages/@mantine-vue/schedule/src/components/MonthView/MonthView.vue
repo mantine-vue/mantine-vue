@@ -73,6 +73,7 @@ import {
 } from '../../utils'
 import { handleGridKeydown } from '../keyboard-navigation'
 import { MoreEvents } from '../MoreEvents'
+import { ScheduleBackgroundEvent } from '../ScheduleBackgroundEvent'
 import { ScheduleEvent } from '../ScheduleEvent'
 import { ScheduleHeaderBase, createHeaderNavigation } from '../ScheduleHeader/ScheduleHeaderBase'
 import { provideScheduleDragState } from '../DragContext'
@@ -110,6 +111,7 @@ const rawProps = withDefaults(defineProps<MonthViewOwnProps>(), {
   renderEventBody: undefined,
   renderEvent: undefined,
   recurrenceExpansionLimit: undefined,
+  withInteractiveBackgroundEvents: undefined,
   firstDayOfWeek: undefined,
   weekdayFormat: undefined,
   weekendDays: undefined,
@@ -382,6 +384,11 @@ const segmentStyle = (position: { startOffset: number; width: number; row: numbe
   top: `${EVENTS_TOP_OFFSET + position.row * EVENT_ROW_HEIGHT}px`,
 })
 
+const backgroundSegmentStyle = (position: { startOffset: number; width: number }) => ({
+  insetInlineStart: `calc(${position.startOffset}% + 2px)`,
+  width: `calc(${position.width}% - 3px)`,
+})
+
 const isDraggableEvent = (event: ScheduleEventData) =>
   !isStatic.value && props.withEventsDragAndDrop === true && (props.canDragEvent?.(event) ?? true)
 </script>
@@ -514,6 +521,16 @@ const isDraggableEvent = (event: ScheduleEventData) =>
           </div>
 
           <div v-bind="getStyles('monthViewEvents')">
+            <ScheduleBackgroundEvent
+              v-for="event in grouped.backgroundByWeek[String(weekIndex)] || []"
+              :key="`background-${event.id}-${weekIndex}`"
+              :event="event"
+              :interactive="Boolean(props.withInteractiveBackgroundEvents) && !isStatic"
+              v-bind="{ ...eventRenderers, ...staticStyles('monthViewBackgroundEvent') }"
+              :style="backgroundSegmentStyle(event.position)"
+              @event-click="clickEvent"
+            />
+
             <ScheduleEvent
               v-for="segment in weekSegments[weekIndex]"
               :key="segment.key"

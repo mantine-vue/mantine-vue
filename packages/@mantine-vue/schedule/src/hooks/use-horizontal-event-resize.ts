@@ -28,6 +28,7 @@ export function useHorizontalEventResize(input: {
   startTime: () => string
   endTime: () => string
   intervalMinutes: () => number
+  resizeIntervalMinutes?: () => number | undefined
   onEventResize: (data: EventDropData) => void
   canResizeEvent: () => ((event: ScheduleEventData) => boolean) | undefined
 }) {
@@ -40,7 +41,9 @@ export function useHorizontalEventResize(input: {
     const end = parseTimeString(input.endTime())
     const startMinutes = start.hours * 60 + start.minutes
     const literalRange = end.hours * 60 + end.minutes - startMinutes
-    const interval = clampIntervalMinutes(input.intervalMinutes())
+    const interval = clampIntervalMinutes(
+      input.resizeIntervalMinutes?.() ?? input.intervalMinutes(),
+    )
     const total = Math.ceil(literalRange / interval) * interval
     return { startMinutes, literalRange, interval, total, minWidth: (interval / total) * 100 }
   }

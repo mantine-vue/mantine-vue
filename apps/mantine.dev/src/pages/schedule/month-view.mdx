@@ -140,6 +140,13 @@ the day cell in the month view.
 
 <Demo data={MonthViewDemos.backgroundEvents} />
 
+## Interactive background events
+
+Set `withInteractiveBackgroundEvents` to make background events focusable and clickable.
+They emit `eventClick` like regular events, but still cannot be dragged or resized.
+
+<Demo data={MonthViewDemos.interactiveBackgroundEvents} />
+
 ## Static mode
 
 Set `mode="static"` to disable all interactions.

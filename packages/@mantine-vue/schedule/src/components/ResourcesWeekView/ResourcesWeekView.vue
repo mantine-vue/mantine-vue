@@ -72,12 +72,15 @@ import {
   getWeekDays,
   handleResourcesGridKeyDown,
   isInTimeRange,
+  clampIntervalMinutes,
+  parseTimeString,
   type ResourceGroupInfo,
   type ResourcesGridControls,
 } from '../../utils'
 import { provideScheduleDragState } from '../DragContext'
 import { MoreEvents } from '../MoreEvents'
 import { getOverlapClusters } from '../ResourcesDayView/get-overlap-clusters/get-overlap-clusters'
+import { ScheduleBackgroundEvent } from '../ScheduleBackgroundEvent'
 import { ScheduleEvent } from '../ScheduleEvent'
 import { ScheduleHeaderBase, createHeaderNavigation } from '../ScheduleHeader/ScheduleHeaderBase'
 import {
@@ -105,6 +108,8 @@ const rawProps = withDefaults(defineProps<ResourcesWeekViewOwnProps>(), {
   startTime: undefined,
   endTime: undefined,
   intervalMinutes: undefined,
+  eventDragInterval: undefined,
+  eventResizeInterval: undefined,
   slotLabelFormat: undefined,
   radius: undefined,
   startScrollDateTime: undefined,
@@ -128,6 +133,7 @@ const rawProps = withDefaults(defineProps<ResourcesWeekViewOwnProps>(), {
   businessHours: undefined,
   renderEventBody: undefined,
   renderEvent: undefined,
+  withInteractiveBackgroundEvents: undefined,
   renderResourceLabel: undefined,
   renderGroupLabel: undefined,
   canDragEvent: undefined,
@@ -320,6 +326,7 @@ const resize = useHorizontalEventResize({
   startTime: () => props.startTime!,
   endTime: () => props.endTime!,
   intervalMinutes: () => props.intervalMinutes!,
+  resizeIntervalMinutes: () => props.eventResizeInterval,
   onEventResize: (data) => emit('eventResize', data),
   canResizeEvent: () => props.canResizeEvent,
 })
@@ -401,7 +408,7 @@ const emitDrop = (nativeEvent: DragEvent, resourceId: string | number, flatIndex
     return
   }
 
-  const target = `${day} ${interval.startTime}` as DateTimeStringValue
+  const target = getSnappedDropTarget(nativeEvent, day, flatIndex, interval.startTime)
   const event = getDropEvent(props.events, nativeEvent.dataTransfer)
 
   if (event) {
@@ -413,6 +420,39 @@ const emitDrop = (nativeEvent: DragEvent, resourceId: string | number, flatIndex
       resourceId,
     })
   }
+}
+
+const getSnappedDropTarget = (
+  nativeEvent: DragEvent,
+  day: DateStringValue,
+  flatIndex: number,
+  slotStartTime: string,
+) => {
+  if (props.eventDragInterval == null) {
+    return `${day} ${slotStartTime}` as DateTimeStringValue
+  }
+
+  const container =
+    nativeEvent.currentTarget instanceof HTMLElement ? nativeEvent.currentTarget : null
+  const rect = container?.getBoundingClientRect()
+  const totalSlots = slotsPerDay.value * dayCount.value
+  const slotSize = rect && rect.width > 0 ? rect.width / totalSlots : 0
+  const slotOffset = rect ? nativeEvent.clientX - rect.left - flatIndex * slotSize : 0
+  const parsed = parseTimeString(slotStartTime)
+  const dragInterval = clampIntervalMinutes(props.eventDragInterval)
+  const raw =
+    parsed.hours * 60 +
+    parsed.minutes +
+    (slotSize > 0 ? slotOffset / slotSize : 0) * props.intervalMinutes!
+  const start = parseTimeString(props.startTime!)
+  const end = parseTimeString(props.endTime!)
+  const min = Math.ceil((start.hours * 60 + start.minutes) / dragInterval) * dragInterval
+  const max = Math.floor((end.hours * 60 + end.minutes - 1) / dragInterval) * dragInterval
+  const minutes =
+    min > max
+      ? start.hours * 60 + start.minutes
+      : Math.max(min, Math.min(max, Math.round(raw / dragInterval) * dragInterval))
+  return `${day} ${String(Math.floor(minutes / 60)).padStart(2, '0')}:${String(minutes % 60).padStart(2, '0')}:00` as DateTimeStringValue
 }
 
 const setDropTarget = (next: { resourceId: string | number; flatIndex: number } | null) => {
@@ -519,7 +559,6 @@ const backgroundEventStyle = (event: ScheduleEventData & { position: any }, dayI
     variant: 'light',
     autoContrast: true,
   })
-
   return {
     left: `${dayOffset(dayIndex) + (event.position.top / 100) * dayWidth.value}%`,
     right: `${
@@ -879,19 +918,16 @@ const changeView = (view: ScheduleViewLevel) => emit('viewChange', view)
                 :key="`bg-${entry.day}-${entry.event.id}`"
               >
                 <slot name="backgroundEvent" :event="entry.event" :date="entry.day">
-                  <Box
-                    v-bind="
-                      getStyles('resourcesWeekViewBackgroundEvent', {
-                        style: backgroundEventStyle(entry.event, entry.dayIndex),
-                      })
-                    "
-                  >
-                    <component
-                      :is="() => eventRenderers.renderEventBody!(entry.event)"
-                      v-if="eventRenderers.renderEventBody"
-                    />
-                    <template v-else>{{ entry.event.title }}</template>
-                  </Box>
+                  <ScheduleBackgroundEvent
+                    :event="entry.event"
+                    :interactive="Boolean(props.withInteractiveBackgroundEvents) && !isStatic"
+                    v-bind="{
+                      ...eventRenderers,
+                      ...getStyles('resourcesWeekViewBackgroundEvent'),
+                    }"
+                    :style="backgroundEventStyle(entry.event, entry.dayIndex)"
+                    @event-click="clickEvent"
+                  />
                 </slot>
               </template>
 

@@ -90,6 +90,11 @@ const hoverExpand = createDemo(
   { expandTrigger: 'hover', placeholder: 'Hover to expand' },
   'expand-trigger="hover"',
 )
+const safeAreaPolygon = createDemo(
+  'SafeAreaPolygon',
+  { expandTrigger: 'hover', safeAreaPolygon: false, placeholder: 'Hover to expand' },
+  'expand-trigger="hover"\n    :safe-area-polygon="false"',
+)
 const maxDisplayedLevels = createDemo(
   'MaxDisplayedLevels',
   { maxDisplayedLevels: 2, defaultValue: ['asia', 'jp', 'tokyo'] },
@@ -486,6 +491,7 @@ export const CascaderDemos = {
   closeOnSelect,
   allowDeselect,
   hoverExpand,
+  safeAreaPolygon,
   maxDisplayedLevels,
   searchable,
   nothingFound,

@@ -11,7 +11,7 @@ export type {
   RichTextEditorControlsGroupProps,
   RichTextEditorToolbarProps,
 } from './RichTextEditor'
-export type { RichTextEditorLabels } from './labels'
+export type { ResolvedRichTextEditorLabels, RichTextEditorLabels } from './labels'
 export { DEFAULT_LABELS } from './labels'
 export * from './RichTextEditorControl'
 export * from './extensions'

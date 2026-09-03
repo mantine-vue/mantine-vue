@@ -67,6 +67,7 @@ const keys = [
   'usage',
   'allDayEvents',
   'dragDrop',
+  'eventDragInterval',
   'eventForm',
   'timeRange',
   'multiHourIntervals',
@@ -86,6 +87,8 @@ const keys = [
   'startScrollDateTime',
   'scrollAreaProps',
   'eventResize',
+  'eventResizeInterval',
+  'interactiveBackgroundEvents',
   'staticMode',
 ] as const
 
@@ -107,6 +110,22 @@ export const ResourcesWeekViewDemos = createDemoRegistry(
           resourceId: 'bob',
         },
       ],
+    },
+    interactiveBackgroundEvents: {
+      events: [
+        ...events,
+        {
+          id: 'leave',
+          title: 'Out of office',
+          start: '2026-07-15 09:00:00',
+          end: '2026-07-15 17:00:00',
+          color: 'red',
+          resourceId: 'carol',
+          display: 'background',
+        },
+      ],
+      props: { withInteractiveBackgroundEvents: true },
+      codeProps: 'with-interactive-background-events',
     },
     timeRange: {
       props: { startTime: '09:00:00', endTime: '17:00:00' },

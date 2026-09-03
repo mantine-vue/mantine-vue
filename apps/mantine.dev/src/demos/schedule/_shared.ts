@@ -153,8 +153,9 @@ function dropExternal(data: { dropDateTime: string; resourceId?: string | number
   const externalProps = options.externalDrag
     ? '\n    with-external-event-drop\n    @external-event-drop="dropExternal"'
     : ''
+  const vueImports = options.codeProps?.includes('h(') ? 'h, ref' : 'ref'
   return `<script setup lang="ts">
-import { ref } from 'vue'
+import { ${vueImports} } from 'vue'
 ${externalImport}
 import { ${componentName}, type ScheduleEventData, type ScheduleResourceData } from '@mantine-vue/schedule'
 
@@ -363,10 +364,22 @@ export const sharedVariants: Record<string, ScheduleDemoOptions> = {
     events: backgroundEvents,
     description: 'Background events render behind regular events.',
   },
+  interactiveBackgroundEvents: {
+    events: backgroundEvents,
+    props: { withInteractiveBackgroundEvents: true },
+    codeProps: 'with-interactive-background-events',
+    description:
+      'Interactive background events emit event-click but still cannot be dragged or resized.',
+  },
   backgroundEventsCustomStyle: { events: backgroundEvents },
   overlappingEvents: { events: overlappingEvents },
   allDayEvents: { events: baseEvents },
   dragDrop: { props: { withEventsDragAndDrop: true }, codeProps: 'with-events-drag-and-drop' },
+  eventDragInterval: {
+    props: { withEventsDragAndDrop: true, intervalMinutes: 30, eventDragInterval: 15 },
+    codeProps:
+      'with-events-drag-and-drop\n    :interval-minutes="30"\n    :event-drag-interval="15"',
+  },
   bidirectionalDragDrop: {
     props: { withEventsDragAndDrop: true },
     externalDrag: true,
@@ -381,6 +394,10 @@ export const sharedVariants: Record<string, ScheduleDemoOptions> = {
   eventResize: {
     props: { withEventResize: true },
     codeProps: 'with-event-resize',
+  },
+  eventResizeInterval: {
+    props: { withEventResize: true, intervalMinutes: 30, eventResizeInterval: 15 },
+    codeProps: 'with-event-resize\n    :interval-minutes="30"\n    :event-resize-interval="15"',
   },
   canResizeEvent: {
     props: { withEventResize: true, canResizeEvent: (event: ScheduleEventData) => event.id !== 1 },

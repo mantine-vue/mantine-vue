@@ -9,6 +9,7 @@ import { stepColor } from './Stepper.demo.stepColor'
 import { orientation } from './Stepper.demo.orientation'
 import { iconPosition } from './Stepper.demo.iconPosition'
 import { loading } from './Stepper.demo.loading'
+import { labelPosition } from './Stepper.demo.labelPosition'
 
 export const StepperDemos = {
   usage,
@@ -22,4 +23,5 @@ export const StepperDemos = {
   orientation,
   iconPosition,
   loading,
+  labelPosition,
 }

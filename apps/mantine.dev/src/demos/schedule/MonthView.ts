@@ -23,6 +23,7 @@ const keys = [
   'timedEvents',
   'recurringEvents',
   'backgroundEvents',
+  'interactiveBackgroundEvents',
   'staticMode',
   'localization',
   'eventForm',
