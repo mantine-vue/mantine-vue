@@ -67,11 +67,14 @@ import {
   getOrderedResources,
   handleResourcesGridKeyDown,
   isInTimeRange,
+  clampIntervalMinutes,
+  parseTimeString,
   type ResourceGroupInfo,
   type ResourcesGridControls,
 } from '../../utils'
 import { provideScheduleDragState } from '../DragContext'
 import { MoreEvents } from '../MoreEvents'
+import { ScheduleBackgroundEvent } from '../ScheduleBackgroundEvent'
 import { ScheduleEvent } from '../ScheduleEvent'
 import { ScheduleHeaderBase, createHeaderNavigation } from '../ScheduleHeader/ScheduleHeaderBase'
 import {
@@ -99,6 +102,8 @@ const rawProps = withDefaults(defineProps<ResourcesDayViewOwnProps>(), {
   startTime: undefined,
   endTime: undefined,
   intervalMinutes: undefined,
+  eventDragInterval: undefined,
+  eventResizeInterval: undefined,
   slotLabelFormat: undefined,
   radius: undefined,
   startScrollTime: undefined,
@@ -121,6 +126,7 @@ const rawProps = withDefaults(defineProps<ResourcesDayViewOwnProps>(), {
   businessHours: undefined,
   renderEventBody: undefined,
   renderEvent: undefined,
+  withInteractiveBackgroundEvents: undefined,
   renderResourceLabel: undefined,
   renderGroupLabel: undefined,
   canDragEvent: undefined,
@@ -286,6 +292,7 @@ const resize = useHorizontalEventResize({
   startTime: () => props.startTime!,
   endTime: () => props.endTime!,
   intervalMinutes: () => props.intervalMinutes!,
+  resizeIntervalMinutes: () => props.eventResizeInterval,
   onEventResize: (data) => emit('eventResize', data),
   canResizeEvent: () => props.canResizeEvent,
 })
@@ -359,7 +366,7 @@ const emitDrop = (nativeEvent: DragEvent, resourceId: string | number, slotIndex
     return
   }
 
-  const target = `${date.value} ${interval.startTime}` as DateTimeStringValue
+  const target = getSnappedDropTarget(nativeEvent, slotIndex)
   const event = getDropEvent(expandedEvents.value, nativeEvent.dataTransfer)
 
   if (event) {
@@ -371,6 +378,34 @@ const emitDrop = (nativeEvent: DragEvent, resourceId: string | number, slotIndex
       resourceId,
     })
   }
+}
+
+const getSnappedDropTarget = (nativeEvent: DragEvent, slotIndex: number) => {
+  const interval = intervals.value[slotIndex]
+  if (!interval || props.eventDragInterval == null) {
+    return `${date.value} ${interval?.startTime ?? '00:00:00'}` as DateTimeStringValue
+  }
+
+  const container =
+    nativeEvent.currentTarget instanceof HTMLElement ? nativeEvent.currentTarget : null
+  const rect = container?.getBoundingClientRect()
+  const slotSize = rect && rect.width > 0 ? rect.width / intervals.value.length : 0
+  const slotOffset = rect ? nativeEvent.clientX - rect.left - slotIndex * slotSize : 0
+  const parsed = parseTimeString(interval.startTime)
+  const dragInterval = clampIntervalMinutes(props.eventDragInterval)
+  const raw =
+    parsed.hours * 60 +
+    parsed.minutes +
+    (slotSize > 0 ? slotOffset / slotSize : 0) * props.intervalMinutes!
+  const start = parseTimeString(props.startTime!)
+  const end = parseTimeString(props.endTime!)
+  const min = Math.ceil((start.hours * 60 + start.minutes) / dragInterval) * dragInterval
+  const max = Math.floor((end.hours * 60 + end.minutes - 1) / dragInterval) * dragInterval
+  const minutes =
+    min > max
+      ? start.hours * 60 + start.minutes
+      : Math.max(min, Math.min(max, Math.round(raw / dragInterval) * dragInterval))
+  return `${date.value} ${String(Math.floor(minutes / 60)).padStart(2, '0')}:${String(minutes % 60).padStart(2, '0')}:00` as DateTimeStringValue
 }
 
 const setDropTarget = (next: { resourceId: string | number; slotIndex: number } | null) => {
@@ -469,7 +504,6 @@ const backgroundEventStyle = (event: ScheduleEventData & { position: any }) => {
     variant: 'light',
     autoContrast: true,
   })
-
   return {
     left: `${event.position.top}%`,
     right: `${100 - event.position.top - event.position.height}%`,
@@ -766,19 +800,14 @@ const changeView = (view: ScheduleViewLevel) => emit('viewChange', view)
             >
               <template v-for="event in backgroundEvents(resource.id)" :key="`bg-${event.id}`">
                 <slot name="backgroundEvent" :event="event">
-                  <Box
-                    v-bind="
-                      getStyles('resourcesDayViewBackgroundEvent', {
-                        style: backgroundEventStyle(event),
-                      })
-                    "
+                  <ScheduleBackgroundEvent
+                    :event="event"
+                    :interactive="Boolean(props.withInteractiveBackgroundEvents) && !isStatic"
+                    v-bind="{ ...eventRenderers, ...getStyles('resourcesDayViewBackgroundEvent') }"
+                    :style="backgroundEventStyle(event)"
+                    @event-click="clickEvent"
                   >
-                    <component
-                      :is="() => eventRenderers.renderEventBody!(event)"
-                      v-if="eventRenderers.renderEventBody"
-                    />
-                    <template v-else>{{ event.title }}</template>
-                  </Box>
+                  </ScheduleBackgroundEvent>
                 </slot>
               </template>
 

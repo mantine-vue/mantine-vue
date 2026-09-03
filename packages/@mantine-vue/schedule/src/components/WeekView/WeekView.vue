@@ -61,6 +61,7 @@ import {
   getWeekNumber,
 } from '../../utils'
 import { CurrentTimeIndicator } from '../CurrentTimeIndicator'
+import { ScheduleBackgroundEvent } from '../ScheduleBackgroundEvent'
 import { ScheduleEvent } from '../ScheduleEvent'
 import { ScheduleHeaderBase, createHeaderNavigation } from '../ScheduleHeader/ScheduleHeaderBase'
 import { provideScheduleDragState } from '../DragContext'
@@ -100,9 +101,12 @@ const rawProps = withDefaults(defineProps<WeekViewOwnProps>(), {
   renderEventBody: undefined,
   renderEvent: undefined,
   recurrenceExpansionLimit: undefined,
+  withInteractiveBackgroundEvents: undefined,
   startTime: undefined,
   endTime: undefined,
   intervalMinutes: undefined,
+  eventDragInterval: undefined,
+  eventResizeInterval: undefined,
   slotLabelFormat: undefined,
   withCurrentTimeIndicator: undefined,
   withCurrentTimeBubble: undefined,
@@ -318,6 +322,7 @@ const eventResize = useEventResize({
   startTime: () => props.startTime!,
   endTime: () => props.endTime!,
   intervalMinutes: () => props.intervalMinutes!,
+  resizeIntervalMinutes: () => props.eventResizeInterval,
   onEventResize: (data) => emit('eventResize', data),
   canResizeEvent: () => props.canResizeEvent,
 })
@@ -515,6 +520,10 @@ const dropInput = (date: string) => ({
   container: daySlotsContainers.get(date),
   date: dayjs(date).format('YYYY-MM-DD') as DateStringValue,
   intervals: intervals.value,
+  intervalMinutes: props.intervalMinutes,
+  dragIntervalMinutes: props.eventDragInterval,
+  startTime: props.startTime,
+  endTime: props.endTime,
 })
 
 const handleDayDragOver = (nativeEvent: DragEvent, date: string) =>
@@ -767,11 +776,14 @@ const isDraggableEvent = (event: ScheduleEventData) =>
                 @dragover.prevent
               />
 
-              <div
+              <ScheduleBackgroundEvent
                 v-for="event in grouped.backgroundEvents[column.date] || []"
                 :key="`background-${event.id}`"
-                v-bind="staticStyles('weekViewBackgroundEvent')"
+                :event="event"
+                :interactive="Boolean(props.withInteractiveBackgroundEvents) && !isStatic"
+                v-bind="{ ...eventRenderers, ...staticStyles('weekViewBackgroundEvent') }"
                 :style="backgroundEventStyle(event.position)"
+                @event-click="clickEvent"
               />
 
               <ScheduleEvent

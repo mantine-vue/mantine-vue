@@ -42,6 +42,7 @@ export interface UseEventResizeInput {
   startTime: () => string
   endTime: () => string
   intervalMinutes: () => number
+  resizeIntervalMinutes?: () => number | undefined
   onEventResize: (data: EventDropData) => void
   canResizeEvent: () => ((event: ScheduleEventData) => boolean) | undefined
 }
@@ -160,7 +161,9 @@ export function useEventResize(input: UseEventResizeInput) {
     const parsedEndTime = parseTimeString(input.endTime())
     const startMinutes = parsedStartTime.hours * 60 + parsedStartTime.minutes
     const endMinutes = parsedEndTime.hours * 60 + parsedEndTime.minutes
-    const intervalMinutes = clampIntervalMinutes(input.intervalMinutes())
+    const intervalMinutes = clampIntervalMinutes(
+      input.resizeIntervalMinutes?.() ?? input.intervalMinutes(),
+    )
     const literalRange = endMinutes - startMinutes
     const totalMinutes = Math.ceil(literalRange / intervalMinutes) * intervalMinutes
 

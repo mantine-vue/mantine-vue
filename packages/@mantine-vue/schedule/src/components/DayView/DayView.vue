@@ -47,6 +47,7 @@ import {
 } from '../../utils'
 import { CurrentTimeIndicator } from '../CurrentTimeIndicator'
 import { MoreEvents } from '../MoreEvents'
+import { ScheduleBackgroundEvent } from '../ScheduleBackgroundEvent'
 import { ScheduleEvent } from '../ScheduleEvent'
 import { ScheduleHeaderBase, createHeaderNavigation } from '../ScheduleHeader/ScheduleHeaderBase'
 import { provideScheduleDragState } from '../DragContext'
@@ -85,9 +86,12 @@ const rawProps = withDefaults(defineProps<DayViewOwnProps>(), {
   renderEventBody: undefined,
   renderEvent: undefined,
   recurrenceExpansionLimit: undefined,
+  withInteractiveBackgroundEvents: undefined,
   startTime: undefined,
   endTime: undefined,
   intervalMinutes: undefined,
+  eventDragInterval: undefined,
+  eventResizeInterval: undefined,
   slotLabelFormat: undefined,
   withCurrentTimeIndicator: undefined,
   withCurrentTimeBubble: undefined,
@@ -217,6 +221,7 @@ const eventResize = useEventResize({
   startTime: () => props.startTime!,
   endTime: () => props.endTime!,
   intervalMinutes: () => props.intervalMinutes!,
+  resizeIntervalMinutes: () => props.eventResizeInterval,
   onEventResize: (data) => emit('eventResize', data),
   canResizeEvent: () => props.canResizeEvent,
 })
@@ -332,6 +337,10 @@ const dropInput = () => ({
   container: timeSlotsContainer.value,
   date: datePart.value,
   intervals: intervals.value,
+  intervalMinutes: props.intervalMinutes,
+  dragIntervalMinutes: props.eventDragInterval,
+  startTime: props.startTime,
+  endTime: props.endTime,
 })
 
 const handleGridDragOver = (nativeEvent: DragEvent) =>
@@ -477,10 +486,14 @@ const clickResizableEvent = (event: ScheduleEventData, nativeEvent: MouseEvent) 
 
         <div v-bind="getStyles('dayViewSlots')">
           <div v-if="props.withAllDaySlot" v-bind="getStyles('dayViewAllDay')">
-            <div
+            <ScheduleBackgroundEvent
               v-for="event in dayEvents.backgroundAllDayEvents"
               :key="event.id"
-              v-bind="staticStyles('dayViewBackgroundEvent')"
+              :event="event"
+              :interactive="Boolean(props.withInteractiveBackgroundEvents) && !isStatic"
+              v-bind="{ ...eventRenderers, ...staticStyles('dayViewBackgroundEvent') }"
+              :style="{ top: 0, height: '100%', width: '100%' }"
+              @event-click="clickEvent"
             />
 
             <div v-bind="getStyles('dayViewAllDayEvents')">
@@ -530,11 +543,14 @@ const clickResizableEvent = (event: ScheduleEventData, nativeEvent: MouseEvent) 
             @dragleave="withDragHandlers ? handleGridDragLeave($event) : undefined"
             @drop="withDragHandlers ? handleGridDrop($event) : undefined"
           >
-            <div
+            <ScheduleBackgroundEvent
               v-for="event in dayEvents.backgroundTimedEvents"
               :key="event.id"
-              v-bind="staticStyles('dayViewBackgroundEvent')"
+              :event="event"
+              :interactive="Boolean(props.withInteractiveBackgroundEvents) && !isStatic"
+              v-bind="{ ...eventRenderers, ...staticStyles('dayViewBackgroundEvent') }"
               :style="backgroundEventStyle(event.position)"
+              @event-click="clickEvent"
             />
 
             <ScheduleEvent

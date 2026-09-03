@@ -45,6 +45,7 @@ const rawProps = withDefaults(defineProps<ScheduleOwnProps>(), {
   canDragEvent: undefined,
   mode: undefined,
   canResizeEvent: undefined,
+  withInteractiveBackgroundEvents: undefined,
   recurrenceExpansionLimit: undefined,
   layout: undefined,
   dayViewProps: undefined,
@@ -124,6 +125,8 @@ const sharedProps = computed(() => ({
   withExternalEventDrop: props.withExternalEventDrop,
   withEventResize: props.withEventResize,
   canResizeEvent: props.canResizeEvent,
+  withInteractiveBackgroundEvents:
+    props.mode === 'static' ? false : props.withInteractiveBackgroundEvents,
   recurrenceExpansionLimit: props.recurrenceExpansionLimit,
   ...eventRenderers.value,
   ...stylesApi.value,

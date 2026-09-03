@@ -98,9 +98,12 @@ const keys = [
   'resourceGroups',
   'renderEvent',
   'dragDrop',
+  'eventDragInterval',
   'externalDragDrop',
   'bidirectionalDragDrop',
   'eventResize',
+  'eventResizeInterval',
+  'interactiveBackgroundEvents',
   'eventForm',
   'businessHours',
   'currentTimeIndicator',
@@ -121,6 +124,22 @@ export const ResourcesDayViewDemos = createDemoRegistry(
   {
     ...sharedVariants,
     allDayEvents: { events: allDayEvents },
+    interactiveBackgroundEvents: {
+      events: [
+        ...events,
+        {
+          id: 'maintenance',
+          title: 'Maintenance',
+          start: '2026-07-15 14:00:00',
+          end: '2026-07-15 16:00:00',
+          color: 'red',
+          resourceId: 'room-b',
+          display: 'background',
+        },
+      ],
+      props: { withInteractiveBackgroundEvents: true },
+      codeProps: 'with-interactive-background-events',
+    },
     timeRange: {
       props: { startTime: '09:00:00', endTime: '16:00:00' },
       codeProps: 'start-time="09:00:00"\n    end-time="16:00:00"',

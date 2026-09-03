@@ -1,5 +1,6 @@
 import { shallowRef } from 'vue'
 import type { DateStringValue, DateTimeStringValue } from '../types'
+import { clampIntervalMinutes, parseTimeString } from '../utils'
 import { rafThrottle } from './shared'
 
 export interface SlotDropTarget {
@@ -18,6 +19,14 @@ export interface ResolveSlotInput {
   date: DateStringValue
 
   intervals: SlotDropInterval[]
+
+  intervalMinutes?: number
+
+  dragIntervalMinutes?: number
+
+  startTime?: string
+
+  endTime?: string
 }
 
 export interface ResolvedSlotDrop {
@@ -53,6 +62,41 @@ function resolveSlotIndex(
     const rect = element.getBoundingClientRect()
     return clientY >= rect.top && clientY <= rect.bottom
   })
+}
+
+function resolveTarget(
+  input: ResolveSlotInput,
+  slotIndex: number,
+  clientY: number,
+): DateTimeStringValue | undefined {
+  const interval = input.intervals[slotIndex]
+  if (!interval) return undefined
+
+  if (input.dragIntervalMinutes == null) {
+    return `${input.date} ${interval.startTime}` as DateTimeStringValue
+  }
+
+  const slots = input.container?.querySelectorAll<HTMLElement>('[data-time-slot-index]')
+  const rect = slots?.[slotIndex]?.getBoundingClientRect()
+  const parsed = parseTimeString(interval.startTime)
+  const gridInterval = clampIntervalMinutes(input.intervalMinutes ?? 15)
+  const dragInterval = clampIntervalMinutes(input.dragIntervalMinutes)
+  const offsetRatio = rect && rect.height > 0 ? (clientY - rect.top) / rect.height : 0
+  let minutes =
+    Math.round((parsed.hours * 60 + parsed.minutes + offsetRatio * gridInterval) / dragInterval) *
+    dragInterval
+
+  const start = input.startTime ? parseTimeString(input.startTime) : null
+  const end = input.endTime ? parseTimeString(input.endTime) : null
+  const min = start
+    ? Math.ceil((start.hours * 60 + start.minutes) / dragInterval) * dragInterval
+    : 0
+  const max = end
+    ? Math.floor((end.hours * 60 + end.minutes - 1) / dragInterval) * dragInterval
+    : 1439
+  minutes = min > max ? start!.hours * 60 + start!.minutes : Math.max(min, Math.min(max, minutes))
+
+  return `${input.date} ${String(Math.floor(minutes / 60)).padStart(2, '0')}:${String(minutes % 60).padStart(2, '0')}:00` as DateTimeStringValue
 }
 
 /**
@@ -139,11 +183,8 @@ export function useSlotDropTarget() {
 
       reset()
 
-      const interval = input.intervals[slotIndex]
-
-      return interval
-        ? { slotIndex, target: `${input.date} ${interval.startTime}` as DateTimeStringValue }
-        : undefined
+      const target = resolveTarget(input, slotIndex, nativeEvent.clientY)
+      return target ? { slotIndex, target } : undefined
     },
 
     reset,

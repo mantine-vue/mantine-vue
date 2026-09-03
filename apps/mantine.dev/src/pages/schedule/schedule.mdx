@@ -54,6 +54,9 @@ The following props are shared across all views:
 - `eventDrop` - emitted when an event is dropped in a new position
 - `canDragEvent` - Drag permission callback
 - `withEventResize` - Enable event resizing
+- `eventDragInterval` - Snap dragged events independently of the displayed time-slot interval
+- `eventResizeInterval` - Snap resized events independently of the displayed time-slot interval
+- `withInteractiveBackgroundEvents` - Make background events focusable and clickable
 - `eventResize` - emitted when an event is resized
 - `canResizeEvent` - Resize permission callback
 - `mode` - Interaction mode (`default` or `static`)
@@ -104,6 +107,11 @@ the resize. Event resize works in both Day and Week views and can be combined wi
 
 <Demo data={ScheduleDemos.eventResize} />
 
+`eventDragInterval` and `eventResizeInterval` can be finer or coarser than the visible grid.
+The resulting times stay within the configured schedule time range.
+
+<Demo data={ScheduleDemos.eventIntervals} />
+
 ## Recurring events
 
 Schedule automatically expands recurring events for the visible date range in each view.
@@ -117,6 +125,11 @@ Set `display="background"` on an event to render it as a full-width, non-interac
 block behind regular events. Background events work in Day, Week, and Month views.
 
 <Demo data={ScheduleDemos.backgroundEvents} />
+
+Set `withInteractiveBackgroundEvents` to make background blocks focusable and emit `eventClick`.
+They remain behind regular events and are never draggable or resizable.
+
+<Demo data={ScheduleDemos.interactiveBackgroundEvents} />
 
 ## Responsive layout
 

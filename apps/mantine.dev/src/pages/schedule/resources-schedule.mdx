@@ -50,7 +50,20 @@ Set `withExternalEventDrop` to drag external items onto the schedule. The `exter
 
 Enable event resizing with the `withEventResize` prop. Resizing is available in day and week views where events can be resized by dragging their edges. In week view, resizing is constrained to the event's own day.
 
+Use `eventDragInterval` and `eventResizeInterval` to control drag and resize snapping
+independently. Set `withInteractiveBackgroundEvents` to make background events clickable
+and keyboard focusable.
+
 <Demo data={ResourcesScheduleDemos.eventResize} />
+
+<Demo data={ResourcesScheduleDemos.eventIntervals} />
+
+## Interactive background events
+
+Background events retain their `resourceId`. Enable `withInteractiveBackgroundEvents` to make
+them focusable and emit `eventClick` without allowing drag or resize interactions.
+
+<Demo data={ResourcesScheduleDemos.interactiveBackgroundEvents} />
 
 ## Static mode
 

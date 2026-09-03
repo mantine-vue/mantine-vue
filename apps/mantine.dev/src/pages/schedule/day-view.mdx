@@ -138,6 +138,13 @@ event drops. All-day events cannot be dragged.
 
 <Demo data={DayViewDemos.dragDrop} />
 
+## Drag interval
+
+By default events snap to `intervalMinutes` when moved. Set `eventDragInterval` to use a
+different drag step, such as 15-minute movement on a 30-minute grid.
+
+<Demo data={DayViewDemos.eventDragInterval} />
+
 ## External drag and drop
 
 Set `withExternalEventDrop` and listen for the `externalEventDrop` event to allow dragging items from outside the component into
@@ -171,6 +178,12 @@ edge of an event to adjust its start or end time. Listen for the `eventResize` e
 the resize.
 
 <Demo data={DayViewDemos.eventResize} />
+
+## Resize interval
+
+Set `eventResizeInterval` to use a resize snap step that differs from `intervalMinutes`.
+
+<Demo data={DayViewDemos.eventResizeInterval} />
 
 ## Selective resize permissions
 
@@ -206,10 +219,18 @@ See [Recurring events guide](/schedule/recurring-events) for full documentation.
 
 Set `display="background"` on an event to render it as a full-width, semi-transparent,
 non-interactive block behind regular events. Background events are useful for marking
-unavailability, lunch breaks, focus time, or other blocked periods. They cannot be
+unavailability, lunch breaks, focus time, or other blocked periods. By default they cannot be
 clicked, dragged, or resized.
 
 <Demo data={DayViewDemos.backgroundEvents} />
+
+## Interactive background events
+
+Set `withInteractiveBackgroundEvents` to make background events focusable and clickable.
+They emit `eventClick` like regular events, but still cannot be dragged or resized. An
+interactive background event receives pointer interactions instead of the time slots beneath it.
+
+<Demo data={DayViewDemos.interactiveBackgroundEvents} />
 
 ## Custom background event styles with drag and drop blocking
 

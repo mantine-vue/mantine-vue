@@ -16,6 +16,8 @@ const keys = [
   'eventResize',
   'recurringEvents',
   'backgroundEvents',
+  'interactiveBackgroundEvents',
+  'eventIntervals',
   'responsiveLayout',
 ] as const
 
@@ -48,4 +50,22 @@ export const ScheduleDemos = createDemoRegistry(Schedule, 'Schedule', keys, {
     description: 'Pass withHeader: false to each view when rendering a custom header.',
   },
   responsiveLayout: { props: { layout: 'responsive' }, codeProps: 'layout="responsive"' },
+  interactiveBackgroundEvents: {
+    ...sharedVariants.backgroundEvents,
+    props: { withInteractiveBackgroundEvents: true },
+    codeProps: 'with-interactive-background-events',
+    description:
+      'Background events can receive focus and emit eventClick when interaction is enabled.',
+  },
+  eventIntervals: {
+    props: {
+      withEventsDragAndDrop: true,
+      withEventResize: true,
+      eventDragInterval: 15,
+      eventResizeInterval: 15,
+    },
+    codeProps:
+      'with-events-drag-and-drop\n    with-event-resize\n    :event-drag-interval="15"\n    :event-resize-interval="15"',
+    description: 'Drag and resize operations snap to 15 minutes independently of the visible grid.',
+  },
 })

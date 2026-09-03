@@ -188,6 +188,12 @@ export interface ResourcesDayViewOwnProps extends StylesApiProps<ResourcesDayVie
    */
   intervalMinutes?: number
 
+  /** Snap interval used when events are dragged, independent of `intervalMinutes`. */
+  eventDragInterval?: number
+
+  /** Snap interval used when events are resized, independent of `intervalMinutes`. */
+  eventResizeInterval?: number
+
   /**
    * Format of the time column labels.
    * @default 'HH:mm'
@@ -297,6 +303,9 @@ export interface ResourcesDayViewOwnProps extends StylesApiProps<ResourcesDayVie
    * precedence over the prop.
    */
   renderEvent?: RenderEvent
+
+  /** If set, background events can be focused and clicked. */
+  withInteractiveBackgroundEvents?: boolean
 
   /**
    * Replaces the label of every resource row. Can also be set with the `resourceLabel` slot,

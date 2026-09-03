@@ -136,6 +136,12 @@ export interface BaseViewOwnProps {
    * @default 2000
    */
   recurrenceExpansionLimit?: number
+
+  /**
+   * If set, background events can be focused and clicked. Has no effect in static mode.
+   * @default false
+   */
+  withInteractiveBackgroundEvents?: boolean
 }
 
 /**
@@ -157,6 +163,18 @@ export interface TimeViewOwnProps extends BaseViewOwnProps {
 
   /** Length of one time slot in minutes. */
   intervalMinutes?: number
+
+  /**
+   * Snap interval used when events are dragged, independent of `intervalMinutes`.
+   * Falls back to `intervalMinutes` when unset.
+   */
+  eventDragInterval?: number
+
+  /**
+   * Snap interval used when events are resized, independent of `intervalMinutes`.
+   * Falls back to `intervalMinutes` when unset.
+   */
+  eventResizeInterval?: number
 
   /**
    * Format of the time slot labels.
