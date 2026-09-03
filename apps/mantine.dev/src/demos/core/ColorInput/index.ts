@@ -15,6 +15,7 @@ import { error } from './ColorInput.demo.error'
 import { disabled } from './ColorInput.demo.disabled'
 import { readOnly } from './ColorInput.demo.readOnly'
 import { stylesApi } from './ColorInput.demo.stylesApi'
+import { fullWidth } from './ColorInput.demo.fullWidth'
 
 export const ColorInputDemos = {
   usage,
@@ -34,4 +35,5 @@ export const ColorInputDemos = {
   disabled,
   readOnly,
   stylesApi,
+  fullWidth,
 }
