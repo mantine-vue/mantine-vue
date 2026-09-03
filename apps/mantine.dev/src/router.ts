@@ -724,6 +724,11 @@ const routes: RouteRecordRaw[] = [
     component: mdxRoute(() => import('./pages/core/angle-slider.mdx')),
   },
   {
+    path: '/core/action-bar',
+    name: 'core-action-bar',
+    component: mdxRoute(() => import('./pages/core/action-bar.mdx')),
+  },
+  {
     path: '/x/nprogress',
     name: 'x-nprogress',
     component: mdxRoute(() => import('./pages/x/nprogress.mdx')),
@@ -732,6 +737,11 @@ const routes: RouteRecordRaw[] = [
     path: '/x/notifications',
     name: 'x-notifications',
     component: mdxRoute(() => import('./pages/x/notifications.mdx')),
+  },
+  {
+    path: '/x/lightbox',
+    name: 'x-lightbox',
+    component: mdxRoute(() => import('./pages/x/lightbox.mdx')),
   },
   {
     path: '/x/contextmenu',
@@ -954,6 +964,26 @@ const routes: RouteRecordRaw[] = [
     path: '/charts/heatmap',
     name: 'charts-heatmap',
     component: mdxRoute(() => import('./pages/charts/heatmap.mdx')),
+  },
+  {
+    path: '/charts/gauge-chart',
+    name: 'charts-gauge-chart',
+    component: mdxRoute(() => import('./pages/charts/gauge-chart.mdx')),
+  },
+  {
+    path: '/charts/waffle-chart',
+    name: 'charts-waffle-chart',
+    component: mdxRoute(() => import('./pages/charts/waffle-chart.mdx')),
+  },
+  {
+    path: '/charts/matrix-chart',
+    name: 'charts-matrix-chart',
+    component: mdxRoute(() => import('./pages/charts/matrix-chart.mdx')),
+  },
+  {
+    path: '/charts/candlestick-chart',
+    name: 'charts-candlestick-chart',
+    component: mdxRoute(() => import('./pages/charts/candlestick-chart.mdx')),
   },
   {
     path: '/charts/line-chart',

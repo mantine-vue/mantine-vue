@@ -30,6 +30,7 @@
       "@mantine-vue/modals": ["./packages/@mantine-vue/modals/src"],
       "@mantine-vue/dropzone": ["./packages/@mantine-vue/dropzone/src"],
       "@mantine-vue/carousel": ["./packages/@mantine-vue/carousel/src"],
+      "@mantine-vue/lightbox": ["./packages/@mantine-vue/lightbox/src"],
       "@mantine-vue/colors-generator": ["./packages/@mantine-vue/colors-generator/src"],
       "@mantine-vue/mantine-header": ["./packages/@mantine-vue/mantine-header/src"],
       "@mantine-vue/table": ["./packages/@mantine-vue/table/src"],

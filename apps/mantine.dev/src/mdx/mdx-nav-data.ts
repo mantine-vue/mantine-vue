@@ -100,6 +100,7 @@ const FEEDBACK_PAGES: MdxNavItem[] = [
 
 const OVERLAYS_PAGES: MdxNavItem[] = [
   { label: 'Affix', link: '/core/affix' },
+  { label: 'ActionBar', link: '/core/action-bar' },
   { label: 'Dialog', link: '/core/dialog' },
   { label: 'Drawer', link: '/core/drawer' },
   { label: 'FloatingIndicator', link: '/core/floating-indicator' },
@@ -198,6 +199,7 @@ const OTHER_EXTENSIONS_PAGES: MdxNavItem[] = [
   { label: 'Notifications system', link: '/x/notifications' },
   { label: 'Spotlight', link: '/x/spotlight' },
   { label: 'Carousel', link: '/x/carousel' },
+  { label: 'Lightbox', link: '/x/lightbox' },
   { label: 'Table', link: '/x/table' },
   { label: 'Dropzone', link: '/x/dropzone' },
   { label: 'NavigationProgress', link: '/x/nprogress' },
@@ -324,10 +326,13 @@ const CHARTS_PAGES: MdxNavItem[] = [
   { label: 'BarsList', link: '/charts/bars-list' },
   { label: 'BubbleChart', link: '/charts/bubble-chart' },
   { label: 'CompositeChart', link: '/charts/composite-chart' },
+  { label: 'CandlestickChart', link: '/charts/candlestick-chart' },
   { label: 'DonutChart', link: '/charts/donut-chart' },
   { label: 'FunnelChart', link: '/charts/funnel-chart' },
   { label: 'Heatmap', link: '/charts/heatmap' },
+  { label: 'GaugeChart', link: '/charts/gauge-chart' },
   { label: 'LineChart', link: '/charts/line-chart' },
+  { label: 'MatrixChart', link: '/charts/matrix-chart' },
   { label: 'PieChart', link: '/charts/pie-chart' },
   { label: 'RadarChart', link: '/charts/radar-chart' },
   { label: 'RadialBarChart', link: '/charts/radial-bar-chart' },
@@ -335,6 +340,7 @@ const CHARTS_PAGES: MdxNavItem[] = [
   { label: 'ScatterChart', link: '/charts/scatter-chart' },
   { label: 'Sparkline', link: '/charts/sparkline' },
   { label: 'Treemap', link: '/charts/treemap' },
+  { label: 'WaffleChart', link: '/charts/waffle-chart' },
 ]
 
 const SCHEDULE_PAGES: MdxNavItem[] = [

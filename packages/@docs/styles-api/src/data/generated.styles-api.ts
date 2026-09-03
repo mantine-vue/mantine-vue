@@ -1,5 +1,156 @@
 import type { StylesApiData } from '../types'
 
+export const ActionBarStylesApi: StylesApiData<'closeButton' | 'divider' | 'root'> = {
+  selectors: {
+    root: 'Root element',
+    divider: '`ActionBar.Divider` root element',
+    closeButton: '`ActionBar.CloseButton` root element',
+  },
+  vars: {},
+}
+
+export const GaugeChartStylesApi: StylesApiData<'label' | 'needle' | 'root' | 'section' | 'track'> =
+  {
+    selectors: {
+      root: 'Root element',
+      track: 'Gauge track',
+      section: 'Gauge value section',
+      needle: 'Target indicator',
+      label: 'Gauge label',
+    },
+    vars: {},
+  }
+
+export const WaffleChartStylesApi: StylesApiData<
+  'cell' | 'grid' | 'legend' | 'legendItem' | 'legendLabel' | 'legendSwatch' | 'root'
+> = {
+  selectors: {
+    root: 'Root element',
+    grid: 'Cells grid',
+    cell: 'Individual cell',
+    legend: 'Legend root element',
+    legendItem: 'Legend item',
+    legendSwatch: 'Legend item color swatch',
+    legendLabel: 'Legend item label',
+  },
+  vars: {},
+}
+
+export const MatrixChartStylesApi: StylesApiData<
+  'cell' | 'legend' | 'legendLabel' | 'legendRect' | 'root' | 'xLabel' | 'yLabel'
+> = {
+  selectors: {
+    root: 'Root SVG element',
+    cell: 'Individual matrix cell',
+    xLabel: 'X-axis label',
+    yLabel: 'Y-axis label',
+    legend: 'Legend root element',
+    legendLabel: 'Legend label',
+    legendRect: 'Legend color rectangle',
+  },
+  vars: {},
+}
+
+export const CandlestickChartStylesApi: StylesApiData<
+  | 'axis'
+  | 'axisLabel'
+  | 'candle'
+  | 'container'
+  | 'grid'
+  | 'referenceArea'
+  | 'referenceDot'
+  | 'referenceLine'
+  | 'root'
+  | 'tooltip'
+  | 'tooltipBody'
+  | 'tooltipItem'
+  | 'tooltipItemBody'
+  | 'tooltipItemColor'
+  | 'tooltipItemData'
+  | 'tooltipItemName'
+  | 'tooltipLabel'
+> = {
+  selectors: {
+    root: 'Root element',
+    container: 'Chart container',
+    axis: 'Chart axis',
+    axisLabel: 'Chart axis label',
+    grid: 'Chart grid',
+    candle: 'Candlestick element',
+    referenceLine: 'Reference line',
+    referenceArea: 'Reference area',
+    referenceDot: 'Reference dot',
+    tooltip: 'Tooltip root element',
+    tooltipBody: 'Tooltip body',
+    tooltipItem: 'Tooltip series item',
+    tooltipItemBody: 'Tooltip series item body',
+    tooltipItemColor: 'Tooltip series color swatch',
+    tooltipItemData: 'Tooltip series value',
+    tooltipItemName: 'Tooltip series name',
+    tooltipLabel: 'Tooltip label',
+  },
+  vars: {},
+}
+
+export const LightboxStylesApi: StylesApiData<
+  | 'caption'
+  | 'closeButton'
+  | 'content'
+  | 'counter'
+  | 'navigation'
+  | 'navigationButton'
+  | 'overlay'
+  | 'root'
+  | 'slide'
+  | 'slideImage'
+  | 'slideVideo'
+  | 'slides'
+  | 'slidesContainer'
+  | 'slidesViewport'
+  | 'thumbnail'
+  | 'thumbnailImage'
+  | 'thumbnails'
+  | 'thumbnailsContainer'
+  | 'thumbnailsViewport'
+  | 'toolbar'
+  | 'toolbarButton'
+  | 'toolbarGroup'
+> = {
+  selectors: {
+    root: 'Root element',
+    overlay: 'Fixed overlay',
+    content: 'Dialog content',
+    toolbar: 'Toolbar root element',
+    toolbarGroup: 'Toolbar item group',
+    toolbarButton: 'Toolbar button',
+    counter: 'Current slide counter',
+    slides: 'Slides root element',
+    slidesViewport: 'Slides viewport',
+    slidesContainer: 'Slides container',
+    slide: 'Individual slide',
+    slideImage: 'Image slide element',
+    slideVideo: 'Video slide element',
+    thumbnails: 'Thumbnails root element',
+    thumbnailsViewport: 'Thumbnails viewport',
+    thumbnailsContainer: 'Thumbnails container',
+    thumbnail: 'Individual thumbnail button',
+    thumbnailImage: 'Thumbnail image',
+    navigation: 'Navigation controls root element',
+    navigationButton: 'Previous or next navigation button',
+    caption: 'Current slide caption',
+    closeButton: 'Close button',
+  },
+  vars: {
+    root: {
+      '--lightbox-transition-duration': 'Controls transition duration',
+      '--lightbox-overlay-color': 'Controls overlay background color',
+      '--lightbox-z-index': 'Controls overlay and content z-index',
+      '--lightbox-toolbar-height': 'Controls toolbar height',
+      '--lightbox-thumbnails-height': 'Controls thumbnails strip height',
+    },
+  },
+}
+
 export const AccordionStylesApi: StylesApiData<
   'chevron' | 'content' | 'control' | 'icon' | 'item' | 'itemTitle' | 'label' | 'panel' | 'root'
 > = {
@@ -3802,6 +3953,13 @@ export const NotificationsStylesApi: StylesApiData<'notification' | 'root'> = {
       '--notifications-z-index': 'Controls notifications container `z-index`',
     },
   },
+  modifiers: [
+    {
+      modifier: 'data-layout',
+      selector: 'root',
+      value: 'Value of the `layout` prop',
+    },
+  ],
 }
 
 export const NumberInputStylesApi: StylesApiData<
@@ -4971,6 +5129,10 @@ export const RichTextEditorStylesApi: StylesApiData<
   | 'linkEditorInput'
   | 'linkEditorSave'
   | 'root'
+  | 'tableInsertCell'
+  | 'tableInsertDropdown'
+  | 'tableInsertGrid'
+  | 'tableInsertLabel'
   | 'toolbar'
   | 'Typography'
 > = {
@@ -4985,6 +5147,10 @@ export const RichTextEditorStylesApi: StylesApiData<
     linkEditorInput: 'Link editor url input',
     linkEditorSave: 'Link editor save button',
     root: 'Root element',
+    tableInsertCell: 'Individual cell in the table insert picker',
+    tableInsertDropdown: 'Table insert picker dropdown',
+    tableInsertGrid: 'Table insert picker grid',
+    tableInsertLabel: 'Selected table dimensions label',
     toolbar: 'Toolbar element',
     Typography: 'Typography component, wraps content',
   },

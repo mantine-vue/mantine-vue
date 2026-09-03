@@ -686,6 +686,7 @@ __metadata:
     "@mantine-vue/dropzone": "workspace:*"
     "@mantine-vue/form": "workspace:*"
     "@mantine-vue/hooks": "workspace:*"
+    "@mantine-vue/lightbox": "workspace:*"
     "@mantine-vue/mantine-header": "workspace:*"
     "@mantine-vue/modals": "workspace:*"
     "@mantine-vue/notifications": "workspace:*"
@@ -701,12 +702,15 @@ __metadata:
     "@tiptap/extension-code-block": "npm:>=3.3.0"
     "@tiptap/extension-code-block-lowlight": "npm:>=3.3.0"
     "@tiptap/extension-color": "npm:>=3.3.0"
+    "@tiptap/extension-details": "npm:3.27.1"
     "@tiptap/extension-highlight": "npm:>=3.3.0"
+    "@tiptap/extension-invisible-characters": "npm:3.27.1"
     "@tiptap/extension-link": "npm:>=3.3.0"
     "@tiptap/extension-list": "npm:>=3.3.0"
     "@tiptap/extension-placeholder": "npm:>=3.3.0"
     "@tiptap/extension-subscript": "npm:>=3.3.0"
     "@tiptap/extension-superscript": "npm:>=3.3.0"
+    "@tiptap/extension-table": "npm:3.27.1"
     "@tiptap/extension-task-item": "npm:>=3.3.0"
     "@tiptap/extension-task-list": "npm:>=3.3.0"
     "@tiptap/extension-text-align": "npm:>=3.3.0"
@@ -777,6 +781,26 @@ __metadata:
     "@vue/test-utils": "npm:2.4.6"
     vue: "npm:^3.5.0"
   peerDependencies:
+    vue: ^3.5.0
+  languageName: unknown
+  linkType: soft
+
+"@mantine-vue/lightbox@workspace:*, @mantine-vue/lightbox@workspace:packages/@mantine-vue/lightbox":
+  version: 0.0.0-use.local
+  resolution: "@mantine-vue/lightbox@workspace:packages/@mantine-vue/lightbox"
+  dependencies:
+    "@mantine-vue/core": "workspace:*"
+    "@mantine-vue/hooks": "workspace:*"
+    "@vue/compiler-dom": "npm:^3.5.0"
+    "@vue/test-utils": "npm:^2.4.6"
+    embla-carousel: "npm:^8.6.0"
+    embla-carousel-vue: "npm:^8.6.0"
+    vue: "npm:^3.5.0"
+  peerDependencies:
+    "@mantine-vue/core": 3.2.0
+    "@mantine-vue/hooks": 3.2.0
+    embla-carousel: ">=8.0.0"
+    embla-carousel-vue: ">=8.0.0"
     vue: ^3.5.0
   languageName: unknown
   linkType: soft
@@ -1766,6 +1790,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@tiptap/extension-details@npm:3.27.1":
+  version: 3.27.1
+  resolution: "@tiptap/extension-details@npm:3.27.1"
+  peerDependencies:
+    "@tiptap/core": 3.27.1
+    "@tiptap/extension-text-style": 3.27.1
+    "@tiptap/pm": 3.27.1
+  checksum: 10c0/4bae9b16daa4fb1702bca7928fe3c4b3d4c883b59141035147450181844e005484a68dc24d064f4b1d88e9a08156a2eb52a3b8376d4213d7b5e3f54fe10e0ac1
+  languageName: node
+  linkType: hard
+
 "@tiptap/extension-document@npm:^3.27.1":
   version: 3.27.1
   resolution: "@tiptap/extension-document@npm:3.27.1"
@@ -1838,6 +1873,17 @@ __metadata:
     "@tiptap/core": 3.27.1
     "@tiptap/pm": 3.27.1
   checksum: 10c0/50a88cd05c59840255ca99908aa31e0f9c9dfa7721623e096db980d14675c2c27deb66714a15ab8302a985db127c70861ca498857b8b807b9468ab65c1c0612f
+  languageName: node
+  linkType: hard
+
+"@tiptap/extension-invisible-characters@npm:3.27.1":
+  version: 3.27.1
+  resolution: "@tiptap/extension-invisible-characters@npm:3.27.1"
+  peerDependencies:
+    "@tiptap/core": 3.27.1
+    "@tiptap/extension-text-style": 3.27.1
+    "@tiptap/pm": 3.27.1
+  checksum: 10c0/8794cd1856c3c1f53e9b861ab574935fd6343038f3c17c70f2f9f8a8b2b4edaff8979dc85066c48e7c0fd4beffe9ca595c227ee5aca37d4224ea4e20e7c82bc0
   languageName: node
   linkType: hard
 
@@ -1943,6 +1989,16 @@ __metadata:
     "@tiptap/core": 3.27.1
     "@tiptap/pm": 3.27.1
   checksum: 10c0/e2a529614787519b10c2c41586fb4044dc31bf8d717e6b98cfbf423affa48fe3381fc38c8e8abb7bd1c219114686e9d0f38d0c8c4f9745ef6ade8b2fb6775c3f
+  languageName: node
+  linkType: hard
+
+"@tiptap/extension-table@npm:3.27.1":
+  version: 3.27.1
+  resolution: "@tiptap/extension-table@npm:3.27.1"
+  peerDependencies:
+    "@tiptap/core": 3.27.1
+    "@tiptap/pm": 3.27.1
+  checksum: 10c0/e16decfba581a842273d670ae9b8d41edb7b893d626873d690e0b0ed61e031cc2ac167602b2ffa400961d0d9cebcd01cb5d9e377eeeea45dc09dc05a3f87f0bb
   languageName: node
   linkType: hard
 

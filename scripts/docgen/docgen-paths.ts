@@ -13,6 +13,7 @@ export const DOCGEN_SOURCE_PATHS = getPaths([
   'packages/@mantine-vue/code-highlight/src',
   'packages/@mantine-vue/contextmenu/src',
   'packages/@mantine-vue/dropzone/src',
+  'packages/@mantine-vue/lightbox/src',
   'packages/@mantine-vue/modals/src',
   'packages/@mantine-vue/notifications/src',
   'packages/@mantine-vue/nprogress/src',
