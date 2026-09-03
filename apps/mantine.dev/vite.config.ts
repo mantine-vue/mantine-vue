@@ -39,6 +39,7 @@ export default defineConfig({
         '../../packages/@mantine-vue/colors-generator/src/index.ts',
       ),
       '@mantine-vue/hooks': alias('../../packages/@mantine-vue/hooks/src/index.ts'),
+      '@mantine-vue/lightbox': alias('../../packages/@mantine-vue/lightbox/src/index.ts'),
       '@mantine-vue/mantine-header': alias(
         '../../packages/@mantine-vue/mantine-header/src/index.ts',
       ),

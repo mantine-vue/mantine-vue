@@ -1,0 +1,263 @@
+import { LightboxDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.Lightbox)
+
+## Installation
+
+<InstallScript packages="@mantine-vue/lightbox @mantine-vue/core @mantine-vue/hooks embla-carousel embla-carousel-vue" />
+
+Import package styles after core styles:
+
+```ts
+import '@mantine-vue/core/styles.css'
+import '@mantine-vue/lightbox/styles.css'
+```
+
+## Usage
+
+`@mantine-vue/lightbox` is a full-screen media viewer built on
+[Embla Carousel](https://www.embla-carousel.com/). Click an image to open the lightbox:
+
+<Demo data={LightboxDemos.usage} />
+
+## Slide data
+
+The `slides` prop accepts image, video and custom slide objects:
+
+```ts
+import { h } from 'vue'
+import type { LightboxSlideData } from '@mantine-vue/lightbox'
+
+const slides: LightboxSlideData[] = [
+  {
+    src: 'image.png',
+    alt: 'Mountain lake',
+    caption: 'Mountain lake at sunrise',
+    thumbSrc: 'image-small.png',
+    srcSet: 'image-2x.png 2x',
+    sizes: '(max-width: 600px) 100vw, 50vw',
+    loading: 'lazy',
+  },
+  {
+    type: 'video',
+    src: 'video.mp4',
+    label: 'Product demo',
+    poster: 'poster.png',
+    autoPlay: true,
+    tracks: [{ src: 'captions.vtt', kind: 'captions', srcLang: 'en', label: 'English' }],
+  },
+  {
+    type: 'custom',
+    render: ({ active }) => h('div', active ? 'Active custom slide' : 'Custom slide'),
+    renderThumb: () => h('span', 'Thumb'),
+  },
+]
+```
+
+### Image loading
+
+Only the active image is eager by default; inactive images and thumbnails use lazy loading.
+Set `loading` on an image slide to override this behavior. Use a smaller `thumbSrc` when original
+images are large.
+
+## Navigation and close behavior
+
+- `withNavigation` shows previous/next buttons and defaults to `true`.
+- `loop` wraps navigation at both ends.
+- `closeOnClickOutside` closes when empty content space is clicked.
+- `closeOnSwipeDown` controls mobile swipe-down closing and defaults to `true`.
+- `withKeyboardEvents` enables arrows and F/T/Z shortcuts; Escape always closes.
+- `returnFocus` restores focus after closing.
+- `withInitialFocusPlaceholder` prevents the first toolbar button from receiving visible focus
+  when opened with a pointer.
+
+Use `v-model:opened` and `v-model:current-index` for controlled Vue state.
+
+## Zoom
+
+Set `withZoom`. Desktop users can click or use Z to toggle zoom, use the wheel to adjust it,
+and drag or use arrow keys to pan. Touch users can double-tap and pinch. `zoomMaxScale` is `3`
+by default.
+
+<Demo data={LightboxDemos.zoom} />
+
+## Thumbnails
+
+Set `withThumbnails` to add the bottom strip. Users can select a thumbnail or toggle the strip
+with the toolbar and T shortcut.
+
+<Demo data={LightboxDemos.thumbnails} />
+
+## All features
+
+<Demo data={LightboxDemos.allFeatures} />
+
+## Loop navigation
+
+<Demo data={LightboxDemos.loop} />
+
+## Slide transition
+
+Programmatic navigation snaps by default. Set `withSlideTransition` to animate it. Use
+`emblaOptions.duration` to tune the animation; Embla recommends values between 20 and 60.
+
+<Demo data={LightboxDemos.transition} />
+
+## Embla options
+
+`emblaOptions` is forwarded to Embla. `loop`, `startIndex` and the zoom drag lock remain controlled
+by Lightbox:
+
+```vue
+<Lightbox
+  v-model:opened="opened"
+  :slides="slides"
+  :embla-options="{ dragFree: false, duration: 30, align: 'center' }"
+/>
+```
+
+## z-index
+
+`zIndex` controls both overlay and content and defaults to `400`.
+
+## Open and close transition
+
+The overlay fades and content scales from 95% by default. `transitionProps` accepts the same
+options as [Transition](/core/transition); `transitionDuration` is a duration shorthand.
+
+<Demo data={LightboxDemos.overlayTransition} />
+
+## Disable animations
+
+<Demo data={LightboxDemos.disableTransition} />
+
+## Swipe to close
+
+<Demo data={LightboxDemos.swipeClose} />
+
+## Click outside to close
+
+Only empty content space closes the viewer; images, videos, custom content and controls do not.
+
+<Demo data={LightboxDemos.closeOnClickOutside} />
+
+## Store API
+
+Mount `Lightbox.Provider` and use the static actions from anywhere:
+
+```ts
+Lightbox.open({ slides, startIndex: 2 })
+Lightbox.next()
+Lightbox.prev()
+Lightbox.setIndex(5)
+Lightbox.close()
+```
+
+<Demo data={LightboxDemos.store} />
+
+## Multiple lightboxes
+
+Create isolated stores when several galleries must operate independently:
+
+```vue
+<script setup lang="ts">
+import { createLightbox, Lightbox } from '@mantine-vue/lightbox'
+const [productStore, productLightbox] = createLightbox()
+</script>
+
+<template>
+  <Lightbox.Provider :store="productStore" with-thumbnails />
+  <Button @click="productLightbox.open({ slides })">Open products</Button>
+</template>
+```
+
+`useLightboxStore(store)` returns its reactive state for custom status or controls.
+
+## Video slides
+
+Video slides support accessible labels, posters, autoplay and caption tracks.
+
+<Demo data={LightboxDemos.video} />
+
+## Custom slides
+
+Use a Vue `render` function for content and `renderThumb` for its thumbnail.
+
+<Demo data={LightboxDemos.custom} />
+
+## Custom toolbar
+
+`toolbarItems` accepts an array or a function receiving `ToolbarItemsPayload`. Every item includes
+`key`, `icon`, `label`, `onClick`, and optional `position`. Factory functions are provided for
+close, download, fullscreen and thumbnails actions.
+
+<Demo data={LightboxDemos.toolbar} />
+
+## Compound components
+
+Compose the complete layout when the default arrangement is not suitable:
+
+```vue
+<Lightbox.Root v-model:opened="opened" :slides="slides" with-zoom with-thumbnails>
+  <Lightbox.Toolbar />
+  <Lightbox.Slides>
+    <Lightbox.Slide
+      v-for="(slide, index) in slides"
+      :key="index"
+      :slide="slide"
+      :index="index"
+    />
+  </Lightbox.Slides>
+  <Lightbox.Navigation />
+  <Lightbox.Caption />
+  <Lightbox.Thumbnails />
+</Lightbox.Root>
+```
+
+Available parts are `Root`, `Toolbar`, `Slides`, `Slide`, `Thumbnails`, `Navigation`, `Caption`,
+`CloseButton`, and `Provider`.
+
+## Labels
+
+Override any label while the rest fall back to `DEFAULT_LABELS`:
+
+```vue
+<Lightbox
+  v-model:opened="opened"
+  :slides="slides"
+  :labels="{
+    lightboxLabel: 'Galerie',
+    slideLabel: (index, total) => `Bild ${index} von ${total}`,
+    previousSlideLabel: 'Vorheriges Bild',
+    nextSlideLabel: 'Nächstes Bild',
+    closeLabel: 'Schließen',
+  }"
+/>
+```
+
+## Accessibility
+
+- The viewer is an accessible modal dialog with a configurable name.
+- Focus is trapped and optionally returned after close.
+- Slide changes, including image alt or video labels, are announced by a polite live region.
+- Inactive slides are inert and removed from the accessibility tree and tab order.
+- All built-in controls have accessible labels.
+- Always provide `alt` for images and `label` for videos.
+- Body scroll is locked while open and owned fullscreen mode is exited on close.
+
+## Keyboard shortcuts
+
+| Key        | Action                                     |
+| ---------- | ------------------------------------------ |
+| Escape     | Close                                      |
+| Left/Right | Navigate, or pan horizontally while zoomed |
+| Up/Down    | Pan vertically while zoomed                |
+| F          | Toggle fullscreen when enabled             |
+| T          | Toggle thumbnails when enabled             |
+| Z          | Toggle zoom when enabled                   |
+
+Shortcuts do not intercept text inputs, media controls, or interactive widgets inside custom slides.
+
+<StylesApiSelectors component="Lightbox" />
