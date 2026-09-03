@@ -1,0 +1,54 @@
+import { WaffleChartDemos } from '@/demos/charts'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.WaffleChart)
+
+## Usage
+
+`WaffleChart` shows parts of a whole as a grid. Cells are allocated proportionally to each
+data item. Set `total` above the data sum to leave cells empty and show progress toward a goal.
+
+<Demo data={WaffleChartDemos.usage} />
+
+## Total
+
+`total` controls the value represented by the complete grid. When it is larger than the sum of
+the data values, the remaining cells use `emptyColor`.
+
+<Demo data={WaffleChartDemos.total} />
+
+## Tooltip
+
+Enable `withTooltip` and customize content with `getTooltipLabel`, which receives the data item
+and allocated cell `count`.
+
+<Demo data={WaffleChartDemos.tooltip} />
+
+## Legend
+
+Use `legendPosition` to place the legend at the top, bottom, left or right. Disable it with
+`withLegend="false"`.
+
+<Demo data={WaffleChartDemos.legend} />
+
+## Gap and grid size
+
+`rows`, `columns`, `gap`, `cellSize` and `cellRadius` control the grid geometry.
+
+<Demo data={WaffleChartDemos.gap} />
+
+## Fill direction
+
+<Demo data={WaffleChartDemos.fillDirection} />
+
+## Empty cells color
+
+<Demo data={WaffleChartDemos.emptyColor} />
+
+## Accessibility
+
+Provide `aria-label` or `aria-labelledby` to describe what the values represent. These
+attributes are forwarded to the chart root element.
+
+<StylesApiSelectors component="WaffleChart" />

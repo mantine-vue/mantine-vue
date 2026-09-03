@@ -23,12 +23,35 @@ export interface ChartReferenceLineProps {
   [key: string]: unknown
 }
 
+export interface ChartReferenceAreaProps {
+  x1?: string | number
+  x2?: string | number
+  y1?: string | number
+  y2?: string | number
+  color?: MantineColor
+  label?: string | Record<string, unknown>
+  labelPosition?: string
+  [key: string]: unknown
+}
+
+export interface ChartReferenceDotProps {
+  x: string | number
+  y: string | number
+  color?: MantineColor
+  label?: string | Record<string, unknown>
+  labelPosition?: string
+  r?: number
+  [key: string]: unknown
+}
+
 export type BaseChartStylesNames =
   | 'root'
   | 'container'
   | 'axis'
   | 'grid'
   | 'referenceLine'
+  | 'referenceArea'
+  | 'referenceDot'
   | 'axisLabel'
 
 export interface ChartRootProps {
@@ -52,6 +75,8 @@ export interface GridChartBaseProps extends ChartRootProps {
   data: ChartData
   dataKey: string
   referenceLines?: ChartReferenceLineProps[]
+  referenceAreas?: ChartReferenceAreaProps[]
+  referenceDots?: ChartReferenceDotProps[]
   withXAxis?: boolean
   withYAxis?: boolean
   xAxisProps?: ChartOptionProps

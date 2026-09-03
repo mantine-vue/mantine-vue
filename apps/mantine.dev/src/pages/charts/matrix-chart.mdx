@@ -1,0 +1,70 @@
+import { MatrixChartDemos } from '@/demos/charts'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.MatrixChart)
+
+## Usage
+
+`MatrixChart` is a categorical x/y heatmap. Data items contain `x`, `y` and a numeric `value`;
+use `null` for empty cells.
+
+<Demo data={MatrixChartDemos.usage} />
+
+## Data format
+
+```ts
+interface MatrixChartCell {
+  x: string
+  y: string
+  value: number | null
+}
+```
+
+## Labels
+
+Supply `xLabels` and `yLabels`, or let the component infer their first-seen order from data.
+Use `withXLabels`, `withYLabels` and `xLabelsPosition` to control visibility and placement.
+
+<Demo data={MatrixChartDemos.labels} />
+
+## X-axis labels rotation
+
+<Demo data={MatrixChartDemos.xLabelsRotation} />
+
+## Tooltip
+
+<Demo data={MatrixChartDemos.tooltip} />
+
+## Colors
+
+The palette is interpolated across the current domain.
+
+<Demo data={MatrixChartDemos.colors} />
+
+## Values domain
+
+The default domain uses data minimum and maximum. Set an explicit `[min, max]` with `domain`.
+
+<Demo data={MatrixChartDemos.domain} />
+
+## Cell size and gap
+
+<Demo data={MatrixChartDemos.cellSize} />
+
+## Pass props to cells
+
+`getCellProps` receives each cell and can return ECharts data-item options such as `itemStyle`.
+
+<Demo data={MatrixChartDemos.getCellProps} />
+
+## Legend
+
+<Demo data={MatrixChartDemos.legend} />
+
+## Accessibility
+
+Give the chart an `aria-label` or `aria-labelledby` describing the matrix. These attributes are
+forwarded to the chart root element.
+
+<StylesApiSelectors component="MatrixChart" />

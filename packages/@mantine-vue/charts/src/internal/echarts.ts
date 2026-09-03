@@ -1,6 +1,7 @@
 import { use } from 'echarts/core'
 import {
   BarChart as EBarChart,
+  CandlestickChart as ECandlestickChart,
   EffectScatterChart,
   FunnelChart as EFunnelChart,
   GaugeChart,
@@ -22,6 +23,8 @@ import {
   GridComponent,
   LegendComponent,
   MarkLineComponent,
+  MarkAreaComponent,
+  MarkPointComponent,
   PolarComponent,
   RadarComponent,
   TitleComponent,
@@ -41,6 +44,7 @@ export function registerECharts(): void {
 
   use([
     EBarChart,
+    ECandlestickChart,
     EffectScatterChart,
     EFunnelChart,
     GaugeChart,
@@ -60,6 +64,8 @@ export function registerECharts(): void {
     GridComponent,
     LegendComponent,
     MarkLineComponent,
+    MarkAreaComponent,
+    MarkPointComponent,
     PolarComponent,
     RadarComponent,
     TitleComponent,

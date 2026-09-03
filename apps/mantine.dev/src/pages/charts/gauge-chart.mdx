@@ -1,0 +1,54 @@
+import { GaugeChartDemos } from '@/demos/charts'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.GaugeChart)
+
+## Usage
+
+`GaugeChart` displays a single value on a radial arc for KPIs, utilization and status indicators.
+The arc fills from `min` (`0`) to `value`, and the formatted value appears in the center.
+
+<Demo data={GaugeChartDemos.usage} />
+
+## Sections
+
+`sections` divides the arc into threshold bands. Each section fills from the previous upper bound
+to its own `value`; the last section should end at `max`. Sections are sorted automatically.
+With sections, use `target` to mark the current value.
+
+<Demo data={GaugeChartDemos.sectionsProp} />
+
+## Target marker
+
+`target` draws a marker across the arc. Configure it with `targetColor` and `targetSize`.
+
+<Demo data={GaugeChartDemos.target} />
+
+## Start and end angle
+
+Angles use degrees where zero is the top and positive values move clockwise. A span of at least
+360° produces a full circle; an end angle below the start sweeps counter-clockwise.
+
+<Demo data={GaugeChartDemos.angles} />
+
+## Thickness and size
+
+<Demo data={GaugeChartDemos.thickness} />
+
+## Custom label
+
+Use `valueFormatter` for a string value or `label` for any Vue VNode.
+
+<Demo data={GaugeChartDemos.label} />
+
+## Round caps
+
+<Demo data={GaugeChartDemos.roundCaps} />
+
+## Accessibility
+
+Always add `aria-label` or `aria-labelledby` describing the metric. These attributes are
+forwarded to the chart root element.
+
+<StylesApiSelectors component="GaugeChart" />

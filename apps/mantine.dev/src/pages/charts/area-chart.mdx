@@ -5,10 +5,25 @@ export default Layout(MDX_DATA.AreaChart)
 
 ## Usage
 
-`AreaChart` displays one or more numeric series with an optional area fill. Use `type="stacked"`, `type="percent"`, or `type="split"` to change how areas relate to each other.
+`AreaChart` displays one or more numeric series with an optional area fill. Use `type="stacked"`,
+`type="percent"`, `type="split"`, or `type="stream"` to change how areas relate to each other.
 
 <Demo data={ChartsDemos.areaChart} />
+
+## Stream chart
+
+`type="stream"` centers stacked layers around a shared baseline to emphasize changes in overall
+shape rather than absolute totals.
+
+<Demo data={ChartsDemos.areaChartStream} />
 
 ## Gradient and points
 
 Use `withGradient`, `fillOpacity`, `withDots`, `strokeWidth`, and `curveType` to control the presentation. Set `withPointLabels` to display values next to points.
+
+## Reference areas and dots
+
+Use `referenceAreas` to highlight ranges and `referenceDots` to mark individual values.
+Both support labels and Styles API-compatible visual options.
+
+<Demo data={ChartsDemos.areaChartReferences} />
