@@ -8,6 +8,7 @@ import {
   ref,
   useAttrs,
   watch,
+  type CSSProperties,
 } from 'vue'
 import { Notification } from '@mantine-vue/core'
 import { getAutoClose } from '../../get-auto-close/get-auto-close'
@@ -22,6 +23,7 @@ const props = defineProps<NotificationContainerProps>()
 const emit = defineEmits<NotificationContainerEmits>()
 const attrs = useAttrs()
 const SCROLL_DISMISS_RESET_TIMEOUT = 120
+const MAX_VISIBLE_STACK_DEPTH = 4
 
 const notificationRef = ref<HTMLElement | null>(null)
 const offset = ref(0)
@@ -30,11 +32,14 @@ const dismissDirection = ref<-1 | 1>(1)
 const active = ref(false)
 const scrollDismissActive = ref(false)
 const hovered = ref(false)
+const focused = ref(false)
+const contributedActive = ref(false)
 const startX = ref(0)
 const startTime = ref(0)
 let autoCloseTimeout = -1
 let hideTimeout = -1
 let scrollDismissTimeout = -1
+let resizeObserver: ResizeObserver | undefined
 
 const autoCloseDuration = computed(() => getAutoClose(props.autoClose, props.data.autoClose))
 const isCloseDisabled = computed(() => props.data.allowClose === false)
@@ -61,6 +66,9 @@ function getNotificationProps() {
     'onOpen',
     'onClose',
     'id',
+    'renderNotification',
+    'priority',
+    '__sequence',
   ])
   return Object.fromEntries(
     Object.entries(props.data)
@@ -80,7 +88,9 @@ const renderMessage = () =>
     typeof props.data.message === 'function' ? props.data.message() : props.data.message,
   )
 
-const notificationStyle = computed(() => {
+const renderCustomNotification = () => cloneRenderable(props.renderNotification?.(props.data))
+
+const notificationStyle = computed<CSSProperties>(() => {
   const baseStyle = { ...normalizeStyle(attrs.style), ...normalizeStyle(props.data.style) }
   const baseOpacity = typeof baseStyle.opacity === 'number' ? baseStyle.opacity : 1
   const swipeOpacity = dismissed.value ? 0 : 1 - Math.min(Math.abs(offset.value) / 200, 1) * 0.6
@@ -88,22 +98,61 @@ const notificationStyle = computed(() => {
     baseStyle.transitionDuration ??
     `${props.transitionDuration}ms, ${props.transitionDuration}ms, ${props.transitionDuration}ms`
 
+  const isStackedLayout = props.layout === 'stacked'
+  const isStacked = isStackedLayout && (props.stackIndex ?? 0) > 0
+  const isCollapsed = isStacked && !props.stackExpanded
+  const isExiting = props.transitionState === 'exiting' || props.transitionState === 'exited'
+  const stackDirection = props.stackPosition?.startsWith('top') ? 1 : -1
+  const stackDepth = Math.min(props.stackIndex ?? 0, MAX_VISIBLE_STACK_DEPTH)
+  const collapsedOffset = isCollapsed ? stackDepth * 10 * stackDirection : 0
+  const staggerDelay = isStackedLayout ? (props.stackIndex ?? 0) * 30 : 0
+  const isDragging = active.value || scrollDismissActive.value
+
+  let transform =
+    'var(--notifications-state-transform) translate3d(var(--notifications-swipe-offset), 0, 0)'
+
+  if (isStackedLayout) {
+    if (isExiting) {
+      const exitOffset = props.stackExpanded ? (props.stackExpandedOffset ?? 0) : collapsedOffset
+      transform = `translateY(${exitOffset}px) ${transform}`
+    } else if (props.stackExpanded) {
+      transform = `translateY(${props.stackExpandedOffset ?? 0}px) translate3d(var(--notifications-swipe-offset), 0, 0)`
+    } else if (isStacked) {
+      transform = `scale(${1 - stackDepth * 0.03}) translateY(${collapsedOffset}px)`
+    }
+  }
+
   return {
     ...baseStyle,
+    ...(isStackedLayout ? { maxHeight: undefined } : {}),
     '--notifications-state-transform':
       typeof baseStyle.transform === 'string' ? baseStyle.transform : 'translateX(0)',
     '--notifications-state-opacity': String(baseOpacity),
     '--notifications-swipe-offset': `${offset.value}px`,
     '--notifications-swipe-opacity': String(swipeOpacity),
-    transform:
-      'var(--notifications-state-transform) translate3d(var(--notifications-swipe-offset), 0, 0)',
+    transform,
     opacity: 'calc(var(--notifications-state-opacity) * var(--notifications-swipe-opacity))',
-    transitionDuration:
-      active.value || scrollDismissActive.value ? '0ms, 0ms, 0ms' : transitionDuration,
+    transitionDuration: isDragging ? '0ms, 0ms, 0ms' : transitionDuration,
     cursor: 'default',
     touchAction: 'pan-y',
+    ...(isStackedLayout
+      ? {
+          gridArea: '1 / 1',
+          zIndex: (props.stackSize ?? 5) - (props.stackIndex ?? 0),
+          pointerEvents: isCollapsed ? ('none' as const) : undefined,
+          alignSelf: stackDirection === 1 ? ('start' as const) : ('end' as const),
+          transition: isDragging
+            ? 'none'
+            : `transform ${props.transitionDuration}ms cubic-bezier(.51,.3,0,1.21), opacity ${props.transitionDuration}ms ease`,
+          transitionDelay: isDragging || isExiting ? '0ms' : `${staggerDelay}ms`,
+        }
+      : {}),
   }
 })
+
+const isCollapsed = computed(
+  () => props.layout === 'stacked' && (props.stackIndex ?? 0) > 0 && !props.stackExpanded,
+)
 
 const cancelAutoClose = () => window.clearTimeout(autoCloseTimeout)
 const cancelHide = () => window.clearTimeout(hideTimeout)
@@ -123,6 +172,7 @@ function handleAutoClose() {
     active.value ||
     props.paused ||
     hovered.value ||
+    focused.value ||
     typeof autoCloseDuration.value !== 'number'
   )
     return
@@ -231,7 +281,43 @@ function handleWheel(event: WheelEvent) {
 function handleMouseEnter() {
   hovered.value = true
   cancelAutoClose()
-  emit('hoverStart')
+  syncActiveContribution()
+}
+
+function syncActiveContribution() {
+  const isActive = hovered.value || focused.value
+  if (isActive && !contributedActive.value) {
+    contributedActive.value = true
+    emit('hoverStart')
+  } else if (!isActive && contributedActive.value) {
+    contributedActive.value = false
+    emit('hoverEnd')
+  }
+}
+
+function handleFocusIn() {
+  if (props.layout !== 'stacked') return
+  focused.value = true
+  cancelAutoClose()
+  syncActiveContribution()
+}
+
+function handleFocusOut(event: FocusEvent) {
+  if (props.layout !== 'stacked') return
+  const next = event.relatedTarget as Node | null
+  if (next && notificationRef.value?.contains(next)) return
+  focused.value = false
+  if (!scrollDismissActive.value) handleAutoClose()
+  syncActiveContribution()
+}
+
+function handlePointerDownCapture(event: PointerEvent) {
+  if (
+    props.layout === 'stacked' &&
+    (event.pointerType === 'touch' || event.pointerType === 'pen')
+  ) {
+    emit('expandRequest')
+  }
 }
 
 function handleMouseLeave() {
@@ -240,7 +326,7 @@ function handleMouseLeave() {
     resetSwipe()
     handleAutoClose()
   }
-  emit('hoverEnd')
+  syncActiveContribution()
 }
 
 watch(scrollDismissActive, (enabled, _, onCleanup) => {
@@ -262,6 +348,15 @@ onMounted(() => {
   props.data.onOpen?.(props.data)
   notificationRef.value?.addEventListener('wheel', handleWheel, { passive: false })
   window.addEventListener('resize', handleResize)
+  if (notificationRef.value) {
+    emit('heightChange', notificationRef.value.offsetHeight)
+    if (typeof ResizeObserver !== 'undefined') {
+      resizeObserver = new ResizeObserver(() => {
+        if (notificationRef.value) emit('heightChange', notificationRef.value.offsetHeight)
+      })
+      resizeObserver.observe(notificationRef.value)
+    }
+  }
 })
 
 function handleResize() {
@@ -269,25 +364,53 @@ function handleResize() {
 }
 
 onBeforeUnmount(() => {
-  if (hovered.value) emit('hoverEnd')
+  hovered.value = false
+  focused.value = false
+  syncActiveContribution()
   cancelAutoClose()
   cancelHide()
   cancelScrollDismissReset()
   cancelPointerDrag(false)
   notificationRef.value?.removeEventListener('wheel', handleWheel)
   window.removeEventListener('resize', handleResize)
+  resizeObserver?.disconnect()
 })
+
+function setNotificationRef(node: any) {
+  notificationRef.value = node?.$el ?? node ?? null
+}
 </script>
 
 <template>
-  <Notification
-    v-bind="{ ...attrs, ...getNotificationProps() }"
-    :ref="(node: any) => (notificationRef = node?.$el ?? node)"
+  <div
+    v-if="props.renderNotification"
+    v-bind="attrs"
+    :ref="setNotificationRef"
     :style="notificationStyle"
+    :role="(attrs.role as string) || 'alert'"
+    :inert="isCollapsed || undefined"
+    @mouseenter="handleMouseEnter"
+    @mouseleave="handleMouseLeave"
+    @focusin="handleFocusIn"
+    @focusout="handleFocusOut"
+    @pointerdown.capture="handlePointerDownCapture"
+    @pointerdown="handlePointerDown"
+  >
+    <component :is="renderCustomNotification" />
+  </div>
+  <Notification
+    v-else
+    v-bind="{ ...attrs, ...getNotificationProps() }"
+    :ref="setNotificationRef"
+    :style="notificationStyle"
+    :inert="isCollapsed || undefined"
     :with-close-button="isCloseDisabled ? false : props.data.withCloseButton"
     @close="handleHide"
     @mouseenter="handleMouseEnter"
     @mouseleave="handleMouseLeave"
+    @focusin="handleFocusIn"
+    @focusout="handleFocusOut"
+    @pointerdown.capture="handlePointerDownCapture"
     @pointerdown="handlePointerDown"
   >
     <component :is="renderMessage" />

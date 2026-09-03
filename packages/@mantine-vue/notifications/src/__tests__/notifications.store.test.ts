@@ -155,4 +155,36 @@ describe('@mantine-vue/notifications store', () => {
     wrapper.unmount()
     vi.useRealTimers()
   })
+
+  it('supports stacked layout and custom notification rendering', async () => {
+    const store = createNotificationsStore()
+    const renderNotification = vi.fn((notification) =>
+      h('div', { 'data-testid': `custom-${notification.id}` }, notification.message),
+    )
+    showNotification({ id: 'first', message: 'First' }, store)
+    showNotification({ id: 'second', message: 'Second' }, store)
+
+    const wrapper = mount(MantineProvider, {
+      props: { env: 'test' },
+      slots: {
+        default: () =>
+          h(Notifications, {
+            store,
+            autoClose: false,
+            withinPortal: false,
+            layout: 'stacked',
+            renderNotification,
+          }),
+      },
+      attachTo: document.body,
+    })
+    await nextTick()
+
+    expect(wrapper.find('[data-layout="stacked"]').exists()).toBe(true)
+    expect(wrapper.find('[data-testid="custom-first"]').exists()).toBe(true)
+    expect(wrapper.find('[data-testid="custom-second"]').exists()).toBe(true)
+    expect(renderNotification).toHaveBeenCalledTimes(2)
+
+    wrapper.unmount()
+  })
 })
