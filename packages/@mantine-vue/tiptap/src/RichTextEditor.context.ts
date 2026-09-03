@@ -1,6 +1,6 @@
 import type { Editor } from '@tiptap/vue-3'
 import { createSafeContext } from '@mantine-vue/core'
-import type { RichTextEditorLabels } from './labels'
+import type { ResolvedRichTextEditorLabels } from './labels'
 
 export interface RichTextEditorContextValue {
   getStyles: (
@@ -16,7 +16,7 @@ export interface RichTextEditorContextValue {
     },
   ) => Record<string, any>
   editor: Editor | null
-  labels: RichTextEditorLabels
+  labels: ResolvedRichTextEditorLabels
   withCodeHighlightStyles: boolean | undefined
   withTypographyStyles: boolean | undefined
   unstyled: boolean | undefined

@@ -236,3 +236,78 @@ export const IconBraces = createIcon('IconBraces', [
   path('M10 11l-2 2 2 2'),
   path('M14 11l2 2-2 2'),
 ])
+export const IconTablePlus = createIcon('IconTablePlus', [
+  path('M12.5 21h-7.5a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v7.5'),
+  path('M3 10h18'),
+  path('M10 3v18'),
+  path('M16 19h6'),
+  path('M19 16v6'),
+])
+export const IconTableOff = createIcon('IconTableOff', [
+  path(
+    'M7 3h12a2 2 0 0 1 2 2v12m-.585 3.413a1.994 1.994 0 0 1 -1.415 .587h-14a2 2 0 0 1 -2 -2v-14c0 -.55 .223 -1.05 .583 -1.412',
+  ),
+  path('M3 10h7m4 0h7'),
+  path('M10 3v3m0 4v11'),
+  path('M3 3l18 18'),
+])
+export const IconColumnInsertLeft = createIcon('IconColumnInsertLeft', [
+  path('M14 4h4a1 1 0 0 1 1 1v14a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1v-14a1 1 0 0 1 1 -1z'),
+  path('M5 12l4 0'),
+  path('M7 10l0 4'),
+])
+export const IconColumnInsertRight = createIcon('IconColumnInsertRight', [
+  path('M6 4h4a1 1 0 0 1 1 1v14a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1v-14a1 1 0 0 1 1 -1z'),
+  path('M15 12l4 0'),
+  path('M17 10l0 4'),
+])
+export const IconColumnRemove = createIcon('IconColumnRemove', [
+  path('M6 4h4a1 1 0 0 1 1 1v14a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1v-14a1 1 0 0 1 1 -1z'),
+  path('M16 10l4 4'),
+  path('M16 14l4 -4'),
+])
+export const IconRowInsertTop = createIcon('IconRowInsertTop', [
+  path('M4 18v-4a1 1 0 0 1 1 -1h14a1 1 0 0 1 1 1v4a1 1 0 0 1 -1 1h-14a1 1 0 0 1 -1 -1z'),
+  path('M12 9v-4'),
+  path('M10 7l4 0'),
+])
+export const IconRowInsertBottom = createIcon('IconRowInsertBottom', [
+  path('M20 6v4a1 1 0 0 1 -1 1h-14a1 1 0 0 1 -1 -1v-4a1 1 0 0 1 1 -1h14a1 1 0 0 1 1 1z'),
+  path('M12 15l0 4'),
+  path('M14 17l-4 0'),
+])
+export const IconRowRemove = createIcon('IconRowRemove', [
+  path('M20 6v4a1 1 0 0 1 -1 1h-14a1 1 0 0 1 -1 -1v-4a1 1 0 0 1 1 -1h14a1 1 0 0 1 1 1z'),
+  path('M10 16l4 4'),
+  path('M10 20l4 -4'),
+])
+export const IconTableHeaderRow = createIcon('IconTableHeaderRow', [
+  path('M4 4m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z'),
+  path('M4 9l16 0'),
+])
+export const IconTableHeaderColumn = createIcon('IconTableHeaderColumn', [
+  path('M4 4m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z'),
+  path('M9 4l0 16'),
+])
+export const IconTableMergeCells = createIcon('IconTableMergeCells', [
+  path('M18 10h-4v-4'),
+  path('M20 4l-6 6'),
+  path('M6 14h4v4'),
+  path('M10 14l-6 6'),
+])
+export const IconTableSplitCell = createIcon('IconTableSplitCell', [
+  path('M12 4l0 16'),
+  path('M8 8l-4 4l4 4'),
+  path('M16 16l4 -4l-4 -4'),
+])
+export const IconDetails = createIcon('IconDetails', [
+  path('M8 5l3 3l-3 3'),
+  path('M15 8l4 0'),
+  path('M5 15l14 0'),
+  path('M5 19l14 0'),
+])
+export const IconPilcrow = createIcon('IconPilcrow', [
+  path('M13 4v16'),
+  path('M17 4v16'),
+  path('M19 4h-9.5a4.5 4.5 0 0 0 0 9h3.5'),
+])

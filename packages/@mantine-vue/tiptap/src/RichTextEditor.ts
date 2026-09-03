@@ -7,6 +7,9 @@ import { RichTextEditorColorControl } from './RichTextEditorControl/RichTextEdit
 import { RichTextEditorColorPickerControl } from './RichTextEditorControl/RichTextEditorColorPickerControl'
 import { RichTextEditorLinkControl } from './RichTextEditorControl/RichTextEditorLinkControl'
 import { RichTextEditorSourceCodeControl } from './RichTextEditorControl/RichTextEditorSourceCodeControl'
+import { RichTextEditorTableInsertControl } from './RichTextEditorControl/RichTextEditorTableInsertControl'
+import { RichTextEditorDetailsControl } from './RichTextEditorControl/RichTextEditorDetailsControl'
+import { RichTextEditorInvisibleCharactersControl } from './RichTextEditorControl/RichTextEditorInvisibleCharactersControl'
 import { RichTextEditorControlsGroup } from './RichTextEditorControlsGroup/RichTextEditorControlsGroup'
 import { RichTextEditorToolbar } from './RichTextEditorToolbar/RichTextEditorToolbar'
 import type { RichTextEditorFactory } from './RichTextEditor.types'
@@ -53,6 +56,20 @@ export const RichTextEditor = factory<RichTextEditorFactory>(RichTextEditorCompo
   TaskListSink: controls.TaskListSinkControl,
   TaskListLift: controls.TaskListLiftControl,
   SourceCode: RichTextEditorSourceCodeControl,
+  TableInsert: RichTextEditorTableInsertControl,
+  TableDelete: controls.TableDeleteControl,
+  TableColumnBefore: controls.TableColumnBeforeControl,
+  TableColumnAfter: controls.TableColumnAfterControl,
+  TableColumnDelete: controls.TableColumnDeleteControl,
+  TableRowBefore: controls.TableRowBeforeControl,
+  TableRowAfter: controls.TableRowAfterControl,
+  TableRowDelete: controls.TableRowDeleteControl,
+  TableToggleHeaderRow: controls.TableToggleHeaderRowControl,
+  TableToggleHeaderColumn: controls.TableToggleHeaderColumnControl,
+  TableMergeCells: controls.TableMergeCellsControl,
+  TableSplitCell: controls.TableSplitCellControl,
+  Details: RichTextEditorDetailsControl,
+  InvisibleCharacters: RichTextEditorInvisibleCharactersControl,
 })
 
 export type {
