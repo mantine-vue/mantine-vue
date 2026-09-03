@@ -112,6 +112,14 @@ export interface StepperOwnProps extends StylesApiProps<StepperFactory> {
    */
   iconPosition?: 'right' | 'left'
 
+  /**
+   * Position of the step label and description relative to the icon. Takes precedence over
+   * `iconPosition` and is ignored when `orientation` is `vertical`.
+   *
+   * @default 'right'
+   */
+  labelPosition?: 'right' | 'bottom'
+
   /** Controls the size of the steps. */
   size?: MantineSize
 

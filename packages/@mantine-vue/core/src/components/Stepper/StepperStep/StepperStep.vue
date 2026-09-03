@@ -133,7 +133,10 @@ defineExpose({ rootElement })
   <UnstyledButton
     :rootRef="setRootRef"
     v-bind="{ ...attrs, ...stepStyles, ...dataAttributes }"
-    :mod="[{ iconPosition, allowClick: props.allowStepClick }, props.mod]"
+    :mod="[
+      { iconPosition, allowClick: props.allowStepClick, labelPosition: ctx.labelPosition },
+      props.mod,
+    ]"
     :style="rootStyle"
     :tabindex="props.allowStepClick ? 0 : -1"
   >

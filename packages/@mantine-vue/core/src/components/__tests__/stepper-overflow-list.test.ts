@@ -91,6 +91,20 @@ describe('@mantine-vue/core Stepper', () => {
       '--stepper-icon-size: 1.875rem',
     )
   })
+
+  it('supports labels positioned below step icons', () => {
+    const wrapper = withProvider(() =>
+      h(Stepper, { active: 0, labelPosition: 'bottom' }, () => [
+        h(StepperStep, { label: 'First', description: 'Description' }),
+        h(StepperStep, { label: 'Second' }),
+      ]),
+    )
+
+    expect(wrapper.find('.mantine-Stepper-steps').attributes('data-label-position')).toBe('bottom')
+    expect(wrapper.findAll('.mantine-Stepper-step')[0].attributes('data-label-position')).toBe(
+      'bottom',
+    )
+  })
 })
 
 describe('@mantine-vue/core OverflowList', () => {

@@ -16,6 +16,7 @@ import {
 const defaultProps = {
   orientation: 'horizontal',
   iconPosition: 'left',
+  labelPosition: 'right',
   allowNextStepsSelect: true,
   wrap: true,
 } as const
@@ -118,6 +119,9 @@ provideStepperContext({
   get iconPosition() {
     return props.iconPosition
   },
+  get labelPosition() {
+    return props.orientation === 'vertical' ? undefined : props.labelPosition
+  },
 } as any)
 
 const rootStyles = computed(() =>
@@ -127,6 +131,7 @@ const rootStyles = computed(() =>
 const stepsMod = computed(() => ({
   orientation: props.orientation,
   iconPosition: props.iconPosition,
+  labelPosition: props.orientation === 'vertical' ? undefined : props.labelPosition,
   // Vertical steps are always stacked, so wrapping is meaningless there.
   wrap: props.wrap && props.orientation !== 'vertical',
 }))
