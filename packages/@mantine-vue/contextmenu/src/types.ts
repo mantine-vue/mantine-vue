@@ -3,10 +3,9 @@ import type {
   MantineNode,
   MantineRadius,
   MantineShadow,
-  MantineStyle,
   MantineTheme,
 } from '@mantine-vue/core'
-import type { Ref, VNodeChild } from 'vue'
+import type { CSSProperties, Ref, VNodeChild } from 'vue'
 
 export type WithRequiredProperty<Type, Key extends keyof Type> = Type & {
   [Property in Key]-?: Type[Property]
@@ -15,7 +14,7 @@ export type WithRequiredProperty<Type, Key extends keyof Type> = Type & {
 export type WithOptionalProperty<Type, Key extends keyof Type> = Omit<Type, Key> &
   Partial<Pick<Type, Key>>
 
-export type ContextMenuStyle = MantineStyle | ((theme: MantineTheme) => MantineStyle)
+export type ContextMenuStyle = CSSProperties | ((theme: MantineTheme) => CSSProperties)
 export type ContextMenuStyles = Partial<Record<'root' | 'item' | 'divider', ContextMenuStyle>>
 
 export interface ContextMenuOptions {
