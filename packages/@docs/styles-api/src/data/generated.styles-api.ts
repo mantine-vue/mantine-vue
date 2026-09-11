@@ -92,6 +92,36 @@ export const CandlestickChartStylesApi: StylesApiData<
   vars: {},
 }
 
+export const QRCodeStylesApi: StylesApiData<
+  | 'background'
+  | 'finderInner'
+  | 'finderOuter'
+  | 'finderPattern'
+  | 'image'
+  | 'modules'
+  | 'root'
+  | 'svg'
+> = {
+  selectors: {
+    root: 'Root element',
+    svg: 'SVG element',
+    background: 'Background rectangle',
+    modules: 'Combined path of all data modules',
+    finderPattern: 'Group for each finder pattern',
+    finderOuter: 'Outer ring of each finder pattern',
+    finderInner: 'Inner shape of each finder pattern',
+    image: 'Center image overlay',
+  },
+  vars: {
+    root: {
+      '--qr-code-size': 'Controls QR code width and height',
+      '--qr-code-radius': 'Controls root border radius',
+      '--qr-code-color': 'Controls module and finder pattern color',
+      '--qr-code-background': 'Controls background color',
+    },
+  },
+}
+
 export const LightboxStylesApi: StylesApiData<
   | 'caption'
   | 'closeButton'

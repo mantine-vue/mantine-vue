@@ -1,0 +1,53 @@
+{
+  "name": "@mantine-vue/qr-code",
+  "version": "3.3.0",
+  "description": "Customizable QR code component for Vue with image overlays and SVG or raster downloads",
+  "license": "MIT",
+  "files": [
+    "cjs",
+    "esm",
+    "lib",
+    "styles.css",
+    "styles.layer.css",
+    "styles"
+  ],
+  "sideEffects": [
+    "*.css"
+  ],
+  "main": "./cjs/index.cjs",
+  "module": "./esm/index.mjs",
+  "types": "./lib/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./lib/index.d.mts",
+        "default": "./esm/index.mjs"
+      },
+      "require": {
+        "types": "./lib/index.d.ts",
+        "default": "./cjs/index.cjs"
+      }
+    },
+    "./styles.css": "./styles.css",
+    "./styles.layer.css": "./styles.layer.css"
+  },
+  "dependencies": {
+    "qrcode": "^1.5.4"
+  },
+  "devDependencies": {
+    "@mantine-vue/core": "workspace:*",
+    "@mantine-vue/hooks": "workspace:*",
+    "@types/qrcode": "^1.5.6",
+    "@vue/compiler-dom": "^3.5.0",
+    "@vue/test-utils": "^2.4.6",
+    "vue": "^3.5.0"
+  },
+  "peerDependencies": {
+    "@mantine-vue/core": "3.3.0",
+    "@mantine-vue/hooks": "3.3.0",
+    "vue": "^3.5.0"
+  },
+  "mantineVue": {
+    "cssLayer": "mantine-qr-code"
+  }
+}

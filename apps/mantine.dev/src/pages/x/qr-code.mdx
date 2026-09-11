@@ -1,0 +1,93 @@
+import { QRCodeDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.QRCode)
+
+## Installation
+
+<InstallScript packages="@mantine-vue/qr-code @mantine-vue/core @mantine-vue/hooks qrcode" />
+
+Import package styles after core styles:
+
+```ts
+import '@mantine-vue/core/styles.css'
+import '@mantine-vue/qr-code/styles.css'
+```
+
+You can import `@mantine-vue/qr-code/styles.layer.css` instead to place styles in the
+`mantine-qr-code` CSS layer.
+
+## Usage
+
+<Demo data={QRCodeDemos.usage} />
+
+## Configurator
+
+Explore all available visual and encoding props:
+
+<Demo data={QRCodeDemos.configurator} />
+
+## Colors
+
+`color` and `background` accept Mantine theme colors. Set `background="transparent"` for a
+transparent SVG background.
+
+<Demo data={QRCodeDemos.colors} />
+
+## Dot styles
+
+Set `dotStyle` to `square`, `rounded`, or `dots` to control data-module shapes:
+
+<Demo data={QRCodeDemos.dotStyles} />
+
+## Corner styles
+
+Set `cornerStyle` to customize the three finder patterns independently from data modules:
+
+<Demo data={QRCodeDemos.cornerStyles} />
+
+## Error correction
+
+QR codes support L (7%), M (15%), Q (25%), and H (30%) error correction. Higher levels tolerate
+more damage or obstruction but produce denser codes.
+
+<Demo data={QRCodeDemos.errorCorrection} />
+
+## Image overlay
+
+Set `image` to place a logo at the center. `imageSize`, `imageRadius`, `imagePadding`, and
+`imageExcavate` control its presentation. Use `errorCorrectionLevel="H"` when overlaying images.
+
+<Demo data={QRCodeDemos.withImage} />
+
+## Download
+
+`useQRCodeDownload` exports SVG, PNG, JPEG, or WebP. Its callback `ref` is passed to the Vue-specific
+`rootRef` prop. Raster output uses a scale of 4 by default for high-resolution downloads.
+
+<Demo data={QRCodeDemos.download} />
+
+`getDataUrl` returns the same output as a data URL for uploads, previews, or custom download flows.
+
+## Styles API
+
+`QRCode` supports `classNames`, `styles`, `vars`, `unstyled`, theme defaults, `extend`, and
+polymorphic roots like other Mantine Vue factory components.
+
+<Demo data={QRCodeDemos.stylesApi} />
+
+<StylesApiSelectors component="QRCode" />
+
+## Use cases
+
+The `value` can contain URLs, WiFi credentials, contact cards, plain text, or any other QR-compatible
+string.
+
+<Demo data={QRCodeDemos.useCases} />
+
+## Accessibility
+
+Generated codes render as an SVG image with an accessible label containing the encoded value. An
+empty value or a value too large for the selected error-correction level renders an empty SVG rather
+than throwing during render.

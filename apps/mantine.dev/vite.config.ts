@@ -40,6 +40,7 @@ export default defineConfig({
       ),
       '@mantine-vue/hooks': alias('../../packages/@mantine-vue/hooks/src/index.ts'),
       '@mantine-vue/lightbox': alias('../../packages/@mantine-vue/lightbox/src/index.ts'),
+      '@mantine-vue/qr-code': alias('../../packages/@mantine-vue/qr-code/src/index.ts'),
       '@mantine-vue/mantine-header': alias(
         '../../packages/@mantine-vue/mantine-header/src/index.ts',
       ),

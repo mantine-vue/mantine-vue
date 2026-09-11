@@ -26,6 +26,7 @@
     "@mantine-vue/modals": "workspace:*",
     "@mantine-vue/notifications": "workspace:*",
     "@mantine-vue/nprogress": "workspace:*",
+    "@mantine-vue/qr-code": "workspace:*",
     "@mantine-vue/schedule": "workspace:*",
     "@mantine-vue/spotlight": "workspace:*",
     "@mantine-vue/table": "workspace:*",
