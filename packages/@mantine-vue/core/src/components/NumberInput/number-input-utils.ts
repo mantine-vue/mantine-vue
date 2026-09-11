@@ -112,14 +112,22 @@ export function sanitizeNumberInputString(
   allowNegative: boolean,
   decimalScale?: number,
 ) {
-  let normalized = rawValue
+  let normalized = ''
+  let hasDecimalSeparator = false
 
-  if (!allowNegative) {
-    normalized = normalized.replace(/-/g, '')
-  }
+  for (const character of rawValue) {
+    if (character === '.' && !allowDecimal) {
+      break
+    }
 
-  if (!allowDecimal) {
-    return normalized.split('.')[0]
+    if (/\d/.test(character)) {
+      normalized += character
+    } else if (character === '-' && allowNegative && normalized.length === 0) {
+      normalized = '-'
+    } else if (character === '.' && allowDecimal && !hasDecimalSeparator) {
+      normalized += character
+      hasDecimalSeparator = true
+    }
   }
 
   if (typeof decimalScale === 'number' && normalized.includes('.')) {

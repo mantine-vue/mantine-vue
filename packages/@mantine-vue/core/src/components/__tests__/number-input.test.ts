@@ -61,6 +61,27 @@ describe('@mantine-vue/core NumberInput', () => {
     expect((input.element as HTMLInputElement).value).toBe('$1,234')
   })
 
+  it('rejects non-numeric characters', async () => {
+    const onChange = vi.fn()
+    const wrapper = withProvider(() => h(NumberInput, { onChange }))
+    const input = wrapper.find('input')
+
+    await input.setValue('not a number')
+
+    expect(onChange).not.toHaveBeenCalled()
+    expect((input.element as HTMLInputElement).value).toBe('')
+
+    await input.setValue('a1b2c.3d-4')
+
+    expect(onChange).toHaveBeenLastCalledWith(12.34)
+    expect((input.element as HTMLInputElement).value).toBe('12.34')
+
+    await input.setValue('still not a number')
+
+    expect(onChange).toHaveBeenLastCalledWith('')
+    expect((input.element as HTMLInputElement).value).toBe('')
+  })
+
   it('supports increment/decrement controls and handlersRef', async () => {
     const onChange = vi.fn()
     const handlersRef = ref<any>(null)

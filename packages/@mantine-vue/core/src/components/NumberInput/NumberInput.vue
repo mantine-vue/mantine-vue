@@ -406,7 +406,7 @@ function onInput(event: Event) {
 
   const sanitized = sanitizeNumberInputString(
     raw,
-    props.allowDecimal,
+    isBigIntMode.value ? false : props.allowDecimal,
     props.allowNegative,
     props.decimalScale,
   )
@@ -448,7 +448,9 @@ function onInput(event: Event) {
   }
 
   scheduleCaretClamp(input)
-  commitValue(nextValue)
+  if (!Object.is(nextValue, value.value)) {
+    commitValue(nextValue)
+  }
 }
 
 function onKeydown(event: KeyboardEvent) {
