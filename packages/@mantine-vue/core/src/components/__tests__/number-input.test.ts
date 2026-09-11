@@ -138,6 +138,36 @@ describe('@mantine-vue/core NumberInput', () => {
     expect((wrapper.find('input').element as HTMLInputElement).value).toBe('11111111111111112')
   })
 
+  it.each([
+    { initialValue: 1, zero: 0, one: 1 },
+    { initialValue: 1n, zero: 0n, one: 1n },
+  ])('stops $initialValue at zero when negative values are disabled', async (values) => {
+    const onChange = vi.fn()
+    const handlersRef = ref<any>(null)
+    const wrapper = withProvider(() =>
+      h(NumberInput, {
+        defaultValue: values.initialValue,
+        allowNegative: false,
+        onChange,
+        handlersRef,
+      }),
+    )
+    const input = wrapper.find('input')
+
+    handlersRef.value.decrement()
+    handlersRef.value.decrement()
+    await nextTick()
+
+    expect(onChange).toHaveBeenLastCalledWith(values.zero)
+    expect((input.element as HTMLInputElement).value).toBe('0')
+
+    handlersRef.value.increment()
+    await nextTick()
+
+    expect(onChange).toHaveBeenLastCalledWith(values.one)
+    expect((input.element as HTMLInputElement).value).toBe('1')
+  })
+
   it('steps with keyboard and respects max callback', async () => {
     const onChange = vi.fn()
     const onMaxReached = vi.fn()

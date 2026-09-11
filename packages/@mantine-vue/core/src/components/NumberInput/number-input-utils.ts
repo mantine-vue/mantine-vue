@@ -15,7 +15,7 @@ const trailingZerosPattern = /\.\d*0$/
 const trailingDecimalSeparatorPattern = /^-?\d+\.$/
 
 export function clamp(value: number, min?: number, max?: number) {
-  return Math.min(max ?? value, Math.max(min ?? value, value))
+  return Math.min(max ?? Number.POSITIVE_INFINITY, Math.max(min ?? Number.NEGATIVE_INFINITY, value))
 }
 
 export function clampBigInt(value: bigint, min?: bigint, max?: bigint) {

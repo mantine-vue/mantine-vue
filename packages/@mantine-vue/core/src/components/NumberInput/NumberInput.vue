@@ -224,7 +224,9 @@ const stepValue = (direction: 1 | -1) => {
       typeof props.min === 'bigint'
         ? props.min
         : props.min === undefined
-          ? undefined
+          ? props.allowNegative
+            ? undefined
+            : BigInt(0)
           : BigInt(props.min)
     const max =
       typeof props.max === 'bigint'
