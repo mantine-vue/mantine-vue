@@ -1626,6 +1626,18 @@ export const MDX_DATA: Record<string, Frontmatter> = {
     docs: 'x/lightbox.mdx',
     searchTags: 'lightbox, gallery, image viewer, video, carousel, fullscreen',
   },
+  QRCode: {
+    title: 'QRCode',
+    package: '@mantine-vue/qr-code',
+    slug: '/x/qr-code',
+    componentPrefix: 'QRCode',
+    props: ['QRCode'],
+    styles: ['QRCode'],
+    description: 'Generate customizable QR codes with image overlays and download support',
+    source: '@mantine-vue/qr-code/src/QRCode.ts',
+    docs: 'x/qr-code.mdx',
+    searchTags: 'qr code, qrcode, barcode, svg, download, logo, wifi, vcard',
+  },
   ContextMenu: {
     title: 'ContextMenu',
     package: '@mantine-vue/contextmenu',

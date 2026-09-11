@@ -779,6 +779,11 @@ const routes: RouteRecordRaw[] = [
     component: mdxRoute(() => import('./pages/x/tiptap.mdx')),
   },
   {
+    path: '/x/qr-code',
+    name: 'x-qr-code',
+    component: mdxRoute(() => import('./pages/x/qr-code.mdx')),
+  },
+  {
     path: '/x/code-highlight',
     name: 'x-code-highlight',
     component: mdxRoute(() => import('./pages/x/code-highlight.mdx')),
