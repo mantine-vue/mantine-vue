@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest'
-import { dotPath } from '../lib/dot-shapes'
-import { finderPatternPaths } from '../lib/finder-shapes'
-import { generateQRMatrix, isFinderPattern } from '../lib/qr-encoder'
-import { getExcavationMask } from '../lib/utils'
+import { dotPath } from '../utils/dot-shapes'
+import { finderPatternPaths } from '../utils/finder-shapes'
+import { generateQRMatrix, isFinderPattern } from '../utils/qr-encoder'
+import { getExcavationMask } from '../utils/utils'
 
 describe('@mantine-vue/qr-code utilities', () => {
   it('generates distinct paths for every dot and finder shape', () => {
