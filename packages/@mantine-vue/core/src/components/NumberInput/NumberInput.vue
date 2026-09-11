@@ -23,6 +23,8 @@ import {
   clampAndSanitizeInput,
   clampBigInt,
   clampCaretPosition,
+  canStep,
+  canStepBigInt,
   getCaretBoundaries,
   getDecimalPlaces,
   isStrictAllowed,
@@ -201,8 +203,14 @@ const commitValue = (nextValue: NumberInputValue, source = 'event') => {
   )
 }
 
+const canStepValue = computed(() =>
+  isBigIntMode.value
+    ? canStepBigInt(value.value as bigint | string, props.allowNegative)
+    : canStep(value.value as number | string),
+)
+
 const stepValue = (direction: 1 | -1) => {
-  if (props.disabled || props.readOnly) {
+  if (props.disabled || props.readOnly || !canStepValue.value) {
     return
   }
 
@@ -357,7 +365,7 @@ const controls = () =>
 
 /** The step controls double as the right section unless one was supplied. */
 const rightSection = computed(() =>
-  props.hideControls || props.readOnly
+  props.hideControls || props.readOnly || !canStepValue.value
     ? props.rightSection
     : props.rightSection !== undefined || slots.rightSection
       ? props.rightSection

@@ -101,6 +101,43 @@ describe('@mantine-vue/core NumberInput', () => {
     expect(onChange).toHaveBeenLastCalledWith(5)
   })
 
+  it('hides controls and prevents stepping for values above Number.MAX_SAFE_INTEGER', async () => {
+    const onChange = vi.fn()
+    const handlersRef = ref<any>(null)
+    const wrapper = withProvider(() => h(NumberInput, { onChange, handlersRef }))
+    const input = wrapper.find('input')
+
+    await input.setValue('11111111111111111')
+
+    expect((input.element as HTMLInputElement).value).toBe('11111111111111111')
+    expect(wrapper.find('.mantine-NumberInput-controls').exists()).toBe(false)
+
+    onChange.mockClear()
+    handlersRef.value.increment()
+    handlersRef.value.decrement()
+    await input.trigger('keydown', { key: 'ArrowUp' })
+    await input.trigger('keydown', { key: 'ArrowDown' })
+
+    expect(onChange).not.toHaveBeenCalled()
+    expect((input.element as HTMLInputElement).value).toBe('11111111111111111')
+  })
+
+  it('allows stepping large bigint values', async () => {
+    const onChange = vi.fn()
+    const handlersRef = ref<any>(null)
+    const wrapper = withProvider(() =>
+      h(NumberInput, { defaultValue: 11111111111111111n, onChange, handlersRef }),
+    )
+
+    expect(wrapper.find('.mantine-NumberInput-controls').exists()).toBe(true)
+
+    handlersRef.value.increment()
+    await nextTick()
+
+    expect(onChange).toHaveBeenLastCalledWith(11111111111111112n)
+    expect((wrapper.find('input').element as HTMLInputElement).value).toBe('11111111111111112')
+  })
+
   it('steps with keyboard and respects max callback', async () => {
     const onChange = vi.fn()
     const onMaxReached = vi.fn()

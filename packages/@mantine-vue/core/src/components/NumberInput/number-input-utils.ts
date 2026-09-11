@@ -30,6 +30,28 @@ export function clampBigInt(value: bigint, min?: bigint, max?: bigint) {
   return value
 }
 
+export function canStep(value: number | string) {
+  if (typeof value === 'number') {
+    return value < Number.MAX_SAFE_INTEGER
+  }
+
+  return (
+    value === '' ||
+    (value !== '-' && !Number.isNaN(Number(value)) && Number(value) < Number.MAX_SAFE_INTEGER)
+  )
+}
+
+export function canStepBigInt(value: bigint | string, allowNegative: boolean) {
+  if (typeof value === 'bigint') {
+    return true
+  }
+
+  return (
+    value === '' ||
+    (value !== '-' && (allowNegative || !value.startsWith('-')) && /^-?\d+$/.test(value))
+  )
+}
+
 export function stripFormatting(value: string, options: NumberFormatterOptions) {
   let next = value
 
