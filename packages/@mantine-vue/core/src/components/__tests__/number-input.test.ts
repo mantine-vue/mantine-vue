@@ -304,35 +304,101 @@ describe('@mantine-vue/core NumberInput', () => {
     expect((wrapper.find('input').element as HTMLInputElement).value).toBe('1.00')
   })
 
-  it('allows editing partial values with fixedDecimalScale', async () => {
+  it('applies fixedDecimalScale while typing', async () => {
     const wrapper = withProvider(() => h(NumberInput, { decimalScale: 2, fixedDecimalScale: true }))
     const input = wrapper.find('input')
 
     await input.trigger('focus')
 
     await input.setValue('1')
-    expect((input.element as HTMLInputElement).value).toBe('1')
+    expect((input.element as HTMLInputElement).value).toBe('1.00')
 
     await input.setValue('1.')
-    expect((input.element as HTMLInputElement).value).toBe('1.')
+    expect((input.element as HTMLInputElement).value).toBe('1.00')
 
     await input.setValue('1.1')
-    expect((input.element as HTMLInputElement).value).toBe('1.1')
+    expect((input.element as HTMLInputElement).value).toBe('1.10')
 
     await input.setValue('1.11')
     expect((input.element as HTMLInputElement).value).toBe('1.11')
 
     await input.setValue('2.')
-    expect((input.element as HTMLInputElement).value).toBe('2.')
+    expect((input.element as HTMLInputElement).value).toBe('2.00')
 
     await input.setValue('2.2')
-    expect((input.element as HTMLInputElement).value).toBe('2.2')
+    expect((input.element as HTMLInputElement).value).toBe('2.20')
 
     await input.setValue('2.22')
     expect((input.element as HTMLInputElement).value).toBe('2.22')
 
     await input.setValue('')
     expect((input.element as HTMLInputElement).value).toBe('')
+  })
+
+  it('keeps the caret before fixed decimal padding while typing', async () => {
+    const wrapper = withProvider(() => h(NumberInput, { decimalScale: 2, fixedDecimalScale: true }))
+    const input = wrapper.find('input')
+    const element = input.element as HTMLInputElement
+
+    await input.setValue('1')
+    expect(element.value).toBe('1.00')
+    expect(element.selectionStart).toBe(1)
+
+    element.value = '12.00'
+    element.setSelectionRange(2, 2)
+    await input.trigger('input')
+
+    expect(element.value).toBe('12.00')
+    expect(element.selectionStart).toBe(2)
+
+    element.value = '12.300'
+    element.setSelectionRange(4, 4)
+    await input.trigger('input')
+
+    expect(element.value).toBe('12.30')
+    expect(element.selectionStart).toBe(4)
+  })
+
+  it('clears fixed decimal padding after all digits are deleted with backspace', async () => {
+    const onChange = vi.fn()
+    const wrapper = withProvider(() =>
+      h(NumberInput, { defaultValue: 2, decimalScale: 2, fixedDecimalScale: true, onChange }),
+    )
+    const input = wrapper.find('input')
+    const element = input.element as HTMLInputElement
+
+    const pressBackspace = async () => {
+      const event = new KeyboardEvent('keydown', {
+        key: 'Backspace',
+        bubbles: true,
+        cancelable: true,
+      })
+      element.dispatchEvent(event)
+
+      if (!event.defaultPrevented) {
+        const position = element.selectionStart ?? 0
+        element.value = element.value.slice(0, position - 1) + element.value.slice(position)
+        element.setSelectionRange(Math.max(0, position - 1), Math.max(0, position - 1))
+        element.dispatchEvent(new Event('input', { bubbles: true }))
+      }
+
+      await nextTick()
+    }
+
+    element.setSelectionRange(element.value.length, element.value.length)
+
+    await pressBackspace()
+    expect(element.value).toBe('2.00')
+
+    await pressBackspace()
+    expect(element.value).toBe('2.00')
+
+    await pressBackspace()
+    expect(element.value).toBe('')
+
+    await pressBackspace()
+    expect(element.value).toBe('')
+    expect(onChange.mock.calls.map(([nextValue]) => nextValue)).toEqual(['2.0', ''])
   })
 
   it('uses decimalSeparator while typing', async () => {

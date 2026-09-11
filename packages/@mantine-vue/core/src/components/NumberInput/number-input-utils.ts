@@ -152,6 +152,12 @@ export function sanitizeNumberInputString(
     }
   }
 
+  if (normalized.startsWith('.')) {
+    normalized = `0${normalized}`
+  } else if (normalized.startsWith('-.')) {
+    normalized = `-0${normalized.slice(1)}`
+  }
+
   if (typeof decimalScale === 'number' && normalized.includes('.')) {
     const [integerPart, decimalPart = ''] = normalized.split('.')
     return `${integerPart}.${decimalPart.slice(0, decimalScale)}`

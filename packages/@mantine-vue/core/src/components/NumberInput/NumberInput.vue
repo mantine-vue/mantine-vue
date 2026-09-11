@@ -95,7 +95,6 @@ const slots = useSlots()
 const attrs = useAttrs()
 
 const inputRef = ref<HTMLInputElement | null>(null)
-const isEditing = ref(false)
 const isBigIntMode = computed(
   () => typeof props.modelValue === 'bigint' || typeof props.defaultValue === 'bigint',
 )
@@ -132,18 +131,10 @@ const formatterOptions = computed<NumberFormatterOptions>(() => ({
   thousandSeparator: props.thousandSeparator,
 }))
 
-const getFormatterOptions = (nextValue: NumberInputValue = value.value) => ({
-  ...formatterOptions.value,
-  fixedDecimalScale:
-    isEditing.value || typeof nextValue === 'string'
-      ? false
-      : formatterOptions.value.fixedDecimalScale,
-})
-
 const displayValue = computed(() =>
   value.value === '' || value.value === '-'
     ? String(value.value)
-    : formatNumber(value.value, getFormatterOptions()),
+    : formatNumber(value.value, formatterOptions.value),
 )
 
 const clampCaretToFormatting = (input: HTMLInputElement) => {
@@ -165,6 +156,20 @@ const clampCaretToFormatting = (input: HTMLInputElement) => {
 
 const scheduleCaretClamp = (input: HTMLInputElement) => {
   setTimeout(() => clampCaretToFormatting(input), 0)
+}
+
+const getFormattedCaretPosition = (value: string, formattedValue: string, position: number) => {
+  let formattedPosition = 0
+
+  for (const character of value.slice(0, position)) {
+    const nextPosition = formattedValue.indexOf(character, formattedPosition)
+
+    if (nextPosition !== -1) {
+      formattedPosition = nextPosition + 1
+    }
+  }
+
+  return formattedPosition
 }
 
 const commitValue = (nextValue: NumberInputValue, source = 'event') => {
@@ -195,8 +200,7 @@ const commitValue = (nextValue: NumberInputValue, source = 'event') => {
           : Number.isNaN(Number(raw))
             ? undefined
             : Number(raw),
-      formattedValue:
-        nextValue === '' ? '' : formatNumber(nextValue, getFormatterOptions(nextValue)),
+      formattedValue: nextValue === '' ? '' : formatNumber(nextValue, formatterOptions.value),
       value: raw,
     },
     { source },
@@ -400,9 +404,11 @@ const setRootRef = (node: Element | null) => {
 defineExpose({ rootElement })
 
 function onInput(event: Event) {
-  isEditing.value = true
   const input = event.currentTarget as HTMLInputElement
-  const rawValue = stripFormatting(input.value, formatterOptions.value)
+  const inputValue = input.value
+  const selectionStart = input.selectionStart
+  const selectionEnd = input.selectionEnd
+  const rawValue = stripFormatting(inputValue, formatterOptions.value)
   const decimalSeparator = props.decimalSeparator || '.'
 
   // Every accepted separator is normalised to a plain `.` before parsing.
@@ -451,10 +457,17 @@ function onInput(event: Event) {
   const formattedNextValue =
     nextValue === '' || nextValue === '-'
       ? String(nextValue)
-      : formatNumber(nextValue, getFormatterOptions(nextValue))
+      : formatNumber(nextValue, formatterOptions.value)
 
   if (input.value !== formattedNextValue) {
     restoreInputValue(input, formattedNextValue)
+
+    if (props.fixedDecimalScale && selectionStart !== null && selectionEnd !== null) {
+      input.setSelectionRange(
+        getFormattedCaretPosition(inputValue, formattedNextValue, selectionStart),
+        getFormattedCaretPosition(inputValue, formattedNextValue, selectionEnd),
+      )
+    }
   }
 
   scheduleCaretClamp(input)
@@ -464,6 +477,47 @@ function onInput(event: Event) {
 }
 
 function onKeydown(event: KeyboardEvent) {
+  const input = event.currentTarget as HTMLInputElement
+
+  if (
+    event.key === 'Backspace' &&
+    !props.readOnly &&
+    !props.disabled &&
+    input.selectionStart !== null &&
+    input.selectionStart === input.selectionEnd
+  ) {
+    if (input.selectionStart === 0) {
+      event.preventDefault()
+    } else if (props.fixedDecimalScale && typeof props.decimalScale === 'number') {
+      const decimalPosition = input.value.indexOf(props.decimalSeparator)
+      const isAfterDecimalSeparator =
+        input.value[input.selectionStart - 1] === props.decimalSeparator
+      const deletePosition = input.selectionStart - (isAfterDecimalSeparator ? 2 : 1)
+
+      if (deletePosition >= 0 && deletePosition < decimalPosition) {
+        const nextInputValue =
+          input.value.slice(0, deletePosition) + input.value.slice(deletePosition + 1)
+        const unformattedValue = stripFormatting(nextInputValue, formatterOptions.value)
+        const unsignedValue = unformattedValue.startsWith('-')
+          ? unformattedValue.slice(1)
+          : unformattedValue
+        const [integerPart, decimalPart = ''] = unsignedValue.split('.')
+
+        if (!/\d/.test(integerPart) && /^0*$/.test(decimalPart)) {
+          event.preventDefault()
+          input.value = ''
+          input.setSelectionRange(0, 0)
+          input.dispatchEvent(new Event('input', { bubbles: true }))
+        } else if (isAfterDecimalSeparator) {
+          event.preventDefault()
+          input.value = nextInputValue
+          input.setSelectionRange(deletePosition, deletePosition)
+          input.dispatchEvent(new Event('input', { bubbles: true }))
+        }
+      }
+    }
+  }
+
   if (!props.readOnly && props.withKeyboardEvents && event.key === 'ArrowUp') {
     event.preventDefault()
     stepValue(1)
@@ -474,7 +528,7 @@ function onKeydown(event: KeyboardEvent) {
     stepValue(-1)
   }
 
-  scheduleCaretClamp(event.currentTarget as HTMLInputElement)
+  scheduleCaretClamp(input)
 }
 
 function onKeyup(event: KeyboardEvent) {
@@ -486,8 +540,6 @@ function onClick(event: MouseEvent) {
 }
 
 function onFocus(event: FocusEvent) {
-  isEditing.value = true
-
   if (props.selectAllOnFocus) {
     // Deferred: the browser sets its own selection after the focus event.
     window.setTimeout(() => inputRef.value?.select(), 0)
@@ -497,7 +549,6 @@ function onFocus(event: FocusEvent) {
 }
 
 function onBlur() {
-  isEditing.value = false
   let sanitizedValue = value.value
   const min = typeof props.min === 'number' ? props.min : undefined
   const max = typeof props.max === 'number' ? props.max : undefined
