@@ -1,3 +1,4 @@
+import { getCurrentInstance, useId } from 'vue'
 import { camelToKebabCase, getBreakpointValue, rem } from '@mantine-vue/utils'
 import { parseThemeColor, type MantineTheme } from '../../MantineProvider'
 import type { StyleProp } from './style-props.types'
@@ -149,6 +150,8 @@ export function hashStyleProps(styles: Record<string, any>, media: Record<string
   return `mantine-vue-${Math.abs(hash).toString(36)}`
 }
 
+// `useId` matches between server and client, so the class hydrates without a mismatch.
 export function useRandomClassName() {
-  return `mantine-vue-${Math.random().toString(36).slice(2, 9)}`
+  const id = getCurrentInstance() ? useId() : Math.random().toString(36).slice(2, 9)
+  return `mantine-vue-${id.replace(/[^A-Za-z0-9_-]/g, '-')}`
 }
