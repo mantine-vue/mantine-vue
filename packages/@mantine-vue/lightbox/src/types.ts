@@ -1,8 +1,12 @@
 import type { Component, VNodeChild } from 'vue'
+export interface LightboxRenderThumbPayload {
+  active: boolean
+}
 export interface LightboxImageSlide {
   type?: 'image'
   src: string
   alt?: string
+  renderThumb?: (payload: LightboxRenderThumbPayload) => VNodeChild
   thumbSrc?: string
   caption?: VNodeChild
   srcSet?: string
@@ -20,6 +24,7 @@ export interface LightboxVideoSlide {
   type: 'video'
   src: string
   label?: string
+  renderThumb?: (payload: LightboxRenderThumbPayload) => VNodeChild
   thumbSrc?: string
   caption?: VNodeChild
   autoPlay?: boolean
@@ -29,7 +34,7 @@ export interface LightboxVideoSlide {
 export interface LightboxCustomSlide {
   type: 'custom'
   render: (props: { active: boolean }) => VNodeChild
-  renderThumb?: () => VNodeChild
+  renderThumb?: (payload: LightboxRenderThumbPayload) => VNodeChild
   thumbSrc?: string
   caption?: VNodeChild
 }
