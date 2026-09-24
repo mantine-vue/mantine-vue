@@ -166,28 +166,112 @@ export function sanitizeNumberInputString(
   return normalized
 }
 
-export function clampAndSanitizeInput(sanitizedValue: string | number, max?: number, min?: number) {
-  const stringValue = sanitizedValue.toString()
-  const hasTrailingDecimalSeparator = trailingDecimalSeparatorPattern.test(stringValue)
-  const replaced = stringValue.replace(/^0+(?=\d)/, '')
-  const parsedValue = parseFloat(replaced)
+function withTrailingSeparator(value: number, hasTrailingDecimalSeparator: boolean) {
+  return hasTrailingDecimalSeparator ? `${value}.` : value
+}
+
+export function sanitizeInputOnBlur(
+  value: string,
+  options: { min?: number; max?: number; trim: boolean; clamp: boolean },
+) {
+  const hasTrailingDecimalSeparator = trailingDecimalSeparatorPattern.test(value)
+  const trimmed = options.trim ? value.replace(/^0+(?=\d)/, '') : value
+  const parsedValue = parseFloat(trimmed)
 
   if (Number.isNaN(parsedValue)) {
-    return replaced
+    return trimmed
   }
 
-  if (parsedValue > Number.MAX_SAFE_INTEGER) {
-    return max !== undefined ? max : replaced
+  if (!options.clamp) {
+    return options.trim ? withTrailingSeparator(parsedValue, hasTrailingDecimalSeparator) : value
   }
 
-  const clamped = clamp(parsedValue, min, max)
+  const clamped =
+    parsedValue > Number.MAX_SAFE_INTEGER && options.max !== undefined
+      ? options.max
+      : clamp(parsedValue, options.min, options.max)
 
-  if (hasTrailingDecimalSeparator) {
-    const clampedString = clamped.toString().replace(/^0+(?=\d)/, '')
-    return `${clampedString}.`
+  if (!options.trim && clamped === parsedValue) {
+    return value
   }
 
-  return clamped
+  return withTrailingSeparator(clamped, hasTrailingDecimalSeparator)
+}
+
+export interface NormalizePastedValueOptions {
+  decimalSeparator: string
+  thousandSeparator?: string
+  allowedDecimalSeparators: string[]
+  thousandsGroupStyle?: 'thousand' | 'lakh' | 'wan' | 'none'
+}
+
+function countTrailingDigits(value: string, from: number) {
+  let count = 0
+  while (from + count < value.length && /\d/.test(value[from + count])) count += 1
+  return count
+}
+
+export function normalizePastedValue(value: string, options: NormalizePastedValueOptions) {
+  const candidates = new Set(
+    [...options.allowedDecimalSeparators, options.decimalSeparator].filter(
+      (separator) => separator.length === 1,
+    ),
+  )
+  const chars = value.split('')
+  const occurrences = chars.reduce<number[]>((result, char, index) => {
+    if (candidates.has(char)) result.push(index)
+    return result
+  }, [])
+
+  if (occurrences.length === 0) return value
+
+  const lastIndex = occurrences[occurrences.length - 1]
+  const lastChar = chars[lastIndex]
+  const lastCharCount = occurrences.filter((index) => chars[index] === lastChar).length
+  const lastGroupSize = options.thousandsGroupStyle === 'wan' ? 4 : 3
+  let decimalIndex = -1
+
+  if (lastCharCount === 1) {
+    if (lastChar === options.decimalSeparator) decimalIndex = lastIndex
+    else if (lastChar === options.thousandSeparator) {
+      decimalIndex = countTrailingDigits(value, lastIndex + 1) === lastGroupSize ? -1 : lastIndex
+    } else decimalIndex = lastIndex
+  }
+
+  return chars
+    .map((char, index) => {
+      if (index === decimalIndex) return options.decimalSeparator
+      if (candidates.has(char) && char !== options.thousandSeparator) return ''
+      return char
+    })
+    .join('')
+}
+
+function isSignificant(char: string, decimalSeparator: string) {
+  return /\d/.test(char) || char === decimalSeparator
+}
+
+export function getCaretPositionAfterPaste(
+  rawValue: string,
+  rawCaret: number,
+  formattedValue: string,
+  decimalSeparator: string,
+) {
+  let remaining = 0
+  for (let index = 0; index < rawCaret && index < rawValue.length; index += 1) {
+    if (isSignificant(rawValue[index], decimalSeparator)) remaining += 1
+  }
+
+  if (remaining === 0) return Math.min(rawCaret, formattedValue.length)
+
+  for (let index = 0; index < formattedValue.length; index += 1) {
+    if (isSignificant(formattedValue[index], decimalSeparator)) {
+      remaining -= 1
+      if (remaining === 0) return index + 1
+    }
+  }
+
+  return formattedValue.length
 }
 
 export function isInRange(
