@@ -116,6 +116,8 @@ const rawProps = withDefaults(defineProps<WeekViewOwnProps>(), {
   canDragEvent: undefined,
   startScrollTime: undefined,
   canResizeEvent: undefined,
+  eventOverlapMode: 'columns',
+  eventOverlapRaiseDelay: 600,
   firstDayOfWeek: undefined,
   weekdayFormat: undefined,
   dayFormat: undefined,
@@ -231,6 +233,7 @@ const grouped = computed(() =>
     firstDayOfWeek: props.firstDayOfWeek,
     weekendDays: props.weekendDays,
     withWeekendDays: props.withWeekendDays,
+    eventOverlapMode: props.eventOverlapMode,
   }),
 )
 
@@ -265,6 +268,7 @@ const rootVars = computed(() => ({
   '--number-of-days': String(days.value.length),
   '--indicator-offset-index':
     currentWeekdayIndex.value === -1 ? undefined : String(currentWeekdayIndex.value + 1),
+  '--event-raise-delay': `${props.eventOverlapRaiseDelay}ms`,
 }))
 
 /**
@@ -325,6 +329,7 @@ const eventResize = useEventResize({
   resizeIntervalMinutes: () => props.eventResizeInterval,
   onEventResize: (data) => emit('eventResize', data),
   canResizeEvent: () => props.canResizeEvent,
+  withBackgroundEvents: () => Boolean(props.withInteractiveBackgroundEvents),
 })
 
 const slotDragSelect = useSlotDragSelect({
@@ -547,12 +552,17 @@ const allDayEventStyle = (position: { offset: number; width: number; row: number
   top: `${position.row * ALL_DAY_ROW_HEIGHT}px`,
 })
 
-const backgroundEventStyle = (position: { top: number; height: number }) => ({
-  top: `${position.top}%`,
-  bottom: `${100 - position.top - position.height}%`,
-  minHeight: '1px',
-  width: '100%',
-})
+const backgroundEventStyle = (event: ScheduleEventData & { position: any }, date: string) => {
+  const resizePosition = eventResize.getResizePosition(event.id, dayjs(date).format('YYYY-MM-DD'))
+  const top = resizePosition?.top ?? event.position.top
+  const height = resizePosition?.height ?? event.position.height
+  return {
+    top: `${top}%`,
+    bottom: `${100 - top - height}%`,
+    minHeight: '1px',
+    width: '100%',
+  }
+}
 
 const regularEventStyle = (event: ScheduleEventData & { position: any }) => {
   const resizePosition = eventResize.getResizePosition(event.id)
@@ -566,6 +576,8 @@ const regularEventStyle = (event: ScheduleEventData & { position: any }) => {
     minHeight: '1px',
     width: `${event.position.width}%`,
     insetInlineStart: `${event.position.offset}%`,
+    '--event-z-index': event.position.column + 3,
+    '--event-z-index-raised': event.position.overlaps + 3,
   }
 }
 
@@ -627,6 +639,7 @@ const isDraggableEvent = (event: ScheduleEventData) =>
       :root-ref="setWeekRoot"
       v-bind="getStyles('weekViewRoot', { style: rootVars })"
       :mod="{ 'with-weekends': props.withWeekendDays }"
+      :data-event-interaction="eventResize.isResizing.value || undefined"
     >
       <ScrollArea.Autosize
         :scrollbar-size="4"
@@ -782,8 +795,15 @@ const isDraggableEvent = (event: ScheduleEventData) =>
                 :event="event"
                 :interactive="Boolean(props.withInteractiveBackgroundEvents) && !isStatic"
                 v-bind="{ ...eventRenderers, ...staticStyles('weekViewBackgroundEvent') }"
-                :style="backgroundEventStyle(event.position)"
-                @event-click="clickEvent"
+                :style="backgroundEventStyle(event, column.date)"
+                :with-resize="eventResize.isResizableEvent(event) && !event.position.allDay"
+                :is-resizing="eventResize.getResizePosition(event.id, column.date) !== null"
+                :resize-handle-props="staticStyles('weekViewBackgroundEventResizeHandle')"
+                @event-click="clickResizableEvent"
+                @resize-start="
+                  (edge, pointerEvent) =>
+                    startEventResize(event, column.date, edge as any, pointerEvent)
+                "
               />
 
               <ScheduleEvent
@@ -792,6 +812,7 @@ const isDraggableEvent = (event: ScheduleEventData) =>
                 :event="event"
                 auto-size
                 :mode="props.mode"
+                :mod="{ cascade: props.eventOverlapMode === 'cascade' }"
                 :style="regularEventStyle(event)"
                 :draggable="isDraggableEvent(event)"
                 :with-resize="eventResize.isResizableEvent(event)"

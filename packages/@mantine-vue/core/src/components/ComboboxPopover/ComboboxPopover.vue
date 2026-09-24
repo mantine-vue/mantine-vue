@@ -100,11 +100,6 @@ const combobox = useCombobox({
   onDropdownClose: () => {
     emit('dropdown-close')
     combobox.resetSelectedOption()
-
-    // Focus was inside the dropdown, so it has to be handed back to the target.
-    if (props.searchable) {
-      combobox.focusTarget()
-    }
   },
 })
 
@@ -172,6 +167,7 @@ const comboboxBindings = computed(() => ({
   styles: props.styles,
   unstyled: props.unstyled,
   onOptionSubmit: handleOptionSubmit,
+  returnFocus: true,
   ...props.comboboxProps,
   ...attrs,
 }))

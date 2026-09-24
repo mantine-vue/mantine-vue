@@ -11,6 +11,7 @@ const keys = [
   'intervalMinutes',
   'allDayEvents',
   'overlappingEvents',
+  'eventOverlapMode',
   'currentTimeIndicator',
   'timezone',
   'businessHours',
@@ -45,6 +46,10 @@ const keys = [
 
 export const DayViewDemos = createDemoRegistry(DayView, 'DayView', keys, {
   ...sharedVariants,
+  eventOverlapMode: {
+    props: { eventOverlapMode: 'cascade' },
+    codeProps: 'event-overlap-mode="cascade"',
+  },
   timeRange: {
     props: { startTime: '09:00:00', endTime: '15:00:00' },
     codeProps: 'start-time="09:00:00"\n    end-time="15:00:00"',

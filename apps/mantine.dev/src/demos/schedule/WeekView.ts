@@ -30,6 +30,7 @@ const keys = [
   'businessHoursPerDay',
   'getTimeSlotProps',
   'overlappingEvents',
+  'eventOverlapMode',
   'dragDrop',
   'eventDragInterval',
   'canDragEvent',
@@ -51,6 +52,10 @@ const keys = [
 
 export const WeekViewDemos = createDemoRegistry(WeekView, 'WeekView', keys, {
   ...sharedVariants,
+  eventOverlapMode: {
+    props: { eventOverlapMode: 'cascade' },
+    codeProps: 'event-overlap-mode="cascade"',
+  },
   controlledDate: { description: 'The displayed week is controlled with a Vue ref.' },
   timeRange: {
     props: { startTime: '09:00:00', endTime: '15:00:00' },

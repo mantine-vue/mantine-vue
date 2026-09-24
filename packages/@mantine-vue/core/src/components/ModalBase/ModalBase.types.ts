@@ -9,6 +9,9 @@ export interface ModalBaseSlots {
 
 /** Props declared by `ModalBase` itself. See `ModalBaseProps` for the full public type. */
 export interface ModalBaseOwnProps {
+  /** Internal set used by modal and drawer stacks to handle each Escape event once. */
+  __handledEscapeEvents?: WeakSet<KeyboardEvent>
+
   /** Receives the root DOM node. */
   rootRef?: VueRefTarget<Element>
 

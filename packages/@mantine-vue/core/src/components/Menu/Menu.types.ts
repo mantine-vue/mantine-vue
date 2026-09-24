@@ -319,6 +319,12 @@ export interface MenuContextMenuProps {
 
 /** Props of `Menu.Sub`, a nested menu opened from a `Menu.Sub.Target`. */
 export interface MenuSubProps {
+  /** `Menu.Sub` is always rendered inside its parent dropdown. */
+  withinPortal?: never
+
+  /** `Menu.Sub` does not support portal props because it is always rendered inline. */
+  portalProps?: never
+
   /** Open state. Controlled when set, bound with `v-model:opened`. */
   opened?: boolean
 

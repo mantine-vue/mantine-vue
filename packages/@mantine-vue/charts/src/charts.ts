@@ -558,7 +558,7 @@ export type HeatmapStylesNames =
   | 'legendLabel'
   | 'legendRect'
 export type BarsListStylesNames = 'root' | 'bar' | 'barLabel' | 'barValue' | 'labelsRow'
-export type GaugeChartStylesNames = 'root' | 'track' | 'section' | 'needle' | 'label'
+export type GaugeChartStylesNames = 'root' | 'track' | 'section' | 'sectionCap' | 'needle' | 'label'
 export type WaffleChartStylesNames =
   | 'root'
   | 'grid'
