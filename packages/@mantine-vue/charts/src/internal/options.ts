@@ -352,6 +352,7 @@ export function gaugeOption(props: Props): EChartsOption {
         endAngle: 90 - num(props.endAngle, 120),
         radius: '90%',
         axisLine: {
+          roundCap: bool(props.roundCaps, false),
           lineStyle: {
             width: num(props.thickness, 12),
             color: axisColors,
