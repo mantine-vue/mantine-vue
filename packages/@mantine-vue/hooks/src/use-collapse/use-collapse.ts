@@ -1,5 +1,6 @@
 import {
   nextTick,
+  onBeforeUnmount,
   ref,
   toValue,
   watch,
@@ -111,6 +112,10 @@ function getCssSize(size: number | string) {
   return typeof size === 'number' ? `${size}px` : size
 }
 
+export function isMeasured(size: number | string): size is number {
+  return typeof size === 'number' && size > 0
+}
+
 export function createCollapse({
   dimension,
   getElementSize,
@@ -140,19 +145,27 @@ export function createCollapse({
     typeof window === 'undefined'
       ? (callback: FrameRequestCallback) => callback(0)
       : window.requestAnimationFrame
+  let transitionId = 0
 
   const mergeStyles = (nextStyles: CSSProperties) => {
     styles.value = { ...styles.value, ...nextStyles }
   }
 
-  const measureExpandedSize = (attempt = 0) => {
-    if (!isExpanded()) {
+  const measureExpandedSize = (currentTransitionId: number, attempt = 0) => {
+    if (transitionId !== currentTransitionId || !isExpanded() || !elementRef.value) {
       return
     }
 
     const size = getElementSize(elementRef.value)
     if (size === 0 && elementRef.value?.children.length && attempt < 5) {
-      raf(() => measureExpandedSize(attempt + 1))
+      raf(() => measureExpandedSize(currentTransitionId, attempt + 1))
+      return
+    }
+
+    if (!isMeasured(size)) {
+      styles.value = {}
+      state.value = 'entered'
+      onTransitionEnd?.()
       return
     }
 
@@ -173,35 +186,58 @@ export function createCollapse({
         return
       }
 
+      transitionId += 1
+      const currentTransitionId = transitionId
+      const isCurrentTransition = () =>
+        transitionId === currentTransitionId && elementRef.value !== null
+
       if (getTransitionDuration() !== 0) {
         onTransitionStart?.()
       }
 
       if (value) {
         raf(() => {
+          if (!isCurrentTransition()) return
           state.value = 'entering'
           mergeStyles({ willChange: dimension, display: 'block', overflow: 'hidden' })
           void nextTick(() => {
             raf(() => {
-              raf(() => measureExpandedSize())
+              if (!isCurrentTransition()) return
+              raf(() => measureExpandedSize(currentTransitionId))
             })
           })
         })
       } else {
         raf(() => {
+          if (!isCurrentTransition()) return
           state.value = 'exiting'
           const size = getElementSize(elementRef.value)
+
+          if (!isMeasured(size)) {
+            styles.value = collapsedStyles
+            state.value = 'exited'
+            onTransitionEnd?.()
+            return
+          }
           mergeStyles({
             ...getTransitionStyles(size),
             willChange: dimension,
             [dimension]: getCssSize(size),
           })
-          raf(() => mergeStyles({ [dimension]: 0, overflow: 'hidden' }))
+          raf(() => {
+            if (isCurrentTransition()) {
+              mergeStyles({ [dimension]: 0, overflow: 'hidden' })
+            }
+          })
         })
       }
     },
     { flush: 'post' },
   )
+
+  onBeforeUnmount(() => {
+    transitionId += 1
+  })
 
   const handleTransitionEnd = (event: TransitionEvent) => {
     if (event.target !== elementRef.value || event.propertyName !== dimension) {
