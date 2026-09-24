@@ -8,6 +8,7 @@ export function useModal(input: {
   trapFocus: () => boolean
   closeOnEscape: () => boolean
   returnFocus: () => boolean
+  handledEscapeEvents?: WeakSet<KeyboardEvent>
 }) {
   const id = useId(input.id)
   const titleMounted = ref(false)
@@ -22,9 +23,12 @@ export function useModal(input: {
         !event.isComposing &&
         input.opened() &&
         input.closeOnEscape() &&
+        !input.handledEscapeEvents?.has(event) &&
         !stopped
-      )
+      ) {
+        input.handledEscapeEvents?.add(event)
         input.onClose()
+      }
     },
     { capture: true },
   )
