@@ -73,7 +73,10 @@ describe('@mantine-vue/core useCombobox', () => {
     expect(store.getSelectedOptionIndex()).toBe(0)
     store.selectNextOption()
     expect(store.getSelectedOptionIndex()).toBe(2)
-    expect(wrapper.findAll('[data-combobox-option]')[2].attributes('aria-selected')).toBe('true')
+    expect(wrapper.findAll('[data-combobox-option]')[2].attributes('data-combobox-selected')).toBe(
+      'true',
+    )
+    expect(wrapper.findAll('[data-combobox-option]')[2].attributes('aria-selected')).toBeUndefined()
     store.selectNextOption()
     expect(store.getSelectedOptionIndex()).toBe(0)
     store.resetSelectedOption()
