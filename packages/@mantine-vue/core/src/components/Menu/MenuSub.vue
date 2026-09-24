@@ -43,9 +43,8 @@ const menuBindings = computed(() => ({
   transitionProps: props.transitionProps,
   middlewares: props.middlewares,
   closeOnItemClick: false,
-  // Rendered inline by default so it stays inside the parent dropdown, which keeps the
-  // pointer inside the parent's hover area while crossing into the submenu.
-  withinPortal: (attrs as any).withinPortal ?? false,
+  // A submenu must stay inside its parent dropdown for hover tracking and outside clicks.
+  withinPortal: false,
 }))
 </script>
 
