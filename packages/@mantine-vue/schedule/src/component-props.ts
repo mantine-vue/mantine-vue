@@ -138,7 +138,8 @@ export interface BaseViewOwnProps {
   recurrenceExpansionLimit?: number
 
   /**
-   * If set, background events can be focused and clicked. Has no effect in static mode.
+   * If set, background events can be focused and clicked. Combined with event resize, timed
+   * background events can also be resized. Has no effect in static mode.
    * @default false
    */
   withInteractiveBackgroundEvents?: boolean

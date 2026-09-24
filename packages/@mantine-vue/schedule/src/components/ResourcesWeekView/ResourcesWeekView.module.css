@@ -268,6 +268,12 @@
       background-color: var(--bg-event-hover);
     }
   }
+
+  &:where([data-resizing]) {
+    @mixin hover {
+      background-color: var(--bg-event-bg);
+    }
+  }
 }
 .resourcesWeekViewAllDayEvent {
   position: absolute;
@@ -315,6 +321,42 @@
 }
 .resourcesWeekView:where([data-event-interaction]) .resourcesWeekViewRowSlot {
   pointer-events: none;
+}
+.resourcesWeekView:where([data-event-interaction], [data-slot-dragging])
+  .resourcesWeekViewBackgroundEvent:not([data-resizing]) {
+  pointer-events: none;
+
+  & .resourcesWeekViewResizeHandle {
+    pointer-events: none;
+    opacity: 0;
+  }
+}
+.resourcesWeekViewBackgroundEvent {
+  & .resourcesWeekViewResizeHandle {
+    background-color: var(--bg-event-color);
+
+    &:where([data-edge='start']) {
+      left: 0;
+    }
+
+    &:where([data-edge='end']) {
+      right: 0;
+    }
+  }
+
+  &:hover .resourcesWeekViewResizeHandle {
+    opacity: 0.5;
+  }
+
+  & .resourcesWeekViewResizeHandle:hover,
+  &:where([data-resizing]) .resourcesWeekViewResizeHandle:where([data-active]) {
+    opacity: 0.8;
+  }
+
+  &:where([data-resizing]) .resourcesWeekViewResizeHandle:not([data-active]) {
+    opacity: 0;
+    pointer-events: none;
+  }
 }
 .resourcesWeekView:where([data-resizing]) * {
   cursor: ew-resize !important;

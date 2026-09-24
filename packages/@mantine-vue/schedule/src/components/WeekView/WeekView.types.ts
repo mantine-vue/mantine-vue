@@ -7,7 +7,12 @@ import type {
   TimeViewEmits,
   TimeViewOwnProps,
 } from '../../component-props'
-import type { DateLabelFormat, DateStringValue, DayOfWeek } from '../../types'
+import type {
+  DateLabelFormat,
+  DateStringValue,
+  DayOfWeek,
+  ScheduleEventOverlapMode,
+} from '../../types'
 import type { CurrentTimeIndicatorStylesNames } from '../CurrentTimeIndicator/CurrentTimeIndicator.types'
 import type { ScheduleEventStylesNames } from '../ScheduleEvent/ScheduleEvent.types'
 import type { CombinedScheduleHeaderStylesNames } from '../ScheduleHeader/ScheduleHeader.types'
@@ -34,6 +39,7 @@ export type WeekViewOwnStylesNames =
   | 'weekViewWeekLabel'
   | 'weekViewWeekNumber'
   | 'weekViewBackgroundEvent'
+  | 'weekViewBackgroundEventResizeHandle'
 
 /**
  * `WeekView` forwards `classNames` and `styles` to the components it renders, so their
@@ -46,7 +52,13 @@ export type WeekViewStylesNames =
   | CombinedScheduleHeaderStylesNames
 
 export type WeekViewCssVariables = {
-  weekView: '--week-view-radius' | '--week-view-slot-height' | '--week-view-all-day-slots-height'
+  weekView:
+    | '--week-view-radius'
+    | '--week-view-slot-height'
+    | '--week-view-all-day-slots-height'
+    | '--event-raise-delay'
+    | '--event-z-index'
+    | '--event-z-index-raised'
 }
 
 /** Range covered by the label shown in the week header. */
@@ -68,6 +80,12 @@ export interface WeekViewSlots extends EventSlots {
 
 /** Props declared by `WeekView` itself. See `WeekViewProps` for the full public type. */
 export interface WeekViewOwnProps extends TimeViewOwnProps, StylesApiProps<WeekViewFactory> {
+  /** Determines how overlapping events are laid out. @default 'columns' */
+  eventOverlapMode?: ScheduleEventOverlapMode
+
+  /** Time in ms before a hovered cascade event is raised above covering events. @default 600 */
+  eventOverlapRaiseDelay?: number
+
   /**
    * Length of one time slot in minutes.
    * @default 60

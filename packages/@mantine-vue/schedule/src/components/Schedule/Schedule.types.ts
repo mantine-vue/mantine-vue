@@ -142,7 +142,7 @@ export interface ScheduleOwnProps extends StylesApiProps<ScheduleFactory> {
    */
   canResizeEvent?: (event: ScheduleEventData) => boolean
 
-  /** If set, background events can be focused and clicked in day, week and month views. */
+  /** If set, background events can be focused and clicked. Combined with event resize, timed background events in day and week views can also be resized. */
   withInteractiveBackgroundEvents?: boolean
 
   /**
