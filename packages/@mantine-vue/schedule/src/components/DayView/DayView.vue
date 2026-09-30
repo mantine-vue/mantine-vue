@@ -101,6 +101,8 @@ const rawProps = withDefaults(defineProps<DayViewOwnProps>(), {
   canDragEvent: undefined,
   startScrollTime: undefined,
   canResizeEvent: undefined,
+  eventOverlapMode: 'columns',
+  eventOverlapRaiseDelay: 600,
   headerFormat: undefined,
   withAllDaySlot: undefined,
   allDaySlotHeight: undefined,
@@ -183,6 +185,7 @@ const dayEvents = computed(() =>
     startTime: props.startTime!,
     endTime: props.endTime!,
     intervalMinutes: props.intervalMinutes!,
+    eventOverlapMode: props.eventOverlapMode,
   }),
 )
 
@@ -224,6 +227,7 @@ const eventResize = useEventResize({
   resizeIntervalMinutes: () => props.eventResizeInterval,
   onEventResize: (data) => emit('eventResize', data),
   canResizeEvent: () => props.canResizeEvent,
+  withBackgroundEvents: () => Boolean(props.withInteractiveBackgroundEvents),
 })
 
 const slotDragSelect = useSlotDragSelect({
@@ -384,11 +388,16 @@ const businessHoursMods = computed(() =>
   ),
 )
 
-const backgroundEventStyle = (position: { top: number; height: number }) => ({
-  top: `${position.top}%`,
-  bottom: `${100 - position.top - position.height}%`,
-  minHeight: '1px',
-})
+const backgroundEventStyle = (event: ScheduleEventData & { position: any }) => {
+  const resizePosition = eventResize.getResizePosition(event.id)
+  const top = resizePosition?.top ?? event.position.top
+  const height = resizePosition?.height ?? event.position.height
+  return {
+    top: `${top}%`,
+    bottom: `${100 - top - height}%`,
+    minHeight: '1px',
+  }
+}
 
 const regularEventStyle = (event: ScheduleEventData & { position: any }) => {
   const resizePosition = eventResize.getResizePosition(event.id)
@@ -402,6 +411,8 @@ const regularEventStyle = (event: ScheduleEventData & { position: any }) => {
     minHeight: '1px',
     width: `${event.position.width}%`,
     insetInlineStart: `${event.position.offset}%`,
+    '--event-z-index': event.position.column + 3,
+    '--event-z-index-raised': event.position.overlaps + 3,
   }
 }
 
@@ -437,6 +448,8 @@ const clickResizableEvent = (event: ScheduleEventData, nativeEvent: MouseEvent) 
   <Box
     v-bind="{ ...attrs, ...getStyles('dayView') }"
     :mod="[{ static: isStatic, 'slot-dragging': slotDragSelect.isDragging() }, (attrs as any).mod]"
+    :data-event-interaction="eventResize.isResizing.value || undefined"
+    :style="{ '--event-raise-delay': `${props.eventOverlapRaiseDelay}ms` }"
   >
     <ScheduleHeaderBase
       v-if="props.withHeader"
@@ -549,8 +562,14 @@ const clickResizableEvent = (event: ScheduleEventData, nativeEvent: MouseEvent) 
               :event="event"
               :interactive="Boolean(props.withInteractiveBackgroundEvents) && !isStatic"
               v-bind="{ ...eventRenderers, ...staticStyles('dayViewBackgroundEvent') }"
-              :style="backgroundEventStyle(event.position)"
-              @event-click="clickEvent"
+              :style="backgroundEventStyle(event)"
+              :with-resize="eventResize.isResizableEvent(event)"
+              :is-resizing="eventResize.getResizePosition(event.id) !== null"
+              :resize-handle-props="staticStyles('dayViewBackgroundEventResizeHandle')"
+              @event-click="clickResizableEvent"
+              @resize-start="
+                (edge, pointerEvent) => startEventResize(event, edge as any, pointerEvent)
+              "
             />
 
             <ScheduleEvent
@@ -559,6 +578,7 @@ const clickResizableEvent = (event: ScheduleEventData, nativeEvent: MouseEvent) 
               :event="event"
               auto-size
               :mode="props.mode"
+              :mod="{ cascade: props.eventOverlapMode === 'cascade' }"
               :style="regularEventStyle(event)"
               :draggable="
                 !isStatic &&

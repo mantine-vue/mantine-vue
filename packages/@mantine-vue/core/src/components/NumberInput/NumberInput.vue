@@ -20,18 +20,20 @@ import { formatNumber, type NumberFormatterOptions } from '../NumberFormatter'
 import { NumberInputChevron } from './NumberInputChevron'
 import {
   clamp,
-  clampAndSanitizeInput,
   clampBigInt,
   clampCaretPosition,
   canStep,
   canStepBigInt,
   getCaretBoundaries,
   getDecimalPlaces,
+  getCaretPositionAfterPaste,
   isStrictAllowed,
   parseBigIntInputValue,
   parseNumberInputValue,
+  normalizePastedValue,
   restoreInputValue,
   sanitizeNumberInputString,
+  sanitizeInputOnBlur,
   stripFormatting,
   toNumeric,
 } from './number-input-utils'
@@ -548,6 +550,39 @@ function onFocus(event: FocusEvent) {
   }
 }
 
+function onPaste(event: ClipboardEvent) {
+  const pastedText = event.clipboardData?.getData('text') ?? ''
+  const decimalSeparator = props.decimalSeparator || '.'
+  const thousandSeparator =
+    props.thousandSeparator === true
+      ? ','
+      : props.thousandSeparator === false
+        ? undefined
+        : props.thousandSeparator
+  const modifiedText = normalizePastedValue(pastedText, {
+    decimalSeparator,
+    thousandSeparator,
+    allowedDecimalSeparators: props.allowedDecimalSeparators,
+    thousandsGroupStyle: props.thousandsGroupStyle,
+  })
+
+  if (modifiedText !== pastedText && inputRef.value) {
+    event.preventDefault()
+    const input = inputRef.value
+    const start = input.selectionStart ?? 0
+    const end = input.selectionEnd ?? 0
+    const newValue = input.value.slice(0, start) + modifiedText + input.value.slice(end)
+    input.value = newValue
+    input.dispatchEvent(new Event('input', { bubbles: true }))
+
+    const rawCaret = start + modifiedText.length
+    setTimeout(() => {
+      const caret = getCaretPositionAfterPaste(newValue, rawCaret, input.value, decimalSeparator)
+      input.setSelectionRange(caret, caret)
+    }, 0)
+  }
+}
+
 function onBlur() {
   let sanitizedValue = value.value
   const min = typeof props.min === 'number' ? props.min : undefined
@@ -559,12 +594,13 @@ function onBlur() {
 
   // Above 15 decimal places the value cannot round-trip through a `number`, so it is
   // left exactly as typed rather than risking a silent loss of precision.
-  if (
-    props.trimLeadingZeroesOnBlur &&
-    typeof sanitizedValue === 'string' &&
-    getDecimalPlaces(sanitizedValue) < 15
-  ) {
-    sanitizedValue = clampAndSanitizeInput(sanitizedValue, max, min)
+  if (!isBigIntMode.value && typeof sanitizedValue === 'string') {
+    sanitizedValue = sanitizeInputOnBlur(sanitizedValue, {
+      min,
+      max,
+      trim: props.trimLeadingZeroesOnBlur && getDecimalPlaces(sanitizedValue) < 15,
+      clamp: props.clampBehavior === 'blur',
+    })
   }
 
   if (sanitizedValue !== value.value) {
@@ -606,6 +642,7 @@ function onBlur() {
     @keyup="onKeyup"
     @click="onClick"
     @focus="onFocus"
+    @paste="onPaste"
     @blur="onBlur"
   >
     <template v-if="slots.label" #label><slot name="label" /></template>

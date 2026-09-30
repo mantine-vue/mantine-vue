@@ -7,6 +7,26 @@
   position: relative;
   z-index: 3;
 
+  &:where([data-cascade]) {
+    z-index: var(--event-z-index, 3);
+    transition: z-index 0s;
+
+    .eventInner {
+      box-shadow: 0 0 0 1px var(--mantine-color-body);
+    }
+
+    &:where(:not([data-resizing], [data-dragging])) {
+      @mixin hover {
+        z-index: var(--event-z-index-raised, 9);
+        transition-delay: var(--event-raise-delay, 600ms);
+      }
+
+      &:where(:focus-visible) {
+        z-index: var(--event-z-index-raised, 9);
+      }
+    }
+  }
+
   &:where([data-auto-size]) {
     container-type: size;
   }
@@ -48,6 +68,10 @@
         background-color: var(--event-bg);
       }
     }
+  }
+
+  &:where([data-cascade][data-resizing]) {
+    z-index: var(--event-cascade-interaction-z-index, 999);
   }
 
   &:where([data-hanging='start'], [data-hanging='both']) {

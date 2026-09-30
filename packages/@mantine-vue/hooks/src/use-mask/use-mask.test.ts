@@ -54,6 +54,20 @@ describe('@mantine-vue/hooks/use-mask', () => {
     expect(input.getAttribute('aria-invalid')).toBe('true')
   })
 
+  it('does not parse slot placeholders back into the raw value when ref is reattached', () => {
+    const input = document.createElement('input')
+    const result = renderHook({ mask: '99.08.2026', slotChar: '_' })
+
+    result.ref(input)
+    input.dispatchEvent(new FocusEvent('focus'))
+    result.ref(input)
+    input.dispatchEvent(new KeyboardEvent('keydown', { key: '0' }))
+    input.dispatchEvent(new KeyboardEvent('keydown', { key: '1' }))
+
+    expect(input.value).toBe('01.08.2026')
+    expect(result.rawValue.value).toBe('01')
+  })
+
   it('resolves the input element from a Mantine input root', () => {
     const root = document.createElement('div')
     const input = document.createElement('input')

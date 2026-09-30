@@ -20,7 +20,8 @@ All-day events span the correct day columns within their assigned resource row.
 
 Set `withInteractiveBackgroundEvents` to make background events focusable and clickable.
 The `eventClick` payload retains the event `resourceId`. Background events still cannot be
-dragged or resized.
+dragged. When `withEventsResize` is also enabled, timed background events can be resized and honor
+`canResizeEvent`.
 
 <Demo data={ResourcesWeekViewDemos.interactiveBackgroundEvents} />
 

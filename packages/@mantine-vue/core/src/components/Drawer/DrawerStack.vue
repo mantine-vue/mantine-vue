@@ -12,6 +12,7 @@ defineSlots<DrawerStackSlots>()
 
 const stack = ref<string[]>([])
 const maxZIndex = ref<string | number>(getDefaultZIndex('modal'))
+const handledEscapeEvents = new WeakSet<KeyboardEvent>()
 
 const ctx: DrawerStackContextValue = reactive({
   get stack() {
@@ -39,6 +40,7 @@ const ctx: DrawerStackContextValue = reactive({
   get maxZIndex() {
     return maxZIndex.value
   },
+  handledEscapeEvents,
 })
 
 provideDrawerStackContext(ctx)

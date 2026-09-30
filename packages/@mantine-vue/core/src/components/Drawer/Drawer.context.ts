@@ -34,6 +34,9 @@ export interface DrawerStackContextValue {
 
   /** Highest `z-index` any drawer of the stack has asked for. */
   maxZIndex: string | number
+
+  /** Escape events already handled by the top drawer in this stack. */
+  handledEscapeEvents: WeakSet<KeyboardEvent>
 }
 
 export const DrawerStackContextKey: InjectionKey<DrawerStackContextValue> =

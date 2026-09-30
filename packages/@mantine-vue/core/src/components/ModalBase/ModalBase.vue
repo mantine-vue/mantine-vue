@@ -49,6 +49,7 @@ const modal = useModal({
   trapFocus: () => props.trapFocus,
   closeOnEscape: () => props.closeOnEscape,
   returnFocus: () => props.returnFocus,
+  handledEscapeEvents: props.__handledEscapeEvents,
 })
 
 useLockScroll(computed(() => props.opened && props.lockScroll))

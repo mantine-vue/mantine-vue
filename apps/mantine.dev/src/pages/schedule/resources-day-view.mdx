@@ -20,7 +20,8 @@ Foreground all-day events are pinned to the top of their resource row. Backgroun
 
 Set `withInteractiveBackgroundEvents` to make background events focusable and clickable.
 The `eventClick` payload retains the event `resourceId`. Background events still cannot be
-dragged or resized.
+dragged. When `withEventsResize` is also enabled, timed background events can be resized and honor
+`canResizeEvent`.
 
 <Demo data={ResourcesDayViewDemos.interactiveBackgroundEvents} />
 

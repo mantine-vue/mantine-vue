@@ -87,7 +87,7 @@ import {
   useStaticStyles,
 } from '../shared'
 import { useSlotDragSelect } from '../use-slot-drag-select'
-import { getOverlapClusters } from './get-overlap-clusters/get-overlap-clusters'
+import { getOverlapClusters } from '../../utils/get-overlap-clusters/get-overlap-clusters'
 import { getResourcesDayViewEvents } from './get-resources-day-view-events/get-resources-day-view-events'
 import type { ResourcesDayViewEmits, ResourcesDayViewSlots } from './ResourcesDayView.types'
 import classes from './ResourcesDayView.module.css'
@@ -295,6 +295,7 @@ const resize = useHorizontalEventResize({
   resizeIntervalMinutes: () => props.eventResizeInterval,
   onEventResize: (data) => emit('eventResize', data),
   canResizeEvent: () => props.canResizeEvent,
+  withBackgroundEvents: () => Boolean(props.withInteractiveBackgroundEvents),
 })
 
 onMounted(async () => {
@@ -498,6 +499,9 @@ const backgroundEvents = (resourceId: string | number) => [
 ]
 
 const backgroundEventStyle = (event: ScheduleEventData & { position: any }) => {
+  const resizePosition = resize.getResizePosition(event.id)
+  const left = resizePosition?.left ?? event.position.top
+  const width = resizePosition?.width ?? event.position.height
   const colors = theme.value.variantColorResolver({
     color: event.color || theme.value.primaryColor,
     theme: theme.value,
@@ -505,8 +509,8 @@ const backgroundEventStyle = (event: ScheduleEventData & { position: any }) => {
     autoContrast: true,
   })
   return {
-    left: `${event.position.top}%`,
-    right: `${100 - event.position.top - event.position.height}%`,
+    left: `${left}%`,
+    right: `${100 - left - width}%`,
     minWidth: '1px',
     top: 0,
     height: '100%',
@@ -805,7 +809,16 @@ const changeView = (view: ScheduleViewLevel) => emit('viewChange', view)
                     :interactive="Boolean(props.withInteractiveBackgroundEvents) && !isStatic"
                     v-bind="{ ...eventRenderers, ...getStyles('resourcesDayViewBackgroundEvent') }"
                     :style="backgroundEventStyle(event)"
+                    :with-resize="resize.isResizableEvent(event) && !event.position.allDay"
+                    resize-axis="horizontal"
+                    :is-resizing="resize.getResizePosition(event.id) !== null"
+                    :active-resize-edge="resize.resizingEdge"
+                    :resize-handle-props="staticStyles('resourcesDayViewResizeHandle')"
                     @event-click="clickEvent"
+                    @resize-start="
+                      (edge, pointerEvent) =>
+                        startResize(event, resourceIndex, edge as any, pointerEvent)
+                    "
                   >
                   </ScheduleBackgroundEvent>
                 </slot>

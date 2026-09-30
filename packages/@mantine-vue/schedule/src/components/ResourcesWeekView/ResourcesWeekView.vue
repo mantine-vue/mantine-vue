@@ -79,7 +79,7 @@ import {
 } from '../../utils'
 import { provideScheduleDragState } from '../DragContext'
 import { MoreEvents } from '../MoreEvents'
-import { getOverlapClusters } from '../ResourcesDayView/get-overlap-clusters/get-overlap-clusters'
+import { getOverlapClusters } from '../../utils/get-overlap-clusters/get-overlap-clusters'
 import { ScheduleBackgroundEvent } from '../ScheduleBackgroundEvent'
 import { ScheduleEvent } from '../ScheduleEvent'
 import { ScheduleHeaderBase, createHeaderNavigation } from '../ScheduleHeader/ScheduleHeaderBase'
@@ -329,6 +329,7 @@ const resize = useHorizontalEventResize({
   resizeIntervalMinutes: () => props.eventResizeInterval,
   onEventResize: (data) => emit('eventResize', data),
   canResizeEvent: () => props.canResizeEvent,
+  withBackgroundEvents: () => Boolean(props.withInteractiveBackgroundEvents),
 })
 
 onMounted(async () => {
@@ -552,7 +553,14 @@ const backgroundEvents = (resourceId: string | number) =>
     ].map((event) => ({ event, day, dayIndex }))
   })
 
-const backgroundEventStyle = (event: ScheduleEventData & { position: any }, dayIndex: number) => {
+const backgroundEventStyle = (
+  event: ScheduleEventData & { position: any },
+  day: DateStringValue,
+  dayIndex: number,
+) => {
+  const resizePosition = resize.getResizePosition(event.id, day)
+  const left = resizePosition?.left ?? event.position.top
+  const width = resizePosition?.width ?? event.position.height
   const colors = theme.value.variantColorResolver({
     color: event.color || theme.value.primaryColor,
     theme: theme.value,
@@ -560,12 +568,8 @@ const backgroundEventStyle = (event: ScheduleEventData & { position: any }, dayI
     autoContrast: true,
   })
   return {
-    left: `${dayOffset(dayIndex) + (event.position.top / 100) * dayWidth.value}%`,
-    right: `${
-      100 -
-      dayOffset(dayIndex) -
-      ((event.position.top + event.position.height) / 100) * dayWidth.value
-    }%`,
+    left: `${dayOffset(dayIndex) + (left / 100) * dayWidth.value}%`,
+    right: `${100 - dayOffset(dayIndex) - ((left + width) / 100) * dayWidth.value}%`,
     minWidth: '1px',
     top: 0,
     height: '100%',
@@ -925,8 +929,26 @@ const changeView = (view: ScheduleViewLevel) => emit('viewChange', view)
                       ...eventRenderers,
                       ...getStyles('resourcesWeekViewBackgroundEvent'),
                     }"
-                    :style="backgroundEventStyle(entry.event, entry.dayIndex)"
+                    :style="backgroundEventStyle(entry.event, entry.day, entry.dayIndex)"
+                    :with-resize="
+                      resize.isResizableEvent(entry.event) && !entry.event.position.allDay
+                    "
+                    resize-axis="horizontal"
+                    :is-resizing="resize.getResizePosition(entry.event.id, entry.day) !== null"
+                    :active-resize-edge="resize.resizingEdge"
+                    :resize-handle-props="staticStyles('resourcesWeekViewResizeHandle')"
                     @event-click="clickEvent"
+                    @resize-start="
+                      (edge, pointerEvent) =>
+                        startResize(
+                          entry.event,
+                          entry.day,
+                          entry.dayIndex,
+                          resourceIndex,
+                          edge as any,
+                          pointerEvent,
+                        )
+                    "
                   />
                 </slot>
               </template>

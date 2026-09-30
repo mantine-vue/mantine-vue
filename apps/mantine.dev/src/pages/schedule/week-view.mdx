@@ -179,6 +179,12 @@ When multiple events overlap in time, they are automatically positioned side by 
 
 <Demo data={WeekViewDemos.overlappingEvents} />
 
+Set `eventOverlapMode="cascade"` to indent overlapping events instead of splitting the available
+width into columns. `eventOverlapRaiseDelay` controls how long a covered event must be hovered before
+it is raised above the stack.
+
+<Demo data={WeekViewDemos.eventOverlapMode} />
+
 ## Drag and drop
 
 Enable drag and drop by setting `withEventsDragAndDrop` prop. Events can be dragged to different days and times.
@@ -272,7 +278,8 @@ unavailability, lunch breaks, focus time, or other blocked periods.
 ## Interactive background events
 
 Set `withInteractiveBackgroundEvents` to make background events focusable and clickable.
-They emit `eventClick` like regular events, but still cannot be dragged or resized.
+They emit `eventClick` like regular events. When `withEventsResize` is also enabled, timed
+background events expose resize handles and honor `canResizeEvent`. They cannot be dragged.
 
 <Demo data={WeekViewDemos.interactiveBackgroundEvents} />
 

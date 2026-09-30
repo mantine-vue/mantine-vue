@@ -47,6 +47,12 @@ with appropriate widths and offsets.
 
 <Demo data={DayViewDemos.overlappingEvents} />
 
+Set `eventOverlapMode="cascade"` to indent overlapping events instead of splitting the available
+width into columns. `eventOverlapRaiseDelay` controls how long a covered event must be hovered before
+it is raised above the stack.
+
+<Demo data={DayViewDemos.eventOverlapMode} />
+
 ## Current time indicator
 
 Set `withCurrentTimeIndicator` to display a line showing the current time.
@@ -227,7 +233,8 @@ clicked, dragged, or resized.
 ## Interactive background events
 
 Set `withInteractiveBackgroundEvents` to make background events focusable and clickable.
-They emit `eventClick` like regular events, but still cannot be dragged or resized. An
+They emit `eventClick` like regular events. When `withEventsResize` is also enabled, timed
+background events expose resize handles and honor `canResizeEvent`. They cannot be dragged. An
 interactive background event receives pointer interactions instead of the time slots beneath it.
 
 <Demo data={DayViewDemos.interactiveBackgroundEvents} />

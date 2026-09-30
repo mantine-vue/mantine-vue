@@ -31,6 +31,7 @@ export function useHorizontalEventResize(input: {
   resizeIntervalMinutes?: () => number | undefined
   onEventResize: (data: EventDropData) => void
   canResizeEvent: () => ((event: ScheduleEventData) => boolean) | undefined
+  withBackgroundEvents?: () => boolean
 }) {
   const state = shallowRef<ResizeState | null>(null)
   let justResized = false
@@ -146,15 +147,19 @@ export function useHorizontalEventResize(input: {
   onBeforeUnmount(cleanup)
   return {
     state,
+    get resizingEdge() {
+      return state.value?.edge ?? null
+    },
     handleResizeStart,
-    getResizePosition: (id: string | number) =>
-      state.value?.event.id === id
+    getResizePosition: (id: string | number, eventDate?: string) =>
+      state.value?.event.id === id &&
+      (eventDate === undefined || state.value.eventDate === eventDate)
         ? { left: state.value.currentLeft, width: state.value.currentWidth }
         : null,
     isResizableEvent: (event: ScheduleEventData) =>
       input.enabled() &&
       input.mode() !== 'static' &&
-      event.display !== 'background' &&
+      (event.display !== 'background' || input.withBackgroundEvents?.() === true) &&
       (input.canResizeEvent()?.(event) ?? true),
     wasResizing: () => justResized,
   }

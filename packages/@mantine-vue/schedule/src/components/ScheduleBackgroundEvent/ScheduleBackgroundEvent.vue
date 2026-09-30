@@ -13,6 +13,10 @@ const props = withDefaults(defineProps<ScheduleBackgroundEventOwnProps>(), {
   interactive: false,
   renderEvent: undefined,
   renderEventBody: undefined,
+  withResize: false,
+  resizeAxis: 'vertical',
+  isResizing: false,
+  activeResizeEdge: undefined,
 })
 const emit = defineEmits<ScheduleBackgroundEventEmits>()
 defineSlots<ScheduleBackgroundEventSlots>()
@@ -60,7 +64,10 @@ const rootProps = computed(() => {
   return {
     ...attrs,
     style,
-    mod: [attrs.mod, { interactive: props.interactive }],
+    mod: [
+      attrs.mod,
+      { interactive: props.interactive, resizable: props.withResize, resizing: props.isResizing },
+    ],
     ...(props.interactive
       ? {
           'data-event-id': props.event.id,
@@ -73,10 +80,28 @@ const rootProps = computed(() => {
   }
 })
 
-const content = () =>
-  slots.default?.({ event: props.event }) ??
-  props.renderEventBody?.(props.event) ??
-  props.event.title
+const content = () => {
+  const body =
+    slots.default?.({ event: props.event }) ??
+    props.renderEventBody?.(props.event) ??
+    props.event.title
+  const edges = props.resizeAxis === 'horizontal' ? ['start', 'end'] : ['top', 'bottom']
+
+  return props.withResize
+    ? [
+        ...edges.map((edge) =>
+          h(Box, {
+            ...props.resizeHandleProps,
+            key: edge,
+            mod: { edge },
+            'data-active': props.isResizing && props.activeResizeEdge === edge ? true : undefined,
+            onPointerdown: (event: PointerEvent) => emit('resizeStart', edge as any, event),
+          }),
+        ),
+        body,
+      ]
+    : body
+}
 
 const render = () => {
   const component = props.interactive ? UnstyledButton : Box

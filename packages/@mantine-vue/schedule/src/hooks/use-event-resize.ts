@@ -1,5 +1,5 @@
 import dayjs from 'dayjs'
-import { onBeforeUnmount, shallowRef } from 'vue'
+import { computed, onBeforeUnmount, shallowRef } from 'vue'
 import { rafThrottle } from '../components/shared'
 import type { EventDropData } from '../component-props'
 import type { DateTimeStringValue, ScheduleEventData, ScheduleMode } from '../types'
@@ -45,6 +45,7 @@ export interface UseEventResizeInput {
   resizeIntervalMinutes?: () => number | undefined
   onEventResize: (data: EventDropData) => void
   canResizeEvent: () => ((event: ScheduleEventData) => boolean) | undefined
+  withBackgroundEvents?: () => boolean
 }
 
 export function useEventResize(input: UseEventResizeInput) {
@@ -192,9 +193,9 @@ export function useEventResize(input: UseEventResizeInput) {
     document.addEventListener('pointerup', handlePointerUp)
   }
 
-  const getResizePosition = (eventId: string | number) => {
+  const getResizePosition = (eventId: string | number, eventDate?: string) => {
     const state = resizeState.value
-    return state?.eventId === eventId
+    return state?.eventId === eventId && (eventDate === undefined || state.eventDate === eventDate)
       ? { top: state.currentTop, height: state.currentHeight }
       : null
   }
@@ -202,13 +203,15 @@ export function useEventResize(input: UseEventResizeInput) {
   const isResizableEvent = (event: ScheduleEventData): boolean =>
     input.enabled() &&
     input.mode() !== 'static' &&
-    event.display !== 'background' &&
+    (event.display !== 'background' || input.withBackgroundEvents?.() === true) &&
     (input.canResizeEvent()?.(event) ?? true)
 
   onBeforeUnmount(removeDocumentListeners)
 
   return {
     handleResizeStart,
+    isResizing: computed(() => resizeState.value !== null),
+    resizingEventId: computed(() => resizeState.value?.eventId ?? null),
     getResizePosition,
     isResizableEvent,
     wasResizing: () => justResized,

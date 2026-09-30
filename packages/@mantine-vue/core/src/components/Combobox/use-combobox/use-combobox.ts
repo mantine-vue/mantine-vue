@@ -79,7 +79,6 @@ export function useCombobox(options: UseComboboxOptions = {}): ComboboxStore {
   const clearSelected = () =>
     items().forEach((item) => {
       item.removeAttribute('data-combobox-selected')
-      item.removeAttribute('aria-selected')
     })
   const selectOption = (index: number) => {
     const optionsList = items()
@@ -98,7 +97,6 @@ export function useCombobox(options: UseComboboxOptions = {}): ComboboxStore {
     selectedIndex.value = next
     clearSelected()
     optionsList[next].setAttribute('data-combobox-selected', 'true')
-    optionsList[next].setAttribute('aria-selected', 'true')
     optionsList[next].scrollIntoView?.({
       block: 'nearest',
       behavior: options.scrollBehavior ?? 'instant',

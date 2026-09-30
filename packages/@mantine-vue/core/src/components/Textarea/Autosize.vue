@@ -64,6 +64,7 @@ function resizeTextarea() {
 }
 
 const cleanupFns: Array<() => void> = []
+let resizeFrame = 0
 
 onMounted(() => {
   // Initial size
@@ -84,12 +85,16 @@ onMounted(() => {
       // A height change is our own doing, so only a width change is worth reacting to.
       if (textareaRef.value && textareaRef.value.offsetWidth !== widthRef.value) {
         widthRef.value = textareaRef.value.offsetWidth
-        resizeTextarea()
+        cancelAnimationFrame(resizeFrame)
+        resizeFrame = requestAnimationFrame(resizeTextarea)
       }
     })
 
     observer.observe(node)
-    cleanupFns.push(() => observer.disconnect())
+    cleanupFns.push(() => {
+      cancelAnimationFrame(resizeFrame)
+      observer.disconnect()
+    })
   }
 
   // Font loading can change line height
@@ -116,6 +121,7 @@ onMounted(() => {
 })
 
 onUnmounted(() => {
+  cancelAnimationFrame(resizeFrame)
   cleanupFns.forEach((fn) => fn())
   cleanupFns.length = 0
 })

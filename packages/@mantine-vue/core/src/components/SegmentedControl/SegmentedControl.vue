@@ -24,7 +24,7 @@ export const varsResolver = createVarsResolver<any>(
 )
 </script>
 <script setup lang="ts">
-import { computed, h, onMounted, reactive, ref, useAttrs } from 'vue'
+import { computed, h, onMounted, reactive, ref, useAttrs, watch } from 'vue'
 import { useId, useMounted, useUncontrolled } from '@mantine-vue/hooks'
 import { isPrimitive } from '@mantine-vue/utils'
 import { Box, resolveNode, useMantineTheme, useStyles } from '../../core'
@@ -93,8 +93,16 @@ const setParent = (node: any) => {
   parent.value = node?.$el ?? node ?? null
 }
 const setItemRef = (key: string, node: any) => {
-  itemRefs[key] = node?.$el ?? node ?? null
+  const element = node?.$el ?? node ?? null
+  if (element === null) delete itemRefs[key]
+  else itemRefs[key] = element
 }
+watch(normalizedData, (items) => {
+  const values = new Set(items.map((item) => String(item.value)))
+  Object.keys(itemRefs).forEach((key) => {
+    if (!values.has(key)) delete itemRefs[key]
+  })
+})
 const ItemLabel = (item: SegmentedControlItem<any>) =>
   h('span', getStyles('innerLabel'), resolveNode(item.label) as any)
 const handleClick = (event: MouseEvent) => {

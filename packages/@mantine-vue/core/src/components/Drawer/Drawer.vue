@@ -89,6 +89,7 @@ const stackProps = computed(() => {
   return {
     closeOnEscape: isCurrent,
     trapFocus: isCurrent,
+    __handledEscapeEvents: stackCtx.handledEscapeEvents,
   }
 })
 

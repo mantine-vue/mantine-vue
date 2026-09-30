@@ -7,7 +7,7 @@ import type {
   TimeViewEmits,
   TimeViewOwnProps,
 } from '../../component-props'
-import type { DateLabelFormat } from '../../types'
+import type { DateLabelFormat, ScheduleEventOverlapMode } from '../../types'
 import type { CurrentTimeIndicatorStylesNames } from '../CurrentTimeIndicator/CurrentTimeIndicator.types'
 import type {
   MoreEventsEmits,
@@ -33,6 +33,7 @@ export type DayViewOwnStylesNames =
   | 'dayViewSlotLabel'
   | 'dayViewSlotLabels'
   | 'dayViewBackgroundEvent'
+  | 'dayViewBackgroundEventResizeHandle'
 
 /**
  * `DayView` forwards `classNames` and `styles` to the components it renders, so their
@@ -48,13 +49,25 @@ export type DayViewStylesNames =
   | ScheduleHeaderStylesNames
 
 export type DayViewCssVariables = {
-  dayView: '--day-view-radius' | '--day-view-slot-height' | '--day-view-all-day-slot-height'
+  dayView:
+    | '--day-view-radius'
+    | '--day-view-slot-height'
+    | '--day-view-all-day-slot-height'
+    | '--event-raise-delay'
+    | '--event-z-index'
+    | '--event-z-index-raised'
 }
 
 export type DayViewSlots = EventSlots
 
 /** Props declared by `DayView` itself. See `DayViewProps` for the full public type. */
 export interface DayViewOwnProps extends TimeViewOwnProps, StylesApiProps<DayViewFactory> {
+  /** Determines how overlapping events are laid out. @default 'columns' */
+  eventOverlapMode?: ScheduleEventOverlapMode
+
+  /** Time in ms before a hovered cascade event is raised above covering events. @default 600 */
+  eventOverlapRaiseDelay?: number
+
   /**
    * Length of one time slot in minutes.
    * @default 15

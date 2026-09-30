@@ -4,7 +4,7 @@ import emblaCarouselVue from 'embla-carousel-vue'
 import type { EmblaOptionsType } from 'embla-carousel'
 import { Collapse, UnstyledButton, useDirection } from '@mantine-vue/core'
 import { useLightboxContext } from '../lightbox.context'
-import type { LightboxCustomSlide, LightboxSlideData } from '../types'
+import type { LightboxSlideData } from '../types'
 defineOptions({ name: 'LightboxThumbnails', inheritAttrs: false })
 const attrs = useAttrs()
 const ctx = useLightboxContext()
@@ -48,8 +48,8 @@ watch([emblaApi, () => ctx.currentIndex], ([api, index]) => api?.scrollTo(index)
           :aria-current="index === ctx.currentIndex || undefined"
           @click="ctx.setIndex(index)"
           ><component
-            :is="() => (slide as LightboxCustomSlide).renderThumb?.()"
-            v-if="slide.type === 'custom' && slide.renderThumb" /><img
+            :is="() => slide.renderThumb?.({ active: index === ctx.currentIndex })"
+            v-if="slide.renderThumb" /><img
             v-else-if="getThumbnailSource(slide)"
             v-bind="ctx.getStyles('thumbnailImage')"
             :src="getThumbnailSource(slide)"

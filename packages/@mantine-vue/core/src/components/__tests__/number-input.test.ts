@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from 'vitest'
 import { h, nextTick, ref } from 'vue'
 import { mount } from '@vue/test-utils'
 import { MantineProvider, NumberFormatter, NumberInput, formatNumber } from '../../index'
+import { getCaretPositionAfterPaste, normalizePastedValue } from '../NumberInput/number-input-utils'
 
 function withProvider(component: any, options: Record<string, any> = {}) {
   return mount(
@@ -419,5 +420,46 @@ describe('@mantine-vue/core NumberInput', () => {
     await input.trigger('blur')
 
     expect((input.element as HTMLInputElement).value).toBe('1')
+  })
+
+  it('clamps string values on blur when leading zero trimming is disabled', async () => {
+    const wrapper = withProvider(() =>
+      h(NumberInput, { min: 0, max: 20, trimLeadingZeroesOnBlur: false }),
+    )
+    const input = wrapper.find('input')
+
+    await input.setValue('100')
+    await input.trigger('blur')
+
+    expect((input.element as HTMLInputElement).value).toBe('20')
+  })
+})
+
+describe('@mantine-vue/core NumberInput paste normalization', () => {
+  it('normalizes pasted values and invokes the user listener once', async () => {
+    const onPaste = vi.fn()
+    const wrapper = withProvider(() => h(NumberInput, { onPaste }))
+    const input = wrapper.find('input')
+
+    await input.trigger('paste', { clipboardData: { getData: () => '1,234,567' } })
+    await nextTick()
+
+    expect((input.element as HTMLInputElement).value).toBe('1234567')
+    expect(onPaste).toHaveBeenCalledTimes(1)
+  })
+
+  it('distinguishes decimal separators from grouping separators', () => {
+    const options = {
+      decimalSeparator: '.',
+      thousandSeparator: ',',
+      allowedDecimalSeparators: ['.', ','],
+    }
+
+    expect(normalizePastedValue('1,234,567', options)).toBe('1,234,567')
+    expect(normalizePastedValue('12,5', options)).toBe('12.5')
+  })
+
+  it('maps the caret through separators introduced by formatting', () => {
+    expect(getCaretPositionAfterPaste('1234567.5', 9, '1 234 567.5', '.')).toBe(11)
   })
 })

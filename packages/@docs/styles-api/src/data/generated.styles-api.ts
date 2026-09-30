@@ -9,17 +9,19 @@ export const ActionBarStylesApi: StylesApiData<'closeButton' | 'divider' | 'root
   vars: {},
 }
 
-export const GaugeChartStylesApi: StylesApiData<'label' | 'needle' | 'root' | 'section' | 'track'> =
-  {
-    selectors: {
-      root: 'Root element',
-      track: 'Gauge track',
-      section: 'Gauge value section',
-      needle: 'Target indicator',
-      label: 'Gauge label',
-    },
-    vars: {},
-  }
+export const GaugeChartStylesApi: StylesApiData<
+  'label' | 'needle' | 'root' | 'section' | 'sectionCap' | 'track'
+> = {
+  selectors: {
+    root: 'Root element',
+    track: 'Gauge track',
+    section: 'Gauge value section',
+    sectionCap: 'Round-capped copy of the first and last sections, rendered when roundCaps is set',
+    needle: 'Target indicator',
+    label: 'Gauge label',
+  },
+  vars: {},
+}
 
 export const WaffleChartStylesApi: StylesApiData<
   'cell' | 'grid' | 'legend' | 'legendItem' | 'legendLabel' | 'legendSwatch' | 'root'
@@ -2363,6 +2365,7 @@ export const DayViewStylesApi: StylesApiData<
   | 'dayViewAllDay'
   | 'dayViewAllDayEvents'
   | 'dayViewBackgroundEvent'
+  | 'dayViewBackgroundEventResizeHandle'
   | 'dayViewInner'
   | 'dayViewScrollArea'
   | 'dayViewSlot'
@@ -2376,6 +2379,7 @@ export const DayViewStylesApi: StylesApiData<
     dayViewAllDay: 'All-day events container',
     dayViewAllDayEvents: 'All-day events wrapper',
     dayViewBackgroundEvent: 'Background event element',
+    dayViewBackgroundEventResizeHandle: 'Background event resize handle',
     dayViewInner: 'Inner container wrapping slot labels and slots',
     dayViewScrollArea: 'Scroll area component',
     dayViewSlot: 'Individual time slot element',
@@ -2389,6 +2393,9 @@ export const DayViewStylesApi: StylesApiData<
       '--day-view-radius': 'Controls `border-radius` of the day view',
       '--day-view-slot-height': 'Controls `height` of 1-hour time slots',
       '--day-view-all-day-slot-height': 'Controls `height` of the all-day slot',
+      '--event-raise-delay': 'Controls the hover delay before a cascade event is raised',
+      '--event-z-index': 'Controls the base stacking order of a cascade event',
+      '--event-z-index-raised': 'Controls the raised stacking order of a cascade event',
       '--slot-size': 'Controls the size',
     },
   },
@@ -2397,6 +2404,11 @@ export const DayViewStylesApi: StylesApiData<
       modifier: 'data-hour-start',
       selector: 'dayViewSlot',
       condition: 'Slot is at the start of an hour',
+    },
+    {
+      modifier: 'data-event-interaction',
+      selector: 'dayView',
+      condition: 'An event is being resized',
     },
     {
       modifier: 'data-business-hours',
@@ -5304,6 +5316,7 @@ export const ScheduleStylesApi: StylesApiData<
   | 'dayViewSlotLabel'
   | 'dayViewSlotLabels'
   | 'dayViewBackgroundEvent'
+  | 'dayViewBackgroundEventResizeHandle'
   | 'weekView'
   | 'weekViewRoot'
   | 'weekViewHeader'
@@ -5326,6 +5339,7 @@ export const ScheduleStylesApi: StylesApiData<
   | 'weekViewWeekLabel'
   | 'weekViewWeekNumber'
   | 'weekViewBackgroundEvent'
+  | 'weekViewBackgroundEventResizeHandle'
   | 'monthView'
   | 'monthViewScrollArea'
   | 'monthViewInner'
@@ -5417,6 +5431,7 @@ export const ScheduleStylesApi: StylesApiData<
     dayViewSlotLabel: 'DayView time slot label',
     dayViewSlotLabels: 'DayView slot labels container',
     dayViewBackgroundEvent: 'DayView background event element',
+    dayViewBackgroundEventResizeHandle: 'DayView background event resize handle',
     weekView: 'WeekView root element',
     weekViewRoot: 'WeekView root container',
     weekViewHeader: 'WeekView header row',
@@ -5439,6 +5454,7 @@ export const ScheduleStylesApi: StylesApiData<
     weekViewWeekLabel: 'WeekView week label',
     weekViewWeekNumber: 'WeekView week number',
     weekViewBackgroundEvent: 'WeekView background event element',
+    weekViewBackgroundEventResizeHandle: 'WeekView background event resize handle',
     monthView: 'MonthView root element',
     monthViewScrollArea: 'MonthView scroll area wrapper',
     monthViewInner: 'MonthView inner container',
@@ -6904,6 +6920,7 @@ export const WeekViewStylesApi: StylesApiData<
   | 'weekViewAllDaySlotsLabel'
   | 'weekViewAllDaySlotsList'
   | 'weekViewBackgroundEvent'
+  | 'weekViewBackgroundEventResizeHandle'
   | 'weekViewCorner'
   | 'weekViewDay'
   | 'weekViewDayLabel'
@@ -6928,6 +6945,7 @@ export const WeekViewStylesApi: StylesApiData<
     weekViewAllDaySlotsLabel: 'All-day slots label',
     weekViewAllDaySlotsList: 'List of all-day slots',
     weekViewBackgroundEvent: 'Background event element',
+    weekViewBackgroundEventResizeHandle: 'Background event resize handle',
     weekViewCorner: 'Top-left corner element',
     weekViewDay: 'Day column',
     weekViewDayLabel: 'Day label element',
@@ -6949,6 +6967,9 @@ export const WeekViewStylesApi: StylesApiData<
       '--week-view-radius': 'Controls `border-radius` of the week view',
       '--week-view-slot-height': 'Controls `height` of 1-hour time slots',
       '--week-view-all-day-slots-height': 'Controls `height` of all-day slots section',
+      '--event-raise-delay': 'Controls the hover delay before a cascade event is raised',
+      '--event-z-index': 'Controls the base stacking order of a cascade event',
+      '--event-z-index-raised': 'Controls the raised stacking order of a cascade event',
       '--indicator-offset-index': 'Controls the offset index',
       '--number-of-days': 'Controls the of days',
     },

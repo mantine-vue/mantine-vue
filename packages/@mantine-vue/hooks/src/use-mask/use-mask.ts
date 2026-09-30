@@ -437,11 +437,17 @@ export function useMask(options: UseMaskOptions): UseMaskReturnValue {
       return false
     }
 
+    const isOwnValue = inputNode.value === display
+    const parse = (slots: MaskSlot[], slotChar: string | null | undefined) =>
+      isOwnValue
+        ? applyMaskToRaw(rawInternal, slots, slotChar, options.transform)
+        : processInput(inputNode.value, slots, slotChar)
+
     const { slots: initialSlots, slotChar: initialSlotChar } = getResolvedOptions(options, '')
-    const initialProcessed = processInput(inputNode.value, initialSlots, initialSlotChar)
+    const initialProcessed = parse(initialSlots, initialSlotChar)
     const initialRaw = extractRaw(initialProcessed, initialSlots)
     const { slots: resolvedSlots, slotChar } = getResolvedOptions(options, initialRaw)
-    const reprocessed = processInput(inputNode.value, resolvedSlots, slotChar)
+    const reprocessed = parse(resolvedSlots, slotChar)
     const newRaw = extractRaw(reprocessed, resolvedSlots)
     const showSlots = options.alwaysShowMask || isFocused
     const showOnFocus = options.showMaskOnFocus !== false

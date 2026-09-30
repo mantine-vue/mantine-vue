@@ -25,6 +25,13 @@ export interface UseScrollSpyOptions {
 
 let scrollSpyId = 0
 
+function resolveHeadingNode(heading: HTMLElement, selector: string, index: number): HTMLElement {
+  if (heading.isConnected) return heading
+
+  const nodeById = heading.id ? document.getElementById(heading.id) : null
+  return nodeById ?? document.querySelectorAll<HTMLElement>(selector)[index] ?? heading
+}
+
 function getActiveElement(rects: DOMRect[], offset = 0) {
   if (rects.length === 0) return -1
   return rects.reduce(
@@ -53,14 +60,15 @@ export function useScrollSpy(options: UseScrollSpyOptions = {}) {
     if (typeof document === 'undefined') return
     const getDepth = options.getDepth ?? ((element: HTMLElement) => Number(element.tagName[1]))
     const getValue = options.getValue ?? ((element: HTMLElement) => element.textContent || '')
-    data.value = Array.from(
-      document.querySelectorAll<HTMLElement>(toValue(options.selector) ?? 'h1, h2, h3, h4, h5, h6'),
-    ).map((heading) => ({
-      depth: getDepth(heading),
-      value: getValue(heading),
-      id: heading.id || `mantine-scroll-spy-${++scrollSpyId}`,
-      getNode: () => (heading.id ? (document.getElementById(heading.id) ?? heading) : heading),
-    }))
+    const selector = toValue(options.selector) ?? 'h1, h2, h3, h4, h5, h6'
+    data.value = Array.from(document.querySelectorAll<HTMLElement>(selector)).map(
+      (heading, index) => ({
+        depth: getDepth(heading),
+        value: getValue(heading),
+        id: heading.id || `mantine-scroll-spy-${++scrollSpyId}`,
+        getNode: () => resolveHeadingNode(heading, selector, index),
+      }),
+    )
     initialized.value = true
     updateActive()
   }
