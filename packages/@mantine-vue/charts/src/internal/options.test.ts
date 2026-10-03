@@ -36,6 +36,32 @@ const pieSeries = (option: ReturnType<typeof radialOption>) =>
   (option.series as Record<string, unknown>[])[0]
 
 describe('@mantine-vue/charts radial options', () => {
+  it('uses the same resolved Mantine color for the palette, segment and legend marker', () => {
+    const option = radialOption(
+      {
+        data: [
+          { name: 'First', value: 60, color: 'blue.6' },
+          { name: 'Second', value: 40, color: 'teal.6' },
+        ],
+        withLegend: true,
+      },
+      true,
+    )
+    const seriesData = pieSeries(option).data as Record<string, unknown>[]
+    const legendData = (option.legend as { data: Record<string, unknown>[] }).data
+
+    expect(option.color).toEqual(['#228be6', '#12b886'])
+    expect(seriesData[1]).toMatchObject({
+      name: 'Second',
+      itemStyle: { color: '#12b886' },
+    })
+    expect(seriesData[1]).not.toHaveProperty('color')
+    expect(legendData[1]).toMatchObject({
+      name: 'Second',
+      itemStyle: { color: '#12b886' },
+    })
+  })
+
   it('does not enable the legend when only labels are enabled', () => {
     const option = radialOption({ data: [], withLabels: true }, true)
 

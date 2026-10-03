@@ -221,6 +221,10 @@ export function cartesianOption(
 
 export function radialOption(props: Props, donut = false): EChartsOption {
   const data = list<{ name: string; value: number; color?: string }>(props.data)
+  const resolvedData = data.map(({ color, ...item }) => {
+    const resolvedColor = resolveColor(color)
+    return { ...item, itemStyle: { color: resolvedColor } }
+  })
   const withLabels = bool(props.withLabels, false)
   const withLegend = bool(props.withLegend, false)
   const labelsPosition = props.labelsPosition === 'inside' ? 'inside' : 'outside'
@@ -235,12 +239,16 @@ export function radialOption(props: Props, donut = false): EChartsOption {
         : '{c}'
 
   return {
-    color: data.map((item) => resolveColor(item.color)),
+    color: resolvedData.map((item) => item.itemStyle.color),
     legend: {
       show: withLegend,
       type: 'scroll',
       left: 'center',
       bottom: 8,
+      data: resolvedData.map((item) => ({
+        name: item.name,
+        itemStyle: { color: item.itemStyle.color },
+      })),
       ...obj(props.legendProps),
     },
     tooltip: { trigger: 'item', show: bool(props.withTooltip, true), ...obj(props.tooltipProps) },
@@ -272,7 +280,7 @@ export function radialOption(props: Props, donut = false): EChartsOption {
         },
         labelLine: { show: withLabels && bool(props.withLabelsLine, false) },
         labelLayout: { hideOverlap: true },
-        data: data.map((item) => ({ ...item, itemStyle: { color: resolveColor(item.color) } })),
+        data: resolvedData,
         ...obj(props.pieProps),
       },
     ],
