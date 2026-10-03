@@ -9,6 +9,14 @@ export default Layout(MDX_DATA.DonutChart)
 
 <Demo data={ChartsDemos.donutChart} />
 
+## Labels and legend
+
+Enable `withLabels` and `withLabelsLine` to display segment labels and connector lines. The `labelsPosition` and `labelsType` props control their placement and content.
+
+Set `withLegend` independently to display the legend. When outside labels and the legend are enabled together, the chart reserves space between them.
+
+<Demo data={ChartsDemos.donutChartLabelsLegend} />
+
 ## Center label
 
 Set `chartLabel`, `chartLabelColor`, and `chartLabelFontSize` to display a summary inside the donut.

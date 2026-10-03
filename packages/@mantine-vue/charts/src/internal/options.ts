@@ -221,20 +221,43 @@ export function cartesianOption(
 
 export function radialOption(props: Props, donut = false): EChartsOption {
   const data = list<{ name: string; value: number; color?: string }>(props.data)
+  const withLabels = bool(props.withLabels, false)
+  const withLegend = bool(props.withLegend, false)
+  const labelsPosition = props.labelsPosition === 'inside' ? 'inside' : 'outside'
+  const withOutsideLabels = withLabels && labelsPosition === 'outside'
+  const outerRadius = withOutsideLabels ? '65%' : '75%'
+  const valueFormat = formatter(props)
+  const labelFormatter =
+    props.labelsType === 'percent'
+      ? '{d}%'
+      : valueFormat
+        ? (params: { value?: unknown }) => valueFormat(Number(params.value))
+        : '{c}'
+
   return {
     color: data.map((item) => resolveColor(item.color)),
     legend: {
-      show: bool(props.withLabels, false) || bool(props.withLegend, false),
+      show: withLegend,
+      type: 'scroll',
+      left: 'center',
+      bottom: 8,
       ...obj(props.legendProps),
     },
     tooltip: { trigger: 'item', show: bool(props.withTooltip, true), ...obj(props.tooltipProps) },
     series: [
       {
         type: 'pie',
-        radius: donut ? [`${num(props.thickness, 40)}%`, '75%'] : ['0%', '75%'],
+        left: 0,
+        right: 0,
+        top: 0,
+        bottom: withLegend ? 56 : 0,
+        center: ['50%', '50%'],
+        radius: donut ? [`${num(props.thickness, 40)}%`, outerRadius] : ['0%', outerRadius],
         startAngle: num(props.startAngle, 90),
+        endAngle: typeof props.endAngle === 'number' ? props.endAngle : undefined,
         minAngle: num(props.minAngle, 0),
         padAngle: num(props.paddingAngle, 0),
+        avoidLabelOverlap: true,
         roseType:
           props.type === 'pie'
             ? undefined
@@ -242,11 +265,15 @@ export function radialOption(props: Props, donut = false): EChartsOption {
               ? undefined
               : (props.type as 'radius' | 'area'),
         label: {
-          show: bool(props.withLabels, false),
-          formatter: props.withLabelsLine ? '{b}: {d}%' : '{b}',
+          show: withLabels,
+          position: labelsPosition,
+          formatter: labelFormatter,
+          ...(withOutsideLabels ? { bleedMargin: 5, edgeDistance: '8%' } : {}),
         },
-        labelLine: { show: bool(props.withLabelsLine, false) },
+        labelLine: { show: withLabels && bool(props.withLabelsLine, false) },
+        labelLayout: { hideOverlap: true },
         data: data.map((item) => ({ ...item, itemStyle: { color: resolveColor(item.color) } })),
+        ...obj(props.pieProps),
       },
     ],
     graphic: props.chartLabel

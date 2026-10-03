@@ -124,6 +124,8 @@ export interface PieChartCell {
 export interface PieChartProps extends ChartRootProps {
   data: PieChartCell[]
   withTooltip?: boolean
+  withLegend?: boolean
+  legendProps?: ChartOptionProps
   withLabels?: boolean
   withLabelsLine?: boolean
   labelsPosition?: 'inside' | 'outside'
