@@ -14,6 +14,10 @@ const bool = (value: unknown, fallback: boolean) => (typeof value === 'boolean' 
 const num = (value: unknown, fallback: number) => (typeof value === 'number' ? value : fallback)
 const obj = (value: unknown) => (value && typeof value === 'object' ? value : {})
 const list = <T>(value: unknown): T[] => (Array.isArray(value) ? (value as T[]) : [])
+const gridLabelBounds = {
+  outerBoundsMode: 'same' as const,
+  outerBoundsContain: 'axisLabel' as const,
+}
 const formatter = (props: Props) =>
   typeof props.valueFormatter === 'function'
     ? (props.valueFormatter as (value: number) => string)
@@ -182,7 +186,7 @@ export function cartesianOption(
       right: bool(props.withRightYAxis, false) ? 48 : 16,
       top: bool(props.withLegend, false) ? 44 : 16,
       bottom: 38,
-      containLabel: true,
+      ...gridLabelBounds,
       ...obj(props.gridProps),
     },
     legend: { show: bool(props.withLegend, false), ...obj(props.legendProps) },
@@ -269,7 +273,7 @@ export function scatterOption(props: Props, bubble = false): EChartsOption {
   const yKey = String(props.yAxisKey ?? 'y')
   const zKey = String(props.zAxisKey ?? 'z')
   return {
-    grid: { containLabel: true, ...obj(props.gridProps) },
+    grid: { ...gridLabelBounds, ...obj(props.gridProps) },
     legend: { show: bool(props.withLegend, false), ...obj(props.legendProps) },
     tooltip: { trigger: 'item', show: bool(props.withTooltip, true), ...obj(props.tooltipProps) },
     xAxis: { type: 'value', show: bool(props.withXAxis, true), ...obj(props.xAxisProps) },
@@ -589,7 +593,7 @@ export function candlestickOption(props: Props): EChartsOption {
       right: 16,
       top: 16,
       bottom: 38,
-      containLabel: true,
+      ...gridLabelBounds,
       ...obj(props.gridProps),
     },
     tooltip: { trigger: 'axis', show: bool(props.withTooltip, true), ...obj(props.tooltipProps) },
