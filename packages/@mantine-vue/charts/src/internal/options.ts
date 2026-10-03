@@ -14,6 +14,10 @@ const bool = (value: unknown, fallback: boolean) => (typeof value === 'boolean' 
 const num = (value: unknown, fallback: number) => (typeof value === 'number' ? value : fallback)
 const obj = (value: unknown) => (value && typeof value === 'object' ? value : {})
 const list = <T>(value: unknown): T[] => (Array.isArray(value) ? (value as T[]) : [])
+const gridLabelBounds = {
+  outerBoundsMode: 'same' as const,
+  outerBoundsContain: 'axisLabel' as const,
+}
 const formatter = (props: Props) =>
   typeof props.valueFormatter === 'function'
     ? (props.valueFormatter as (value: number) => string)
@@ -182,7 +186,7 @@ export function cartesianOption(
       right: bool(props.withRightYAxis, false) ? 48 : 16,
       top: bool(props.withLegend, false) ? 44 : 16,
       bottom: 38,
-      containLabel: true,
+      ...gridLabelBounds,
       ...obj(props.gridProps),
     },
     legend: { show: bool(props.withLegend, false), ...obj(props.legendProps) },
@@ -217,20 +221,51 @@ export function cartesianOption(
 
 export function radialOption(props: Props, donut = false): EChartsOption {
   const data = list<{ name: string; value: number; color?: string }>(props.data)
+  const resolvedData = data.map(({ color, ...item }) => {
+    const resolvedColor = resolveColor(color)
+    return { ...item, itemStyle: { color: resolvedColor } }
+  })
+  const withLabels = bool(props.withLabels, false)
+  const withLegend = bool(props.withLegend, false)
+  const labelsPosition = props.labelsPosition === 'inside' ? 'inside' : 'outside'
+  const withOutsideLabels = withLabels && labelsPosition === 'outside'
+  const outerRadius = withOutsideLabels ? '65%' : '75%'
+  const valueFormat = formatter(props)
+  const labelFormatter =
+    props.labelsType === 'percent'
+      ? '{d}%'
+      : valueFormat
+        ? (params: { value?: unknown }) => valueFormat(Number(params.value))
+        : '{c}'
+
   return {
-    color: data.map((item) => resolveColor(item.color)),
+    color: resolvedData.map((item) => item.itemStyle.color),
     legend: {
-      show: bool(props.withLabels, false) || bool(props.withLegend, false),
+      show: withLegend,
+      type: 'scroll',
+      left: 'center',
+      bottom: 8,
+      data: resolvedData.map((item) => ({
+        name: item.name,
+        itemStyle: { color: item.itemStyle.color },
+      })),
       ...obj(props.legendProps),
     },
     tooltip: { trigger: 'item', show: bool(props.withTooltip, true), ...obj(props.tooltipProps) },
     series: [
       {
         type: 'pie',
-        radius: donut ? [`${num(props.thickness, 40)}%`, '75%'] : ['0%', '75%'],
+        left: 0,
+        right: 0,
+        top: 0,
+        bottom: withLegend ? 56 : 0,
+        center: ['50%', '50%'],
+        radius: donut ? [`${num(props.thickness, 40)}%`, outerRadius] : ['0%', outerRadius],
         startAngle: num(props.startAngle, 90),
+        endAngle: typeof props.endAngle === 'number' ? props.endAngle : undefined,
         minAngle: num(props.minAngle, 0),
         padAngle: num(props.paddingAngle, 0),
+        avoidLabelOverlap: true,
         roseType:
           props.type === 'pie'
             ? undefined
@@ -238,11 +273,15 @@ export function radialOption(props: Props, donut = false): EChartsOption {
               ? undefined
               : (props.type as 'radius' | 'area'),
         label: {
-          show: bool(props.withLabels, false),
-          formatter: props.withLabelsLine ? '{b}: {d}%' : '{b}',
+          show: withLabels,
+          position: labelsPosition,
+          formatter: labelFormatter,
+          ...(withOutsideLabels ? { bleedMargin: 5, edgeDistance: '8%' } : {}),
         },
-        labelLine: { show: bool(props.withLabelsLine, false) },
-        data: data.map((item) => ({ ...item, itemStyle: { color: resolveColor(item.color) } })),
+        labelLine: { show: withLabels && bool(props.withLabelsLine, false) },
+        labelLayout: { hideOverlap: true },
+        data: resolvedData,
+        ...obj(props.pieProps),
       },
     ],
     graphic: props.chartLabel
@@ -269,7 +308,7 @@ export function scatterOption(props: Props, bubble = false): EChartsOption {
   const yKey = String(props.yAxisKey ?? 'y')
   const zKey = String(props.zAxisKey ?? 'z')
   return {
-    grid: { containLabel: true, ...obj(props.gridProps) },
+    grid: { ...gridLabelBounds, ...obj(props.gridProps) },
     legend: { show: bool(props.withLegend, false), ...obj(props.legendProps) },
     tooltip: { trigger: 'item', show: bool(props.withTooltip, true), ...obj(props.tooltipProps) },
     xAxis: { type: 'value', show: bool(props.withXAxis, true), ...obj(props.xAxisProps) },
@@ -589,7 +628,7 @@ export function candlestickOption(props: Props): EChartsOption {
       right: 16,
       top: 16,
       bottom: 38,
-      containLabel: true,
+      ...gridLabelBounds,
       ...obj(props.gridProps),
     },
     tooltip: { trigger: 'axis', show: bool(props.withTooltip, true), ...obj(props.tooltipProps) },

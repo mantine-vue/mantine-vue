@@ -7,6 +7,15 @@ registerECharts()
 
 export type OptionBuilder = (props: Record<string, unknown>) => EChartsOption
 
+export function normalizeChartProps(props: Record<string, unknown>) {
+  return Object.fromEntries(
+    Object.entries(props).map(([key, value]) => [
+      key.replace(/-([a-z])/g, (_match, letter: string) => letter.toUpperCase()),
+      value,
+    ]),
+  )
+}
+
 export function createChartComponent(name: string, buildOption: OptionBuilder): Component {
   return defineComponent({
     name: `Mantine${name}`,
@@ -23,7 +32,10 @@ export function createChartComponent(name: string, buildOption: OptionBuilder): 
     emits: ['click', 'dblclick', 'mouseover', 'mouseout', 'legendselectchanged', 'datazoom'],
     setup(props, { attrs, emit, expose }) {
       const chart = ref<InstanceType<typeof VChart>>()
-      const option = computed(() => ({ ...buildOption(attrs), ...props.option }))
+      const option = computed(() => ({
+        ...buildOption(normalizeChartProps(attrs)),
+        ...props.option,
+      }))
       expose({
         getEchartsInstance: () => chart.value?.chart,
         resize: () => chart.value?.resize(),

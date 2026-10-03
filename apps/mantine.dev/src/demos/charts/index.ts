@@ -181,6 +181,24 @@ const data = ${JSON.stringify(radialData, null, 2)}
 
 <template><${name} :data="data" :height="300" with-tooltip /></template>`
 
+const radialLabelsLegendCode = (name: string) => `<script setup lang="ts">
+import { ${name} } from '@mantine-vue/charts'
+
+const data = ${JSON.stringify(radialData, null, 2)}
+</script>
+
+<template>
+  <${name}
+    :data="data"
+    :height="320"
+    with-labels
+    with-labels-line
+    labels-position="outside"
+    labels-type="percent"
+    with-legend
+  />
+</template>`
+
 export const pieChart = demo(
   PieChart,
   { data: radialData, withTooltip: true, withLabels: true },
@@ -190,6 +208,32 @@ export const donutChart = demo(
   DonutChart,
   { data: radialData, withTooltip: true, chartLabel: '1,000' },
   radialCode('DonutChart'),
+)
+export const pieChartLabelsLegend = demo(
+  PieChart,
+  {
+    data: radialData,
+    height: 320,
+    withLabels: true,
+    withLabelsLine: true,
+    labelsPosition: 'outside',
+    labelsType: 'percent',
+    withLegend: true,
+  },
+  radialLabelsLegendCode('PieChart'),
+)
+export const donutChartLabelsLegend = demo(
+  DonutChart,
+  {
+    data: radialData,
+    height: 320,
+    withLabels: true,
+    withLabelsLine: true,
+    labelsPosition: 'outside',
+    labelsType: 'percent',
+    withLegend: true,
+  },
+  radialLabelsLegendCode('DonutChart'),
 )
 export const radialBarChart = demo(
   RadialBarChart,
@@ -399,11 +443,13 @@ export const ChartsDemos = {
   compositeChart,
   compositeChartReferences,
   donutChart,
+  donutChartLabelsLegend,
   funnelChart,
   heatmap,
   lineChart,
   lineChartReferences,
   pieChart,
+  pieChartLabelsLegend,
   radarChart,
   radialBarChart,
   sankeyChart,

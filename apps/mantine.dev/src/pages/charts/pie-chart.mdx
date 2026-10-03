@@ -9,6 +9,10 @@ export default Layout(MDX_DATA.PieChart)
 
 <Demo data={ChartsDemos.pieChart} />
 
-## Labels
+## Labels and legend
 
-Enable `withLabels` and `withLabelsLine` to display segment labels. Use `labelsType="percent"` for percentage values.
+Enable `withLabels` and `withLabelsLine` to display segment labels and connector lines. Use `labelsPosition="outside"` to place labels around the chart and `labelsType="percent"` for percentage values.
+
+Labels and the legend are controlled independently. Set `withLegend` only when the legend should be displayed.
+
+<Demo data={ChartsDemos.pieChartLabelsLegend} />
