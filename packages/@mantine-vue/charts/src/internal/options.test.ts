@@ -3,8 +3,7 @@
 import { describe, expect, it } from 'vitest'
 import { candlestickOption, cartesianOption, scatterOption } from './options'
 
-const grid = (option: ReturnType<typeof cartesianOption>) =>
-  option.grid as Record<string, unknown>
+const grid = (option: ReturnType<typeof cartesianOption>) => option.grid as Record<string, unknown>
 
 describe('@mantine-vue/charts grid options', () => {
   it.each([
