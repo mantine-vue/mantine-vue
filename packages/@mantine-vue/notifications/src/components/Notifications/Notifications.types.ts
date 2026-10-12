@@ -6,7 +6,7 @@ import type {
   NotificationsStore,
 } from '../../notifications.store'
 
-export type NotificationsStylesNames = 'root' | 'notification'
+export type NotificationsStylesNames = 'root' | 'notification' | 'progress'
 
 export type NotificationsCssVariables = {
   root: '--notifications-z-index' | '--notifications-container-width'
@@ -44,6 +44,8 @@ export interface NotificationsProps {
   renderNotification?: (notification: NotificationData) => VNodeChild
   /** Controls notification layout. @default 'default' */
   layout?: 'default' | 'stacked'
+  /** Displays a progress line that fills until each notification auto-closes. @default false */
+  withAutoCloseProgress?: boolean
   /** CSS classes applied to component elements. */
   classNames?: ClassNames<NotificationsProps>
   /** Inline styles applied to component elements. */

@@ -7,6 +7,7 @@ import { update } from './Notifications.demo.update'
 import { autoclose } from './Notifications.demo.autoclose'
 import { store } from './Notifications.demo.store'
 import { priority, renderNotification, stacked } from './Notifications.demo.newFeatures'
+import { autoCloseProgress, promise } from './Notifications.demo.promiseProgress'
 
 export const NotificationsDemos = {
   base,
@@ -20,4 +21,6 @@ export const NotificationsDemos = {
   priority,
   renderNotification,
   stacked,
+  promise,
+  autoCloseProgress,
 }

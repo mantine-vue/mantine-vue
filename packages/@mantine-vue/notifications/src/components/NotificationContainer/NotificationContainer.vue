@@ -33,6 +33,8 @@ const active = ref(false)
 const scrollDismissActive = ref(false)
 const hovered = ref(false)
 const focused = ref(false)
+const progressRunning = ref(false)
+const progressCycle = ref(0)
 const contributedActive = ref(false)
 const startX = ref(0)
 const startTime = ref(0)
@@ -42,6 +44,11 @@ let scrollDismissTimeout = -1
 let resizeObserver: ResizeObserver | undefined
 
 const autoCloseDuration = computed(() => getAutoClose(props.autoClose, props.data.autoClose))
+const hasAutoCloseProgress = computed(
+  () =>
+    (props.data.withAutoCloseProgress ?? props.withAutoCloseProgress) &&
+    typeof autoCloseDuration.value === 'number',
+)
 const isCloseDisabled = computed(() => props.data.allowClose === false)
 
 function normalizeStyle(style: any): Record<string, any> {
@@ -69,6 +76,7 @@ function getNotificationProps() {
     'renderNotification',
     'priority',
     '__sequence',
+    'withAutoCloseProgress',
   ])
   return Object.fromEntries(
     Object.entries(props.data)
@@ -154,7 +162,10 @@ const isCollapsed = computed(
   () => props.layout === 'stacked' && (props.stackIndex ?? 0) > 0 && !props.stackExpanded,
 )
 
-const cancelAutoClose = () => window.clearTimeout(autoCloseTimeout)
+const cancelAutoClose = () => {
+  window.clearTimeout(autoCloseTimeout)
+  progressRunning.value = false
+}
 const cancelHide = () => window.clearTimeout(hideTimeout)
 const cancelScrollDismissReset = () => window.clearTimeout(scrollDismissTimeout)
 
@@ -179,6 +190,10 @@ function handleAutoClose() {
 
   cancelAutoClose()
   autoCloseTimeout = window.setTimeout(handleHide, autoCloseDuration.value)
+  if (hasAutoCloseProgress.value) {
+    progressCycle.value += 1
+    progressRunning.value = true
+  }
 }
 
 function getExitOffset(direction: -1 | 1) {
@@ -336,7 +351,7 @@ watch(scrollDismissActive, (enabled, _, onCleanup) => {
 })
 
 watch(
-  [autoCloseDuration, active, dismissed, () => props.paused],
+  [autoCloseDuration, active, dismissed, () => props.paused, hasAutoCloseProgress],
   () => {
     if (props.paused) cancelAutoClose()
     else handleAutoClose()
@@ -414,5 +429,16 @@ function setNotificationRef(node: any) {
     @pointerdown="handlePointerDown"
   >
     <component :is="renderMessage" />
+    <div
+      v-if="hasAutoCloseProgress"
+      :key="progressCycle"
+      aria-hidden="true"
+      v-bind="props.progressProps"
+      :data-paused="!progressRunning || undefined"
+      :style="[
+        props.progressProps.style,
+        { '--notifications-progress-duration': `${autoCloseDuration}ms` },
+      ]"
+    />
   </Notification>
 </template>

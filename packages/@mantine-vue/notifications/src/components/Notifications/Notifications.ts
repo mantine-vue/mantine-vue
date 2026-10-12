@@ -8,6 +8,7 @@ export const Notifications = Object.assign(NotificationsComponent, {
   show: notifications.show,
   hide: notifications.hide,
   update: notifications.update,
+  promise: notifications.promise,
   clean: notifications.clean,
   cleanQueue: notifications.cleanQueue,
   updateState: notifications.updateState,

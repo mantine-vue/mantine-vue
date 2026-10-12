@@ -9,6 +9,7 @@ import {
   cleanNotificationsQueue,
   createNotificationsStore,
   hideNotification,
+  promiseNotification,
   showNotification,
   updateNotification,
 } from '../notifications.store'
@@ -79,6 +80,65 @@ describe('@mantine-vue/notifications store', () => {
 
     cleanNotifications(store)
     expect(store.getState().notifications).toEqual([])
+  })
+
+  it('updates a promise notification after resolution', async () => {
+    const store = createNotificationsStore()
+    const promise = Promise.resolve({ count: 2 })
+
+    expect(
+      promiseNotification(
+        promise,
+        {
+          id: 'save',
+          loading: { message: 'Saving' },
+          success: (value) => ({ message: `Saved ${value.count}` }),
+          error: { message: 'Failed' },
+        },
+        store,
+      ),
+    ).toBe(promise)
+    expect(store.getState().notifications[0]).toMatchObject({
+      id: 'save',
+      message: 'Saving',
+      loading: true,
+      autoClose: false,
+    })
+
+    await promise
+    await Promise.resolve()
+    expect(store.getState().notifications[0]).toMatchObject({
+      id: 'save',
+      message: 'Saved 2',
+      loading: false,
+      color: 'teal',
+    })
+  })
+
+  it('only lets the latest promise with a shared id update the notification', async () => {
+    const store = createNotificationsStore()
+    let resolveFirst!: (value: string) => void
+    let resolveSecond!: (value: string) => void
+    const first = new Promise<string>((resolve) => (resolveFirst = resolve))
+    const second = new Promise<string>((resolve) => (resolveSecond = resolve))
+    const options = (loading: string) => ({
+      id: 'shared',
+      loading: { message: loading },
+      success: (value: string) => ({ message: value }),
+      error: { message: 'Failed' },
+    })
+
+    promiseNotification(first, options('First'), store)
+    promiseNotification(second, options('Second'), store)
+    resolveFirst('Stale')
+    await first
+    await Promise.resolve()
+    expect(store.getState().notifications[0].message).toBe('Second')
+
+    resolveSecond('Latest')
+    await second
+    await Promise.resolve()
+    expect(store.getState().notifications[0].message).toBe('Latest')
   })
 
   it('does not mutate notification data with component instances while rendering', async () => {
