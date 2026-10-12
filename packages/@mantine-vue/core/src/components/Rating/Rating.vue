@@ -12,6 +12,9 @@ function clamp(value: number, min: number, max: number) {
   return Math.min(max, Math.max(min, value))
 }
 
+const TOUCH_MOVE_THRESHOLD = 10
+const EMULATED_CLICK_TIMEOUT = 500
+
 /** `getSymbolLabel` is a function default, so it is resolved by `useProps`. */
 const defaultProps = {
   size: 'sm',
@@ -72,6 +75,8 @@ const props = useProps('Rating', defaultProps, rawProps)
 const rootRef = ref<HTMLDivElement | null>(null)
 const hovered = ref(-1)
 const isOutside = ref(true)
+const touchStartPosition = ref<{ x: number; y: number } | null>(null)
+let lastTouchTimestamp = 0
 
 const { dir } = useDirection()
 const name = useId(props.name)
@@ -201,7 +206,7 @@ function onInputChange(value: number) {
 }
 
 function onChangeValue(value: number) {
-  if (!props.readOnly) {
+  if (!props.readOnly && Date.now() - lastTouchTimestamp >= EMULATED_CLICK_TIMEOUT) {
     setCurrentValue(props.allowClear && value === stableValueRounded.value ? 0 : value)
   }
 }
@@ -240,14 +245,38 @@ function onMouseleave() {
 }
 
 function onTouchstart(event: TouchEvent) {
-  if (!props.readOnly && event.touches.length === 1) {
-    setCurrentValue(getRatingFromCoordinates(event.touches[0].clientX))
+  touchStartPosition.value =
+    event.touches.length === 1 ? { x: event.touches[0].clientX, y: event.touches[0].clientY } : null
+}
+
+function onTouchmove(event: TouchEvent) {
+  const start = touchStartPosition.value
+  const touch = event.touches[0]
+
+  if (
+    start &&
+    touch &&
+    Math.hypot(touch.clientX - start.x, touch.clientY - start.y) > TOUCH_MOVE_THRESHOLD
+  ) {
+    touchStartPosition.value = null
   }
 }
 
-/** Prevents the touch from being replayed as a click on the item underneath. */
+function onTouchcancel() {
+  touchStartPosition.value = null
+}
+
 function onTouchend(event: TouchEvent) {
-  event.preventDefault()
+  const start = touchStartPosition.value
+  const touch = event.changedTouches[0]
+  touchStartPosition.value = null
+
+  if (start && touch && !props.readOnly) {
+    event.preventDefault()
+    const nextValue = getRatingFromCoordinates(touch.clientX)
+    setCurrentValue(props.allowClear && nextValue === stableValueRounded.value ? 0 : nextValue)
+    lastTouchTimestamp = Date.now()
+  }
 }
 </script>
 
@@ -263,6 +292,8 @@ function onTouchend(event: TouchEvent) {
     @mousemove="onMousemove"
     @mouseleave="onMouseleave"
     @touchstart="onTouchstart"
+    @touchmove="onTouchmove"
+    @touchcancel="onTouchcancel"
     @touchend="onTouchend"
   >
     <div
