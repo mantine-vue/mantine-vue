@@ -42,9 +42,9 @@ const columnStyles = computed(() => props.getStyles('digitColumn'))
 
 const columnStyle = computed(() => ({
   ...columnStyles.value.style,
-  transform: `translateY(${-digitIndex.value}em)`,
-  '--rn-roll-from': `translateY(${-previousDigitIndex.value}em)`,
-  '--rn-roll-to': `translateY(${-animateToIndex.value}em)`,
+  top: `${-digitIndex.value}em`,
+  '--rn-roll-from': `translateY(${digitIndex.value - previousDigitIndex.value}em)`,
+  '--rn-roll-to': `translateY(${digitIndex.value - animateToIndex.value}em)`,
 }))
 </script>
 
