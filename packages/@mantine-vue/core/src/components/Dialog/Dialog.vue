@@ -8,7 +8,6 @@ export const varsResolver = createVarsResolver<any>((_, { size }) => ({
 
 const defaultProps = {
   shadow: 'md',
-  p: 'md',
   withBorder: true,
   transitionProps: { transition: 'pop-top-right' as MantineTransition, duration: 200 },
   position: { bottom: 30, right: 30 },
