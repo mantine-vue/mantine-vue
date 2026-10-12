@@ -168,7 +168,7 @@ import { ref } from 'vue'
 import { Button, Group, TextInput, Tour } from '@mantine-vue/core'
 const active = ref(false)
 const step = ref(0)
-const labels = { next: 'Siguiente', back: 'Anterior', skip: 'Omitir', close: 'Cerrar', stepCounter: (current: number, total: number) => \`${'${current}'} de ${'${total}'}\` }
+const labels = { next: 'Siguiente', back: 'Anterior', skip: 'Omitir', close: 'Cerrar', stepCounter: (current: number, total: number) => \`\${current} de \${total}\` }
 </script>
 <template>
   <Group><Button id="labels-target-1">Primer objetivo</Button><TextInput id="labels-target-2" placeholder="Segundo objetivo" /></Group>
