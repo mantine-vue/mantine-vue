@@ -1,0 +1,62 @@
+import { ToggleDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.Toggle)
+
+## Usage
+
+`Toggle` is a button that can be toggled between active and inactive states.
+It is a polymorphic component and can be rendered as any element.
+
+<Demo data={ToggleDemos.usage} />
+
+## Controlled and uncontrolled
+
+Use `defaultActive` to set the initial state of an uncontrolled `Toggle`, and
+`v-model:active` to control it.
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue'
+import { Toggle } from '@mantine-vue/core'
+
+const active = ref(false)
+</script>
+
+<template>
+  <!-- Uncontrolled -->
+  <Toggle defaultActive />
+
+  <!-- Controlled -->
+  <Toggle v-model:active="active" />
+</template>
+```
+
+## Auto contrast
+
+Set `autoContrast` prop to automatically adjust icon color based on the active toggle
+background color, for example with `variant="filled"` and light colors.
+
+<Demo data={ToggleDemos.autoContrast} />
+
+## Auto width
+
+By default, `Toggle` renders as a square button. Set `autoWidth` to allow
+the width to adjust to content.
+
+<Demo data={ToggleDemos.autoWidth} />
+
+## Configurator
+
+<Demo data={ToggleDemos.configurator} />
+
+## Accessibility
+
+`Toggle` renders a `button` element with `aria-pressed` that reflects the active state.
+When using icon-only toggles, provide an `aria-label` so screen readers can announce its purpose.
+
+When rendered as a non-button element, `disabled` sets `aria-disabled`, removes the element from
+the tab order, and prevents clicks.
+
+<StylesApiSelectors component="Toggle" />
