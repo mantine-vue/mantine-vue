@@ -67,6 +67,7 @@ function onMouseover(event: MouseEvent) {
     :data-combobox-active="props.active || undefined"
     :data-combobox-disabled="props.disabled || undefined"
     :data-combobox-selected="props.selected || undefined"
+    :aria-disabled="props.disabled || undefined"
     :aria-selected="props.selected || undefined"
     @click="onClick"
     @mousedown="onMousedown"
