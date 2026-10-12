@@ -26,7 +26,7 @@ function toolbarContent(
     h(
       Toolbar.ToggleGroup,
       {
-        type: 'multiple',
+        type: 'multiple' as const,
         modelValue: formatting,
         defaultValue: formatting === undefined ? [] : undefined,
         'onUpdate:modelValue': handlers?.formatting,
@@ -47,7 +47,7 @@ function toolbarContent(
     h(
       Toolbar.ToggleGroup,
       {
-        type: 'single',
+        type: 'single' as const,
         modelValue: alignment,
         defaultValue: alignment === undefined ? 'left' : undefined,
         disabled: options.disabled,
