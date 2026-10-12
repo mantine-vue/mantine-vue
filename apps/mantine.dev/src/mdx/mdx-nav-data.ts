@@ -113,6 +113,7 @@ const OVERLAYS_PAGES: MdxNavItem[] = [
   { label: 'Overlay', link: '/core/overlay' },
   { label: 'Popover', link: '/core/popover' },
   { label: 'Tooltip', link: '/core/tooltip' },
+  { label: 'Tour', link: '/core/tour' },
 ]
 
 const DATA_DISPLAY_PAGES: MdxNavItem[] = [
@@ -157,6 +158,8 @@ const MISCELLANEOUS_PAGES: MdxNavItem[] = [
   { label: 'ScrollArea', link: '/core/scroll-area' },
   { label: 'Scroller', link: '/core/scroller' },
   { label: 'Transition', link: '/core/transition' },
+  { label: 'Toggle', link: '/core/toggle' },
+  { label: 'Toolbar', link: '/core/toolbar' },
   { label: 'VisuallyHidden', link: '/core/visually-hidden' },
 ]
 
@@ -195,6 +198,7 @@ const FORM_PAGES: MdxNavItem[] = [
 
 const OTHER_EXTENSIONS_PAGES: MdxNavItem[] = [
   { label: 'CodeHighlight', link: '/x/code-highlight' },
+  { label: 'JsonViewer', link: '/x/json-viewer' },
   { label: 'ContextMenu', link: '/x/contextmenu' },
   { label: 'Notifications system', link: '/x/notifications' },
   { label: 'Spotlight', link: '/x/spotlight' },
