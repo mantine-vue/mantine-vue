@@ -74,19 +74,15 @@ function handleDragScroll(event: PointerEvent) {
 }
 
 /**
- * Bound on `document` rather than the element so a wheel over the scrollbar scrolls the
- * viewport, and registered non-passive so the default scroll can be prevented.
+ * Bound directly on the scrollbar and registered non-passive so the default scroll can be
+ * prevented without disabling compositor scrolling for the rest of the document.
  */
 function handleWheel(event: WheelEvent) {
-  const target = event.target as HTMLElement
-
-  if (scrollbar.value?.contains(target)) {
-    props.onWheelScroll(event, props.sizes.content - props.sizes.viewport)
-  }
+  props.onWheelScroll(event, props.sizes.content - props.sizes.viewport)
 }
 
 onMounted(() => {
-  document.addEventListener('wheel', handleWheel, { passive: false })
+  scrollbar.value?.addEventListener('wheel', handleWheel, { passive: false })
   observeResize()
   props.onThumbPositionChange()
 })
@@ -100,7 +96,7 @@ watch(
 )
 
 onBeforeUnmount(() => {
-  document.removeEventListener('wheel', handleWheel)
+  scrollbar.value?.removeEventListener('wheel', handleWheel)
   resizeObserver?.disconnect()
   window.cancelAnimationFrame(resizeFrame)
 })

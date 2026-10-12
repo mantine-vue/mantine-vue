@@ -1,3 +1,5 @@
+import { TableScrollContainer } from './TableScrollContainer'
+
 export { Table } from './Table'
 export type {
   TableCssVariables,
@@ -42,4 +44,3 @@ export type {
   TableScrollContainerSlots,
   TableScrollContainerStylesNames,
 } from './TableScrollContainer'
-import { TableScrollContainer } from './TableScrollContainer'
