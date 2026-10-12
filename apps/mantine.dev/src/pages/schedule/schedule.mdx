@@ -112,6 +112,28 @@ The resulting times stay within the configured schedule time range.
 
 <Demo data={ScheduleDemos.eventIntervals} />
 
+## Validate event placement
+
+Use `preventEventOverlap` to reject event drops and resizes that overlap another event. For custom
+rules, use `canDropEvent`, `canDropExternalEvent`, and `canResizeEventTo`. Rejected interactions
+emit `eventPlacementRejected` with the event, proposed time range, and rejection reason.
+
+```vue
+<template>
+  <Schedule
+    :events="events"
+    with-events-drag-and-drop
+    with-event-resize
+    prevent-event-overlap
+    :can-drop-event="({ start, end }) => isWithinBusinessHours(start, end)"
+    @event-placement-rejected="handleRejectedPlacement"
+  />
+</template>
+```
+
+The same validation props and event are available on resource schedule views. Invalid placements
+are indicated while dragging or resizing and do not modify the event.
+
 ## Recurring events
 
 Schedule automatically expands recurring events for the visible date range in each view.

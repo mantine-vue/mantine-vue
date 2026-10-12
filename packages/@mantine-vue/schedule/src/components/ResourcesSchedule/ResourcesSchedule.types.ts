@@ -6,6 +6,11 @@ import type { ScheduleLabelsOverride } from '../../labels'
 import type {
   DateStringValue,
   ScheduleEventData,
+  ScheduleCanDropEventData,
+  ScheduleCanDropExternalEventData,
+  ScheduleCanResizeEventToData,
+  ScheduleEventPlacementRejectedData,
+  PreventEventOverlap,
   ScheduleMode,
   ScheduleResourceData,
   ScheduleResourceGroup,
@@ -181,6 +186,10 @@ export interface ResourcesScheduleOwnProps extends StylesApiProps<ResourcesSched
    * @default () => true
    */
   canResizeEvent?: (event: ScheduleEventData) => boolean
+  canDropEvent?: (data: ScheduleCanDropEventData) => boolean
+  canDropExternalEvent?: (data: ScheduleCanDropExternalEventData) => boolean
+  canResizeEventTo?: (data: ScheduleCanResizeEventToData) => boolean
+  preventEventOverlap?: PreventEventOverlap
 
   /** If set, background events can be focused and clicked in day and week views. */
   withInteractiveBackgroundEvents?: boolean
@@ -243,6 +252,7 @@ export interface ResourcesScheduleEmits {
 
   /** Emitted when an event is resized. */
   eventResize: [data: EventDropData]
+  eventPlacementRejected: [data: ScheduleEventPlacementRejectedData]
 }
 
 export type ResourcesScheduleFactory = Factory<{

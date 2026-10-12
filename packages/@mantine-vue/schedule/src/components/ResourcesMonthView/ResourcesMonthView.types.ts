@@ -15,6 +15,11 @@ import type {
   DateStringValue,
   DayOfWeek,
   ScheduleEventData,
+  ScheduleCanDropEventData,
+  ScheduleCanDropExternalEventData,
+  ScheduleCanResizeEventToData,
+  ScheduleEventPlacementRejectedData,
+  PreventEventOverlap,
   ScheduleMode,
   ScheduleResourceData,
   ScheduleResourceGroup,
@@ -251,6 +256,10 @@ export interface ResourcesMonthViewOwnProps extends StylesApiProps<ResourcesMont
 
   /** Returns whether the given event may be resized. @default () => true */
   canResizeEvent?: (event: ScheduleEventData) => boolean
+  canDropEvent?: (data: ScheduleCanDropEventData) => boolean
+  canDropExternalEvent?: (data: ScheduleCanDropExternalEventData) => boolean
+  canResizeEventTo?: (data: ScheduleCanResizeEventToData) => boolean
+  preventEventOverlap?: PreventEventOverlap
 
   /**
    * If set, items dragged in from outside the schedule can be dropped on a day cell, which emits
@@ -327,6 +336,7 @@ export interface ResourcesMonthViewEmits {
 
   /** Emitted when an event resize gesture completes. */
   eventResize: [data: EventDropData]
+  eventPlacementRejected: [data: ScheduleEventPlacementRejectedData]
 }
 
 export type ResourcesMonthViewFactory = Factory<{

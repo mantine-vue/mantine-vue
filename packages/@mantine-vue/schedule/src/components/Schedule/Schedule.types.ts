@@ -13,6 +13,11 @@ import type {
   DateStringValue,
   DateTimeStringValue,
   ScheduleEventData,
+  ScheduleEventPlacementRejectedData,
+  ScheduleCanDropEventData,
+  ScheduleCanDropExternalEventData,
+  ScheduleCanResizeEventToData,
+  PreventEventOverlap,
   ScheduleMode,
   ScheduleViewLevel,
 } from '../../types'
@@ -142,6 +147,11 @@ export interface ScheduleOwnProps extends StylesApiProps<ScheduleFactory> {
    */
   canResizeEvent?: (event: ScheduleEventData) => boolean
 
+  canDropEvent?: (data: ScheduleCanDropEventData) => boolean
+  canDropExternalEvent?: (data: ScheduleCanDropExternalEventData) => boolean
+  canResizeEventTo?: (data: ScheduleCanResizeEventToData) => boolean
+  preventEventOverlap?: PreventEventOverlap
+
   /** If set, background events can be focused and clicked. Combined with event resize, timed background events in day and week views can also be resized. */
   withInteractiveBackgroundEvents?: boolean
 
@@ -220,6 +230,9 @@ export interface ScheduleEmits {
 
   /** Emitted when an event is resized. */
   eventResize: [data: EventDropData]
+
+  /** Emitted when a drop or resize is rejected. */
+  eventPlacementRejected: [data: ScheduleEventPlacementRejectedData]
 }
 
 export type ScheduleFactory = Factory<{

@@ -58,6 +58,10 @@ const rawProps = withDefaults(defineProps<ResourcesScheduleOwnProps>(), {
   onExternalEventDrop: undefined,
   onEventResize: undefined,
   canResizeEvent: undefined,
+  canDropEvent: undefined,
+  canDropExternalEvent: undefined,
+  canResizeEventTo: undefined,
+  preventEventOverlap: undefined,
   withInteractiveBackgroundEvents: undefined,
   recurrenceExpansionLimit: undefined,
   dayViewProps: undefined,
@@ -142,6 +146,9 @@ const sharedProps = computed(() => ({
   renderResourceLabel: props.renderResourceLabel,
   withEventsDragAndDrop: isStatic.value ? false : props.withEventsDragAndDrop,
   canDragEvent: props.canDragEvent,
+  canDropEvent: props.canDropEvent,
+  canDropExternalEvent: props.canDropExternalEvent,
+  preventEventOverlap: props.preventEventOverlap,
   withDragSlotSelect: props.withDragSlotSelect,
   recurrenceExpansionLimit: props.recurrenceExpansionLimit,
   withInteractiveBackgroundEvents: isStatic.value ? false : props.withInteractiveBackgroundEvents,
@@ -153,6 +160,7 @@ const sharedProps = computed(() => ({
   onEventClick: (event: any, nativeEvent: MouseEvent) => emit('eventClick', event, nativeEvent),
   onSlotDragEnd: (data: any) => emit('slotDragEnd', data),
   onExternalEventDrop: (data: any) => emit('externalEventDrop', data),
+  onEventPlacementRejected: (data: any) => emit('eventPlacementRejected', data),
   ...eventRenderers.value,
   ...stylesApi.value,
 }))
@@ -161,6 +169,7 @@ const timeViewProps = computed(() => ({
   onTimeSlotClick: (data: any) => emit('timeSlotClick', data),
   withEventResize: isStatic.value ? false : props.withEventResize,
   canResizeEvent: props.canResizeEvent,
+  canResizeEventTo: props.canResizeEventTo,
   onEventResize: (data: any) => emit('eventResize', data),
 }))
 

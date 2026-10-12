@@ -10,7 +10,12 @@ import type {
   DateLabelFormat,
   DateStringValue,
   DateTimeStringValue,
+  PreventEventOverlap,
+  ScheduleCanDropEventData,
+  ScheduleCanDropExternalEventData,
+  ScheduleCanResizeEventToData,
   ScheduleEventData,
+  ScheduleEventPlacementRejectedData,
   ScheduleMode,
   ScheduleViewLevel,
 } from './types'
@@ -231,6 +236,15 @@ export interface TimeViewOwnProps extends BaseViewOwnProps {
    */
   canDragEvent?: (event: ScheduleEventData) => boolean
 
+  /** Returns false to reject a candidate internal event drop. */
+  canDropEvent?: (data: ScheduleCanDropEventData) => boolean
+
+  /** Returns false to reject a candidate external drop. */
+  canDropExternalEvent?: (data: ScheduleCanDropExternalEventData) => boolean
+
+  /** Rejects drops that overlap other events. */
+  preventEventOverlap?: PreventEventOverlap
+
   /**
    * If set, dragging across time slots selects a range.
    * @default false
@@ -258,6 +272,9 @@ export interface TimeViewOwnProps extends BaseViewOwnProps {
    * @default () => true
    */
   canResizeEvent?: (event: ScheduleEventData) => boolean
+
+  /** Returns false to reject a candidate resize. */
+  canResizeEventTo?: (data: ScheduleCanResizeEventToData) => boolean
 }
 
 /**
@@ -303,6 +320,9 @@ export interface TimeViewEmits extends BaseViewEmits {
 
   /** Emitted when an event is resized. */
   eventResize: [data: EventDropData]
+
+  /** Emitted when a drop or resize is rejected. */
+  eventPlacementRejected: [data: ScheduleEventPlacementRejectedData]
 }
 
 /** Scoped slots that mirror the `renderEvent` and `renderEventBody` props. */

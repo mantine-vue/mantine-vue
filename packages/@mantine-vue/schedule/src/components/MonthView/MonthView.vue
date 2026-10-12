@@ -86,6 +86,7 @@ import {
   scheduleViewportProps,
   useStaticStyles,
 } from '../shared'
+import { isEventPlacementAllowed } from '../../utils'
 import { useSlotDragSelect } from '../use-slot-drag-select'
 import { getMonthViewEvents } from './get-month-view-events/get-month-view-events'
 import { getRenderableMonthEventSegments } from './get-renderable-month-event-segments'
@@ -175,6 +176,7 @@ const eventRenderers = computed(() => resolveEventRenderers(props, slots))
 const monthGrid = ref<HTMLElement | null>(null)
 
 const dropTarget = shallowRef<DateStringValue | null>(null)
+const dropValid = ref(true)
 
 const isStatic = computed(() => props.mode === 'static')
 
@@ -346,7 +348,26 @@ const handleDragOver = (nativeEvent: DragEvent, date: string | Date) => {
       : 'copy'
   }
 
-  highlightDay(toDateString(date))
+  const target = toDateString(date)
+  const dragged = dragState.draggedEvent.value
+  if (dragged) {
+    const next = moveEventTo(dragged, target)
+    const validation = isEventPlacementAllowed({
+      event: dragged,
+      start: next.newStart,
+      end: next.newEnd,
+      events: expandedEvents.value,
+      preventEventOverlap: props.preventEventOverlap,
+    })
+    dropValid.value =
+      validation.allowed &&
+      props.canDropEvent?.({ event: dragged, start: next.newStart, end: next.newEnd }) !== false
+  } else if (nativeEvent.dataTransfer) {
+    const start = `${target} 00:00:00` as DateTimeStringValue
+    dropValid.value =
+      props.canDropExternalEvent?.({ dataTransfer: nativeEvent.dataTransfer, start }) !== false
+  }
+  highlightDay(target)
 }
 
 const handleDragLeave = (nativeEvent: DragEvent) => {
@@ -364,6 +385,7 @@ const handleDrop = (nativeEvent: DragEvent, date: string | Date) => {
   // Drop the pending frame first, so a stale highlight cannot land after the drop.
   highlightDay.cancel()
   setDropTarget(null)
+  dropValid.value = true
   const event = getDropEvent(expandedEvents.value, nativeEvent.dataTransfer)
 
   if (event) {
@@ -371,9 +393,40 @@ const handleDrop = (nativeEvent: DragEvent, date: string | Date) => {
       draggedEvent: event,
       targetDay: toDateString(date),
     })
-    emit('eventDrop', moveEventTo(event, start))
+    const next = moveEventTo(event, start)
+    const validation = isEventPlacementAllowed({
+      event,
+      start: next.newStart,
+      end: next.newEnd,
+      events: expandedEvents.value,
+      preventEventOverlap: props.preventEventOverlap,
+    })
+    if (
+      validation.allowed &&
+      props.canDropEvent?.({ event, start: next.newStart, end: next.newEnd }) !== false
+    )
+      emit('eventDrop', next)
+    else
+      emit('eventPlacementRejected', {
+        action: 'drop',
+        event,
+        start: next.newStart,
+        end: next.newEnd,
+        conflicts: validation.conflicts,
+        reason: validation.allowed ? 'rejected' : 'overlap',
+      })
   } else if (nativeEvent.dataTransfer) {
-    emit('externalEventDrop', nativeEvent.dataTransfer, toDateString(date))
+    const start = `${toDateString(date)} 00:00:00` as DateTimeStringValue
+    if (props.canDropExternalEvent?.({ dataTransfer: nativeEvent.dataTransfer, start }) !== false)
+      emit('externalEventDrop', nativeEvent.dataTransfer, toDateString(date))
+    else
+      emit('eventPlacementRejected', {
+        action: 'external-drop',
+        dataTransfer: nativeEvent.dataTransfer,
+        start,
+        conflicts: [],
+        reason: 'rejected',
+      })
   }
 }
 
@@ -463,6 +516,7 @@ const isDraggableEvent = (event: ScheduleEventData) =>
             :data-weekend="props.weekendDays!.includes(dayjs(date).day() as DayOfWeek) || undefined"
             :data-static="isStatic || undefined"
             :data-drop-target="dropTarget === toDateString(date) || undefined"
+            :data-invalid="(dropTarget === toDateString(date) && !dropValid) || undefined"
             :data-drag-selected="
               slotDragSelect.isSlotSelected(weekIndex * COLUMNS + dayIndex, MONTH_SLOT_GROUP) ||
               undefined

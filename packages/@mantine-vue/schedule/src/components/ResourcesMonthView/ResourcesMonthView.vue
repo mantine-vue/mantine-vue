@@ -78,6 +78,7 @@ import {
   getGroupToResourceIdMap,
   getOrderedResources,
   handleResourcesGridKeyDown,
+  isEventPlacementAllowed,
   type ResourceGroupInfo,
   type ResourcesGridControls,
 } from '../../utils'
@@ -94,6 +95,7 @@ import {
   useStaticStyles,
 } from '../shared'
 import { useSlotDragSelect } from '../use-slot-drag-select'
+import { validateEventResize } from '../../hooks/validate-event-resize'
 import {
   getResourcesMonthViewLayout,
   isMultiDayEvent,
@@ -195,6 +197,7 @@ const setRootElement = (node: Element | null) => {
 }
 
 const dropTarget = shallowRef<{ resourceId: string | number; dayIndex: number } | null>(null)
+const dropValid = ref(true)
 
 const isStatic = computed(() => props.mode === 'static')
 
@@ -234,6 +237,7 @@ type ResizeState = {
   dayIndex: number
 }
 const resizeState = shallowRef<ResizeState | null>(null)
+const resizeValid = ref(true)
 let justResized = false
 
 const effectiveEvents = computed(() => {
@@ -362,20 +366,60 @@ const emitDrop = (nativeEvent: DragEvent, resourceId: string | number, dayIndex:
 
   if (dragged) {
     const next = calculateMonthDropDate({ draggedEvent: dragged, targetDay: day })
-
-    emit('eventDrop', {
-      eventId: dragged.id,
-      newStart: dayjs(next.start).format('YYYY-MM-DD HH:mm:ss') as DateTimeStringValue,
-      newEnd: dayjs(next.end).format('YYYY-MM-DD HH:mm:ss') as DateTimeStringValue,
+    const start = dayjs(next.start).format('YYYY-MM-DD HH:mm:ss') as DateTimeStringValue
+    const end = dayjs(next.end).format('YYYY-MM-DD HH:mm:ss') as DateTimeStringValue
+    const validation = isEventPlacementAllowed({
       event: dragged,
+      start,
+      end,
+      events: expandedEvents.value,
+      preventEventOverlap: props.preventEventOverlap,
       resourceId,
     })
+    if (
+      validation.allowed &&
+      props.canDropEvent?.({ event: dragged, start, end, resourceId }) !== false
+    )
+      emit('eventDrop', {
+        eventId: dragged.id,
+        newStart: start,
+        newEnd: end,
+        event: dragged,
+        resourceId,
+      })
+    else
+      emit('eventPlacementRejected', {
+        action: 'drop',
+        event: dragged,
+        start,
+        end,
+        resourceId,
+        conflicts: validation.conflicts,
+        reason: validation.allowed ? 'rejected' : 'overlap',
+      })
   } else if (nativeEvent.dataTransfer) {
-    emit('externalEventDrop', {
-      dataTransfer: nativeEvent.dataTransfer,
-      dropDateTime: `${day} 00:00:00` as DateTimeStringValue,
-      resourceId,
-    })
+    const start = `${day} 00:00:00` as DateTimeStringValue
+    if (
+      props.canDropExternalEvent?.({
+        dataTransfer: nativeEvent.dataTransfer,
+        start,
+        resourceId,
+      }) !== false
+    )
+      emit('externalEventDrop', {
+        dataTransfer: nativeEvent.dataTransfer,
+        dropDateTime: start,
+        resourceId,
+      })
+    else
+      emit('eventPlacementRejected', {
+        action: 'external-drop',
+        dataTransfer: nativeEvent.dataTransfer,
+        start,
+        resourceId,
+        conflicts: [],
+        reason: 'rejected',
+      })
   }
 }
 
@@ -406,6 +450,32 @@ const setDropTarget = (next: { resourceId: string | number; dayIndex: number } |
 const resolveDropTarget = rafThrottle(
   (nativeEvent: DragEvent, resourceId: string | number, resourceIndex: number) => {
     const dayIndex = indexAtPoint(nativeEvent, resourceIndex)
+    const day = days.value[dayIndex]
+    const dragged = dragState.draggedEvent.value
+    if (day && dragged) {
+      const next = calculateMonthDropDate({ draggedEvent: dragged, targetDay: day })
+      const start = dayjs(next.start).format('YYYY-MM-DD HH:mm:ss') as DateTimeStringValue
+      const end = dayjs(next.end).format('YYYY-MM-DD HH:mm:ss') as DateTimeStringValue
+      const validation = isEventPlacementAllowed({
+        event: dragged,
+        start,
+        end,
+        events: expandedEvents.value,
+        preventEventOverlap: props.preventEventOverlap,
+        resourceId,
+      })
+      dropValid.value =
+        validation.allowed &&
+        props.canDropEvent?.({ event: dragged, start, end, resourceId }) !== false
+    } else if (day && nativeEvent.dataTransfer) {
+      const start = `${day} 00:00:00` as DateTimeStringValue
+      dropValid.value =
+        props.canDropExternalEvent?.({
+          dataTransfer: nativeEvent.dataTransfer,
+          start,
+          resourceId,
+        }) !== false
+    }
     setDropTarget(dayIndex < 0 ? null : { resourceId, dayIndex })
   },
 )
@@ -594,6 +664,16 @@ const handleResizeMove = (event: PointerEvent) => {
     ...calculateResizeDates(state.event, state.edge, days.value[dayIndex]),
     dayIndex,
   }
+  resizeValid.value = validateEventResize({
+    event: state.event,
+    start: resizeState.value.start,
+    end: resizeState.value.end,
+    edge: state.edge,
+    events: expandedEvents.value,
+    preventEventOverlap: props.preventEventOverlap,
+    canResizeEventTo: props.canResizeEventTo,
+    resourceId: state.event.resourceId,
+  }).valid
 }
 
 const stopResizeListeners = () => {
@@ -611,12 +691,33 @@ const finishResize = (emitChange: boolean) => {
     state &&
     (state.start !== state.originalStart || state.end !== state.originalEnd)
   ) {
-    emit('eventResize', {
-      eventId: state.event.id,
-      newStart: state.start,
-      newEnd: state.end,
+    const validation = validateEventResize({
       event: state.event,
+      start: state.start,
+      end: state.end,
+      edge: state.edge,
+      events: expandedEvents.value,
+      preventEventOverlap: props.preventEventOverlap,
+      canResizeEventTo: props.canResizeEventTo,
+      resourceId: state.event.resourceId,
     })
+    if (validation.valid)
+      emit('eventResize', {
+        eventId: state.event.id,
+        newStart: state.start,
+        newEnd: state.end,
+        event: state.event,
+      })
+    else
+      emit('eventPlacementRejected', {
+        action: 'resize',
+        event: state.event,
+        start: state.start,
+        end: state.end,
+        edge: state.edge,
+        conflicts: validation.conflicts,
+        reason: validation.reason!,
+      })
   }
   justResized = true
   requestAnimationFrame(() => (justResized = false))
@@ -649,6 +750,7 @@ const handleResizeStart = (
     end,
     dayIndex: -1,
   }
+  resizeValid.value = true
   document.addEventListener('pointermove', handleResizeMove)
   document.addEventListener('pointerup', handleResizeEnd)
   document.addEventListener('pointercancel', handleResizeCancel)
@@ -824,6 +926,7 @@ const changeView = (view: ScheduleViewLevel) => emit('viewChange', view)
                   :mode="props.mode"
                   :draggable="isDraggableEvent(entry.event)"
                   :is-resizing="isResizingEvent(entry.event)"
+                  :mod="{ invalid: isResizingEvent(entry.event) && !resizeValid }"
                   style="width: 100%; height: 100%"
                   v-bind="{ ...eventRenderers, ...stylesApi }"
                   @event-drag-start="dragStart"
@@ -866,6 +969,7 @@ const changeView = (view: ScheduleViewLevel) => emit('viewChange', view)
                   :mode="props.mode"
                   :draggable="isDraggableEvent(segment.event)"
                   :is-resizing="isResizingEvent(segment.event)"
+                  :mod="{ invalid: isResizingEvent(segment.event) && !resizeValid }"
                   style="width: 100%; height: 100%"
                   v-bind="{ ...eventRenderers, ...stylesApi }"
                   @event-drag-start="dragStart"
@@ -933,6 +1037,12 @@ const changeView = (view: ScheduleViewLevel) => emit('viewChange', view)
                 "
                 :data-drop-target="
                   (dropTarget?.resourceId === resource.id && dropTarget.dayIndex === dayIndex) ||
+                  undefined
+                "
+                :data-invalid="
+                  (dropTarget?.resourceId === resource.id &&
+                    dropTarget.dayIndex === dayIndex &&
+                    !dropValid) ||
                   undefined
                 "
                 :data-drag-selected="

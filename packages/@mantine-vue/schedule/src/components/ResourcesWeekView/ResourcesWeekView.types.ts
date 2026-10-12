@@ -16,6 +16,11 @@ import type {
   DateStringValue,
   DayOfWeek,
   ScheduleEventData,
+  ScheduleCanDropEventData,
+  ScheduleCanDropExternalEventData,
+  ScheduleCanResizeEventToData,
+  ScheduleEventPlacementRejectedData,
+  PreventEventOverlap,
   ScheduleMode,
   ScheduleResourceData,
   ScheduleResourceGroup,
@@ -351,6 +356,10 @@ export interface ResourcesWeekViewOwnProps extends StylesApiProps<ResourcesWeekV
    * @default () => true
    */
   canResizeEvent?: (event: ScheduleEventData) => boolean
+  canDropEvent?: (data: ScheduleCanDropEventData) => boolean
+  canDropExternalEvent?: (data: ScheduleCanDropExternalEventData) => boolean
+  canResizeEventTo?: (data: ScheduleCanResizeEventToData) => boolean
+  preventEventOverlap?: PreventEventOverlap
 
   /**
    * Maximum number of instances generated per recurring series.
@@ -431,6 +440,7 @@ export interface ResourcesWeekViewEmits {
 
   /** Emitted when an event is resized. */
   eventResize: [data: EventDropData]
+  eventPlacementRejected: [data: ScheduleEventPlacementRejectedData]
 }
 
 export type ResourcesWeekViewFactory = Factory<{

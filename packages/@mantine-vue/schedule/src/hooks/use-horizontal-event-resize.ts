@@ -1,9 +1,15 @@
 import dayjs from 'dayjs'
-import { onBeforeUnmount, shallowRef } from 'vue'
+import { onBeforeUnmount, ref, shallowRef } from 'vue'
 import { rafThrottle } from '../components/shared'
 import type { EventDropData } from '../component-props'
 import type { DateTimeStringValue, ScheduleEventData, ScheduleMode } from '../types'
 import { clampIntervalMinutes, parseTimeString } from '../utils'
+import type {
+  PreventEventOverlap,
+  ScheduleCanResizeEventToData,
+  ScheduleEventPlacementRejectedData,
+} from '../types'
+import { validateEventResize } from './validate-event-resize'
 
 type ResizeEdge = 'start' | 'end'
 
@@ -32,8 +38,13 @@ export function useHorizontalEventResize(input: {
   onEventResize: (data: EventDropData) => void
   canResizeEvent: () => ((event: ScheduleEventData) => boolean) | undefined
   withBackgroundEvents?: () => boolean
+  events?: () => ScheduleEventData[]
+  preventEventOverlap?: () => PreventEventOverlap | undefined
+  canResizeEventTo?: () => ((data: ScheduleCanResizeEventToData) => boolean) | undefined
+  onEventPlacementRejected?: (data: ScheduleEventPlacementRejectedData) => void
 }) {
   const state = shallowRef<ResizeState | null>(null)
+  const resizeValid = ref(true)
   let justResized = false
   let savedUserSelect = ''
 
@@ -81,6 +92,24 @@ export function useHorizontalEventResize(input: {
       current.currentWidth = right - current.currentLeft
     }
     state.value = { ...current }
+    const start =
+      current.edge === 'start'
+        ? toDateTime(current.currentLeft, current.eventDate)
+        : current.originalStart
+    const end =
+      current.edge === 'end'
+        ? toDateTime(current.currentLeft + current.currentWidth, current.eventDate)
+        : current.originalEnd
+    resizeValid.value = validateEventResize({
+      event: current.event,
+      start,
+      end,
+      edge: current.edge,
+      events: input.events?.() ?? [],
+      preventEventOverlap: input.preventEventOverlap?.(),
+      canResizeEventTo: input.canResizeEventTo?.(),
+      resourceId: current.event.resourceId,
+    }).valid
   })
   const trackPointer = (event: PointerEvent) => move(event.clientX)
   const cleanup = () => {
@@ -98,20 +127,44 @@ export function useHorizontalEventResize(input: {
       (current.currentLeft !== current.originalLeft ||
         current.currentWidth !== current.originalWidth)
     ) {
-      input.onEventResize({
-        eventId: current.event.id,
-        newStart:
-          current.edge === 'start'
-            ? toDateTime(current.currentLeft, current.eventDate)
-            : current.originalStart,
-        newEnd:
-          current.edge === 'end'
-            ? toDateTime(current.currentLeft + current.currentWidth, current.eventDate)
-            : current.originalEnd,
+      const start =
+        current.edge === 'start'
+          ? toDateTime(current.currentLeft, current.eventDate)
+          : current.originalStart
+      const end =
+        current.edge === 'end'
+          ? toDateTime(current.currentLeft + current.currentWidth, current.eventDate)
+          : current.originalEnd
+      const validation = validateEventResize({
         event: current.event,
+        start,
+        end,
+        edge: current.edge,
+        events: input.events?.() ?? [],
+        preventEventOverlap: input.preventEventOverlap?.(),
+        canResizeEventTo: input.canResizeEventTo?.(),
+        resourceId: current.event.resourceId,
       })
+      if (validation.valid)
+        input.onEventResize({
+          eventId: current.event.id,
+          newStart: start,
+          newEnd: end,
+          event: current.event,
+        })
+      else
+        input.onEventPlacementRejected?.({
+          action: 'resize',
+          event: current.event,
+          start,
+          end,
+          edge: current.edge,
+          conflicts: validation.conflicts,
+          reason: validation.reason!,
+        })
     }
     state.value = null
+    resizeValid.value = true
     cleanup()
     justResized = true
     requestAnimationFrame(() => (justResized = false))
@@ -139,6 +192,7 @@ export function useHorizontalEventResize(input: {
       dayIndex: params.dayIndex ?? 0,
       dayCount: params.dayCount ?? 1,
     }
+    resizeValid.value = true
     savedUserSelect = document.body.style.userSelect
     document.body.style.userSelect = 'none'
     document.addEventListener('pointermove', trackPointer)
@@ -147,6 +201,7 @@ export function useHorizontalEventResize(input: {
   onBeforeUnmount(cleanup)
   return {
     state,
+    resizeValid,
     get resizingEdge() {
       return state.value?.edge ?? null
     },
