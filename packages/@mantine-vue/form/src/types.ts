@@ -1,4 +1,5 @@
 import type { ComputedRef, Ref } from 'vue'
+import type { formRootRule } from './validators'
 
 export type FormErrors = Record<string, any>
 export type FormStatus = Record<string, boolean>
@@ -12,12 +13,20 @@ export type FormRule<Value, Values> = (value: Value, values: Values, path: strin
 export type FormRulesRecord<Values> = {
   [K in keyof Values]?: Values[K] extends ReadonlyArray<infer ListValue>
     ?
-        | Partial<Record<keyof ListValue, FormRule<any, Values> | FormRulesRecord<any>>>
+        | (Partial<{
+            [ListKey in keyof ListValue]: ListValue[ListKey] extends ReadonlyArray<infer NestedItem>
+              ?
+                  | (Partial<{
+                      [NestedKey in keyof NestedItem]: FormRule<NestedItem[NestedKey], Values>
+                    }> & { [formRootRule]?: FormRule<ListValue[ListKey], Values> })
+                  | FormRule<ListValue[ListKey], Values>
+              : FormRulesRecord<ListValue[ListKey]> | FormRule<ListValue[ListKey], Values>
+          }> & { [formRootRule]?: FormRule<Values[K], Values> })
         | FormRule<Values[K], Values>
     : Values[K] extends Record<string, any>
       ? FormRulesRecord<Values[K]> | FormRule<Values[K], Values>
       : FormRule<Values[K], Values>
-} & Record<PropertyKey, any>
+} & { [formRootRule]?: FormRule<Values, Values> }
 
 export interface UseFormInput<Values extends Record<string, any>, TransformedValues = Values> {
   name?: string
