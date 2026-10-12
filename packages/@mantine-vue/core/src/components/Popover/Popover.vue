@@ -17,6 +17,8 @@ const defaults = {
   withRoles: true,
   returnFocus: false,
   keepMounted: false,
+  clickOutsideEvents: ['mousedown', 'touchstart'] as string[],
+  clickOutsideCapture: false,
   zIndex: getDefaultZIndex('popover'),
   floatingStrategy: 'absolute',
   transitionProps: { transition: 'fade', duration: 150 },
@@ -267,9 +269,10 @@ useClickOutside(
       emit('dismiss')
     }
   },
-  undefined,
+  () => props.clickOutsideEvents,
   () => [targetNode.value, dropdownNode.value],
   () => opened.value,
+  () => props.clickOutsideCapture,
 )
 
 const getStyles = useStyles({

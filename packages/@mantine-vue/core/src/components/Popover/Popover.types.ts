@@ -135,6 +135,12 @@ export interface PopoverProps {
    */
   closeOnClickOutside?: boolean
 
+  /** Events that trigger outside-click detection. @default ['mousedown', 'touchstart'] */
+  clickOutsideEvents?: string[]
+
+  /** If set, outside-click listeners are registered in the capture phase. @default false */
+  clickOutsideCapture?: boolean
+
   /**
    * If set, the dropdown closes when `Escape` is pressed inside it.
    *
