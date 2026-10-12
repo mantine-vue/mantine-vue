@@ -30,8 +30,43 @@ export const HoverCardTarget = defineComponent({
     }
     return () => {
       const child = one(slots)
-      const events = { onMouseenter: ctx.openDropdown, onMouseleave: ctx.closeDropdown }
+      const childProps = child.props as any
+      const events = {
+        onMouseenter: ctx.events.hover ? ctx.openDropdown : undefined,
+        onMouseleave: ctx.events.hover ? ctx.closeDropdown : undefined,
+        onFocus: ctx.events.focus
+          ? (event: FocusEvent) => {
+              if ((event.currentTarget as HTMLElement).matches(':focus-visible')) {
+                ctx.openDropdown()
+              }
+            }
+          : undefined,
+        onBlur: ctx.events.focus ? ctx.closeImmediately : undefined,
+        onTouchstart:
+          ctx.events.hover && ctx.events.touch
+            ? () => (ctx.opened ? ctx.closeImmediately() : ctx.openDropdown())
+            : undefined,
+        onKeydown: (event: KeyboardEvent) => {
+          if (event.key === 'Escape' && ctx.opened) {
+            ctx.dismiss()
+          }
+        },
+      }
       const targetRef = mergeRefs(assignTargetRef, (child as any).ref)
+      const accessibleProps = !ctx.withRoles
+        ? undefined
+        : ctx.role === 'tooltip'
+          ? {
+              'aria-describedby':
+                [childProps?.['aria-describedby'], ctx.opened ? ctx.dropdownId : undefined]
+                  .filter(Boolean)
+                  .join(' ') || undefined,
+            }
+          : {
+              'aria-haspopup': 'dialog',
+              'aria-expanded': ctx.opened,
+              'aria-controls': ctx.dropdownId,
+            }
       const cloned = cloneVNode(
         child,
         props.eventPropsWrapperName
@@ -42,8 +77,8 @@ export const HoverCardTarget = defineComponent({
                 ...events,
               },
             }
-          : { ref: targetRef, ...events },
-        false,
+          : { ref: targetRef, ...events, ...accessibleProps },
+        true,
       )
       return h(PopoverTarget, { ...attrs, refProp: props.refProp }, () => cloned)
     }

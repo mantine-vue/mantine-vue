@@ -3,7 +3,12 @@ export { HoverCardTarget } from './HoverCardTarget/HoverCardTarget'
 export { HoverCardDropdown } from './HoverCardDropdown/HoverCardDropdown'
 export { HoverCardGroup } from './HoverCardGroup/HoverCardGroup'
 export { useHoverCardContext } from './HoverCard.context'
-export type { HoverCardOwnProps, HoverCardProps, HoverCardSlots } from './HoverCard'
+export type {
+  HoverCardEvents,
+  HoverCardOwnProps,
+  HoverCardProps,
+  HoverCardSlots,
+} from './HoverCard'
 export type { HoverCardTargetProps } from './HoverCardTarget/HoverCardTarget'
 export type {
   HoverCardDropdownProps,

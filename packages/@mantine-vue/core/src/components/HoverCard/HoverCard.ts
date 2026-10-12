@@ -10,4 +10,9 @@ export const HoverCard = Object.assign(HoverCardComponent, {
   Group: HoverCardGroup,
 })
 
-export type { HoverCardOwnProps, HoverCardProps, HoverCardSlots } from './HoverCard.types'
+export type {
+  HoverCardEvents,
+  HoverCardOwnProps,
+  HoverCardProps,
+  HoverCardSlots,
+} from './HoverCard.types'
