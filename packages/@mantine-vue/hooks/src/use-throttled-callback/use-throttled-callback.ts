@@ -9,7 +9,13 @@ export function useThrottledCallbackWithClearTimeout<T extends (...args: any[]) 
   let active = true
   let timeoutId = -1
 
-  const clear = () => window.clearTimeout(timeoutId)
+  const clear = () => {
+    window.clearTimeout(timeoutId)
+    timeoutId = -1
+    active = true
+    latestInArgs = null
+    latestOutArgs = null
+  }
 
   const callThrottledCallback = (...args: Parameters<T>) => {
     callback(...args)
