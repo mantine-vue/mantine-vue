@@ -112,6 +112,36 @@ are positioned relative to each other. It accepts `alt` and `default` values:
 - `alt` - `AppShell.Navbar`/`AppShell.Aside` extends the full viewport height, while `AppShell.Header`/`AppShell.Footer` width equals the viewport width minus the width of `AppShell.Navbar` and `AppShell.Aside` ([example](/app-shell?e=AltLayout))
 - `default` - `AppShell.Navbar`/`AppShell.Aside` height equals the viewport height minus `AppShell.Header`/`AppShell.Footer` height, and `AppShell.Header`/`AppShell.Footer` spans the full viewport width ([example](/app-shell?e=FullLayout))
 
+## Resizable sections
+
+<ExamplesButton link="/app-shell?e=ResizableAppShell" label="Open resizable AppShell example" />
+
+Use the `useAppShellResize` composable and pass its result to the `resize` prop to let users resize
+the navbar, aside, header, or footer. Every configured section receives an accessible separator
+handle that supports pointer dragging, arrow keys, Home, End, Escape, and double click to reset.
+
+```vue
+<script setup lang="ts">
+import { AppShell, useAppShellResize } from '@mantine-vue/core'
+
+const resize = useAppShellResize({
+  navbar: { min: 180, max: 480, collapseThreshold: 120, label: 'Resize navigation' },
+  initialSizes: { navbar: 280 },
+})
+</script>
+
+<template>
+  <AppShell :navbar="{ width: 280, breakpoint: 'sm' }" :resize="resize">
+    <AppShell.Navbar>Resizable navigation</AppShell.Navbar>
+    <AppShell.Main>Main content</AppShell.Main>
+  </AppShell>
+</template>
+```
+
+Use `resize.navbar.setSize(value)` and `resize.navbar.reset()` to update a section
+programmatically. The `onResize`, `onResizeEnd`, and `onCollapseChange` options can be used to
+persist the layout.
+
 ## Height configuration
 
 The `height` property in `header` and `footer` configuration objects works as follows:

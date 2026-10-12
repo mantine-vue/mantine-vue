@@ -43,6 +43,51 @@ export interface AppShellCompoundProps {
   zIndex?: string | number
 }
 
+export type AppShellResizeSection = 'navbar' | 'aside' | 'header' | 'footer'
+export type AppShellResizeSizes = Partial<Record<AppShellResizeSection, number>>
+
+export interface AppShellResizeSectionOptions {
+  min?: number
+  max?: number
+  collapseThreshold?: number
+  label?: string
+}
+
+export interface AppShellResizeSectionController {
+  enabled: boolean
+  size: number | undefined
+  active: boolean
+  setSize: (size: number) => void
+  reset: () => void
+}
+
+export interface AppShellResizeController {
+  navbar: AppShellResizeSectionController
+  aside: AppShellResizeSectionController
+  header: AppShellResizeSectionController
+  footer: AppShellResizeSectionController
+  sizes: AppShellResizeSizes
+  resetAll: () => void
+  options: Partial<Record<AppShellResizeSection, AppShellResizeSectionOptions>>
+  activeSection: AppShellResizeSection | null
+  startResize: (section: AppShellResizeSection) => void
+  previewResize: (section: AppShellResizeSection, size: number) => void
+  endResize: (section: AppShellResizeSection, size: number | null) => void
+  initCollapse: (section: AppShellResizeSection, collapsed: boolean) => void
+  reportCollapse: (section: AppShellResizeSection, collapsed: boolean) => void
+}
+
+export interface UseAppShellResizeInput {
+  navbar?: AppShellResizeSectionOptions
+  aside?: AppShellResizeSectionOptions
+  header?: AppShellResizeSectionOptions
+  footer?: AppShellResizeSectionOptions
+  initialSizes?: AppShellResizeSizes
+  onResize?: (sizes: AppShellResizeSizes) => void
+  onResizeEnd?: (sizes: AppShellResizeSizes) => void
+  onCollapseChange?: (section: AppShellResizeSection, collapsed: boolean) => void
+}
+
 /** Slots of `AppShell`. */
 export interface AppShellSlots {
   /** `AppShell.Header`, `AppShell.Navbar`, `AppShell.Main` and the other sections. */
@@ -131,16 +176,30 @@ export interface AppShellOwnProps extends StylesApiProps<AppShellFactory> {
    */
   mode?: AppShellMode
 
+  /** `useAppShellResize` composable instance, enables resizing configured sections. */
+  resize?: AppShellResizeController
+
   /** Element modifiers transformed into `data-` attributes, for example, `{ 'data-size': 'xl' }`, falsy values are removed */
   mod?: BoxMod
 }
 
 export interface AppShellProps extends Omit<BoxProps, keyof AppShellOwnProps>, AppShellOwnProps {}
 
-export type AppShellStylesNames = 'root'
+export type AppShellStylesNames =
+  | 'root'
+  | 'navbar'
+  | 'main'
+  | 'header'
+  | 'footer'
+  | 'aside'
+  | 'section'
+  | 'resizeHandle'
 
 export type AppShellCssVariables = {
-  root: '--app-shell-transition-duration'
+  root:
+    | '--app-shell-transition-duration'
+    | '--app-shell-transition-timing-function'
+    | '--app-shell-resize-handle-size'
 }
 
 export type AppShellFactory = Factory<{

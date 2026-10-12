@@ -17,6 +17,7 @@ const varsResolver = createVarsResolver<any>(
     root: {
       '--app-shell-transition-duration': `${transitionDuration}ms`,
       '--app-shell-transition-timing-function': transitionTimingFunction,
+      '--app-shell-resize-handle-size': undefined,
     },
   }),
 )
@@ -26,6 +27,11 @@ const varsResolver = createVarsResolver<any>(
  * needs an id even when the consumer did not set one.
  */
 const appShellId = { current: 0 }
+
+function escapeCssId(value: string) {
+  if (typeof CSS !== 'undefined' && CSS.escape) return CSS.escape(value)
+  return value.replace(/([^a-zA-Z0-9_-])/g, '\\$1')
+}
 
 export { appShellId, defaults, varsResolver }
 </script>
@@ -78,7 +84,26 @@ const getStyles = useStyles({
 const resizing = useResizing({
   transitionDuration: () => props.transitionDuration,
   disabled: () => props.disabled,
+  resizeKey: () =>
+    props.resize
+      ? ['navbar', 'aside', 'header', 'footer']
+          .map((section) => props.resize.sizes[section])
+          .join('|')
+      : undefined,
 })
+
+const rootElement = ref<Element | null>(null)
+
+const resizeOffsets = {
+  navbar: true,
+  aside: true,
+  get header() {
+    return props.mode === 'static' || (props.header?.offset ?? true)
+  },
+  get footer() {
+    return props.mode === 'static' || (props.footer?.offset ?? true)
+  },
+}
 
 provideAppShellContext({
   getStyles,
@@ -97,13 +122,18 @@ provideAppShellContext({
   get mode() {
     return props.mode
   },
+  get resize() {
+    return props.resize
+  },
+  rootRef: rootElement,
+  resizeOffsets,
 } as any)
 
 const rootStyles = computed(() => getStyles('root', { className: attrs.class, style: attrs.style }))
 
 const rootMod = computed(() => [
   {
-    resizing: resizing.value,
+    resizing: resizing.value || props.resize?.activeSection != null,
     layout: props.layout,
     disabled: props.disabled,
     mode: props.mode,
@@ -112,9 +142,23 @@ const rootMod = computed(() => [
 ])
 
 /** `fixed` shells share one global stylesheet; `static` ones are scoped to the root. */
-const mediaSelector = computed(() => (props.mode === 'static' ? `#${id}` : undefined))
+const mediaSelector = computed(() =>
+  props.resize || props.mode === 'static' ? `#${escapeCssId(id)}` : undefined,
+)
 
-const rootElement = ref<Element | null>(null)
+const resizeVariables = computed(() =>
+  props.resize
+    ? {
+        sizes: props.resize.sizes,
+        enabled: {
+          navbar: props.resize.navbar.enabled,
+          aside: props.resize.aside.enabled,
+          header: props.resize.header.enabled,
+          footer: props.resize.footer.enabled,
+        },
+      }
+    : undefined,
+)
 
 const setRootRef = (node: Element | null) => {
   rootElement.value = node
@@ -134,6 +178,7 @@ defineExpose({ rootElement })
       :padding="props.padding"
       :mode="props.mode"
       :selector="mediaSelector"
+      :resize="resizeVariables"
     />
     <slot />
   </Box>

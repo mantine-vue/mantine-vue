@@ -2,6 +2,7 @@ import { onBeforeUnmount, onMounted, ref, watch, type MaybeRefOrGetter } from 'v
 export function useResizing(input: {
   transitionDuration: MaybeRefOrGetter<number>
   disabled: MaybeRefOrGetter<boolean>
+  resizeKey?: MaybeRefOrGetter<string | undefined>
 }) {
   const resizing = ref(true)
   let timer: ReturnType<typeof setTimeout>
@@ -22,6 +23,7 @@ export function useResizing(input: {
           ? input.transitionDuration()
           : input.transitionDuration,
       () => (typeof input.disabled === 'function' ? input.disabled() : input.disabled),
+      () => (typeof input.resizeKey === 'function' ? input.resizeKey() : input.resizeKey),
     ],
     () =>
       stop(

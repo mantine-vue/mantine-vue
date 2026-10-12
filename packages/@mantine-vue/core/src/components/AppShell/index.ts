@@ -18,6 +18,8 @@ export type {
   AppShellSectionSlots,
 } from './AppShellSection/AppShellSection'
 export { useAppShellContext } from './AppShell.context'
+export { useAppShellResize } from './use-app-shell-resize/use-app-shell-resize'
+export type { UseAppShellResizeOptions } from './use-app-shell-resize/use-app-shell-resize'
 export type { AppShellContextValue } from './AppShell.context'
 export type * from './AppShell.types'
 export { getVariables as getAppShellVariables } from './AppShellMediaStyles/get-variables'
