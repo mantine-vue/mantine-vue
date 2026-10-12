@@ -24,6 +24,7 @@ import { useId, useUncontrolled } from '@mantine-vue/hooks'
 import { omitAttrs, useProps, useStyles } from '../../core'
 import { ActionIcon } from '../ActionIcon'
 import { Input } from '../Input'
+import PasswordInputField from './PasswordInputField.vue'
 import { PasswordToggleIcon } from './PasswordToggleIcon'
 import type { PasswordInputOwnProps, PasswordInputSlots } from './PasswordInput.types'
 
@@ -100,23 +101,6 @@ function toggleVisibility() {
 }
 
 const id = computed(() => uuid.value || fallbackId.value)
-const errorId = computed(() => props.errorProps?.id || `${id.value}-error`)
-const descriptionId = computed(() => props.descriptionProps?.id || `${id.value}-description`)
-
-const hasError = computed(() =>
-  props.error !== undefined
-    ? Boolean(props.error) && typeof props.error !== 'boolean'
-    : Boolean(slots.error),
-)
-const hasDescription = computed(() =>
-  props.description !== undefined ? props.description !== null : Boolean(slots.description),
-)
-const describedBy = computed(
-  () =>
-    `${hasError.value ? errorId.value : ''} ${hasDescription.value ? descriptionId.value : ''}`.trim() ||
-    undefined,
-)
-
 /** Stable functional component: the icon may come from a slot, a prop or the default. */
 const renderVisibilityToggleIcon = () => {
   if (slots.visibilityToggleIcon) {
@@ -209,8 +193,8 @@ const innerInputAttrs = computed(() => omitAttrs(attrs, ['onInput']))
     :required="props.required"
     :with-asterisk="props.withAsterisk"
     :label-props="{ ...props.labelProps, htmlFor: id }"
-    :description-props="{ ...props.descriptionProps, id: descriptionId }"
-    :error-props="{ ...props.errorProps, id: errorId }"
+    :description-props="props.descriptionProps"
+    :error-props="props.errorProps"
     :input-container="props.inputContainer"
     :input-wrapper-order="props.inputWrapperOrder"
     :size="props.size"
@@ -250,7 +234,7 @@ const innerInputAttrs = computed(() => omitAttrs(attrs, ['onInput']))
         :with-error-styles="props.withErrorStyles"
       >
         <template #default>
-          <input
+          <PasswordInputField
             v-bind="{ ...innerInputAttrs, ...getStyles('innerInput') }"
             :value="value"
             :required="props.required"
@@ -260,7 +244,6 @@ const innerInputAttrs = computed(() => omitAttrs(attrs, ['onInput']))
             "
             :disabled="props.disabled"
             :id="id"
-            :aria-describedby="describedBy"
             :autocomplete="(attrs.autocomplete as any) || 'off'"
             :type="visible ? 'text' : 'password'"
             @input="onInput"
