@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, h, ref, useAttrs, useSlots, type VNodeChild } from 'vue'
+import { computed, Fragment, h, ref, useAttrs, useSlots, type VNodeChild } from 'vue'
 import { Combobox, isExternalInputChange, useCombobox } from '../Combobox'
 import { InputBase } from '../InputBase'
 import { Pill } from '../Pill'
@@ -13,7 +13,11 @@ import {
   flattenVisible,
   leafValues,
 } from './tree-select-utils'
-import type { TreeSelectProps, TreeSelectSlots } from './TreeSelect.types'
+import type {
+  TreeSelectProps,
+  TreeSelectRenderPillPayload,
+  TreeSelectSlots,
+} from './TreeSelect.types'
 import classes from './TreeSelect.module.css'
 
 defineOptions({
@@ -131,7 +135,12 @@ const flat = computed(() => flattenVisible(filtered.value, renderExpandedSet.val
 
 const selectedArray = () => (Array.isArray(current()) ? (current() as string[]) : [])
 const remove = (value: string) => {
-  setValue(selectedArray().filter((item) => item !== value))
+  const node = nodes.value[value]
+  const affected =
+    props.mode === 'checkbox' && !props.checkStrictly
+      ? [value, ...allValues(node?.children ?? [])]
+      : [value]
+  setValue(selectedArray().filter((item) => !affected.includes(item)))
   emit('remove', value)
 }
 
@@ -294,19 +303,30 @@ const renderRoot = (): VNodeChild => {
                 ? multiValues
                 : multiValues.slice(0, props.maxDisplayedValues)
             const overflow = multiValues.length - displayed.length
+            const renderPill = slots.renderPill ?? props.renderPill
             return [
-              ...displayed.map((value) =>
-                h(
-                  Pill,
-                  {
-                    key: value,
-                    withRemoveButton: !readOnly && !nodes.value[value]?.nodeProps?.disabled,
-                    disabled,
-                    onRemove: () => remove(value),
-                  },
-                  () => String(nodes.value[value]?.label ?? value),
-                ),
-              ),
+              ...displayed.map((value) => {
+                const payload: TreeSelectRenderPillPayload = {
+                  node: nodes.value[value] ?? { value, label: value },
+                  value,
+                  onRemove: () => remove(value),
+                  disabled,
+                  readOnly,
+                }
+
+                return renderPill
+                  ? h(Fragment as any, { key: value }, [renderPill(payload)])
+                  : h(
+                      Pill,
+                      {
+                        key: value,
+                        withRemoveButton: !readOnly && !nodes.value[value]?.nodeProps?.disabled,
+                        disabled,
+                        onRemove: payload.onRemove,
+                      },
+                      () => String(nodes.value[value]?.label ?? value),
+                    )
+              }),
               overflow > 0
                 ? h(Pill, { key: 'overflow' }, () =>
                     typeof props.maxDisplayedValuesContent === 'function'
