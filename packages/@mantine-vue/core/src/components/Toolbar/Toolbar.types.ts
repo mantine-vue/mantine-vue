@@ -24,14 +24,23 @@ export type ToolbarCssVariables = {
     | '--toolbar-toggle-active-color'
 }
 export interface ToolbarOwnProps extends StylesApiProps<ToolbarFactory> {
+  /** Receives the root DOM node. */
   rootRef?: VueRefTarget<Element>
+  /** Toolbar orientation, `'horizontal'` by default */
   orientation?: 'horizontal' | 'vertical'
+  /** Whether arrow key navigation wraps from last to first item, `true` by default */
   loop?: boolean
+  /** Controls size of toggle components, padding, and gap, `'md'` by default */
   size?: MantineSize | (string & {})
+  /** Key of `theme.radius` or any valid CSS value to set `border-radius`, propagated to all children, `theme.defaultRadius` by default */
   radius?: MantineRadius
+  /** Determines whether the toolbar has a border, `true` by default */
   withBorder?: boolean
+  /** Key of `theme.colors` or any valid CSS color, controls color of child toggle components */
   color?: MantineColor
+  /** Determines whether icon color with filled variant should be changed based on the given `color` prop */
   autoContrast?: boolean
+  /** Controls visual representation of child toggle components. @default 'filled' */
   variant?: ToggleVariant
 }
 export interface ToolbarProps extends Omit<BoxProps, keyof ToolbarOwnProps>, ToolbarOwnProps {}

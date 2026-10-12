@@ -186,9 +186,13 @@ export interface ResourcesScheduleOwnProps extends StylesApiProps<ResourcesSched
    * @default () => true
    */
   canResizeEvent?: (event: ScheduleEventData) => boolean
+  /** Called while an event is dragged over a target to compute live feedback and again before the drop is committed, return `false` to reject the drop. Must be pure and cheap. */
   canDropEvent?: (data: ScheduleCanDropEventData) => boolean
+  /** Called while an external item is dragged over a target to compute live feedback and again before the drop is committed, return `false` to reject the drop. Must be pure and cheap. Only `dataTransfer.types` can be read while the drag is in progress. */
   canDropExternalEvent?: (data: ScheduleCanDropExternalEventData) => boolean
+  /** Called on every pointer move while an event is resized to compute live feedback and again before the resize is committed, return `false` to reject the new size. Must be pure and cheap. */
   canResizeEventTo?: (data: ScheduleCanResizeEventToData) => boolean
+  /** If set, drops and resizes that would make the event overlap another event are rejected. Pass a function to decide per pair of events: return `true` to forbid the overlap. The function runs while dragging and resizing to compute live feedback, it must be pure and cheap. @default false */
   preventEventOverlap?: PreventEventOverlap
 
   /** If set, background events can be focused and clicked in day and week views. */

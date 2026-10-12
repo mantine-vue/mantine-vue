@@ -22,16 +22,27 @@ export type ToggleCssVariables = {
 }
 
 export interface ToggleOwnProps extends StylesApiProps<ToggleFactory> {
+  /** Receives the root DOM node. The factory narrows this to the element the selected root renders. */
   rootRef?: VueRefTarget<Element>
+  /** Root element or Vue component rendered by the component. @default 'button' */
   component?: MantineElementType
+  /** Controlled active state */
   active?: boolean
+  /** Uncontrolled default active state */
   defaultActive?: boolean
+  /** If set, the toggle is disabled */
   disabled?: boolean
+  /** Controls toggle height and min-width, `'md'` by default */
   size?: MantineSize | (string & {})
+  /** Key of `theme.radius` or any valid CSS value to set `border-radius`, `theme.defaultRadius` by default */
   radius?: MantineRadius
+  /** If set, the toggle width adjusts to content instead of being square, `false` by default */
   autoWidth?: boolean
+  /** Key of `theme.colors` or any valid CSS color, `theme.primaryColor` by default */
   color?: MantineColor
+  /** Determines whether icon color with filled variant should be changed based on the given `color` prop */
   autoContrast?: boolean
+  /** Controls visual representation of the component. @default 'filled' */
   variant?: ToggleVariant
 }
 export interface ToggleProps extends Omit<BoxProps, keyof ToggleOwnProps>, ToggleOwnProps {}

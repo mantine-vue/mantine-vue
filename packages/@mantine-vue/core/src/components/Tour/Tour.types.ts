@@ -72,30 +72,55 @@ export type TourCssVariables = {
     | '--tour-color'
 }
 export interface TourOwnProps extends StylesApiProps<TourFactory> {
+  /** Receives the root DOM node. */
   rootRef?: VueRefTarget<Element>
+  /** Whether the tour is active @default false */
   active?: boolean
+  /** Controlled current step index */
   step?: number
+  /** Uncontrolled default step index @default 0 */
   defaultStep?: number
+  /** Tour mode @default "guided" */
   mode?: 'guided' | 'beacon'
+  /** Whether to display the overlay @default true */
   withOverlay?: boolean
+  /** Whether pointer events pass through the spotlight cutout to the target element, the rest of the overlay keeps blocking clicks @default false */
   withOverlayInteraction?: boolean
+  /** Whether to display the close button @default true */
   withCloseButton?: boolean
+  /** Whether keyboard navigation is enabled in guided mode @default true */
   withKeyboardNavigation?: boolean
+  /** Whether to scroll target elements into view @default true */
   withScrollIntoView?: boolean
+  /** Custom scroll handler */
   scrollToHandler?: (element: HTMLElement) => void
+  /** Padding around the spotlight cutout in px @default 8 */
   spotlightPadding?: number
+  /** Border radius of the spotlight cutout in px @default 4 */
   spotlightRadius?: number
+  /** Whether pressing Escape closes the tour @default true */
   closeOnEscape?: boolean
+  /** Whether clicking the overlay closes the tour, with `withOverlayInteraction` only clicks outside the spotlight cutout close it @default false */
   closeOnOverlayClick?: boolean
+  /** Labels for tour UI elements */
   labels?: Partial<TourLabels>
+  /** Whether to render inside a portal @default true */
   withinPortal?: boolean
+  /** Props passed to the Portal component */
   portalProps?: Record<string, any>
+  /** z-index of the tour @default 10000 */
   zIndex?: string | number
+  /** Transition props for the tooltip @default { duration: 200, transition: 'pop' } */
   transitionProps?: Partial<TransitionProps>
+  /** Duration of the tooltip position transition between steps in ms @default 300 */
   stepTransitionDuration?: number
+  /** Max width of the tooltip, tooltip always takes this width if viewport allows @default 360 */
   maxWidth?: number
+  /** Tour step overlay color @default "rgba(0, 0, 0, 0.5)" */
   overlayColor?: string
+  /** Key of `theme.colors` or any valid CSS color, controls beacon color and `Tour.Navigation` next button color @default theme.primaryColor */
   color?: MantineColor
+  /** Key of `theme.shadows` or any valid CSS box-shadow value, controls the tooltip shadow @default 'md' */
   tooltipShadow?: string
 }
 export interface TourProps extends Omit<BoxProps, keyof TourOwnProps>, TourOwnProps {}
