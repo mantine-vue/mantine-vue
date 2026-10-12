@@ -39,6 +39,7 @@
     "@tiptap/extension-color": ">=3.3.0",
     "@tiptap/extension-details": "3.27.1",
     "@tiptap/extension-highlight": ">=3.3.0",
+    "@tiptap/extension-image": "3.31.3",
     "@tiptap/extension-invisible-characters": "3.27.1",
     "@tiptap/extension-link": ">=3.3.0",
     "@tiptap/extension-list": ">=3.3.0",

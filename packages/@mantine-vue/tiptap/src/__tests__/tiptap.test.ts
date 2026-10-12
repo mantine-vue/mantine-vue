@@ -60,6 +60,7 @@ describe('@mantine-vue/tiptap', () => {
       'TableDelete',
       'Details',
       'InvisibleCharacters',
+      'ImageUpload',
     ] as const) {
       expect(RichTextEditor[key]).toBeTruthy()
     }
@@ -131,6 +132,24 @@ describe('@mantine-vue/tiptap', () => {
     const control = wrapper.get('button[aria-label="Bold"]')
     expect(control.attributes('disabled')).toBeDefined()
     expect(control.attributes('data-disabled')).toBeDefined()
+  })
+
+  it('renders the image upload control as interactive when the editor is usable', () => {
+    const editor = {
+      isDestroyed: false,
+      isEditable: true,
+    }
+    const wrapper = mount(MantineProvider, {
+      props: { env: 'test' },
+      slots: {
+        default: () =>
+          h(RichTextEditor, { editor: editor as any }, () => h(RichTextEditor.ImageUpload)),
+      },
+    })
+
+    const control = wrapper.get('button[aria-label="Upload image"]')
+    expect(control.attributes('data-interactive')).toBeDefined()
+    expect(control.attributes('data-disabled')).toBeUndefined()
   })
 
   it('updates controls when editor instance is provided after mount', async () => {

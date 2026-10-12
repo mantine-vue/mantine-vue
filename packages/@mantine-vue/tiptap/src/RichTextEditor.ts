@@ -10,6 +10,7 @@ import { RichTextEditorSourceCodeControl } from './RichTextEditorControl/RichTex
 import { RichTextEditorTableInsertControl } from './RichTextEditorControl/RichTextEditorTableInsertControl'
 import { RichTextEditorDetailsControl } from './RichTextEditorControl/RichTextEditorDetailsControl'
 import { RichTextEditorInvisibleCharactersControl } from './RichTextEditorControl/RichTextEditorInvisibleCharactersControl'
+import { RichTextEditorImageUploadControl } from './RichTextEditorControl/RichTextEditorImageUploadControl'
 import { RichTextEditorControlsGroup } from './RichTextEditorControlsGroup/RichTextEditorControlsGroup'
 import { RichTextEditorToolbar } from './RichTextEditorToolbar/RichTextEditorToolbar'
 import type { RichTextEditorFactory } from './RichTextEditor.types'
@@ -70,6 +71,7 @@ export const RichTextEditor = factory<RichTextEditorFactory>(RichTextEditorCompo
   TableSplitCell: controls.TableSplitCellControl,
   Details: RichTextEditorDetailsControl,
   InvisibleCharacters: RichTextEditorInvisibleCharactersControl,
+  ImageUpload: RichTextEditorImageUploadControl,
 })
 
 export type {

@@ -60,6 +60,7 @@ export interface RichTextEditorLabels {
   tableSplitCellControlLabel?: string
   detailsControlLabel?: string
   invisibleCharactersControlLabel?: string
+  imageUploadControlLabel?: string
 }
 
 export type ResolvedRichTextEditorLabels = Required<RichTextEditorLabels>
@@ -115,6 +116,7 @@ export const DEFAULT_LABELS: ResolvedRichTextEditorLabels = {
   tableSplitCellControlLabel: 'Split cell',
   detailsControlLabel: 'Toggle collapsible section',
   invisibleCharactersControlLabel: 'Toggle invisible characters',
+  imageUploadControlLabel: 'Upload image',
   linkEditorInputLabel: 'Enter URL',
   linkEditorInputPlaceholder: 'https://example.com/',
   linkEditorExternalLink: 'Open link in a new tab',

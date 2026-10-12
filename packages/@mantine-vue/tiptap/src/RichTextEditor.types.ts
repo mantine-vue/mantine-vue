@@ -2,6 +2,8 @@ import type { VNodeChild } from 'vue'
 import type { Editor } from '@tiptap/vue-3'
 import type { BoxProps, Factory, StylesApiProps } from '@mantine-vue/core'
 import type { RichTextEditorLabels } from './labels'
+import type { ImageUploadResult } from './extensions/UploadImage'
+import type { RichTextEditorImageUploadControl } from './RichTextEditorControl/RichTextEditorImageUploadControl'
 import type { RichTextEditorContent } from './RichTextEditorContent/RichTextEditorContent'
 import type { RichTextEditorControl } from './RichTextEditorControl/RichTextEditorControl'
 import type {
@@ -96,6 +98,8 @@ export interface RichTextEditorOwnProps extends StylesApiProps<RichTextEditorFac
 
   /** Visual variant. @default 'default' */
   variant?: RichTextEditorVariant
+  onImageUpload?: (file: File) => Promise<string | ImageUploadResult>
+  onImageUploadError?: (file: File, error: unknown) => void
 }
 
 export interface RichTextEditorProps
@@ -166,5 +170,6 @@ export type RichTextEditorFactory = Factory<{
     TableSplitCell: typeof TableSplitCellControl
     Details: typeof RichTextEditorDetailsControl
     InvisibleCharacters: typeof RichTextEditorInvisibleCharactersControl
+    ImageUpload: typeof RichTextEditorImageUploadControl
   }
 }>

@@ -4,6 +4,7 @@ import type { Editor } from '@tiptap/vue-3'
 import { Box, useProps, useStyles } from '@mantine-vue/core'
 import { DEFAULT_LABELS } from './labels'
 import type { RichTextEditorLabels } from './labels'
+import type { ImageUploadResult } from './extensions/UploadImage'
 import { provideRichTextEditorContext } from './RichTextEditor.context'
 import type {
   RichTextEditorFactory,
@@ -21,6 +22,8 @@ interface RichTextEditorRuntimeProps {
   onSourceCodeTextSwitch?: (isSourceCodeModeActive: boolean) => void
   labels?: Partial<RichTextEditorLabels>
   variant?: RichTextEditorVariant
+  onImageUpload?: (file: File) => Promise<string | ImageUploadResult>
+  onImageUploadError?: (file: File, error: unknown) => void
   classNames?: unknown
   styles?: unknown
   vars?: unknown
@@ -34,6 +37,8 @@ const rawProps = withDefaults(defineProps<RichTextEditorRuntimeProps>(), {
   onSourceCodeTextSwitch: undefined,
   labels: undefined,
   variant: 'default',
+  onImageUpload: undefined,
+  onImageUploadError: undefined,
   classNames: undefined,
   styles: undefined,
   vars: undefined,
@@ -85,6 +90,12 @@ provideRichTextEditorContext({
   },
   get variant() {
     return props.variant
+  },
+  get onImageUpload() {
+    return props.onImageUpload
+  },
+  get onImageUploadError() {
+    return props.onImageUploadError
   },
 })
 </script>

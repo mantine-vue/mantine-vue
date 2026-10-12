@@ -1,6 +1,7 @@
 import type { Editor } from '@tiptap/vue-3'
 import { createSafeContext } from '@mantine-vue/core'
 import type { ResolvedRichTextEditorLabels } from './labels'
+import type { ImageUploadResult } from './extensions/UploadImage'
 
 export interface RichTextEditorContextValue {
   getStyles: (
@@ -22,6 +23,8 @@ export interface RichTextEditorContextValue {
   unstyled: boolean | undefined
   variant: string | undefined
   onSourceCodeTextSwitch?: (isSourceCodeModeActive: boolean) => void
+  onImageUpload?: (file: File) => Promise<string | ImageUploadResult>
+  onImageUploadError?: (file: File, error: unknown) => void
 }
 
 export const [provideRichTextEditorContext, useRichTextEditorContext] =
