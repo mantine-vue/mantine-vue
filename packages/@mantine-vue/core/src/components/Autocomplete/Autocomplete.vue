@@ -11,6 +11,7 @@ import {
 } from '../Combobox'
 import { Combobox } from '../Combobox'
 import { InputBase } from '../InputBase'
+import { getComboboxLabelId } from '../Combobox/get-combobox-label-id'
 import type { AutocompleteOwnProps, AutocompleteSlots } from './Autocomplete.types'
 
 defineOptions({
@@ -164,7 +165,14 @@ function onClick(event: MouseEvent) {
   ;(attrs as any).onClick?.(event)
 }
 
-const labelId = computed(() => ((attrs as any).label ? `${id.value}-label` : undefined))
+const labelId = computed(() =>
+  getComboboxLabelId({
+    id: id.value,
+    label: (attrs as any).label || slots.label,
+    labelProps: (attrs as any).labelProps,
+    inputWrapperOrder: (attrs as any).inputWrapperOrder,
+  }),
+)
 </script>
 
 <template>
@@ -216,6 +224,7 @@ const labelId = computed(() => ((attrs as any).label ? `${id.value}-label` : und
       :with-scroll-area="props.withScrollArea"
       :max-dropdown-height="props.maxDropdownHeight"
       :label-id="labelId"
+      :aria-label="labelId ? undefined : (attrs as any)['aria-label']"
       :render-option="props.renderOption"
       :scroll-area-props="props.scrollAreaProps"
     >

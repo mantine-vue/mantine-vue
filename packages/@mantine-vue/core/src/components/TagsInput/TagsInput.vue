@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, h, nextTick, ref, useAttrs, useSlots, type VNodeChild } from 'vue'
+import { useId } from '@mantine-vue/hooks'
 import {
   Combobox,
   ComboboxClearButton,
@@ -13,6 +14,7 @@ import {
 } from '../Combobox'
 import { Pill, PillGroup } from '../Pill'
 import { PillsInput, PillsInputField } from '../PillsInput'
+import { getComboboxLabelId } from '../Combobox/get-combobox-label-id'
 import { getSplittedTags } from './get-splitted-tags'
 import type { TagsInputOption, TagsInputProps, TagsInputSlots } from './TagsInput.types'
 
@@ -58,6 +60,7 @@ defineSlots<TagsInputSlots>()
 
 const slots = useSlots()
 const attrs = useAttrs()
+const id = useId((attrs as any).id)
 
 const parsed = computed(() => getParsedComboboxData(props.data))
 const lockup = computed(() => getOptionsLockup(parsed.value))
@@ -204,6 +207,14 @@ const forwarded = computed(() => {
 })
 
 const comboboxSize = computed(() => (attrs as any).size ?? 'sm')
+const labelId = computed(() =>
+  getComboboxLabelId({
+    id: id.value,
+    label: (attrs as any).label || slots.label,
+    labelProps: (attrs as any).labelProps,
+    inputWrapperOrder: (attrs as any).inputWrapperOrder,
+  }),
+)
 
 /** A dropdown option carries a label; the tag stored is that label, not the value. */
 function onOptionSubmit(raw: string) {
@@ -316,6 +327,7 @@ const hiddenWhenEmpty = computed(
     <ComboboxTarget target-type="input" :with-expanded-attribute="true">
       <PillsInput
         v-bind="forwarded"
+        :id="id"
         __static-selector="TagsInput"
         :disabled="disabled"
         :right-section="rightSection"
@@ -368,6 +380,8 @@ const hiddenWhenEmpty = computed(
       :max-dropdown-height="props.maxDropdownHeight"
       :render-option="props.renderOption"
       :scroll-area-props="props.scrollAreaProps"
+      :label-id="labelId"
+      :aria-label="labelId ? undefined : (attrs as any)['aria-label']"
     >
       <template v-if="slots.renderOption" #renderOption="scope">
         <slot name="renderOption" v-bind="scope" />

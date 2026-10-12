@@ -16,6 +16,7 @@ import {
   type ComboboxItem,
 } from '../Combobox'
 import { InputBase } from '../InputBase'
+import { getComboboxLabelId } from '../Combobox/get-combobox-label-id'
 import type { SelectEmits, SelectProps, SelectSlots } from './Select.types'
 
 defineOptions({
@@ -226,9 +227,7 @@ function onBlur(event: FocusEvent) {
     combobox.clickSelectedOption()
   }
 
-  if (props.searchable) {
-    combobox.closeDropdown()
-  }
+  combobox.closeDropdown()
 
   // A half-typed search is discarded and the selected label restored.
   setSearch(selected.value?.label ?? '')
@@ -259,7 +258,14 @@ const clearSection = computed(() =>
   h(ComboboxClearButton, { ...(attrs as any).clearButtonProps, onClick: clear }),
 )
 
-const labelId = computed(() => ((attrs as any).label ? `${id.value}-label` : undefined))
+const labelId = computed(() =>
+  getComboboxLabelId({
+    id: id.value,
+    label: (attrs as any).label || slots.label,
+    labelProps: (attrs as any).labelProps,
+    inputWrapperOrder: (attrs as any).inputWrapperOrder,
+  }),
+)
 
 /** Filtering is skipped while the search still equals the selected label. */
 const filterOptions = computed(() => !!props.searchable && selected.value?.label !== search())
@@ -331,6 +337,7 @@ const hiddenWhenEmpty = computed(() => !props.nothingFoundMessage && !slots.noth
       :with-aligned-labels="props.withAlignedLabels"
       :nothing-found-message="props.nothingFoundMessage"
       :label-id="labelId"
+      :aria-label="labelId ? undefined : (attrs as any)['aria-label']"
       :render-option="props.renderOption"
       :scroll-area-props="props.scrollAreaProps"
     >
