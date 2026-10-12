@@ -246,6 +246,7 @@ function processInput(
   inputValue: string,
   slots: MaskSlot[],
   _slotCharOption: string | null | undefined,
+  transform?: (char: string) => string,
 ): string {
   let result = ''
   let inputIndex = 0
@@ -270,7 +271,7 @@ function processInput(
     }
 
     while (inputIndex < inputValue.length) {
-      const ch = inputValue[inputIndex]
+      const ch = transform ? transform(inputValue[inputIndex]) : inputValue[inputIndex]
       inputIndex++
 
       if (slot.pattern!.test(ch)) {
@@ -438,12 +439,16 @@ export function useMask(options: UseMaskOptions): UseMaskReturnValue {
     }
 
     const isOwnValue = inputNode.value === display
+    const {
+      slots: initialSlots,
+      slotChar: initialSlotChar,
+      transform,
+    } = getResolvedOptions(options, '')
     const parse = (slots: MaskSlot[], slotChar: string | null | undefined) =>
       isOwnValue
         ? applyMaskToRaw(rawInternal, slots, slotChar, options.transform)
-        : processInput(inputNode.value, slots, slotChar)
+        : processInput(inputNode.value, slots, slotChar, transform)
 
-    const { slots: initialSlots, slotChar: initialSlotChar } = getResolvedOptions(options, '')
     const initialProcessed = parse(initialSlots, initialSlotChar)
     const initialRaw = extractRaw(initialProcessed, initialSlots)
     const { slots: resolvedSlots, slotChar } = getResolvedOptions(options, initialRaw)
