@@ -2,6 +2,7 @@ import {
   arrow,
   autoUpdate,
   flip,
+  hide,
   inline,
   offset,
   shift,
@@ -24,6 +25,7 @@ export interface UseTooltipOptions {
   events: () => { hover: boolean; focus: boolean; touch: boolean }
   strategy: () => FloatingStrategy
   middlewares: () => TooltipMiddlewares | undefined
+  hideDetached?: () => boolean | undefined
   onPositionChange?: (position: FloatingPosition) => void
 }
 
@@ -36,7 +38,7 @@ export function useTooltip(options: UseTooltipOptions) {
   const arrowRef = ref<HTMLElement | null>(null)
   const middleware = computed<Middleware[]>(() => {
     const config = options.middlewares()
-    const result: Middleware[] = [offset(options.offset())]
+    const result: Middleware[] = [offset(options.offset()), hide()]
     if (config?.shift !== false)
       result.push(
         shift(typeof config?.shift === 'object' ? { padding: 8, ...config.shift } : { padding: 8 }),
@@ -93,6 +95,9 @@ export function useTooltip(options: UseTooltipOptions) {
     placement: state.placement,
     arrowX: computed(() => state.middlewareData.value.arrow?.x),
     arrowY: computed(() => state.middlewareData.value.arrow?.y),
+    referenceHidden: computed(
+      () => options.hideDetached?.() !== false && state.middlewareData.value.hide?.referenceHidden,
+    ),
     open,
     close,
     setOpened,
