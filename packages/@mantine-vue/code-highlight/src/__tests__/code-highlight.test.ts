@@ -6,6 +6,7 @@ import {
   CodeHighlight,
   CodeHighlightAdapterProvider,
   CodeHighlightTabs,
+  JsonViewer,
   createHighlightJsAdapter,
   createShikiAdapter,
   normalizeCode,
@@ -89,6 +90,41 @@ describe('@mantine-vue/code-highlight', () => {
     await nextTick()
     expect(wrapper.find('[data-collapsed]').exists()).toBe(false)
     expect(wrapper.get('button[aria-label="Collapse code"]').exists()).toBe(true)
+  })
+
+  it('renders interactive JsonViewer controls with upstream markup', async () => {
+    const wrapper = mountWithProvider(() =>
+      h(JsonViewer, {
+        value: {
+          nested: { enabled: true },
+          message: 'This string is long enough to be collapsed',
+        },
+        collapseStringsAfterLength: 12,
+        defaultExpandDepth: 2,
+        withChevrons: true,
+        withCopy: true,
+        withCopyButton: true,
+        withTypes: true,
+      }),
+    )
+
+    expect(wrapper.get('[role="tree"]').attributes('aria-label')).toBe('JSON')
+    expect(wrapper.find('[data-value-type="object"]').exists()).toBe(true)
+    expect(wrapper.find('[data-value-type="string"]').exists()).toBe(true)
+    expect(wrapper.find('[data-jv-copy] svg').exists()).toBe(true)
+    expect(wrapper.findAll('button[aria-label="Copy"]').length).toBeGreaterThan(0)
+    expect(wrapper.get('button[aria-label="Copy JSON"]').exists()).toBe(true)
+    expect(wrapper.find('[data-expanded] svg').exists()).toBe(true)
+
+    const toggle = wrapper.findAll('button').find((button) => button.text() === 'show more')!
+    expect(wrapper.text()).toContain('This string ...')
+    await toggle.trigger('click')
+    expect(wrapper.text()).toContain('This string is long enough to be collapsed')
+    expect(wrapper.text()).toContain('show less')
+
+    await wrapper.get('button[aria-label="Copy JSON"]').trigger('click')
+    await flushPromises()
+    expect(wrapper.get('button[aria-label="Copied"]').exists()).toBe(true)
   })
 
   it('renders tabs and changes active code', async () => {
