@@ -14,7 +14,7 @@ import type {
   Factory,
 } from '../../core'
 
-export type RadioVariant = 'filled' | 'outline'
+export type RadioVariant = 'filled' | 'outline' | 'light'
 
 export type RadioStylesNames =
   | 'root'
@@ -34,6 +34,7 @@ export type RadioCssVariables = {
     | '--radio-color'
     | '--radio-icon-color'
     | '--radio-icon-size'
+    | '--radio-bg'
 }
 
 export interface RadioIconSlotProps {

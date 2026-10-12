@@ -10,6 +10,7 @@ import { indicator } from './Radio.demo.indicator'
 import { card } from './Radio.demo.card'
 import { cardGroup } from './Radio.demo.cardGroup'
 import { stylesApi } from './Radio.demo.stylesApi'
+import { lightVariant } from './Radio.demo.lightVariant'
 
 export const RadioDemos = {
   configurator,
@@ -24,4 +25,5 @@ export const RadioDemos = {
   card,
   cardGroup,
   stylesApi,
+  lightVariant,
 }

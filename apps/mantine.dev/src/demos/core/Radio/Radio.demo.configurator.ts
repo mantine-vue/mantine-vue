@@ -56,6 +56,7 @@ export const configurator: MantineDemo = {
       data: [
         { value: 'filled', label: 'Filled' },
         { value: 'outline', label: 'Outline' },
+        { value: 'light', label: 'Light' },
       ],
       initialValue: 'filled',
       libraryValue: 'filled',

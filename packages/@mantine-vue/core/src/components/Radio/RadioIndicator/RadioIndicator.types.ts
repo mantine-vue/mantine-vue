@@ -9,7 +9,7 @@ import type {
   Factory,
 } from '../../../core'
 
-export type RadioIndicatorVariant = 'filled' | 'outline'
+export type RadioIndicatorVariant = 'filled' | 'outline' | 'light'
 
 /** Props declared by `RadioIndicator` itself. See `RadioIndicatorProps` for the full public type. */
 export interface RadioIndicatorOwnProps extends StylesApiProps<RadioIndicatorFactory> {
@@ -78,7 +78,13 @@ export interface RadioIndicatorProps
 export type RadioIndicatorStylesNames = 'icon' | 'indicator'
 
 export type RadioIndicatorCssVariables = {
-  indicator: '--radio-size' | '--radio-radius' | '--radio-color' | '--radio-icon-size'
+  indicator:
+    | '--radio-size'
+    | '--radio-radius'
+    | '--radio-color'
+    | '--radio-icon-color'
+    | '--radio-icon-size'
+    | '--radio-bg'
 }
 
 export type RadioIndicatorFactory = Factory<{

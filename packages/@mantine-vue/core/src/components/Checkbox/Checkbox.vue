@@ -6,6 +6,7 @@ import {
   getRadius,
   getSize,
   getThemeColor,
+  parseThemeColor,
 } from '../../core'
 import { InlineInputClasses } from '../../utils'
 import classes from './Checkbox.module.css'
@@ -14,18 +15,44 @@ const mergedClasses = { ...InlineInputClasses, ...classes }
 
 /** Module scope: created once, not per component instance. */
 const varsResolver = createVarsResolver<any>(
-  (theme, { radius, color, size, iconColor, autoContrast }) => ({
-    root: {
-      '--checkbox-size': getSize(size, 'checkbox-size'),
-      '--checkbox-radius': radius === undefined ? undefined : getRadius(radius),
-      '--checkbox-color': getThemeColor(color, theme),
-      '--checkbox-icon-color': iconColor
-        ? getThemeColor(iconColor, theme)
-        : getAutoContrastValue(autoContrast, theme)
-          ? getContrastColor({ color, theme, autoContrast })
-          : undefined,
-    },
-  }),
+  (theme, { radius, color, size, iconColor, variant, autoContrast }) => {
+    const parsedColor = parseThemeColor({ color: color || theme.primaryColor, theme })
+    const outlineColor =
+      parsedColor.isThemeColor && parsedColor.shade === undefined
+        ? `var(--mantine-color-${parsedColor.color}-outline)`
+        : parsedColor.color
+    const lightColors =
+      variant === 'light'
+        ? theme.variantColorResolver({
+            color: color || theme.primaryColor,
+            theme,
+            variant: 'light',
+            autoContrast,
+          })
+        : undefined
+    const resolvedColor =
+      variant === 'outline'
+        ? outlineColor
+        : lightColors
+          ? lightColors.color
+          : getThemeColor(color, theme)
+
+    return {
+      root: {
+        '--checkbox-size': getSize(size, 'checkbox-size'),
+        '--checkbox-radius': radius === undefined ? undefined : getRadius(radius),
+        '--checkbox-color': resolvedColor,
+        '--checkbox-bg': lightColors?.background,
+        '--checkbox-icon-color': iconColor
+          ? getThemeColor(iconColor, theme)
+          : lightColors
+            ? lightColors.color
+            : getAutoContrastValue(autoContrast, theme)
+              ? getContrastColor({ color, theme, autoContrast })
+              : undefined,
+      },
+    }
+  },
 )
 
 /**
