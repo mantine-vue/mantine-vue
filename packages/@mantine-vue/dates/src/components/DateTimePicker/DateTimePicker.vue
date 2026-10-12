@@ -54,6 +54,8 @@ const formatted = computed(() => (value.value ? dayjs(value.value).format(props.
     <template #default="{ close }"
       ><InlineDateTimePicker
         :model-value="value"
+        :min-date="props.minDate"
+        :max-date="props.maxDate"
         :with-seconds="props.withSeconds"
         :size="props.size"
         :submit-button-props="props.submitButtonProps"
