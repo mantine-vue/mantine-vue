@@ -213,10 +213,8 @@ function setResolvedTarget() {
     updateRect()
     if (props.withScrollIntoView && targetElement.value) {
       if (props.scrollToHandler) props.scrollToHandler(targetElement.value)
-      else {
-        if (!isElementInView(targetElement.value))
-          targetElement.value.scrollIntoView({ behavior: 'smooth', block: 'center' })
-      }
+      else if (!isElementInView(targetElement.value))
+        targetElement.value.scrollIntoView({ behavior: 'smooth', block: 'center' })
     }
   })
 }
