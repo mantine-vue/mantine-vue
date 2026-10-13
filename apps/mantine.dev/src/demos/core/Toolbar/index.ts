@@ -12,6 +12,7 @@ import { Stack, Toolbar } from '@mantine-vue/core'
 import type { MantineDemo } from '@/demo'
 
 const icon = (component: any) => h(component, { weight: 'bold', size: '100%' })
+const ToolbarToggleGroup = Toolbar.ToggleGroup as any
 
 function toolbarContent(
   formatting: string[] | undefined = undefined,
@@ -24,7 +25,7 @@ function toolbarContent(
 ) {
   return [
     h(
-      Toolbar.ToggleGroup,
+      ToolbarToggleGroup,
       {
         type: 'multiple' as const,
         modelValue: formatting,
@@ -45,7 +46,7 @@ function toolbarContent(
     ),
     h(Toolbar.Divider),
     h(
-      Toolbar.ToggleGroup,
+      ToolbarToggleGroup,
       {
         type: 'single' as const,
         modelValue: alignment,
