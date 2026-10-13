@@ -17,7 +17,7 @@ export { varsResolver }
 </script>
 
 <script setup lang="ts">
-import { flip, offset, shift, useFloating } from '@floating-ui/vue'
+import { autoUpdate, flip, offset, shift, useFloating } from '@floating-ui/vue'
 import {
   computed,
   Fragment,
@@ -25,9 +25,11 @@ import {
   onBeforeUnmount,
   onMounted,
   ref,
+  shallowRef,
   useAttrs,
   useSlots,
   watch,
+  type VNode,
 } from 'vue'
 import { assignRef, useId } from '@mantine-vue/hooks'
 import { Box, omitAttrs, useDirection, useProps, useStyles } from '../../core'
@@ -40,6 +42,8 @@ import { OptionalPortal } from '../Portal'
 import { Transition as MantineTransition } from '../Transition'
 import { defaultTourLabels, provideTourContext } from './Tour.context'
 import { getOverlayHitPath } from './get-overlay-hit-path'
+import { isElementInView } from './is-element-in-view'
+import TourBeaconPositioned from './TourBeaconPositioned.vue'
 import TourStep from './TourStep.vue'
 import type { TourEmits, TourOwnProps, TourStepData } from './Tour.types'
 import classes from './Tour.module.css'
@@ -103,12 +107,36 @@ function flatten(nodes: any[]): any[] {
     node?.type === Fragment && Array.isArray(node.children) ? flatten(node.children) : [node],
   )
 }
-const steps = computed<TourStepData[]>(() =>
-  flatten(slots.default?.() ?? []).flatMap((node) => {
+const steps = shallowRef<TourStepData[]>([])
+
+function getSteps(nodes: VNode[]) {
+  return flatten(nodes).flatMap((node) => {
     if (node?.type !== TourStep) return []
     const content = typeof node.children === 'object' ? node.children.default : undefined
     return [{ ...node.props, content }]
-  }),
+  }) as TourStepData[]
+}
+
+function areStepsEqual(current: TourStepData[], next: TourStepData[]) {
+  if (current.length !== next.length) return false
+
+  return current.every((step, index) => {
+    const nextStep = next[index]
+    const keys = new Set([...Object.keys(step), ...Object.keys(nextStep)])
+    keys.delete('content')
+    return [...keys].every(
+      (key) => step[key as keyof TourStepData] === nextStep[key as keyof TourStepData],
+    )
+  })
+}
+
+const renderSteps = Object.assign(
+  (slotProps: { nodes?: () => VNode[] }) => {
+    const nextSteps = getSteps(slotProps.nodes?.() ?? [])
+    if (!areStepsEqual(steps.value, nextSteps)) steps.value = nextSteps
+    return null
+  },
+  { props: { nodes: { type: Function, required: false } } },
 )
 const displayStep = computed(() => steps.value[displayStepIndex.value] ?? null)
 const labels = computed(() => ({ ...defaultTourLabels, ...props.labels }))
@@ -125,7 +153,9 @@ const placement = computed(() =>
 const { floatingStyles, update } = useFloating(targetElement, floating, {
   open: showTooltip,
   placement,
+  transform: false,
   middleware: [offset(12), flip(), shift({ padding: 8 })],
+  whileElementsMounted: autoUpdate,
 })
 
 const getStyles = useStyles({
@@ -184,8 +214,7 @@ function setResolvedTarget() {
     if (props.withScrollIntoView && targetElement.value) {
       if (props.scrollToHandler) props.scrollToHandler(targetElement.value)
       else {
-        const rect = targetElement.value.getBoundingClientRect()
-        if (rect.top < 0 || rect.left < 0 || rect.bottom > innerHeight || rect.right > innerWidth)
+        if (!isElementInView(targetElement.value))
           targetElement.value.scrollIntoView({ behavior: 'smooth', block: 'center' })
       }
     }
@@ -324,22 +353,10 @@ const renderTitle = () => displayStep.value?.title as any
 const renderBody = () => displayStep.value?.content?.() as any
 const overlayPath = computed(() => getOverlayHitPath(targetRect.value, resolvedPadding.value))
 const beaconData = computed(() =>
-  typeof document !== 'undefined' &&
-  props.active &&
-  props.mode === 'beacon' &&
-  beaconOpenStep.value === null
-    ? (steps.value
-        .map((step, index) => {
-          const target =
-            typeof step.target === 'string'
-              ? document.querySelector<HTMLElement>(step.target)
-              : step.target?.value
-          const rect = target?.getBoundingClientRect()
-          return rect && step.withBeacon !== false
-            ? { index, step, left: rect.left + rect.width / 2, top: rect.top + rect.height / 2 }
-            : null
-        })
-        .filter(Boolean) as Array<{ index: number; step: TourStepData; left: number; top: number }>)
+  props.active && props.mode === 'beacon' && beaconOpenStep.value === null
+    ? steps.value
+        .map((step, index) => ({ index, step }))
+        .filter(({ step }) => step.withBeacon !== false)
     : [],
 )
 function setRootRef(node: any) {
@@ -354,6 +371,7 @@ function openBeacon(index: number) {
 </script>
 
 <template>
+  <component :is="renderSteps" :nodes="slots.default" />
   <OptionalPortal v-bind="props.portalProps" :within-portal="props.withinPortal">
     <Box
       v-if="props.active"
@@ -411,20 +429,13 @@ function openBeacon(index: number) {
         </template>
       </MantineTransition>
 
-      <button
+      <TourBeaconPositioned
         v-for="beacon in beaconData"
         :key="beacon.index"
-        type="button"
-        v-bind="getStyles('beacon')"
-        :style="[
-          { left: `${beacon.left}px`, top: `${beacon.top}px`, translate: '-50% -50%' },
-          getStyles('beacon').style,
-        ]"
-        :aria-label="`${labels.beacon}${typeof beacon.step.title === 'string' ? `: ${beacon.step.title}` : ''}`"
+        :target="beacon.step.target"
+        :label="`${labels.beacon}${typeof beacon.step.title === 'string' ? `: ${beacon.step.title}` : ''}`"
         @click="openBeacon(beacon.index)"
-      >
-        <span v-bind="getStyles('beaconPulse')" />
-      </button>
+      />
 
       <MantineTransition :mounted="showTooltip && !!displayStep" v-bind="props.transitionProps">
         <template #default="transitionStyle">

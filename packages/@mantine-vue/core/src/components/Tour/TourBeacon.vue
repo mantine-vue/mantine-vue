@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { autoUpdate, offset, useFloating } from '@floating-ui/vue'
-import { Box } from '../../core'
+import { Box, useDirection } from '../../core'
+import { getFloatingPosition } from '../../utils/Floating'
 import { useTourContext } from './Tour.context'
 import type { TourBeaconProps } from './Tour.types'
 const props = defineProps<TourBeaconProps>()
 const ctx = useTourContext()
+const { dir } = useDirection()
 const target = computed(() =>
   typeof props.target === 'string'
     ? typeof document === 'undefined'
@@ -15,8 +17,8 @@ const target = computed(() =>
 )
 const floating = ref<HTMLElement | null>(null)
 const { floatingStyles } = useFloating(target, floating, {
-  placement: 'top',
-  middleware: [offset(({ rects }) => -rects.reference.height / 2)],
+  placement: computed(() => getFloatingPosition(dir.value, 'right-start')),
+  middleware: [offset(8)],
   whileElementsMounted: autoUpdate,
 })
 </script>
