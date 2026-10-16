@@ -1,0 +1,18 @@
+.root {
+  --checkbox-size-xxl: 42px;
+  --checkbox-size-xxs: 14px;
+
+  &[data-size='xxl'] {
+    .label {
+      font-size: 22px;
+      line-height: 40px;
+    }
+  }
+
+  &[data-size='xxs'] {
+    .label {
+      font-size: 10px;
+      line-height: 14px;
+    }
+  }
+}
