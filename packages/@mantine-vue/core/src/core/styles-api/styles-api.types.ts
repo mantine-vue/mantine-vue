@@ -100,6 +100,8 @@ export interface UseStylesInput<Payload = any> {
   classes?: Record<string, string>
   props?: Record<string, any>
   stylesCtx?: Record<string, any>
+  /** Reactive attributes proxy returned by `useAttrs`. */
+  attrs?: Record<string, any>
   className?: any
   style?: CSSProperties | CSSProperties[]
   classNames?: LegacyClassNames<Payload>

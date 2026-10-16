@@ -114,6 +114,31 @@ describe('@mantine-vue/core factory() components', () => {
     expect((instance.vm as any).rootElement).toBeInstanceOf(Element)
   })
 
+  it.each(CASES)('$name updates the root class reactively', async (testCase: FactoryCase) => {
+    const active = ref(false)
+    const node = () =>
+      h(testCase.component, {
+        ...testCase.required,
+        class: { 'reactive-class': active.value },
+      })
+    const wrapper = mount({
+      render: () =>
+        h(MantineProvider, { env: 'test' }, () =>
+          testCase.parent ? h(testCase.parent, {}, node) : node(),
+        ),
+    })
+
+    expect(wrapper.find('.reactive-class').exists()).toBe(false)
+
+    active.value = true
+    await nextTick()
+    expect(wrapper.find('.reactive-class').exists()).toBe(true)
+
+    active.value = false
+    await nextTick()
+    expect(wrapper.find('.reactive-class').exists()).toBe(false)
+  })
+
   it.each(CASES.filter((testCase) => testCase.statics))(
     '$name attaches the statics its payload advertises',
     (testCase: FactoryCase) => {

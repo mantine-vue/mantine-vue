@@ -121,7 +121,7 @@ export function useStyles<Payload = any>(input: UseStylesInput<Payload>) {
           : input.classes?.[`${selector}--${options.variant}`],
         ...staticClasses,
         resolvedClassNames[selector],
-        selector === rootSelector ? input.className : null,
+        selector === rootSelector ? (input.attrs?.class ?? input.className) : null,
         options.active && !input.unstyled ? theme.value.activeClassName : null,
         options.focusable && !input.unstyled
           ? theme.value.focusClassName ||
@@ -132,7 +132,7 @@ export function useStyles<Payload = any>(input: UseStylesInput<Payload>) {
       style: {
         ...resolvedStyles[selector],
         ...resolvedVars[selector],
-        ...(selector === rootSelector ? normalizeStyle(input.style) : {}),
+        ...(selector === rootSelector ? normalizeStyle(input.attrs?.style ?? input.style) : {}),
         ...normalizeStyle(options.style),
       },
     }

@@ -20,8 +20,7 @@ const getStyles = useStyles({
   name: 'ComboboxChevron',
   classes,
   props,
-  className: attrs.class,
-  style: attrs.style as any,
+  attrs,
   varsResolver: chevronVarsResolver,
 })
 

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { h } from 'vue'
+import { h, ref } from 'vue'
 import { mount } from '@vue/test-utils'
 import { Card, CardSection, MantineProvider } from '../../index'
 
@@ -10,6 +10,26 @@ function withProvider(children: any, props: Record<string, any> = {}) {
 }
 
 describe('@mantine-vue/core Card', () => {
+  it('updates root class when the class attribute changes', async () => {
+    const selected = ref(false)
+    const wrapper = mount({
+      render: () =>
+        h(MantineProvider, { env: 'test' }, () => h(Card, { class: { selected: selected.value } })),
+    })
+
+    expect(wrapper.find('.mantine-Card-root').classes()).not.toContain('selected')
+
+    selected.value = true
+    await wrapper.vm.$nextTick()
+
+    expect(wrapper.find('.mantine-Card-root').classes()).toContain('selected')
+
+    selected.value = false
+    await wrapper.vm.$nextTick()
+
+    expect(wrapper.find('.mantine-Card-root').classes()).not.toContain('selected')
+  })
+
   it('renders root variables and orientation', () => {
     const wrapper = withProvider(() => 'Content', {
       padding: 'lg',
