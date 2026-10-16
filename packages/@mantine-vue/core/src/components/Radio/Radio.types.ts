@@ -191,7 +191,7 @@ export type RadioFactory = Factory<{
   slots: RadioSlots
   emits: RadioEmits
   ref: HTMLDivElement
-  exposed: { rootElement: Element | null }
+  exposed: { rootElement: Element | null; inputElement: Element | null }
   element: 'div'
   stylesNames: RadioStylesNames
   vars: RadioCssVariables

@@ -133,7 +133,7 @@ function handleEventClick(event: ScheduleEventData) {
         full-width
         highlight-today
       /> -->
-      <DatePicker v-model="selectedDate" highlight-today />
+      <DatePicker v-model="selectedDate" :allow-deselect="false" highlight-today />
 
       <div class="upNext">
         <Text size="xs" fw="700" tt="uppercase" c="dimmed" mb="sm">Selected event</Text>

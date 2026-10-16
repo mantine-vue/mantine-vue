@@ -76,7 +76,7 @@ export { mergedClasses, varsResolver, defaultProps, DEFAULT_SIZE }
 <script setup lang="ts">
 import { ref, computed, useAttrs, useSlots } from 'vue'
 import { assignRef, useId, useUncontrolled } from '@mantine-vue/hooks'
-import { Box, omitAttrs, resolveNode, useProps, useStyles } from '../../core'
+import { Box, extractStyleProps, omitAttrs, resolveNode, useProps, useStyles } from '../../core'
 import { InlineInput } from '../../utils'
 import { RadioIcon } from './RadioIcon'
 import { useRadioGroupContext } from './RadioGroup/RadioGroup'
@@ -174,7 +174,13 @@ function setRootRef(node: any) {
   assignRef(props.rootRef, element)
 }
 
-defineExpose({ rootElement })
+const inputElement = ref<Element | null>(null)
+
+function setInputRef(node: any) {
+  inputElement.value = (node?.$el ?? node ?? null) as Element | null
+}
+
+defineExpose({ rootElement, inputElement })
 
 function onInputChange(event: Event) {
   if (props.readOnly) {
@@ -191,13 +197,16 @@ function onInputChange(event: Event) {
  * merged with the handler below and fire twice. It reaches the consumer through
  * `useUncontrolled` instead.
  */
-const inputAttrs = computed(() => omitAttrs(attrs, ['onChange']))
+const splitAttrs = computed(() => extractStyleProps(omitAttrs(attrs, ['onChange']) as any))
+const rootStyleProps = computed(() => splitAttrs.value.styleProps)
+const inputAttrs = computed(() => splitAttrs.value.rest)
 </script>
 
 <template>
   <InlineInput
     :ref="setRootRef"
     v-bind="{
+      ...rootStyleProps,
       ...props.wrapperProps,
       ...getStyles('root', { className: attrs.class, style: attrs.style as any }),
     }"
@@ -219,6 +228,7 @@ const inputAttrs = computed(() => omitAttrs(attrs, ['onChange']))
   >
     <Box v-bind="getStyles('inner')" :mod="{ labelPosition: props.labelPosition }">
       <Box
+        :ref="setInputRef"
         v-bind="{ ...inputAttrs, ...getStyles('radio') }"
         component="input"
         type="radio"

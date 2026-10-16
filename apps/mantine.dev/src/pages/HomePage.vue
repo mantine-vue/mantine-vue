@@ -161,7 +161,7 @@ function inviteTeammate() {
         <div class="heroCopy">
           <h1 class="heroTitle">
             Build interfaces that<br />
-            <span>feel inevitable.</span>
+            <span> feel inevitable.</span>
           </h1>
 
           <p class="heroDescription">

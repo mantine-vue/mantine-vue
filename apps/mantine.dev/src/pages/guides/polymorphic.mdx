@@ -1,3 +1,4 @@
+import { Code } from '@mantine-vue/core'
 import { Layout } from '@/layout'
 import { MDX_DATA } from '@/mdx'
 
@@ -254,10 +255,42 @@ continues to work for them.
 
 ## Differences from Mantine React
 
-|                         | Mantine React                  | Mantine Vue                                                              |
-| ----------------------- | ------------------------------ | ------------------------------------------------------------------------ |
-| Root element ref        | `ref` forwards to the DOM node | `ref` resolves to the component instance; use `rootRef` or `rootElement` |
-| Invalid root attributes | Always an error                | An error only when `strictTemplates` is enabled                          |
-| Props type              | `ButtonProps`                  | `ComponentProps<typeof Button>`                                          |
-| Render override         | `renderRoot`                   | Not implemented; use `component`                                         |
-| Closed-union attributes | `createElement` needs nothing  | `h()` needs `as const`; templates need nothing                           |
+<DataTable
+  head={['', 'Mantine React', 'Mantine Vue']}
+  data={[
+    [
+      'Root element ref',
+      <>
+        <Code>ref</Code> forwards to the DOM node
+      </>,
+      <>
+        <Code>ref</Code> resolves to the component instance; use <Code>rootRef</Code> or{' '}
+        <Code>rootElement</Code>
+      </>,
+    ],
+    [
+      'Invalid root attributes',
+      'Always an error',
+      <>
+        An error only when <Code>strictTemplates</Code> is enabled
+      </>,
+    ],
+    ['Props type', <Code>ButtonProps</Code>, <Code>{'ComponentProps<typeof Button>'}</Code>],
+    [
+      'Render override',
+      <Code>renderRoot</Code>,
+      <>
+        Not implemented; use <Code>component</Code>
+      </>,
+    ],
+    [
+      'Closed-union attributes',
+      <>
+        <Code>createElement</Code> needs nothing
+      </>,
+      <>
+        <Code>h()</Code> needs <Code>as const</Code>; templates need nothing
+      </>,
+    ],
+  ]}
+/>

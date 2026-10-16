@@ -200,7 +200,7 @@ export type CheckboxFactory = Factory<{
   slots: CheckboxSlots
   emits: CheckboxEmits
   ref: HTMLDivElement
-  exposed: { rootElement: Element | null }
+  exposed: { rootElement: Element | null; inputElement: Element | null }
   element: 'div'
   stylesNames: CheckboxStylesNames
   vars: CheckboxCssVariables
