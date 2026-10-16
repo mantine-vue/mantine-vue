@@ -46,13 +46,13 @@ const getStyles = useStyles({
   name: 'TableScrollContainer',
   props,
   classes,
-  className: attrs.class,
-  style: attrs.style as any,
+  attrs,
   classNames: props.classNames as any,
   styles: props.styles as any,
   unstyled: props.unstyled,
   vars: props.vars as any,
   varsResolver,
+  rootSelector: 'scrollContainer',
 })
 
 const rootComponent = computed(() => (props.type === 'scrollarea' ? ScrollArea : Box))

@@ -41,8 +41,7 @@ export const InlineInput = defineComponent({
     const getStyles = useStyles({
       name: props.__staticSelector,
       props: props.__stylesApiProps,
-      className: attrs.class,
-      style: attrs.style as any,
+      attrs,
       classes,
       classNames: props.classNames as any,
       styles: props.styles as any,
