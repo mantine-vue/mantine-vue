@@ -25,7 +25,7 @@ export { varsResolver }
 </script>
 
 <script setup lang="ts">
-import { ref, computed, useAttrs, useSlots } from 'vue'
+import { Comment, ref, computed, useAttrs, useSlots } from 'vue'
 import { assignRef, useUncontrolled } from '@mantine-vue/hooks'
 import { Box, hasNode, resolveNode, useStyles } from '../../core'
 import { AccordionChevron } from '../Accordion'
@@ -82,7 +82,7 @@ const getStyles = useStyles({
 })
 
 const children = computed(() => slots.default?.() ?? [])
-const withChildren = computed(() => hasNode(children.value))
+const withChildren = computed(() => children.value.some((child) => child.type !== Comment))
 const rightSection = computed(() => resolveNode(props.rightSection, slots.rightSection))
 const leftSection = computed(() => resolveNode(props.leftSection, slots.leftSection))
 const label = computed(() => resolveNode(props.label, slots.label))

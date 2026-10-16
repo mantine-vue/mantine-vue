@@ -54,6 +54,7 @@ import {
   PhUsers,
 } from '@phosphor-icons/vue'
 import PageHead from '@/components/PageHead/PageHead.vue'
+import HomeComponentsGrid from '@/components/HomeShowcase/HomeComponentsGrid.vue'
 import HomeInboxShowcase from '@/components/HomeShowcase/HomeInboxShowcase.vue'
 import HomeLabExplore from '@/components/HomeShowcase/HomeLabExplore.vue'
 import HomeOperationsShowcase from '@/components/HomeShowcase/HomeOperationsShowcase.vue'
@@ -364,6 +365,26 @@ function inviteTeammate() {
             <strong>Built for velocity</strong><span>Excellent defaults, flexible APIs.</span>
           </div>
         </div>
+      </div>
+    </section>
+
+    <section class="componentsSection">
+      <div class="homeContainer componentsContainer">
+        <div class="sectionHeading">
+          <Badge variant="light" radius="xl">Built to work together</Badge>
+          <h2>Everything you need to build your UI.</h2>
+          <p>
+            A collection of accessible, customizable components to help you build faster. Use them
+            as they are, combine them, or style them to fit your project.
+          </p>
+          <Group justify="center" mt="xl">
+            <Button :component="RouterLink" to="/getting-started" radius="md"> Get Started </Button>
+            <Button :component="RouterLink" to="/core/button" variant="default" radius="md">
+              Browse Components
+            </Button>
+          </Group>
+        </div>
+        <HomeComponentsGrid />
       </div>
     </section>
 
@@ -1017,6 +1038,14 @@ function inviteTeammate() {
   font-size: 12px;
 }
 
+.componentsSection {
+  padding: 112px 0 40px;
+}
+
+.componentsContainer {
+  width: min(1400px, calc(100% - 40px));
+}
+
 .workbenchSection {
   padding: 112px 0;
 }
@@ -1426,6 +1455,10 @@ function inviteTeammate() {
   .principle + .principle {
     border-top: 1px solid var(--home-border);
     border-left: 0;
+  }
+
+  .componentsSection {
+    padding: 78px 0 24px;
   }
 
   .workbenchSection {
