@@ -1,4 +1,4 @@
-import type { VNodeChild } from 'vue'
+import type { ImgHTMLAttributes, VNodeChild } from 'vue'
 import type { VueRefTarget } from '@mantine-vue/hooks'
 import type {
   BoxMod,
@@ -69,7 +69,7 @@ export interface AvatarOwnProps extends StylesApiProps<AvatarProps> {
   alt?: string
 
   /** Attributes passed down to `img` element */
-  imageProps?: Record<string, any>
+  imageProps?: ImgHTMLAttributes
 
   /** If set, adjusts text color based on background color for `filled` variant */
   autoContrast?: boolean
