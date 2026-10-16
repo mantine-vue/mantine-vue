@@ -84,7 +84,7 @@ export { mergedClasses, varsResolver, defaultProps, DEFAULT_SIZE }
 <script setup lang="ts">
 import { ref, computed, useAttrs, useSlots } from 'vue'
 import { assignRef, useId, useUncontrolled } from '@mantine-vue/hooks'
-import { Box, omitAttrs, resolveNode, useProps, useStyles } from '../../core'
+import { Box, extractStyleProps, omitAttrs, resolveNode, useProps, useStyles } from '../../core'
 import { InlineInput } from '../../utils'
 import { CheckboxIcon } from './CheckIcon'
 import { useCheckboxGroupContext } from './CheckboxGroup/CheckboxGroup'
@@ -203,19 +203,18 @@ function onInputChange(event: Event) {
   setLocalChecked(nextChecked)
 }
 
-/**
- * The input receives the fallthrough attributes, so consumer `onClick` / `onChange`
- * handlers would be merged with the ones below and fire twice. `onClick` is forwarded
- * explicitly by `onInputClick`; `onChange` reaches the consumer through
- * `useUncontrolled`.
- */
-const inputAttrs = computed(() => omitAttrs(attrs, ['onClick', 'onChange']))
+const splitAttrs = computed(() =>
+  extractStyleProps(omitAttrs(attrs, ['onClick', 'onChange']) as any),
+)
+const rootStyleProps = computed(() => splitAttrs.value.styleProps)
+const inputAttrs = computed(() => splitAttrs.value.rest)
 </script>
 
 <template>
   <InlineInput
     :ref="setRootRef"
     v-bind="{
+      ...rootStyleProps,
       ...props.wrapperProps,
       ...getStyles('root', { className: attrs.class, style: attrs.style as any }),
     }"

@@ -260,7 +260,9 @@ continues to work for them.
   data={[
     [
       'Root element ref',
-      <><Code>ref</Code> forwards to the DOM node</>,
+      <>
+        <Code>ref</Code> forwards to the DOM node
+      </>,
       <>
         <Code>ref</Code> resolves to the component instance; use <Code>rootRef</Code> or{' '}
         <Code>rootElement</Code>
@@ -269,13 +271,23 @@ continues to work for them.
     [
       'Invalid root attributes',
       'Always an error',
-      <>An error only when <Code>strictTemplates</Code> is enabled</>,
+      <>
+        An error only when <Code>strictTemplates</Code> is enabled
+      </>,
     ],
     ['Props type', <Code>ButtonProps</Code>, <Code>{'ComponentProps<typeof Button>'}</Code>],
-    ['Render override', <Code>renderRoot</Code>, <>Not implemented; use <Code>component</Code></>],
+    [
+      'Render override',
+      <Code>renderRoot</Code>,
+      <>
+        Not implemented; use <Code>component</Code>
+      </>,
+    ],
     [
       'Closed-union attributes',
-      <><Code>createElement</Code> needs nothing</>,
+      <>
+        <Code>createElement</Code> needs nothing
+      </>,
       <>
         <Code>h()</Code> needs <Code>as const</Code>; templates need nothing
       </>,
