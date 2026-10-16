@@ -48,7 +48,7 @@ function one(slots: any): VNode | null {
 
 /** Component refs resolve to instances, not elements; Floating UI needs the element. */
 function asElement(node: any): HTMLElement | null {
-  const candidate = node?.$el ?? node
+  const candidate = node?.inputElement ?? node?.$el ?? node
   return typeof Element !== 'undefined' && candidate instanceof Element
     ? (candidate as HTMLElement)
     : null
@@ -186,12 +186,23 @@ const referenceHandlers = () => ({
   },
 })
 
-/**
- * With `target` the reference is not a child, so the handlers have to be attached to it
- * imperatively. One handler object is reused so it can be removed again.
- */
+const interactionHandlers = referenceHandlers()
+
+function attachReferenceHandlers(el: HTMLElement) {
+  el.addEventListener('mouseenter', interactionHandlers.onMouseenter as any)
+  el.addEventListener('mouseleave', interactionHandlers.onMouseleave as any)
+  el.addEventListener('focus', interactionHandlers.onFocus as any)
+  el.addEventListener('blur', interactionHandlers.onBlur as any)
+}
+
+function detachReferenceHandlers(el: HTMLElement) {
+  el.removeEventListener('mouseenter', interactionHandlers.onMouseenter as any)
+  el.removeEventListener('mouseleave', interactionHandlers.onMouseleave as any)
+  el.removeEventListener('focus', interactionHandlers.onFocus as any)
+  el.removeEventListener('blur', interactionHandlers.onBlur as any)
+}
+
 let external: HTMLElement | null = null
-const externalHandlers = referenceHandlers()
 
 const resolveTarget = () =>
   typeof props.target === 'string'
@@ -205,10 +216,7 @@ function bindExternal() {
     return
   }
 
-  external.addEventListener('mouseenter', externalHandlers.onMouseenter as any)
-  external.addEventListener('mouseleave', externalHandlers.onMouseleave as any)
-  external.addEventListener('focus', externalHandlers.onFocus as any)
-  external.addEventListener('blur', externalHandlers.onBlur as any)
+  attachReferenceHandlers(external)
   tooltip.reference.value = external
 }
 
@@ -217,17 +225,39 @@ function unbindExternal() {
     return
   }
 
-  external.removeEventListener('mouseenter', externalHandlers.onMouseenter as any)
-  external.removeEventListener('mouseleave', externalHandlers.onMouseleave as any)
-  external.removeEventListener('focus', externalHandlers.onFocus as any)
-  external.removeEventListener('blur', externalHandlers.onBlur as any)
+  detachReferenceHandlers(external)
   external = null
+}
+
+let boundChild: HTMLElement | null = null
+
+function setChildReference(node: any) {
+  const element = asElement(node)
+
+  if (boundChild !== element) {
+    if (boundChild) {
+      detachReferenceHandlers(boundChild)
+    }
+
+    boundChild = element
+
+    if (boundChild) {
+      attachReferenceHandlers(boundChild)
+    }
+  }
+
+  tooltip.reference.value = element
 }
 
 onMounted(() => props.target && bindExternal())
 onBeforeUnmount(() => {
   cancelInteractiveClose()
   unbindExternal()
+
+  if (boundChild) {
+    detachReferenceHandlers(boundChild)
+    boundChild = null
+  }
 })
 
 const arrowPosition = computed(() => props.arrowPosition ?? 'side')
@@ -273,10 +303,6 @@ const label = computed(() => resolveNode(props.label, slots.label))
 /** The label is renderable content, which cannot be interpolated as text. */
 const renderLabel = () => label.value
 
-/**
- * Rendered through `<component :is>`: the child has to be cloned so the reference ref
- * and the hover handlers can be merged into whatever it already declares.
- */
 const renderReference = Object.assign(
   (slotProps: { nodes?: () => VNodeChild }): VNodeChild => {
     if (props.target) {
@@ -294,11 +320,7 @@ const renderReference = Object.assign(
     return cloneVNode(
       child,
       {
-        ...referenceHandlers(),
-        [props.refProp ?? 'ref']: mergeRefs(
-          (node: any) => (tooltip.reference.value = asElement(node)),
-          (child as any).ref,
-        ),
+        [props.refProp ?? 'ref']: mergeRefs(setChildReference, (child as any).ref),
       },
       true,
     )

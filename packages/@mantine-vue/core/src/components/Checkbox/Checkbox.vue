@@ -183,7 +183,13 @@ function setRootRef(node: any) {
   assignRef(props.rootRef, element)
 }
 
-defineExpose({ rootElement })
+const inputElement = ref<Element | null>(null)
+
+function setInputRef(node: any) {
+  inputElement.value = (node?.$el ?? node ?? null) as Element | null
+}
+
+defineExpose({ rootElement, inputElement })
 
 function onInputClick(event: MouseEvent) {
   callHandler((attrs as any).onClick, event)
@@ -236,6 +242,7 @@ const inputAttrs = computed(() => splitAttrs.value.rest)
   >
     <Box v-bind="getStyles('inner')" :mod="{ labelPosition: props.labelPosition }">
       <Box
+        :ref="setInputRef"
         v-bind="{ ...inputAttrs, ...getStyles('input', { style: undefined }) }"
         component="input"
         type="checkbox"
