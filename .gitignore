@@ -30,7 +30,7 @@ lerna-debug.log*
 .env*.local
 
 # build
-lib/
+packages/*/*/lib/
 cjs/
 esm/
 dist/
