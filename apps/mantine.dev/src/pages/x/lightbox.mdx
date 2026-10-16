@@ -250,14 +250,16 @@ Override any label while the rest fall back to `DEFAULT_LABELS`:
 
 ## Keyboard shortcuts
 
-| Key        | Action                                     |
-| ---------- | ------------------------------------------ |
-| Escape     | Close                                      |
-| Left/Right | Navigate, or pan horizontally while zoomed |
-| Up/Down    | Pan vertically while zoomed                |
-| F          | Toggle fullscreen when enabled             |
-| T          | Toggle thumbnails when enabled             |
-| Z          | Toggle zoom when enabled                   |
+<KeyboardEventsTable
+  data={[
+    { key: 'Escape', description: 'Close' },
+    { key: 'Left/Right', description: 'Navigate, or pan horizontally while zoomed' },
+    { key: 'Up/Down', description: 'Pan vertically while zoomed' },
+    { key: 'F', description: 'Toggle fullscreen when enabled' },
+    { key: 'T', description: 'Toggle thumbnails when enabled' },
+    { key: 'Z', description: 'Toggle zoom when enabled' },
+  ]}
+/>
 
 Shortcuts do not intercept text inputs, media controls, or interactive widgets inside custom slides.
 

@@ -1,3 +1,4 @@
+import { Code } from '@mantine-vue/core'
 import { DataTableDemos } from '@/demos'
 import { Layout } from '@/layout'
 import { MDX_DATA } from '@/mdx'
@@ -102,16 +103,19 @@ scoped argument. A `#detailPanel` slot also enables the expand column automatica
 
 <Demo data={DataTableDemos.detailPanel} />
 
-| Named slot                   | Equivalent option                  |
-| ---------------------------- | ---------------------------------- |
-| `detailPanel`                | `renderDetailPanel`                |
-| `rowActions`                 | `renderRowActions`                 |
-| `rowActionMenuItems`         | `renderRowActionMenuItems`         |
-| `columnActionsMenuItems`     | `renderColumnActionsMenuItems`     |
-| `topToolbarCustomActions`    | `renderTopToolbarCustomActions`    |
-| `bottomToolbarCustomActions` | `renderBottomToolbarCustomActions` |
-| `toolbarInternalActions`     | `renderToolbarInternalActions`     |
-| `emptyRowsFallback`          | `renderEmptyRowsFallback`          |
+<DataTable
+  head={['Named slot', 'Equivalent option']}
+  data={[
+    [<Code>detailPanel</Code>, <Code>renderDetailPanel</Code>],
+    [<Code>rowActions</Code>, <Code>renderRowActions</Code>],
+    [<Code>rowActionMenuItems</Code>, <Code>renderRowActionMenuItems</Code>],
+    [<Code>columnActionsMenuItems</Code>, <Code>renderColumnActionsMenuItems</Code>],
+    [<Code>topToolbarCustomActions</Code>, <Code>renderTopToolbarCustomActions</Code>],
+    [<Code>bottomToolbarCustomActions</Code>, <Code>renderBottomToolbarCustomActions</Code>],
+    [<Code>toolbarInternalActions</Code>, <Code>renderToolbarInternalActions</Code>],
+    [<Code>emptyRowsFallback</Code>, <Code>renderEmptyRowsFallback</Code>],
+  ]}
+/>
 
 Column-level renderers (`Cell`, `Header`, `Footer`, `Edit`) stay on the column definition.
 
