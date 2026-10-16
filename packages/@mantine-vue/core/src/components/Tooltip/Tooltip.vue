@@ -91,6 +91,7 @@ const rawProps = withDefaults(defineProps<TooltipProps>(), {
   withinPortal: undefined,
   opened: undefined,
   offset: undefined,
+  hideDetached: undefined,
   multiline: false,
   disabled: false,
   defaultOpened: false,
