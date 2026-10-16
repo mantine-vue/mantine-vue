@@ -19,6 +19,18 @@ export interface TreeSelectRenderNodePayload {
   indeterminate: boolean
   expand: (event?: Event) => void
 }
+export interface TreeSelectRenderPillPayload {
+  /** Node associated with the pill. A placeholder node is used when the value is missing from data. */
+  node: TreeNodeData
+  /** Selected value represented by the pill. */
+  value: string
+  /** Removes the value from the selection. */
+  onRemove: () => void
+  /** Value of the disabled prop passed to the component. */
+  disabled?: boolean
+  /** Value of the readOnly prop passed to the component. */
+  readOnly?: boolean
+}
 export interface TreeSelectChevronAriaLabels {
   expand?: string
   collapse?: string
@@ -134,6 +146,9 @@ export interface TreeSelectProps<Mode extends TreeSelectMode = 'single'> {
   /** Custom markup for a tree row. */
   renderNode?: (payload: TreeSelectRenderNodePayload) => VNodeChild
 
+  /** Custom pill rendering in multiple and checkbox modes. */
+  renderPill?: (payload: TreeSelectRenderPillPayload) => VNodeChild
+
   /**
    * If set, connector lines between a node and its children are rendered.
    *
@@ -195,6 +210,7 @@ export interface TreeSelectSlots {
   leftSection?: () => VNodeChild
   rightSection?: () => VNodeChild
   renderNode?: (payload: TreeSelectRenderNodePayload) => VNodeChild
+  renderPill?: (payload: TreeSelectRenderPillPayload) => VNodeChild
   nothingFound?: () => VNodeChild
   nothingFoundMessage?: () => VNodeChild
 }

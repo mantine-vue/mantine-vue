@@ -311,3 +311,9 @@ export const IconPilcrow = createIcon('IconPilcrow', [
   path('M17 4v16'),
   path('M19 4h-9.5a4.5 4.5 0 0 0 0 9h3.5'),
 ])
+export const IconPhoto = createIcon('IconPhoto', [
+  path('M15 8h.01'),
+  path('M3 6a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v12a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3z'),
+  path('M3 16l5 -5c.928 -.893 2.072 -.893 3 0l5 5'),
+  path('M14 14l1 -1c.928 -.893 2.072 -.893 3 0l3 3'),
+])

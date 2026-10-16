@@ -69,6 +69,7 @@ import {
   isInTimeRange,
   clampIntervalMinutes,
   parseTimeString,
+  isEventPlacementAllowed,
   type ResourceGroupInfo,
   type ResourcesGridControls,
 } from '../../utils'
@@ -191,6 +192,7 @@ const setRootElement = (node: Element | null) => {
 }
 
 const dropTarget = shallowRef<{ resourceId: string | number; slotIndex: number } | null>(null)
+const dropValid = ref(true)
 const scrolled = ref(false)
 const scrolledX = ref(false)
 
@@ -295,6 +297,10 @@ const resize = useHorizontalEventResize({
   resizeIntervalMinutes: () => props.eventResizeInterval,
   onEventResize: (data) => emit('eventResize', data),
   canResizeEvent: () => props.canResizeEvent,
+  events: () => expandedEvents.value,
+  preventEventOverlap: () => props.preventEventOverlap,
+  canResizeEventTo: () => props.canResizeEventTo,
+  onEventPlacementRejected: (data) => emit('eventPlacementRejected', data),
   withBackgroundEvents: () => Boolean(props.withInteractiveBackgroundEvents),
 })
 
@@ -371,13 +377,52 @@ const emitDrop = (nativeEvent: DragEvent, resourceId: string | number, slotIndex
   const event = getDropEvent(expandedEvents.value, nativeEvent.dataTransfer)
 
   if (event) {
-    emit('eventDrop', { ...moveEventTo(event, target), resourceId })
-  } else if (nativeEvent.dataTransfer) {
-    emit('externalEventDrop', {
-      dataTransfer: nativeEvent.dataTransfer,
-      dropDateTime: target,
+    const next = moveEventTo(event, target)
+    const validation = isEventPlacementAllowed({
+      event,
+      start: next.newStart,
+      end: next.newEnd,
+      events: expandedEvents.value,
+      preventEventOverlap: props.preventEventOverlap,
       resourceId,
     })
+    if (
+      validation.allowed &&
+      props.canDropEvent?.({ event, start: next.newStart, end: next.newEnd, resourceId }) !== false
+    )
+      emit('eventDrop', { ...next, resourceId })
+    else
+      emit('eventPlacementRejected', {
+        action: 'drop',
+        event,
+        start: next.newStart,
+        end: next.newEnd,
+        resourceId,
+        conflicts: validation.conflicts,
+        reason: validation.allowed ? 'rejected' : 'overlap',
+      })
+  } else if (nativeEvent.dataTransfer) {
+    if (
+      props.canDropExternalEvent?.({
+        dataTransfer: nativeEvent.dataTransfer,
+        start: target,
+        resourceId,
+      }) !== false
+    )
+      emit('externalEventDrop', {
+        dataTransfer: nativeEvent.dataTransfer,
+        dropDateTime: target,
+        resourceId,
+      })
+    else
+      emit('eventPlacementRejected', {
+        action: 'external-drop',
+        dataTransfer: nativeEvent.dataTransfer,
+        start: target,
+        resourceId,
+        conflicts: [],
+        reason: 'rejected',
+      })
   }
 }
 
@@ -436,6 +481,29 @@ const setDropTarget = (next: { resourceId: string | number; slotIndex: number } 
 const resolveDropTarget = rafThrottle(
   (nativeEvent: DragEvent, resourceId: string | number, resourceIndex: number) => {
     const slotIndex = getSlotIndexAtPoint(nativeEvent, resourceIndex)
+    const target = slotIndex < 0 ? null : getSnappedDropTarget(nativeEvent, slotIndex)
+    const event = dragState.draggedEvent.value
+    if (target && event) {
+      const next = moveEventTo(event, target)
+      const validation = isEventPlacementAllowed({
+        event,
+        start: next.newStart,
+        end: next.newEnd,
+        events: expandedEvents.value,
+        preventEventOverlap: props.preventEventOverlap,
+        resourceId,
+      })
+      dropValid.value =
+        validation.allowed &&
+        props.canDropEvent?.({ event, start: next.newStart, end: next.newEnd, resourceId }) !==
+          false
+    } else if (target && nativeEvent.dataTransfer)
+      dropValid.value =
+        props.canDropExternalEvent?.({
+          dataTransfer: nativeEvent.dataTransfer,
+          start: target,
+          resourceId,
+        }) !== false
     setDropTarget(slotIndex < 0 ? null : { resourceId, slotIndex })
   },
 )
@@ -866,6 +934,10 @@ const changeView = (view: ScheduleViewLevel) => emit('viewChange', view)
                   :mode="props.mode"
                   :draggable="isDraggableEvent(event)"
                   :style="{ width: '100%', height: '100%' }"
+                  :mod="{
+                    invalid:
+                      resize.getResizePosition(event.id) !== null && !resize.resizeValid.value,
+                  }"
                   v-bind="{ ...eventRenderers, ...stylesApi }"
                   @event-drag-start="dragStart"
                   @event-drag-end="dragEnd"
@@ -916,6 +988,12 @@ const changeView = (view: ScheduleViewLevel) => emit('viewChange', view)
                 "
                 :data-drop-target="
                   (dropTarget?.resourceId === resource.id && dropTarget.slotIndex === slotIndex) ||
+                  undefined
+                "
+                :data-invalid="
+                  (dropTarget?.resourceId === resource.id &&
+                    dropTarget.slotIndex === slotIndex &&
+                    !dropValid) ||
                   undefined
                 "
                 :data-drag-selected="

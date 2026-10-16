@@ -7,6 +7,8 @@ import { lineNumbers } from './CodeHighlight.demo.lineNumbers'
 import { expand } from './CodeHighlight.demo.expand'
 import { customControl } from './CodeHighlight.demo.customControl'
 import { inline } from './CodeHighlight.demo.inline'
+import { jsonViewer } from './CodeHighlight.demo.jsonViewer'
+export { JsonViewerDemos } from './JsonViewer.demos'
 
 export const CodeHighlightDemos = {
   usage,
@@ -18,4 +20,5 @@ export const CodeHighlightDemos = {
   expand,
   customControl,
   inline,
+  jsonViewer,
 }

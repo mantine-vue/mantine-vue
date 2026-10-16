@@ -6,6 +6,7 @@ import {
   getRadius,
   getSize,
   getThemeColor,
+  parseThemeColor,
 } from '../../core'
 import { InlineInputClasses } from '../../utils'
 import classes from './Radio.module.css'
@@ -14,19 +15,45 @@ const mergedClasses = { ...InlineInputClasses, ...classes }
 
 /** Module scope: created once, not per component instance. */
 const varsResolver = createVarsResolver<any>(
-  (theme, { size, radius, color, iconColor, autoContrast }) => ({
-    root: {
-      '--radio-size': getSize(size, 'radio-size'),
-      '--radio-radius': radius === undefined ? undefined : getRadius(radius),
-      '--radio-color': getThemeColor(color, theme),
-      '--radio-icon-color': iconColor
-        ? getThemeColor(iconColor, theme)
-        : getAutoContrastValue(autoContrast, theme)
-          ? getContrastColor({ color, theme, autoContrast })
-          : undefined,
-      '--radio-icon-size': getSize(size, 'radio-icon-size'),
-    },
-  }),
+  (theme, { size, radius, color, iconColor, variant, autoContrast }) => {
+    const parsedColor = parseThemeColor({ color: color || theme.primaryColor, theme })
+    const outlineColor =
+      parsedColor.isThemeColor && parsedColor.shade === undefined
+        ? `var(--mantine-color-${parsedColor.color}-outline)`
+        : parsedColor.color
+    const lightColors =
+      variant === 'light'
+        ? theme.variantColorResolver({
+            color: color || theme.primaryColor,
+            theme,
+            variant: 'light',
+            autoContrast,
+          })
+        : undefined
+    const resolvedColor =
+      variant === 'outline'
+        ? outlineColor
+        : lightColors
+          ? lightColors.color
+          : getThemeColor(color, theme)
+
+    return {
+      root: {
+        '--radio-size': getSize(size, 'radio-size'),
+        '--radio-radius': radius === undefined ? undefined : getRadius(radius),
+        '--radio-color': resolvedColor,
+        '--radio-bg': lightColors?.background,
+        '--radio-icon-color': iconColor
+          ? getThemeColor(iconColor, theme)
+          : lightColors
+            ? lightColors.color
+            : getAutoContrastValue(autoContrast, theme)
+              ? getContrastColor({ color, theme, autoContrast })
+              : undefined,
+        '--radio-icon-size': getSize(size, 'radio-icon-size'),
+      },
+    }
+  },
 )
 
 /**

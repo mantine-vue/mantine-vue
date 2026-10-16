@@ -28,6 +28,11 @@ Custom components must expose a root element ref; all Mantine components support
 </template>
 ```
 
+By default, a tooltip is hidden when its target is detached from the viewport or clipped by an
+overflow container. Set `:hideDetached="false"` to keep it visible.
+
+<Demo data={TooltipDemos.hideDetached} />
+
 ## Tooltip target
 
 The `target` prop is an alternative to children. It accepts a string (CSS selector) or an HTML element.

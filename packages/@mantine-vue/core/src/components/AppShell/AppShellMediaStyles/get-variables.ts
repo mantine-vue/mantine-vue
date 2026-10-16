@@ -6,6 +6,8 @@ import type {
   AppShellNavbarConfiguration,
   AppShellResponsiveSize,
   AppShellSize,
+  AppShellResizeSection,
+  AppShellResizeSizes,
 } from '../AppShell.types'
 export type CSSVariables = Record<`--${string}`, string | undefined>
 export type MediaQueryVariables = Record<string, CSSVariables>
@@ -48,6 +50,7 @@ export function getVariables({
   padding,
   theme,
   mode,
+  resize,
 }: {
   navbar?: AppShellNavbarConfiguration
   aside?: AppShellAsideConfiguration
@@ -56,6 +59,10 @@ export function getVariables({
   padding?: AppShellSize | AppShellResponsiveSize
   theme: MantineTheme
   mode: 'fixed' | 'static'
+  resize?: {
+    sizes: AppShellResizeSizes
+    enabled: Partial<Record<AppShellResizeSection, boolean>>
+  }
 }) {
   const baseStyles: CSSVariables = {}
   const minMediaStyles: MediaQueryVariables = {}
@@ -67,16 +74,24 @@ export function getVariables({
   ) => {
     if (!config) return
     const property = `--app-shell-${name}-height` as const
-    responsive(config.height, property, baseStyles, minMediaStyles, theme)
     const shouldOffset = mode === 'static' || config.offset !== false
-    if (shouldOffset)
-      responsive(config.height, `--app-shell-${name}-offset`, baseStyles, minMediaStyles, theme)
+    const resizedSize = resize?.sizes[name]
+    if (resizedSize !== undefined) {
+      const value = `min(${rem(resizedSize)}, 100dvh)`
+      baseStyles[property] = value
+      if (shouldOffset) baseStyles[`--app-shell-${name}-offset`] = value
+    } else {
+      responsive(config.height, property, baseStyles, minMediaStyles, theme)
+      if (shouldOffset)
+        responsive(config.height, `--app-shell-${name}-offset`, baseStyles, minMediaStyles, theme)
+    }
     if (config.collapsed) {
       baseStyles[`--app-shell-${name}-transform`] =
         name === 'header'
           ? 'translateY(calc(var(--app-shell-header-height) * -1))'
           : 'translateY(var(--app-shell-footer-height))'
       if (mode === 'fixed') baseStyles[`--app-shell-${name}-offset`] = '0px !important'
+      if (resize?.enabled[name]) baseStyles[`--app-shell-${name}-resize-handle-display`] = 'none'
     }
     if (mode === 'static') {
       baseStyles[`--app-shell-${name}-position`] = 'sticky'
@@ -88,10 +103,18 @@ export function getVariables({
   assignVertical(footer, 'footer')
   const assignNavbarVariables = (config: AppShellNavbarConfiguration | undefined) => {
     if (!config) return
-    responsive(config.width, '--app-shell-navbar-width', baseStyles, minMediaStyles, theme)
-    responsive(config.width, '--app-shell-navbar-offset', baseStyles, minMediaStyles, theme)
-    if (mode === 'static') {
-      responsive(config.width, '--app-shell-navbar-grid-width', baseStyles, minMediaStyles, theme)
+    const resizedSize = resize?.sizes.navbar
+    if (resizedSize !== undefined) {
+      const value = `min(${rem(resizedSize)}, 100vw)`
+      baseStyles['--app-shell-navbar-width'] = value
+      baseStyles['--app-shell-navbar-offset'] = value
+      if (mode === 'static') baseStyles['--app-shell-navbar-grid-width'] = value
+    } else {
+      responsive(config.width, '--app-shell-navbar-width', baseStyles, minMediaStyles, theme)
+      responsive(config.width, '--app-shell-navbar-offset', baseStyles, minMediaStyles, theme)
+      if (mode === 'static') {
+        responsive(config.width, '--app-shell-navbar-grid-width', baseStyles, minMediaStyles, theme)
+      }
     }
 
     const bp = breakpointPx(config.breakpoint, theme)
@@ -103,6 +126,7 @@ export function getVariables({
         '--app-shell-navbar-offset': '0px',
         '--app-shell-navbar-width': '100%',
         ...(mode === 'static' ? { '--app-shell-navbar-grid-width': '0px' } : {}),
+        ...(resize?.enabled.navbar ? { '--app-shell-navbar-resize-handle-display': 'none' } : {}),
       })
     }
 
@@ -126,6 +150,7 @@ export function getVariables({
               '--app-shell-navbar-display': 'none',
               '--app-shell-main-column-start': '1',
             }),
+        ...(resize?.enabled.navbar ? { '--app-shell-navbar-resize-handle-display': 'none' } : {}),
       })
     }
 
@@ -136,14 +161,23 @@ export function getVariables({
         ...(mode === 'static' ? { '--app-shell-navbar-grid-width': '0px' } : {}),
         '--app-shell-navbar-transform': 'translateX(calc(var(--app-shell-navbar-width) * -1))',
         '--app-shell-navbar-transform-rtl': 'translateX(var(--app-shell-navbar-width))',
+        ...(resize?.enabled.navbar ? { '--app-shell-navbar-resize-handle-display': 'none' } : {}),
       })
     }
   }
 
   const assignAsideVariables = (config: AppShellAsideConfiguration | undefined) => {
     if (!config) return
-    responsive(config.width, '--app-shell-aside-width', baseStyles, minMediaStyles, theme)
-    responsive(config.width, '--app-shell-aside-offset', baseStyles, minMediaStyles, theme)
+    const resizedSize = resize?.sizes.aside
+    if (resizedSize !== undefined) {
+      const value = `min(${rem(resizedSize)}, 100vw)`
+      baseStyles['--app-shell-aside-width'] = value
+      baseStyles['--app-shell-aside-offset'] = value
+      if (mode === 'static') baseStyles['--app-shell-aside-grid-width'] = value
+    } else {
+      responsive(config.width, '--app-shell-aside-width', baseStyles, minMediaStyles, theme)
+      responsive(config.width, '--app-shell-aside-offset', baseStyles, minMediaStyles, theme)
+    }
 
     const bp = breakpointPx(config.breakpoint, theme)
     const minQuery = `(min-width: ${em(bp)})`
@@ -154,8 +188,20 @@ export function getVariables({
         maxMediaStyles,
         maxQuery,
         mode === 'fixed'
-          ? { '--app-shell-aside-width': '100%', '--app-shell-aside-offset': '0px' }
-          : { '--app-shell-aside-width': '0px', '--app-shell-aside-offset': '0px' },
+          ? {
+              '--app-shell-aside-width': '100%',
+              '--app-shell-aside-offset': '0px',
+              ...(resize?.enabled.aside
+                ? { '--app-shell-aside-resize-handle-display': 'none' }
+                : {}),
+            }
+          : {
+              '--app-shell-aside-width': '0px',
+              '--app-shell-aside-offset': '0px',
+              ...(resize?.enabled.aside
+                ? { '--app-shell-aside-resize-handle-display': 'none' }
+                : {}),
+            },
       )
     }
 
@@ -180,6 +226,7 @@ export function getVariables({
               '--app-shell-aside-display': 'none',
               '--app-shell-main-column-end': '-1',
             }),
+        ...(resize?.enabled.aside ? { '--app-shell-aside-resize-handle-display': 'none' } : {}),
       })
     }
 
@@ -191,6 +238,7 @@ export function getVariables({
         '--app-shell-aside-transform': 'translateX(var(--app-shell-aside-width))',
         '--app-shell-aside-transform-rtl': 'translateX(calc(var(--app-shell-aside-width) * -1))',
         '--app-shell-aside-scroll-locked-visibility': 'hidden',
+        ...(resize?.enabled.aside ? { '--app-shell-aside-resize-handle-display': 'none' } : {}),
       })
     }
   }

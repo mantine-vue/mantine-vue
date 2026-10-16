@@ -15,9 +15,11 @@ export function useClickOutside<T extends HTMLElement = HTMLElement>(
   events: MaybeRefOrGetter<string[] | null | undefined> = ['mousedown', 'touchstart'],
   nodes?: MaybeRefOrGetter<Array<HTMLElement | null | undefined>>,
   enabled: MaybeRefOrGetter<boolean> = true,
+  capture: MaybeRefOrGetter<boolean> = false,
 ): Ref<T | null> {
   const element = ref<T | null>(null) as Ref<T | null>
   let activeEvents: string[] = []
+  let activeCapture = false
   const listener = (event: Event) => {
     const target = event.target as Node | null
     if (!target || (!document.body.contains(target) && (target as Element).tagName !== 'HTML'))
@@ -30,17 +32,18 @@ export function useClickOutside<T extends HTMLElement = HTMLElement>(
     } else if (element.value && !path.includes(element.value)) callback(event as OutsideEvent)
   }
   const cleanup = () => {
-    activeEvents.forEach((event) => document.removeEventListener(event, listener))
+    activeEvents.forEach((event) => document.removeEventListener(event, listener, activeCapture))
     activeEvents = []
   }
   const bind = () => {
     cleanup()
     if (!toValue(enabled)) return
     activeEvents = toValue(events) || ['mousedown', 'touchstart']
-    activeEvents.forEach((event) => document.addEventListener(event, listener))
+    activeCapture = toValue(capture)
+    activeEvents.forEach((event) => document.addEventListener(event, listener, activeCapture))
   }
   onMounted(bind)
-  watch([() => toValue(events)?.join(','), () => toValue(enabled)], bind)
+  watch([() => toValue(events)?.join(','), () => toValue(enabled), () => toValue(capture)], bind)
   onBeforeUnmount(cleanup)
   return element
 }

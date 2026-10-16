@@ -25,9 +25,29 @@ Use the `HoverCard.Group` component to sync open and close delays of multiple `H
 `HoverCard` is displayed only when the mouse is over the target element or dropdown.
 You can use anchors and buttons within dropdowns, using inputs is not recommended:
 
-<Demo data={HoverCardDemos.profile} />
+<Demo data={HoverCardDemos.interactive} />
+
+## Keyboard interaction
+
+The dropdown opens when the target is hovered or focused. Press Escape to close it.
+
+<Demo data={HoverCardDemos.keyboard} />
+
+## Change events
+
+Use `events` to enable or disable hover, focus, and touch triggers independently.
+
+<Demo data={HoverCardDemos.events} />
+
+## Tooltip role
+
+Set `role="tooltip"` for supplementary descriptive content that does not contain interactive elements.
+
+<Demo data={HoverCardDemos.role} />
 
 ## Accessibility
 
-`HoverCard` is ignored by screen readers and cannot be activated with the keyboard. Use it to display only additional information
-that is not required to understand the context.
+`HoverCard` supports keyboard focus and exposes the dropdown as an accessible popover. The target
+receives `aria-expanded`, `aria-controls`, and `aria-haspopup`, while the dropdown uses
+`role="dialog"`. Press Escape to close an opened card. Use the `events` prop to control hover,
+focus, and touch activation independently.

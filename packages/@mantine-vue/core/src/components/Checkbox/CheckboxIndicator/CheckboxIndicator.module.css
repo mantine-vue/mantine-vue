@@ -71,6 +71,20 @@
   }
 }
 
+.indicator:where([data-variant='light']) {
+  &[data-indeterminate]:not([data-disabled]),
+  &[data-checked]:not([data-disabled]) {
+    background-color: var(--checkbox-bg);
+    border-color: transparent;
+
+    & > .icon {
+      color: var(--checkbox-icon-color);
+      opacity: 1;
+      transform: none;
+    }
+  }
+}
+
 .indicator:where([data-variant='outline']) {
   &[data-indeterminate]:not([data-disabled]),
   &[data-checked]:not([data-disabled]) {

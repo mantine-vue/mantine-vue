@@ -18,6 +18,7 @@ import { card } from './Checkbox.demo.card'
 import { cardGroup } from './Checkbox.demo.cardGroup'
 import { stylesApi } from './Checkbox.demo.stylesApi'
 import { customize } from './Checkbox.demo.customize'
+import { lightVariant } from './Checkbox.demo.lightVariant'
 
 export const CheckboxDemos = {
   configurator,
@@ -40,4 +41,5 @@ export const CheckboxDemos = {
   cardGroup,
   stylesApi,
   customize,
+  lightVariant,
 }

@@ -1,3 +1,7 @@
+<script lang="ts">
+const sharedPortal = { node: null as HTMLElement | null }
+</script>
+
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, ref, useAttrs, watch } from 'vue'
 import type { PortalOwnProps, PortalSlots } from './Portal.types'
@@ -54,9 +58,19 @@ function resolveTarget() {
   }
 
   if (props.reuseTargetNode) {
+    if (sharedPortal.node) {
+      if (document.body.contains(sharedPortal.node)) {
+        node.value = sharedPortal.node
+        return
+      }
+
+      sharedPortal.node = null
+    }
+
     const existingNode = document.querySelector<HTMLElement>('[data-mantine-shared-portal-node]')
 
     if (existingNode) {
+      sharedPortal.node = existingNode
       node.value = existingNode
       return
     }
@@ -64,6 +78,7 @@ function resolveTarget() {
     const sharedNode = createPortalNode()
     sharedNode.setAttribute('data-mantine-shared-portal-node', 'true')
     document.body.appendChild(sharedNode)
+    sharedPortal.node = sharedNode
     node.value = sharedNode
     return
   }

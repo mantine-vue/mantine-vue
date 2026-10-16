@@ -64,7 +64,20 @@
   }
 }
 
-.indicator--outline {
+.indicator:where([data-variant='light']) {
+  &[data-checked]:not([data-disabled]) {
+    background-color: var(--radio-bg);
+    border-color: transparent;
+
+    & > .icon {
+      color: var(--radio-icon-color);
+      opacity: 1;
+      transform: none;
+    }
+  }
+}
+
+.indicator:where([data-variant='outline']) {
   &[data-checked]:not([data-disabled]) {
     background-color: transparent;
     border-color: var(--radio-color);

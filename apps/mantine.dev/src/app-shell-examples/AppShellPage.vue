@@ -15,6 +15,7 @@ import {
   Text,
   Title,
   UnstyledButton,
+  useAppShellResize,
 } from '@mantine-vue/core'
 import { PhArrowLeft, PhCode, PhList, PhSquaresFour } from '@phosphor-icons/vue'
 import PageHead from '@/components/PageHead/PageHead.vue'
@@ -376,6 +377,31 @@ const opened = ref(false)
 </template>`,
   },
   {
+    id: 'ResizableAppShell',
+    name: 'Resizable AppShell',
+    description: 'App shell with mouse, touch and keyboard resize handles',
+    code:
+      `<script setup lang="ts">
+import { ref } from 'vue'
+import { AppShell, Burger, Button, Group, Text, useAppShellResize } from '@mantine-vue/core'
+
+const opened = ref(false)
+const resize = useAppShellResize({
+  navbar: { min: 200, max: 500 },
+  header: { min: 48, max: 120 },
+})
+</` +
+      `script>
+
+<template>
+  <AppShell :header="{ height: 60 }" :navbar="{ width: 300, breakpoint: 'sm', collapsed: { mobile: !opened } }" padding="md" :resize="resize">
+    <AppShell.Header><Group h="100%" px="md" justify="space-between"><Group><Burger :opened="opened" @click="opened = !opened" hidden-from="sm" size="sm" />Drag the bottom edge of this header to resize it</Group><Button variant="default" size="xs" @click="resize.resetAll">Reset layout</Button></Group></AppShell.Header>
+    <AppShell.Navbar p="md">Drag the right edge of the navbar, or focus it and use arrow keys, to resize it.</AppShell.Navbar>
+    <AppShell.Main><Text>This is the main section, your app content here.</Text><Text>Navbar and header can be resized with mouse, touch or keyboard.</Text></AppShell.Main>
+  </AppShell>
+</template>`,
+  },
+  {
     id: 'NestedAppShell',
     name: 'Nested AppShell',
     description: 'Static AppShell nested inside fixed AppShell',
@@ -414,6 +440,10 @@ const mobileOpened = ref(false)
 const desktopOpened = ref(true)
 const disabled = ref(false)
 const pinned = ref(true)
+const resize = useAppShellResize({
+  navbar: { min: 200, max: 500 },
+  header: { min: 48, max: 120 },
+})
 let lastScrollY = 0
 
 const currentState = computed(() => (route.query.s === 'code' ? 'code' : 'demo'))
@@ -767,6 +797,31 @@ onBeforeUnmount(() => {
             Paragraph {{ index }}: This content demonstrates how static mode arranges sections in a
             CSS Grid layout that stays within the normal document flow.
           </Text>
+        </AppShell.Main>
+      </AppShell>
+
+      <AppShell
+        v-else-if="active.id === 'ResizableAppShell'"
+        :header="{ height: 60 }"
+        :navbar="{ width: 300, breakpoint: 'sm', collapsed: { mobile: !opened } }"
+        padding="md"
+        :resize="resize"
+      >
+        <AppShell.Header>
+          <Group h="100%" px="md" justify="space-between">
+            <Group>
+              <Burger :opened="opened" @click="opened = !opened" hidden-from="sm" size="sm" />
+              Drag the bottom edge of this header to resize it
+            </Group>
+            <Button variant="default" size="xs" @click="resize.resetAll">Reset layout</Button>
+          </Group>
+        </AppShell.Header>
+        <AppShell.Navbar p="md">
+          Drag the right edge of the navbar, or focus it and use arrow keys, to resize it.
+        </AppShell.Navbar>
+        <AppShell.Main>
+          <Text>This is the main section, your app content here.</Text>
+          <Text>Navbar and header can be resized with mouse, touch or keyboard.</Text>
         </AppShell.Main>
       </AppShell>
 

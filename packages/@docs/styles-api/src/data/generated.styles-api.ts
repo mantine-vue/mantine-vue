@@ -407,7 +407,7 @@ export const AngleSliderStylesApi: StylesApiData<'label' | 'mark' | 'marks' | 'r
 }
 
 export const AppShellStylesApi: StylesApiData<
-  'aside' | 'footer' | 'header' | 'main' | 'navbar' | 'root' | 'section'
+  'aside' | 'footer' | 'header' | 'main' | 'navbar' | 'resizeHandle' | 'root' | 'section'
 > = {
   selectors: {
     aside: '`AppShell.Aside` root element',
@@ -416,6 +416,7 @@ export const AppShellStylesApi: StylesApiData<
     main: '`AppShell.Main` root element',
     navbar: '`AppShell.Navbar` root element',
     root: 'Root element (`AppShell` component)',
+    resizeHandle: 'Resize handle rendered in resizable sections',
     section: '`AppShell.Section` root element',
   },
   vars: {
@@ -423,6 +424,7 @@ export const AppShellStylesApi: StylesApiData<
       '--app-shell-transition-duration': 'Controls transition duration of all children',
       '--app-shell-transition-timing-function':
         'Controls transition timing function of all children',
+      '--app-shell-resize-handle-size': 'Controls width/height of the resize handle hit area',
     },
   },
   modifiers: [
@@ -450,6 +452,21 @@ export const AppShellStylesApi: StylesApiData<
       modifier: 'data-grow',
       selector: 'section',
       condition: '`grow` prop is set on the `AppShell.Section`',
+    },
+    {
+      modifier: 'data-section',
+      selector: 'resizeHandle',
+      value: 'Section the handle resizes: `navbar`, `aside`, `header` or `footer`',
+    },
+    {
+      modifier: 'data-orientation',
+      selector: 'resizeHandle',
+      value: 'Orientation of the handle: `vertical` or `horizontal`',
+    },
+    {
+      modifier: 'data-active',
+      selector: 'resizeHandle',
+      condition: 'Section is being resized',
     },
   ],
 }
@@ -1174,6 +1191,7 @@ export const CheckboxStylesApi: StylesApiData<
       '--checkbox-icon-color': 'Controls checkbox icon `color`',
       '--checkbox-radius': 'Controls checkbox `border-radius`',
       '--checkbox-size': 'Controls checkbox `width` and `height`',
+      '--checkbox-bg': 'Controls checkbox `background-color` for `light` variant',
     },
   },
   modifiers: [
@@ -1248,6 +1266,7 @@ export const CheckboxIndicatorStylesApi: StylesApiData<'icon' | 'indicator'> = {
       '--checkbox-icon-color': 'Controls checkbox icon `color`',
       '--checkbox-radius': 'Controls checkbox `border-radius`',
       '--checkbox-size': 'Controls checkbox `width` and `height`',
+      '--checkbox-bg': 'Controls checkbox `background-color` for `light` variant',
     },
   },
   modifiers: [
@@ -3984,9 +4003,11 @@ export const NotificationStylesApi: StylesApiData<
   ],
 }
 
-export const NotificationsStylesApi: StylesApiData<'notification' | 'root'> = {
+export const NotificationsStylesApi: StylesApiData<'notification' | 'progress' | 'root'> = {
   selectors: {
     notification: 'Single notification',
+    progress:
+      'Auto close progress line at the bottom of the notification, displayed only when `withAutoCloseProgress` is set',
     root: 'Notifications container, contains all notifications',
   },
   vars: {
@@ -4000,6 +4021,11 @@ export const NotificationsStylesApi: StylesApiData<'notification' | 'root'> = {
       modifier: 'data-layout',
       selector: 'root',
       value: 'Value of the `layout` prop',
+    },
+    {
+      modifier: 'data-paused',
+      selector: 'progress',
+      condition: 'Auto close timer is paused and the progress line is faded out',
     },
   ],
 }
@@ -4397,6 +4423,7 @@ export const RadioStylesApi: StylesApiData<
       '--radio-icon-size': 'Controls radio icon `width` and `height`',
       '--radio-radius': 'Controls radio `border-radius`',
       '--radio-size': 'Controls radio `width` and `height`',
+      '--radio-bg': 'Controls radio `background-color` for `light` variant',
     },
   },
   modifiers: [
@@ -4462,6 +4489,7 @@ export const RadioIndicatorStylesApi: StylesApiData<'icon' | 'indicator'> = {
       '--radio-icon-size': 'Controls radio icon `width` and `height`',
       '--radio-radius': 'Controls radio `border-radius`',
       '--radio-size': 'Controls radio `width` and `height`',
+      '--radio-bg': 'Controls radio `background-color` for `light` variant',
     },
   },
   modifiers: [
@@ -4474,6 +4502,11 @@ export const RadioIndicatorStylesApi: StylesApiData<'icon' | 'indicator'> = {
       modifier: 'data-disabled',
       selector: 'indicator',
       condition: '`disabled` prop is set',
+    },
+    {
+      modifier: 'data-variant',
+      selector: 'indicator',
+      value: 'Value of the `variant` prop',
     },
   ],
 }
@@ -7250,5 +7283,160 @@ export const YearViewStylesApi: StylesApiData<
       selector: 'yearView',
       condition: '`mode="static"` is set',
     },
+  ],
+}
+
+export const JsonViewerStylesApi: StylesApiData<
+  | 'bracket'
+  | 'content'
+  | 'control'
+  | 'controls'
+  | 'copyAllButton'
+  | 'copyButton'
+  | 'ellipsis'
+  | 'key'
+  | 'lineNumbers'
+  | 'node'
+  | 'root'
+  | 'row'
+  | 'scrollarea'
+  | 'size'
+  | 'toggle'
+  | 'type'
+  | 'value'
+  | 'wrapper'
+> = {
+  selectors: {
+    root: 'Root element',
+    node: 'Container for a single tree node',
+    toggle: 'Expand/collapse chevron icon',
+    key: 'Object key label',
+    value: 'Primitive value display',
+    bracket: 'Opening/closing brackets',
+    type: 'Type badge',
+    size: 'Item/key count label',
+    ellipsis: 'Collapsed content indicator',
+    copyButton: 'Copy to clipboard button',
+    content: 'Content wrapper with padding',
+    row: 'Single row wrapper for a node',
+    scrollarea: 'Scroll area wrapper',
+    lineNumbers: 'Line numbers column',
+    wrapper: 'Flex wrapper around line numbers and content',
+    copyAllButton: 'Copy all JSON button',
+    controls: 'Expand all / collapse all controls container',
+    control: 'Expand all / collapse all button',
+  },
+  vars: {
+    root: {
+      '--jv-radius': 'Border radius',
+      '--jv-fz': 'Font size',
+      '--jv-indent': 'Indent width per nesting level',
+    },
+  },
+  modifiers: [
+    { modifier: 'data-with-border', selector: 'root', condition: '`withBorder` prop is set' },
+    { modifier: 'data-type', selector: 'node', value: 'Node value type' },
+    { modifier: 'data-highlight', selector: 'node', value: '`added` or `removed`' },
+    { modifier: 'data-root', selector: 'row', condition: 'Root node row' },
+    { modifier: 'data-hoverable', selector: 'row', condition: 'Row is interactive' },
+    { modifier: 'data-expanded', selector: 'toggle', condition: 'Node is expanded' },
+    { modifier: 'data-value-type', selector: 'value', value: 'Primitive value type' },
+    { modifier: 'data-wrap', selector: 'value', condition: 'Long string is collapsed' },
+  ],
+}
+
+export const ToggleStylesApi: StylesApiData<'root'> = {
+  selectors: { root: 'Root element' },
+  vars: {
+    root: {
+      '--toggle-size': 'Controls toggle height and minimum width',
+      '--toggle-radius': 'Controls border radius',
+      '--toggle-active-bg': 'Controls active background color',
+      '--toggle-active-hover': 'Controls active hover background color',
+      '--toggle-active-color': 'Controls active text color',
+    },
+  },
+  modifiers: [
+    { modifier: 'data-active', selector: 'root', condition: 'Toggle is active' },
+    { modifier: 'data-disabled', selector: 'root', condition: '`disabled` prop is set' },
+    { modifier: 'data-auto-width', selector: 'root', condition: '`autoWidth` prop is set' },
+  ],
+}
+
+export const ToolbarStylesApi: StylesApiData<'divider' | 'group' | 'root' | 'toggle'> = {
+  selectors: {
+    root: 'Root element',
+    group: '`Toolbar.Group` and `Toolbar.ToggleGroup` root element',
+    toggle: '`Toolbar.Toggle` and `Toolbar.ToggleItem` root element',
+    divider: '`Toolbar.Divider` root element',
+  },
+  vars: {
+    root: {
+      '--toolbar-toggle-size': 'Controls toggle height and minimum width',
+      '--toolbar-padding': 'Controls toolbar padding',
+      '--toolbar-gap': 'Controls gap between toolbar items',
+      '--toolbar-radius': 'Controls border radius',
+    },
+    toggle: {
+      '--toolbar-toggle-active-bg': 'Controls active background color',
+      '--toolbar-toggle-active-hover': 'Controls active hover background color',
+      '--toolbar-toggle-active-color': 'Controls active text color',
+    },
+  },
+  modifiers: [
+    { modifier: 'data-orientation', selector: ['root', 'group', 'divider'], value: 'Orientation' },
+    { modifier: 'data-with-border', selector: 'root', condition: '`withBorder` prop is set' },
+    { modifier: 'data-active', selector: 'toggle', condition: 'Toggle is active' },
+    { modifier: 'data-disabled', selector: 'toggle', condition: 'Toggle is disabled' },
+    { modifier: 'data-auto-width', selector: 'toggle', condition: '`autoWidth` prop is set' },
+  ],
+}
+
+export const TourStylesApi: StylesApiData<
+  | 'beacon'
+  | 'beaconPulse'
+  | 'body'
+  | 'closeButton'
+  | 'navigation'
+  | 'navigationButton'
+  | 'overlay'
+  | 'root'
+  | 'spotlight'
+  | 'stepCounter'
+  | 'title'
+  | 'tooltip'
+> = {
+  selectors: {
+    root: 'Root element',
+    overlay: 'Overlay that dims the page',
+    spotlight: 'Cutout that highlights the current target',
+    tooltip: 'Floating current-step content',
+    title: 'Step title',
+    body: 'Step body content',
+    navigation: 'Navigation container',
+    navigationButton: 'Previous and next buttons',
+    closeButton: 'Close button',
+    stepCounter: 'Current step counter',
+    beacon: 'Pulsing target marker',
+    beaconPulse: 'Animated beacon ring',
+  },
+  vars: {
+    root: {
+      '--tour-z-index': 'Controls z-index',
+      '--tour-overlay-color': 'Controls overlay fill color',
+      '--tour-tooltip-radius': 'Controls tooltip border radius',
+      '--tour-tooltip-shadow': 'Controls tooltip shadow',
+      '--tour-beacon-size': 'Controls beacon size',
+      '--tour-beacon-color': 'Controls beacon background color',
+      '--tour-color': 'Color set with the `color` prop',
+    },
+  },
+  modifiers: [
+    {
+      modifier: 'data-with-overlay-interaction',
+      selector: 'overlay',
+      condition: '`withOverlayInteraction` prop is set',
+    },
+    { modifier: 'data-centered', selector: 'tooltip', condition: 'Step has no target' },
   ],
 }

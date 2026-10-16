@@ -231,6 +231,15 @@
       border: 1px solid var(--mantine-color-blue-4);
       border-radius: 2px;
     }
+
+    &:where([data-invalid]) {
+      background-color: transparent;
+
+      &::before {
+        border-color: var(--mantine-color-error);
+        opacity: 0.6;
+      }
+    }
   }
   &:where([data-drag-selected]) {
     &,

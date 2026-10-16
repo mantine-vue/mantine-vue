@@ -28,6 +28,10 @@ export function useDebouncedState<T>(
     if (options.leading && !leadingCalled) {
       value.value = next
       leadingCalled = true
+      clear()
+      timeout = setTimeout(() => {
+        leadingCalled = false
+      }, wait)
     } else {
       clear()
       timeout = setTimeout(() => {

@@ -10,6 +10,7 @@ import { transitions } from './Tooltip.demo.transitions'
 import { delay } from './Tooltip.demo.delay'
 import { group } from './Tooltip.demo.group'
 import { floating } from './Tooltip.demo.floating'
+import { hideDetached } from './Tooltip.demo.hideDetached'
 
 export const TooltipDemos = {
   usage,
@@ -24,4 +25,5 @@ export const TooltipDemos = {
   delay,
   group,
   floating,
+  hideDetached,
 }

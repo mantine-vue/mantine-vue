@@ -20,7 +20,11 @@ function getInitialMediaQueryValue(query: string, initialValue?: boolean) {
   }
 
   if (typeof window !== 'undefined' && typeof window.matchMedia === 'function') {
-    return window.matchMedia(query).matches
+    try {
+      return window.matchMedia(query).matches
+    } catch {
+      return false
+    }
   }
 
   return false

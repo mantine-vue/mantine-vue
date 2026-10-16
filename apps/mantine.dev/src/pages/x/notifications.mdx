@@ -234,6 +234,44 @@ Use the `notifications.cleanQueue` function to remove all notifications from the
 
 <Demo data={NotificationsDemos.update} />
 
+## Promise
+
+Use `notifications.promise` to display a loading notification while a promise is pending and
+update it with a success or error state once the promise settles. The function accepts a promise
+and an object with `loading`, `success` and `error` notifications. `success` and `error` can be
+functions – they receive the resolved value or the rejection reason and return notification props.
+
+State objects accept all [notification props](#notification-props) except `id`.
+`notifications.promise` applies the following defaults, all of which can be overridden in the
+corresponding state object:
+
+- `loading` – `loading: true`, `autoClose: false`
+- `success` – `color: 'teal'`, `loading: false`, `autoClose` is reset to the default value
+- `error` – `color: 'red'`, `loading: false`, `autoClose` is reset to the default value
+
+All three states are displayed in the same notification. Props that are not set in the next state
+are kept from the previous one. For example, if `title` is set only in `loading`, it is also displayed
+in `success` and `error` states.
+
+<Demo data={NotificationsDemos.promise} />
+
+`notifications.promise` returns the promise that was passed to it, so you can await it or chain it.
+If the loading notification was closed before the promise settled, the `success` or `error` state is
+shown as a new notification. Use the `id` option to reuse the same notification for consecutive calls –
+when `notifications.promise` is called with the same `id` while the previous promise is still pending,
+the result of the previous promise is ignored:
+
+```ts
+import { notifications } from '@mantine-vue/notifications'
+
+const user = await notifications.promise(saveUser(values), {
+  id: 'save-user',
+  loading: { message: 'Saving user' },
+  success: (savedUser) => ({ message: `${savedUser.name} was saved` }),
+  error: { message: 'Failed to save user' },
+})
+```
+
 ## Auto close
 
 You can configure the auto close timeout with `Notifications`:
@@ -269,6 +307,31 @@ notifications.update({
 `notifications.show` and `notifications.update` functions' `autoClose` prop has higher priority.
 
 <Demo data={NotificationsDemos.autoclose} />
+
+## Auto close progress
+
+Set `withAutoCloseProgress` on `Notifications` to display a progress line at the bottom of every
+notification that auto closes. The line fills over the auto-close timeout and reaches 100% right
+before the notification closes:
+
+```vue
+<template>
+  <Notifications with-auto-close-progress />
+</template>
+```
+
+The `Notifications` prop sets the default for all notifications. Override it for an individual
+notification with `withAutoCloseProgress` in `notifications.show` or `notifications.update`.
+
+Note that:
+
+- The progress line is not displayed for notifications with `autoClose: false`
+- The progress line fades out while the auto-close timer is paused and fades back in, starting over, when it restarts
+- The progress line uses the notification `color`
+- The progress line is part of the default rendering and is not displayed with `renderNotification`
+- Use the `progress` [Styles API](/styles/styles-api/) selector of `Notifications` to customize it
+
+<Demo data={NotificationsDemos.autoCloseProgress} />
 
 ## Pause auto close on hover
 

@@ -14,6 +14,10 @@ import type {
   DateTimeStringValue,
   DayOfWeek,
   ScheduleEventData,
+  ScheduleEventPlacementRejectedData,
+  ScheduleCanDropEventData,
+  ScheduleCanDropExternalEventData,
+  PreventEventOverlap,
 } from '../../types'
 import type {
   MoreEventsEmits,
@@ -132,6 +136,13 @@ export interface MonthViewOwnProps extends BaseViewOwnProps, StylesApiProps<Mont
    */
   canDragEvent?: (event: ScheduleEventData) => boolean
 
+  /** Called while an event is dragged over a target to compute live feedback and again before the drop is committed, return `false` to reject the drop. Must be pure and cheap. */
+  canDropEvent?: (data: ScheduleCanDropEventData) => boolean
+  /** Called while an external item is dragged over a target to compute live feedback and again before the drop is committed, return `false` to reject the drop. Must be pure and cheap. Only `dataTransfer.types` can be read while the drag is in progress. */
+  canDropExternalEvent?: (data: ScheduleCanDropExternalEventData) => boolean
+  /** If set, drops that would make the event overlap another event are rejected. Pass a function to decide per pair of events: return `true` to forbid the overlap. The function runs while dragging to compute live feedback, it must be pure and cheap. @default false */
+  preventEventOverlap?: PreventEventOverlap
+
   /**
    * If set, items dragged in from outside the schedule can be dropped on a day, which emits
    * `externalEventDrop`. Enabling event drag and drop turns this on as well.
@@ -179,6 +190,9 @@ export interface MonthViewEmits extends BaseViewEmits {
 
   /** Emitted when a day range is selected by dragging. */
   slotDragEnd: [rangeStart: DateTimeStringValue, rangeEnd: DateTimeStringValue]
+
+  /** Emitted when a drop is rejected. */
+  eventPlacementRejected: [data: ScheduleEventPlacementRejectedData]
 }
 
 export type MonthViewFactory = Factory<{

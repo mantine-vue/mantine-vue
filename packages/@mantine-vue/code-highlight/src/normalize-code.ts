@@ -8,5 +8,7 @@ export function normalizeCode(
   code: string,
   { withFirstLineIndentation }: NormalizeCodeOptions = {},
 ) {
-  return withFirstLineIndentation ? code.replace(/^(?:[^\S\r\n]*\r?\n)+|\s+$/g, '') : code.trim()
+  return withFirstLineIndentation
+    ? code.replace(/^(?:[^\S\r\n]*\r?\n)+/, '').trimEnd()
+    : code.trim()
 }

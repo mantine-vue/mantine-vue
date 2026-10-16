@@ -41,6 +41,16 @@ const date = computed(() => (value.value ? dayjs(value.value).format('YYYY-MM-DD
 const time = computed(() =>
   value.value ? dayjs(value.value).format(props.withSeconds ? 'HH:mm:ss' : 'HH:mm') : '',
 )
+const minTime = computed(() =>
+  value.value && props.minDate && dayjs(value.value).isSame(props.minDate, 'day')
+    ? dayjs(props.minDate).format('HH:mm:ss')
+    : undefined,
+)
+const maxTime = computed(() =>
+  value.value && props.maxDate && dayjs(value.value).isSame(props.maxDate, 'day')
+    ? dayjs(props.maxDate).format('HH:mm:ss')
+    : undefined,
+)
 const forwardedHoursRef = { value: null as any }
 function updateDate(next: DatePickerValueType) {
   if (!next || Array.isArray(next)) return
@@ -58,12 +68,20 @@ function submit(event: MouseEvent) {
 
 <template>
   <div v-bind="attrs" :class="[classes.dateTimePicker, attrs.class]">
-    <DatePicker :full-width="props.fullWidth" :model-value="date" @change="updateDate" />
+    <DatePicker
+      :full-width="props.fullWidth"
+      :model-value="date"
+      :min-date="props.minDate"
+      :max-date="props.maxDate"
+      @change="updateDate"
+    />
     <div :class="classes.timeWrapper">
       <div :class="classes.timeInput">
         <TimePicker
           :model-value="time"
           :with-seconds="props.withSeconds"
+          :min="minTime"
+          :max="maxTime"
           :size="props.size"
           :hours-ref="forwardedHoursRef"
           @change="updateTime"

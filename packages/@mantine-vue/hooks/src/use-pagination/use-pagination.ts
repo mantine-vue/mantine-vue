@@ -56,7 +56,7 @@ export function usePagination({
     const leftSiblingIndex = Math.max(active.value - siblings, start.value + boundaries - 1)
     const rightSiblingIndex = Math.min(active.value + siblings, end.value - boundaries)
     const shouldShowLeftDots = leftSiblingIndex > start.value + boundaries + 1
-    const shouldShowRightDots = rightSiblingIndex < end.value - boundaries
+    const shouldShowRightDots = rightSiblingIndex < end.value - (boundaries + 1)
 
     if (!shouldShowLeftDots && shouldShowRightDots) {
       const leftItemCount = siblings * 2 + boundaries + 2

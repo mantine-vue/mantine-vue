@@ -6,6 +6,7 @@ export type {
   TreeSelectOptionProps,
   TreeSelectProps,
   TreeSelectRenderNodePayload,
+  TreeSelectRenderPillPayload,
   TreeSelectSlots,
   TreeSelectValue,
 } from './TreeSelect'

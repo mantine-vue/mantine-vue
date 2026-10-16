@@ -16,6 +16,7 @@ const defaults = {
   zIndex: getDefaultZIndex('popover'),
   middlewares: { flip: true, shift: true, inline: false },
   floatingStrategy: 'absolute',
+  hideDetached: true,
 } as const
 
 /** Module scope: created once, not per component instance. */
@@ -143,6 +144,7 @@ const tooltip = useTooltip({
   events: () => props.events ?? { hover: true, focus: false, touch: false },
   strategy: () => props.floatingStrategy ?? 'absolute',
   middlewares: () => props.middlewares,
+  hideDetached: () => props.hideDetached,
   onPositionChange: (position) => emit('position-change', position),
 })
 
@@ -260,6 +262,7 @@ const tooltipStyles = (transitionStyle: any) =>
         zIndex: props.zIndex,
         top: `${tooltip.y.value ?? 0}px`,
         left: `${tooltip.x.value ?? 0}px`,
+        display: tooltip.referenceHidden.value ? 'none' : undefined,
       },
     ],
   })

@@ -202,6 +202,7 @@ const renderLabel = () => (props.formatLabel ? props.formatLabel(value.value) : 
       :aria-valuemax="360"
       :aria-valuemin="0"
       :aria-valuenow="value"
+      :aria-disabled="props.disabled || undefined"
       :aria-label="thumbAriaLabel"
       @keydown="handleKeyDown"
     />

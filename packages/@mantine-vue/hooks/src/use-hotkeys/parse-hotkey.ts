@@ -114,16 +114,16 @@ type HotkeyItemTuple = [string, (event: any) => void, HotkeyItemOptions?]
 
 export function getHotkeyHandler(hotkeys: HotkeyItemTuple[]) {
   return (event: KeyboardEvent) => {
-    hotkeys.forEach(
-      ([hotkey, handler, options = { preventDefault: true, usePhysicalKeys: false }]) => {
-        if (getHotkeyMatcher(hotkey, options.usePhysicalKeys)(event)) {
-          if (options.preventDefault) {
-            event.preventDefault()
-          }
+    hotkeys.forEach(([hotkey, handler, options]) => {
+      const { preventDefault = true, usePhysicalKeys = false } = options || {}
 
-          handler(event)
+      if (getHotkeyMatcher(hotkey, usePhysicalKeys)(event)) {
+        if (preventDefault) {
+          event.preventDefault()
         }
-      },
-    )
+
+        handler(event)
+      }
+    })
   }
 }

@@ -7,6 +7,8 @@ import type {
   AppShellNavbarConfiguration,
   AppShellResponsiveSize,
   AppShellSize,
+  AppShellResizeSection,
+  AppShellResizeSizes,
 } from '../AppShell.types'
 import { getVariables } from './get-variables'
 export const AppShellMediaStyles = defineComponent({
@@ -19,6 +21,10 @@ export const AppShellMediaStyles = defineComponent({
     padding: [String, Number, Object] as PropType<AppShellSize | AppShellResponsiveSize>,
     mode: { type: String as PropType<'fixed' | 'static'>, required: true },
     selector: String,
+    resize: Object as PropType<{
+      sizes: AppShellResizeSizes
+      enabled: Partial<Record<AppShellResizeSection, boolean>>
+    }>,
   },
   setup(props) {
     const theme = useMantineTheme()

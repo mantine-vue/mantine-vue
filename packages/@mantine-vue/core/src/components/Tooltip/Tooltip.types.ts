@@ -220,4 +220,7 @@ export interface TooltipProps extends TooltipBaseProps {
    * default slot when the target is not a child of the tooltip.
    */
   target?: any
+
+  /** If set, the tooltip is hidden when its target is detached, hidden, or outside the visible area. @default true */
+  hideDetached?: boolean
 }

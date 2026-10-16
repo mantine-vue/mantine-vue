@@ -729,6 +729,21 @@ const routes: RouteRecordRaw[] = [
     component: mdxRoute(() => import('./pages/core/action-bar.mdx')),
   },
   {
+    path: '/core/toggle',
+    name: 'core-toggle',
+    component: mdxRoute(() => import('./pages/core/toggle.mdx')),
+  },
+  {
+    path: '/core/toolbar',
+    name: 'core-toolbar',
+    component: mdxRoute(() => import('./pages/core/toolbar.mdx')),
+  },
+  {
+    path: '/core/tour',
+    name: 'core-tour',
+    component: mdxRoute(() => import('./pages/core/tour.mdx')),
+  },
+  {
     path: '/x/nprogress',
     name: 'x-nprogress',
     component: mdxRoute(() => import('./pages/x/nprogress.mdx')),
@@ -787,6 +802,11 @@ const routes: RouteRecordRaw[] = [
     path: '/x/code-highlight',
     name: 'x-code-highlight',
     component: mdxRoute(() => import('./pages/x/code-highlight.mdx')),
+  },
+  {
+    path: '/x/json-viewer',
+    name: 'x-json-viewer',
+    component: mdxRoute(() => import('./pages/x/json-viewer.mdx')),
   },
   { path: '/whatsapp-inbox', redirect: '/whatsapp-inbox/getting-started' },
   {

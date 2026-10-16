@@ -9,7 +9,7 @@ import type {
   Factory,
 } from '../../../core'
 
-export type CheckboxIndicatorVariant = 'filled' | 'outline'
+export type CheckboxIndicatorVariant = 'filled' | 'outline' | 'light'
 
 /** Props declared by `CheckboxIndicator` itself. See `CheckboxIndicatorProps` for the full public type. */
 export interface CheckboxIndicatorOwnProps extends StylesApiProps<CheckboxIndicatorFactory> {
@@ -85,7 +85,12 @@ export interface CheckboxIndicatorProps
 export type CheckboxIndicatorStylesNames = 'icon' | 'indicator'
 
 export type CheckboxIndicatorCssVariables = {
-  indicator: '--checkbox-size' | '--checkbox-radius' | '--checkbox-color' | '--checkbox-icon-color'
+  indicator:
+    | '--checkbox-size'
+    | '--checkbox-radius'
+    | '--checkbox-color'
+    | '--checkbox-icon-color'
+    | '--checkbox-bg'
 }
 
 export type CheckboxIndicatorFactory = Factory<{

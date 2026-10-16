@@ -583,6 +583,10 @@ export interface DateTimePickerProps extends PickerInputBaseProps {
   submitButtonProps?: ControlProps
   /** Determines whether the picker should take the full width of its container @default false */
   fullWidth?: boolean
+  /** Earliest selectable date and time. */
+  minDate?: string | Date
+  /** Latest selectable date and time. */
+  maxDate?: string | Date
 }
 /** Props accepted by the compact multi-day calendar. */
 export interface MiniCalendarProps extends DatesStyleProps {

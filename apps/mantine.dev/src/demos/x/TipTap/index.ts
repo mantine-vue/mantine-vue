@@ -13,6 +13,7 @@ import { icons } from './TipTap.demo.icons'
 import { table } from './TipTap.demo.table'
 import { details } from './TipTap.demo.details'
 import { invisibleCharacters } from './TipTap.demo.invisibleCharacters'
+import { imageUpload, imageUploadError } from './TipTap.demo.imageUpload'
 
 export const TipTapDemos = {
   usage,
@@ -30,4 +31,6 @@ export const TipTapDemos = {
   table,
   details,
   invisibleCharacters,
+  imageUpload,
+  imageUploadError,
 }

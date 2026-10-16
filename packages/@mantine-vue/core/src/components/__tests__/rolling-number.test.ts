@@ -102,7 +102,8 @@ describe('@mantine-vue/core RollingNumber', () => {
     const wrapper = withProvider({ value: 5 })
     const column = wrapper.find('.mantine-RollingNumber-digitColumn')
 
-    expect(column.attributes('style')).toContain('transform: translateY(-5em)')
+    expect(column.attributes('style')).toContain('top: -5em')
+    expect(column.element.style.transform).toBe('')
     expect(column.findAll('span').map((node) => node.text())).toEqual([
       '0',
       '1',

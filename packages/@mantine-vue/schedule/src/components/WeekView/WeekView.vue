@@ -43,7 +43,7 @@ export { defaultProps, varsResolver, ALL_DAY_ROW_HEIGHT }
 
 <script setup lang="ts">
 import dayjs from 'dayjs'
-import { computed, nextTick, onMounted, ref, useAttrs, useSlots } from 'vue'
+import { computed, nextTick, onMounted, ref, shallowRef, useAttrs, useSlots } from 'vue'
 import { Box, ScrollArea, UnstyledButton, useProps, useStyles } from '@mantine-vue/core'
 import { useEventResize } from '../../hooks/use-event-resize'
 import { getLabel } from '../../labels'
@@ -59,6 +59,7 @@ import {
   getDayTimeIntervals,
   getWeekDays,
   getWeekNumber,
+  isEventPlacementAllowed,
 } from '../../utils'
 import { CurrentTimeIndicator } from '../CurrentTimeIndicator'
 import { ScheduleBackgroundEvent } from '../ScheduleBackgroundEvent'
@@ -186,6 +187,7 @@ const setWeekRoot = (node: Element | null) => {
 const daySlotsContainers = new Map<string, HTMLElement>()
 
 const slotDropTarget = useSlotDropTarget()
+const dropDataTransfer = shallowRef<DataTransfer | null>(null)
 
 const isStatic = computed(() => props.mode === 'static')
 
@@ -329,6 +331,10 @@ const eventResize = useEventResize({
   resizeIntervalMinutes: () => props.eventResizeInterval,
   onEventResize: (data) => emit('eventResize', data),
   canResizeEvent: () => props.canResizeEvent,
+  events: () => expandedEvents.value,
+  preventEventOverlap: () => props.preventEventOverlap,
+  canResizeEventTo: () => props.canResizeEventTo,
+  onEventPlacementRejected: (data) => emit('eventPlacementRejected', data),
   withBackgroundEvents: () => Boolean(props.withInteractiveBackgroundEvents),
 })
 
@@ -385,8 +391,36 @@ const dragState = provideScheduleDragState({
   isSlotDragging: () => slotDragSelect.isDragging(),
   onDragEnd: () => {
     slotDropTarget.reset()
+    dropDataTransfer.value = null
     emit('eventDragEnd')
   },
+})
+
+const dropValid = computed(() => {
+  const target = slotDropTarget.dropTarget.value
+  const interval = target && intervals.value[target.slotIndex]
+  if (!target || !interval) return true
+
+  const start = `${target.date} ${interval.startTime}` as DateTimeStringValue
+  const event = dragState.draggedEvent.value
+  if (event) {
+    const next = moveEventTo(event, start)
+    const validation = isEventPlacementAllowed({
+      event,
+      start: next.newStart,
+      end: next.newEnd,
+      events: expandedEvents.value,
+      preventEventOverlap: props.preventEventOverlap,
+    })
+    return (
+      validation.allowed &&
+      props.canDropEvent?.({ event, start: next.newStart, end: next.newEnd }) !== false
+    )
+  }
+
+  return dropDataTransfer.value
+    ? props.canDropExternalEvent?.({ dataTransfer: dropDataTransfer.value, start }) !== false
+    : true
 })
 
 const clickEvent = (event: ScheduleEventData, nativeEvent: MouseEvent) =>
@@ -503,9 +537,41 @@ const emitDrop = (nativeEvent: DragEvent, target: DateTimeStringValue) => {
   const event = getDropEvent(expandedEvents.value, nativeEvent.dataTransfer)
 
   if (event) {
-    emit('eventDrop', moveEventTo(event, target))
+    const next = moveEventTo(event, target)
+    const validation = isEventPlacementAllowed({
+      event,
+      start: next.newStart,
+      end: next.newEnd,
+      events: expandedEvents.value,
+      preventEventOverlap: props.preventEventOverlap,
+    })
+    const accepted =
+      validation.allowed &&
+      props.canDropEvent?.({ event, start: next.newStart, end: next.newEnd }) !== false
+    if (accepted) emit('eventDrop', next)
+    else
+      emit('eventPlacementRejected', {
+        action: 'drop',
+        event,
+        start: next.newStart,
+        end: next.newEnd,
+        conflicts: validation.conflicts,
+        reason: validation.allowed ? 'rejected' : 'overlap',
+      })
   } else if (nativeEvent.dataTransfer) {
-    emit('externalEventDrop', nativeEvent.dataTransfer, target)
+    if (
+      props.canDropExternalEvent?.({ dataTransfer: nativeEvent.dataTransfer, start: target }) !==
+      false
+    )
+      emit('externalEventDrop', nativeEvent.dataTransfer, target)
+    else
+      emit('eventPlacementRejected', {
+        action: 'external-drop',
+        dataTransfer: nativeEvent.dataTransfer,
+        start: target,
+        conflicts: [],
+        reason: 'rejected',
+      })
   }
 }
 
@@ -515,9 +581,42 @@ const emitAllDayDrop = (nativeEvent: DragEvent, date: string) => {
   const event = getDropEvent(expandedEvents.value, nativeEvent.dataTransfer)
 
   if (event) {
-    emit('eventDrop', moveEventToAllDay(event, dayKey))
+    const next = moveEventToAllDay(event, dayKey)
+    const validation = isEventPlacementAllowed({
+      event,
+      start: next.newStart,
+      end: next.newEnd,
+      events: expandedEvents.value,
+      preventEventOverlap: props.preventEventOverlap,
+    })
+    const accepted =
+      validation.allowed &&
+      props.canDropEvent?.({ event, start: next.newStart, end: next.newEnd }) !== false
+    if (accepted) emit('eventDrop', next)
+    else
+      emit('eventPlacementRejected', {
+        action: 'drop',
+        event,
+        start: next.newStart,
+        end: next.newEnd,
+        conflicts: validation.conflicts,
+        reason: validation.allowed ? 'rejected' : 'overlap',
+      })
   } else if (nativeEvent.dataTransfer) {
-    emit('externalEventDrop', nativeEvent.dataTransfer, `${dayKey} 00:00:00` as DateTimeStringValue)
+    const target = `${dayKey} 00:00:00` as DateTimeStringValue
+    if (
+      props.canDropExternalEvent?.({ dataTransfer: nativeEvent.dataTransfer, start: target }) !==
+      false
+    )
+      emit('externalEventDrop', nativeEvent.dataTransfer, target)
+    else
+      emit('eventPlacementRejected', {
+        action: 'external-drop',
+        dataTransfer: nativeEvent.dataTransfer,
+        start: target,
+        conflicts: [],
+        reason: 'rejected',
+      })
   }
 }
 
@@ -531,14 +630,17 @@ const dropInput = (date: string) => ({
   endTime: props.endTime,
 })
 
-const handleDayDragOver = (nativeEvent: DragEvent, date: string) =>
+const handleDayDragOver = (nativeEvent: DragEvent, date: string) => {
+  dropDataTransfer.value = nativeEvent.dataTransfer
   slotDropTarget.dragOver(nativeEvent, dropInput(date))
+}
 
 const handleDayDragLeave = (nativeEvent: DragEvent, date: string) =>
   slotDropTarget.dragLeave(nativeEvent, daySlotsContainers.get(date))
 
 const handleDayDrop = (nativeEvent: DragEvent, date: string) => {
   const target = slotDropTarget.drop(nativeEvent, dropInput(date))
+  dropDataTransfer.value = null
 
   if (target) {
     emitDrop(nativeEvent, target.target)
@@ -767,6 +869,9 @@ const isDraggableEvent = (event: ScheduleEventData) =>
                 :data-drag-slot-index="withSlotSelect ? slotIndex : undefined"
                 :data-drag-slot-group="withSlotSelect ? column.key : undefined"
                 :data-drop-target="slotDropTarget.isTarget(column.key, slotIndex) || undefined"
+                :data-invalid="
+                  slotDropTarget.isTarget(column.key, slotIndex) && !dropValid ? true : undefined
+                "
                 :data-drag-selected="
                   slotDragSelect.isSlotSelected(slotIndex, column.key) || undefined
                 "
@@ -812,7 +917,12 @@ const isDraggableEvent = (event: ScheduleEventData) =>
                 :event="event"
                 auto-size
                 :mode="props.mode"
-                :mod="{ cascade: props.eventOverlapMode === 'cascade' }"
+                :mod="{
+                  cascade: props.eventOverlapMode === 'cascade',
+                  invalid:
+                    eventResize.getResizePosition(event.id) !== null &&
+                    !eventResize.resizeValid.value,
+                }"
                 :style="regularEventStyle(event)"
                 :draggable="isDraggableEvent(event)"
                 :with-resize="eventResize.isResizableEvent(event)"

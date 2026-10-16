@@ -7,6 +7,7 @@ export function useHoverCard(settings: {
   defaultOpened?: boolean
   onOpen?: () => void
   onClose?: () => void
+  onDismiss?: () => void
 }) {
   const group = inject(HoverCardGroupKey, { withinGroup: false, openDelay: 0, closeDelay: 0 })
   const opened = ref(!!settings.defaultOpened)
@@ -38,6 +39,15 @@ export function useHoverCard(settings: {
     if (delay) closeTimer = setTimeout(() => change(false), delay)
     else change(false)
   }
+  const closeImmediately = () => {
+    clear()
+    change(false)
+  }
+  const dismiss = () => {
+    const wasOpened = opened.value
+    closeImmediately()
+    if (wasOpened) settings.onDismiss?.()
+  }
   // When the hovercard is open, watch the target element: if it becomes
   // disconnected from the DOM or is hidden (no client rects), close the
   // dropdown so it does not linger without a visible anchor.
@@ -68,5 +78,5 @@ export function useHoverCard(settings: {
     clear()
     stopObserver()
   })
-  return { opened, openDropdown, closeDropdown, assignTarget }
+  return { opened, openDropdown, closeDropdown, closeImmediately, dismiss, assignTarget }
 }

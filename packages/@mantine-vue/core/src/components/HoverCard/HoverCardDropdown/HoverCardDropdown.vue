@@ -16,16 +16,22 @@ const ctx = useHoverCardContext()
  * no dedicated callback prop is needed to let internal logic hook in as well.
  */
 function handleMouseenter() {
-  ctx.openDropdown()
+  if (ctx.events.hover) ctx.openDropdown()
 }
 
 function handleMouseleave() {
-  ctx.closeDropdown()
+  if (ctx.events.hover) ctx.closeDropdown()
 }
 </script>
 
 <template>
-  <PopoverDropdown v-bind="attrs" @mouseenter="handleMouseenter" @mouseleave="handleMouseleave">
+  <PopoverDropdown
+    v-bind="attrs"
+    :id="ctx.withRoles ? ctx.dropdownId : attrs.id"
+    :role="ctx.withRoles ? ctx.role : attrs.role"
+    @mouseenter="handleMouseenter"
+    @mouseleave="handleMouseleave"
+  >
     <slot />
   </PopoverDropdown>
 </template>

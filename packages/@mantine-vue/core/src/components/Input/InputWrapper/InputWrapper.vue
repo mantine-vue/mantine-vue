@@ -126,7 +126,7 @@ provideInputWrapperContext({
     return ids.value.inputId
   },
   get labelId() {
-    return ids.value.labelId
+    return labelContent.value && order.value.includes('label') ? ids.value.labelId : undefined
   },
   get offsetBottom() {
     return offsets.value.offsetBottom

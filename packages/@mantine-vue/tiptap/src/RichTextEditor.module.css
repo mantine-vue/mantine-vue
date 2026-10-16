@@ -16,6 +16,51 @@
   }
 }
 
+:global(.mantine-upload-image-wrapper) {
+  position: relative;
+  display: block;
+  width: fit-content;
+
+  &:where([data-uploading]) {
+    opacity: 0.6;
+
+    &::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border: 2px solid var(--mantine-primary-color-filled);
+      border-radius: var(--mantine-radius-sm);
+      animation: mantine-upload-image-pulse 1s ease-in-out infinite alternate;
+      pointer-events: none;
+    }
+  }
+
+  &:where([data-upload-error]) {
+    opacity: 0.5;
+    filter: grayscale(1);
+
+    &::after {
+      content: '!';
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      color: var(--mantine-color-red-filled);
+      font-size: 32px;
+      font-weight: 700;
+    }
+  }
+}
+
+@keyframes mantine-upload-image-pulse {
+  from {
+    opacity: 0.35;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
 .Typography {
   padding: 0;
   margin: 0;

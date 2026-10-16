@@ -199,6 +199,82 @@ To use tasks, you will need to install additional packages:
 
 <Demo data={TipTapDemos.tasks} />
 
+## Image upload
+
+To use image upload, install the Tiptap image extension:
+
+<InstallScript packages="@tiptap/extension-image" />
+
+Use `getUploadImageExtension` from `@mantine-vue/tiptap` to create a Tiptap extension that supports
+image uploads with loading states. The first argument is the `@tiptap/extension-image` default
+export and the second argument is an options object:
+
+- `onImageUpload` – required, receives a `File` and returns a promise that resolves to the uploaded image URL or to an object with `src` and optional `alt` and `title` attributes
+- `onImageUploadError` – optional, called with the file and the error when the upload fails
+- `shouldUploadPastedImage` – optional, decides which images in pasted HTML are uploaded; see [pasted HTML content](#pasted-html-content)
+
+Images can be added with:
+
+- the `RichTextEditor.ImageUpload` toolbar control, which opens a file picker
+- drag and drop into the editor
+- paste from the clipboard, including images embedded in pasted HTML
+
+`RichTextEditor.ImageUpload` uses the extension's `onImageUpload` and `onImageUploadError` options –
+configuring the extension is enough to enable the toolbar button. If the toolbar control needs
+different handlers, pass `onImageUpload` and `onImageUploadError` to `RichTextEditor`; they take
+precedence over the extension options.
+
+During upload, the image is shown with a local preview and a loading spinner. On failure, it is
+highlighted briefly and then removed. Several files picked, dropped or pasted together are inserted
+in the order in which they were selected.
+
+Return an object from `onImageUpload` to set the `alt` and optional `title` attributes. Images
+without alternative text are not accessible to screen-reader users:
+
+```ts
+async function handleImageUpload(file: File) {
+  const src = await uploadToServer(file)
+  return { src, alt: file.name }
+}
+```
+
+The image node must be created with `getUploadImageExtension`. When a plain
+`@tiptap/extension-image` extension is used, `RichTextEditor.ImageUpload` logs a warning and does
+not insert anything.
+
+<Demo data={TipTapDemos.imageUpload} />
+
+### Pasted HTML content
+
+When HTML with embedded images is pasted, for example from Google Docs, Apple Notes or a web page,
+text is inserted as usual and every image with a `data:` URL is uploaded in place with the same
+loading state. Regular image URLs are kept. To upload those as well, use
+`shouldUploadPastedImage`; it receives an image `src` and returns whether it should be downloaded
+and passed to `onImageUpload`:
+
+```ts
+import Image from '@tiptap/extension-image'
+import { getUploadImageExtension } from '@mantine-vue/tiptap'
+
+const UploadImage = getUploadImageExtension(Image, {
+  onImageUpload: handleImageUpload,
+  shouldUploadPastedImage: (src) =>
+    src.startsWith('data:') || src.startsWith('https://old-cdn.example.com/'),
+})
+```
+
+An image that cannot be downloaded, for example because of CORS restrictions, is kept with its
+original `src`.
+
+### Upload error handling
+
+`onImageUpload` must resolve to a URL or image attributes, or reject with an error. While it is
+pending, the image shows a loading state. If it rejects, the image is highlighted briefly and
+removed from the editor. Use `onImageUploadError` to display a notification or perform another
+side effect when an upload fails.
+
+<Demo data={TipTapDemos.imageUploadError} />
+
 ## Table
 
 Install and register `TableKit`, which bundles the required table, row, header and cell nodes:

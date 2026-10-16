@@ -14,7 +14,7 @@ import type {
   Factory,
 } from '../../core'
 
-export type CheckboxVariant = 'filled' | 'outline'
+export type CheckboxVariant = 'filled' | 'outline' | 'light'
 
 export type CheckboxStylesNames =
   | 'icon'
@@ -28,7 +28,12 @@ export type CheckboxStylesNames =
   | 'error'
 
 export type CheckboxCssVariables = {
-  root: '--checkbox-size' | '--checkbox-radius' | '--checkbox-color' | '--checkbox-icon-color'
+  root:
+    | '--checkbox-size'
+    | '--checkbox-radius'
+    | '--checkbox-color'
+    | '--checkbox-icon-color'
+    | '--checkbox-bg'
 }
 
 export interface CheckboxIconSlotProps {

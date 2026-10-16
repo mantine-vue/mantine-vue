@@ -206,6 +206,14 @@ export function useForm<
   const setValues = (nextValues: Partial<Values> | ((values: Values) => Partial<Values>)) => {
     const previous = clone(values.value)
     const patch = typeof nextValues === 'function' ? nextValues(values.value) : nextValues
+
+    Object.keys(patch).forEach((key) => {
+      dirty.value = {
+        ...clearListState(key, dirty.value),
+        [key]: !isEqual((patch as Record<string, any>)[key], getPath(key, initialSnapshot.value)),
+      }
+    })
+
     values.value = { ...values.value, ...(patch as any) }
 
     if (clearInputErrorOnChange) {

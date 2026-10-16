@@ -305,6 +305,15 @@
         border-color: var(--mantine-color-blue-6);
       }
     }
+
+    &:where([data-invalid]) {
+      background-color: transparent;
+
+      &::before {
+        border-color: var(--mantine-color-error);
+        opacity: 0.6;
+      }
+    }
   }
 
   &:where([data-drag-selected]) {

@@ -23,6 +23,7 @@ import { configurator } from './TreeSelect.demo.configurator'
 import { readOnly } from './TreeSelect.demo.readOnly'
 import { disabled } from './TreeSelect.demo.disabled'
 import { error } from './TreeSelect.demo.error'
+import { renderPill } from './TreeSelect.demo.renderPill'
 
 export const TreeSelectDemos = {
   usage,
@@ -50,4 +51,5 @@ export const TreeSelectDemos = {
   readOnly,
   disabled,
   error,
+  renderPill,
 }

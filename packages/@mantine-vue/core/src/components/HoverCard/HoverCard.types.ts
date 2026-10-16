@@ -6,6 +6,15 @@ export interface HoverCardSlots {
   default?: () => VNodeChild
 }
 
+export interface HoverCardEvents {
+  /** Opens the dropdown when the target is hovered. @default true */
+  hover?: boolean
+  /** Opens the dropdown when the target receives keyboard focus. @default true */
+  focus?: boolean
+  /** Opens the dropdown when the target is tapped. Requires hover activation. @default false */
+  touch?: boolean
+}
+
 /** Props declared by `HoverCard` itself. See `HoverCardProps` for the full public type. */
 export interface HoverCardOwnProps {
   /**
@@ -28,6 +37,15 @@ export interface HoverCardOwnProps {
    * @default 150
    */
   closeDelay?: number
+
+  /** Events that activate the dropdown. Unspecified fields preserve their defaults. */
+  events?: HoverCardEvents
+
+  /** Keeps the dropdown open while the pointer is over it. @default false */
+  interactive?: boolean
+
+  /** Accessible relationship used between the target and dropdown. @default 'dialog' */
+  role?: 'dialog' | 'tooltip'
 }
 
 /** `opened` and `onChange` are owned by `HoverCard`, which drives them from hover. */

@@ -1,7 +1,9 @@
 import { defineComponent, h, type PropType } from 'vue'
+import { useId } from '@mantine-vue/hooks'
 import { Box } from '../../core'
 import { useAppShellContext } from './AppShell.context'
 import classes from './AppShell.module.css'
+import { AppShellResizeHandle } from './AppShellResizeHandle/AppShellResizeHandle'
 
 export function createAppShellComponent(
   name: string,
@@ -20,9 +22,11 @@ export function createAppShellComponent(
     },
     setup(props, { attrs, slots }) {
       const ctx = useAppShellContext()
+      const sectionId = useId(attrs.id as string | undefined)
       return () => {
         if (ctx.disabled) return null
         const styles = ctx.getStyles(selector, { className: attrs.class, style: attrs.style })
+        const isResizable = ctx.resize?.[selector].enabled ?? false
         return h(
           Box,
           {
@@ -40,8 +44,14 @@ export function createAppShellComponent(
               },
               attrs.style,
             ],
+            ...(isResizable ? { id: sectionId.value } : {}),
           },
-          () => slots.default?.(),
+          () => [
+            slots.default?.(),
+            isResizable
+              ? h(AppShellResizeHandle, { section: selector, sectionId: sectionId.value })
+              : null,
+          ],
         )
       }
     },

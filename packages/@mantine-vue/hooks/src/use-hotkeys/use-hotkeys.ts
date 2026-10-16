@@ -39,24 +39,24 @@ export function useHotkeys(
   triggerOnContentEditable: MaybeRefOrGetter<boolean | undefined> = false,
 ) {
   const handleKeydown = (event: KeyboardEvent) => {
-    toValue(hotkeys).forEach(
-      ([hotkey, handler, options = { preventDefault: true, usePhysicalKeys: false }]) => {
-        if (
-          getHotkeyMatcher(hotkey, options.usePhysicalKeys)(event) &&
-          shouldFireEvent(
-            event,
-            toValue(tagsToIgnore) ?? ['input', 'textarea', 'select'],
-            toValue(triggerOnContentEditable),
-          )
-        ) {
-          if (options.preventDefault) {
-            event.preventDefault()
-          }
+    toValue(hotkeys).forEach(([hotkey, handler, options]) => {
+      const { preventDefault = true, usePhysicalKeys = false } = options || {}
 
-          handler(event)
+      if (
+        getHotkeyMatcher(hotkey, usePhysicalKeys)(event) &&
+        shouldFireEvent(
+          event,
+          toValue(tagsToIgnore) ?? ['input', 'textarea', 'select'],
+          toValue(triggerOnContentEditable),
+        )
+      ) {
+        if (preventDefault) {
+          event.preventDefault()
         }
-      },
-    )
+
+        handler(event)
+      }
+    })
   }
 
   onMounted(() => window.addEventListener('keydown', handleKeydown))

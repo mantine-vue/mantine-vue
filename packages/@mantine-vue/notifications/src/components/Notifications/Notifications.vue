@@ -53,6 +53,7 @@ const rawProps = withDefaults(defineProps<NotificationsProps>(), {
   withinPortal: true,
   pauseResetOnHover: 'all',
   layout: 'default',
+  withAutoCloseProgress: false,
 })
 const attrs = useAttrs()
 const props = useProps('Notifications', null, rawProps)
@@ -282,6 +283,8 @@ onBeforeUnmount(() => {
               : props.renderNotification
           "
           :layout="props.layout"
+          :with-auto-close-progress="props.withAutoCloseProgress"
+          :progress-props="getStyles('progress')"
           :stack-index="stackIndex"
           :stack-size="orderedGroup(position).length"
           :stack-position="position"

@@ -3,8 +3,6 @@ import { getDefaultZIndex } from '../../core'
 
 const defaultProps = {
   withBorder: true,
-  py: 'xs',
-  px: 'sm',
   position: { bottom: 30, left: 0, right: 0 },
   transitionProps: { transition: 'pop', duration: 200 },
   closeOnEscape: false,

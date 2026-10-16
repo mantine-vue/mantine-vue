@@ -257,6 +257,26 @@ the user cannot interact with the input and `TreeSelect` will not show suggestio
 
 <Demo data={TreeSelectDemos.error} />
 
+## Custom pill rendering
+
+Use the `renderPill` prop or `pill` scoped slot to customize selected values in `multiple` and
+`checkbox` modes.
+
+<Demo data={TreeSelectDemos.renderPill} />
+
+The payload contains the selected node, value, removal callback, and disabled
+and read-only states.
+
+```vue
+<template>
+  <TreeSelect mode="multiple" :data="data">
+    <template #pill="{ node, onRemove }">
+      <Pill with-remove-button @remove="onRemove">{{ node.label }}</Pill>
+    </template>
+  </TreeSelect>
+</template>
+```
+
 <GetElementRef component="TreeSelect" refType="input" />
 
 <InputAccessibility component="TreeSelect" />

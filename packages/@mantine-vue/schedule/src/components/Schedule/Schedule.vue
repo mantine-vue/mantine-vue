@@ -45,6 +45,10 @@ const rawProps = withDefaults(defineProps<ScheduleOwnProps>(), {
   canDragEvent: undefined,
   mode: undefined,
   canResizeEvent: undefined,
+  canDropEvent: undefined,
+  canDropExternalEvent: undefined,
+  canResizeEventTo: undefined,
+  preventEventOverlap: undefined,
   withInteractiveBackgroundEvents: undefined,
   recurrenceExpansionLimit: undefined,
   layout: undefined,
@@ -125,6 +129,10 @@ const sharedProps = computed(() => ({
   withExternalEventDrop: props.withExternalEventDrop,
   withEventResize: props.withEventResize,
   canResizeEvent: props.canResizeEvent,
+  canDropEvent: props.canDropEvent,
+  canDropExternalEvent: props.canDropExternalEvent,
+  canResizeEventTo: props.canResizeEventTo,
+  preventEventOverlap: props.preventEventOverlap,
   withInteractiveBackgroundEvents:
     props.mode === 'static' ? false : props.withInteractiveBackgroundEvents,
   recurrenceExpansionLimit: props.recurrenceExpansionLimit,
@@ -153,6 +161,7 @@ const sharedListeners = {
   onExternalEventDrop: (dataTransfer: DataTransfer, dateTime: any) =>
     emit('externalEventDrop', dataTransfer, dateTime),
   onEventResize: (data: any) => emit('eventResize', data),
+  onEventPlacementRejected: (data: any) => emit('eventPlacementRejected', data),
 }
 
 const views = {

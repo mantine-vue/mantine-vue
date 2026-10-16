@@ -15,6 +15,10 @@ export interface NotificationContainerProps {
   allowScrollDismiss: boolean
   /** Pauses the auto-close timer. */
   paused: boolean
+  /** Default visibility of the auto-close progress line. */
+  withAutoCloseProgress: boolean
+  /** Styles API props applied to the progress line. */
+  progressProps: Record<string, any>
   /** Custom renderer used instead of the default Notification component. */
   renderNotification?: ((notification: NotificationData) => VNodeChild) | null
   /** Notification layout inherited from the notifications container. */

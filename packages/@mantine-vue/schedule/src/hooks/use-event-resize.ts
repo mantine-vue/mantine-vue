@@ -2,8 +2,16 @@ import dayjs from 'dayjs'
 import { computed, onBeforeUnmount, shallowRef } from 'vue'
 import { rafThrottle } from '../components/shared'
 import type { EventDropData } from '../component-props'
-import type { DateTimeStringValue, ScheduleEventData, ScheduleMode } from '../types'
+import type {
+  DateTimeStringValue,
+  PreventEventOverlap,
+  ScheduleCanResizeEventToData,
+  ScheduleEventData,
+  ScheduleEventPlacementRejectedData,
+  ScheduleMode,
+} from '../types'
 import { clampIntervalMinutes, parseTimeString } from '../utils'
+import { validateEventResize } from './validate-event-resize'
 
 type ResizeEdge = 'top' | 'bottom'
 
@@ -46,10 +54,15 @@ export interface UseEventResizeInput {
   onEventResize: (data: EventDropData) => void
   canResizeEvent: () => ((event: ScheduleEventData) => boolean) | undefined
   withBackgroundEvents?: () => boolean
+  events?: () => ScheduleEventData[]
+  preventEventOverlap?: () => PreventEventOverlap | undefined
+  canResizeEventTo?: () => ((data: ScheduleCanResizeEventToData) => boolean) | undefined
+  onEventPlacementRejected?: (data: ScheduleEventPlacementRejectedData) => void
 }
 
 export function useEventResize(input: UseEventResizeInput) {
   const resizeState = shallowRef<ResizeState | null>(null)
+  const resizeValid = shallowRef(true)
   let justResized = false
   let savedUserSelect: string | null = null
 
@@ -102,6 +115,24 @@ export function useEventResize(input: UseEventResizeInput) {
     }
 
     resizeState.value = { ...state, currentTop, currentHeight }
+    const next = resizeState.value
+    const start =
+      next.edge === 'top'
+        ? percentToDateTime(next.currentTop, next.eventDate, next)
+        : next.originalStart
+    const end =
+      next.edge === 'bottom'
+        ? percentToDateTime(next.currentTop + next.currentHeight, next.eventDate, next)
+        : next.originalEnd
+    resizeValid.value = validateEventResize({
+      event: next.event,
+      start,
+      end,
+      edge: next.edge === 'top' ? 'start' : 'end',
+      events: input.events?.() ?? [],
+      preventEventOverlap: input.preventEventOverlap?.(),
+      canResizeEventTo: input.canResizeEventTo?.(),
+    }).valid
   })
 
   const trackPointer = (event: PointerEvent) => handlePointerMove(event.clientY)
@@ -133,10 +164,33 @@ export function useEventResize(input: UseEventResizeInput) {
           ? percentToDateTime(state.currentTop + state.currentHeight, state.eventDate, state)
           : state.originalEnd
 
-      input.onEventResize({ eventId: state.eventId, newStart, newEnd, event: state.event })
+      const edge = state.edge === 'top' ? 'start' : 'end'
+      const validation = validateEventResize({
+        event: state.event,
+        start: newStart,
+        end: newEnd,
+        edge,
+        events: input.events?.() ?? [],
+        preventEventOverlap: input.preventEventOverlap?.(),
+        canResizeEventTo: input.canResizeEventTo?.(),
+      })
+      if (validation.valid) {
+        input.onEventResize({ eventId: state.eventId, newStart, newEnd, event: state.event })
+      } else {
+        input.onEventPlacementRejected?.({
+          action: 'resize',
+          event: state.event,
+          start: newStart,
+          end: newEnd,
+          edge,
+          conflicts: validation.conflicts,
+          reason: validation.reason!,
+        })
+      }
     }
 
     resizeState.value = null
+    resizeValid.value = true
     removeDocumentListeners()
     justResized = true
     requestAnimationFrame(() => {
@@ -186,6 +240,7 @@ export function useEventResize(input: UseEventResizeInput) {
       intervalMinutes,
       minHeightPercent: (intervalMinutes / totalMinutes) * 100,
     }
+    resizeValid.value = true
 
     savedUserSelect = document.body.style.userSelect
     document.body.style.userSelect = 'none'
@@ -215,5 +270,6 @@ export function useEventResize(input: UseEventResizeInput) {
     getResizePosition,
     isResizableEvent,
     wasResizing: () => justResized,
+    resizeValid: computed(() => resizeValid.value),
   }
 }

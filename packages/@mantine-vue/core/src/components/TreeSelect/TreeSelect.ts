@@ -17,6 +17,7 @@ export type {
   TreeSelectMode,
   TreeSelectProps,
   TreeSelectRenderNodePayload,
+  TreeSelectRenderPillPayload,
   TreeSelectSlots,
   TreeSelectValue,
 } from './TreeSelect.types'

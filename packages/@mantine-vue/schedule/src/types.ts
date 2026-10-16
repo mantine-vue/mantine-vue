@@ -220,3 +220,49 @@ export interface DropTarget {
   /** Target slot index (for DayView/WeekView) */
   slotIndex?: number
 }
+
+export type PreventEventOverlap =
+  | boolean
+  | ((stillEvent: ScheduleEventData, movingEvent: ScheduleEventData) => boolean)
+
+export interface ScheduleCanDropEventData {
+  event: ScheduleEventData
+  start: DateTimeStringValue
+  end: DateTimeStringValue
+  resourceId?: string | number
+}
+
+export interface ScheduleCanDropExternalEventData {
+  dataTransfer: DataTransfer
+  start: DateTimeStringValue
+  resourceId?: string | number
+}
+
+export interface ScheduleCanResizeEventToData {
+  event: ScheduleEventData
+  start: DateTimeStringValue
+  end: DateTimeStringValue
+  edge: 'start' | 'end'
+}
+
+interface ScheduleEventPlacementRejectedBase {
+  start: DateTimeStringValue
+  end: DateTimeStringValue
+  conflicts: ScheduleEventData[]
+  reason: 'overlap' | 'rejected'
+  resourceId?: string | number
+}
+
+export type ScheduleEventPlacementRejectedData =
+  | (ScheduleEventPlacementRejectedBase & { action: 'drop'; event: ScheduleEventData })
+  | (ScheduleEventPlacementRejectedBase & {
+      action: 'resize'
+      event: ScheduleEventData
+      edge: 'start' | 'end'
+    })
+  | (Omit<ScheduleEventPlacementRejectedBase, 'end'> & {
+      action: 'external-drop'
+      dataTransfer: DataTransfer
+      reason: 'rejected'
+      conflicts: []
+    })

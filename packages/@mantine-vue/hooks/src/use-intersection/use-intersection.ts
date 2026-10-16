@@ -23,8 +23,8 @@ export function useIntersection<T extends HTMLElement = HTMLElement>(
         return
       }
 
-      observer = new IntersectionObserver(([_entry]) => {
-        entry.value = _entry
+      observer = new IntersectionObserver((entries) => {
+        entry.value = entries[entries.length - 1]
       }, options)
 
       observer.observe(node)
