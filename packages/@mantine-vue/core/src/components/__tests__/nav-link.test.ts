@@ -28,6 +28,13 @@ describe('@mantine-vue/core NavLink', () => {
     expect(wrapper.find('.mantine-NavLink-root').attributes('data-active')).toBe('true')
   })
 
+  it('does not render a chevron when there are no children', () => {
+    const wrapper = withProvider(() => h(NavLink, { label: 'Dashboard' }))
+
+    expect(wrapper.find('.mantine-NavLink-chevron').exists()).toBe(false)
+    expect(wrapper.find('.mantine-NavLink-children').exists()).toBe(false)
+  })
+
   it('toggles nested children in uncontrolled mode', async () => {
     const onChange = vi.fn()
     const wrapper = withProvider(() =>
