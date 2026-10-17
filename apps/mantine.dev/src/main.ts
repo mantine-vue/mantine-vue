@@ -1,4 +1,5 @@
 import { computed, createApp, h } from 'vue'
+import { RouterView, useRoute } from 'vue-router'
 import { DirectionProvider, MantineProvider } from '@mantine-vue/core'
 import { CodeHighlightAdapterProvider } from '@mantine-vue/code-highlight'
 import { ContextMenuProvider } from '@mantine-vue/contextmenu'
@@ -20,15 +21,21 @@ const app = createApp({
   name: 'Root',
   setup() {
     const docsTheme = computed(() => ({ ...theme, primaryColor: primaryColor.value }))
+    const route = useRoute()
+    // Showcases (src/showcases) are full applications with their own Mantine theme,
+    // color scheme and text direction, so they render outside the docs providers.
+    const standalone = computed(() => route.matched.some((record) => record.meta.standalone))
 
     return () =>
-      h(DirectionProvider, { initialDirection: 'ltr' }, () =>
-        h(MantineProvider, { theme: docsTheme.value, defaultColorScheme: 'auto' }, () =>
-          h(ContextMenuProvider, null, () =>
-            h(CodeHighlightAdapterProvider, { adapter: docsShikiAdapter }, () => h(App)),
-          ),
-        ),
-      )
+      standalone.value
+        ? h(RouterView)
+        : h(DirectionProvider, { initialDirection: 'ltr' }, () =>
+            h(MantineProvider, { theme: docsTheme.value, defaultColorScheme: 'auto' }, () =>
+              h(ContextMenuProvider, null, () =>
+                h(CodeHighlightAdapterProvider, { adapter: docsShikiAdapter }, () => h(App)),
+              ),
+            ),
+          )
   },
 })
 

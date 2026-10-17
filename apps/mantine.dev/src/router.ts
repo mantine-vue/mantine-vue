@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
 import { defineAsyncComponent, defineComponent, h } from 'vue'
 import { mdxComponents } from './mdx-components'
+import { showcaseRoutes } from './showcases/registry'
 
 function mdxRoute(loader: () => Promise<unknown>) {
   const Content = defineAsyncComponent(loader as never)
@@ -1603,13 +1604,25 @@ const routes: RouteRecordRaw[] = [
     component: mdxRoute(() => import('./pages/hooks/use-horizontal-collapse.mdx')),
   },
 
+  ...showcaseRoutes,
+
   { path: '/:pathMatch(.*)*', redirect: '/getting-started' },
 ]
 
 export const router = createRouter({
   history: createWebHistory(),
   routes,
-  async scrollBehavior(to) {
+  async scrollBehavior(to, from, savedPosition) {
+    // Showcases drive overlays through the query string (e.g. `?item=`); keep the
+    // scroll position for query-only changes and restore it on back/forward.
+    if (to.meta.standalone) {
+      if (savedPosition) {
+        return savedPosition
+      }
+      if (from.matched.length > 0 && to.path === from.path) {
+        return false
+      }
+    }
     if (to.hash) {
       const target = await waitForHashTarget(to.hash)
       return target ? { el: target, top: 80, behavior: 'smooth' } : { top: 0 }

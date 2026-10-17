@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { searchHandlers } from '@/components/Search'
 import { MDX_NAV_DATA } from '@/mdx'
+import { KITCHEN_SINK_URL } from '@/showcases/registry'
 import { Burger, Container, Group, Menu, Text, UnstyledButton } from '@mantine-vue/core'
 import {
   ColorSchemeControl,
@@ -27,9 +28,8 @@ const mainLinksData = [
   // { link: 'https://help.mantine.dev', label: 'FAQ' },
   { link: '/getting-started', label: 'Documentation', reload: false },
   { link: '/colors-generator', label: 'Colors generator', reload: false },
-  // `reload: true` forces a full page navigation because the showcase is a
-  // separate SPA served at /showcase, not a route inside the docs router.
-  { link: '/showcase', label: 'Showcase', reload: true },
+  { link: '/showcases', label: 'Showcases', reload: false },
+  { link: KITCHEN_SINK_URL, label: 'Kitchen sink', reload: true },
 ]
 
 const navigationLinksData = computed(() =>
