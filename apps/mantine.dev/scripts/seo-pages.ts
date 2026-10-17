@@ -15,6 +15,18 @@ const customPages: SeoPage[] = [
       'Explore responsive application shell layouts built with the Mantine Vue AppShell component.',
   },
   {
+    path: '/showcases',
+    title: 'Showcases',
+    description:
+      'Production-style applications built entirely with Mantine Vue core and extension components.',
+  },
+  {
+    path: '/showcases/restaurant-qr-menu',
+    title: 'Restaurant QR Menu showcase',
+    description:
+      'A mobile-first, bilingual (English / Arabic) restaurant QR menu with cart, checkout and order tracking built with Mantine Vue.',
+  },
+  {
     path: '/colors-generator',
     title: 'Colors generator',
     description: 'Generate accessible color palettes for your Mantine Vue theme.',

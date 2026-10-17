@@ -1,0 +1,105 @@
+/* Shared building blocks for every product card variant. */
+
+.card {
+  position: relative;
+  isolation: isolate;
+  height: 100%;
+  color: var(--mantine-color-text);
+  transition:
+    transform 150ms ease,
+    box-shadow 150ms ease;
+
+  @mixin hover {
+    .image img {
+      transform: scale(1.04);
+    }
+  }
+
+  &:has(.stretched:focus-visible) {
+    outline: 2px solid var(--mantine-primary-color-filled);
+    outline-offset: 2px;
+  }
+
+  &[data-sold-out] .name {
+    color: var(--mantine-color-dimmed);
+  }
+}
+
+/* The name is the card's main button. Its pseudo element covers the whole card so
+   the full surface is tappable while the add / favorite buttons stay separate. */
+.stretched {
+  text-align: start;
+  color: inherit;
+  font: inherit;
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+  }
+
+  &:focus-visible {
+    outline: none;
+  }
+}
+
+.above {
+  position: relative;
+  z-index: 1;
+}
+
+.name {
+  font-family: var(--mantine-font-family-headings);
+  font-weight: 650;
+  line-height: 1.3;
+}
+
+.description {
+  color: var(--mantine-color-dimmed);
+}
+
+.price {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.compareAt {
+  text-decoration: line-through;
+  color: var(--mantine-color-dimmed);
+  font-weight: 400;
+  margin-inline-start: 6px;
+}
+
+.image {
+  position: relative;
+  overflow: hidden;
+}
+
+.soldOut {
+  position: absolute;
+  inset-inline-start: 8px;
+  top: 8px;
+  z-index: 1;
+}
+
+.favorite {
+  position: absolute;
+  inset-inline-end: 6px;
+  top: 6px;
+  z-index: 1;
+  backdrop-filter: blur(6px);
+  background-color: alpha(var(--mantine-color-white), 0.85);
+
+  @mixin dark {
+    background-color: alpha(var(--mantine-color-dark-7), 0.8);
+  }
+}
+
+.inCart {
+  position: absolute;
+  inset-inline-end: -6px;
+  top: -6px;
+  pointer-events: none;
+}

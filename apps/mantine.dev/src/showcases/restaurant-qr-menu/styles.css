@@ -1,0 +1,106 @@
+.qrm-root {
+  --qrm-header-height: 60px;
+  --qrm-nav-height: 56px;
+  --qrm-content-width: 1180px;
+  --qrm-bottom-bar-space: 96px;
+
+  min-height: 100dvh;
+  background-color: var(--mantine-color-body);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.qrm-container {
+  width: 100%;
+  max-width: var(--qrm-content-width);
+  margin-inline: auto;
+  padding-inline: var(--mantine-spacing-md);
+}
+
+/* Directional icons (arrows, chevrons) mirror in right-to-left layouts. */
+.qrm-flip-rtl {
+  @mixin rtl {
+    transform: scaleX(-1);
+  }
+}
+
+/* Long menus: let the browser skip rendering off-screen sections. */
+.qrm-section {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 800px;
+  scroll-margin-top: calc(var(--qrm-header-height) + var(--qrm-nav-height) + 8px);
+}
+
+.qrm-scroll-x {
+  display: flex;
+  gap: var(--mantine-spacing-sm);
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  padding-block: 4px;
+  padding-inline: var(--mantine-spacing-md);
+  scroll-padding-inline: var(--mantine-spacing-md);
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  & > * {
+    scroll-snap-align: start;
+    flex-shrink: 0;
+  }
+}
+
+.qrm-line-clamp-1,
+.qrm-line-clamp-2,
+.qrm-line-clamp-3 {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.qrm-line-clamp-1 {
+  -webkit-line-clamp: 1;
+}
+
+.qrm-line-clamp-2 {
+  -webkit-line-clamp: 2;
+}
+
+.qrm-line-clamp-3 {
+  -webkit-line-clamp: 3;
+}
+
+.qrm-heading {
+  font-family: var(--mantine-font-family-headings);
+}
+
+.qrm-tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+.qrm-skip-link {
+  position: absolute;
+  inset-inline-start: var(--mantine-spacing-md);
+  top: -100px;
+  z-index: 1000;
+  padding: 8px 16px;
+  border-radius: var(--mantine-radius-md);
+  background: var(--mantine-color-body);
+  color: var(--mantine-color-text);
+  box-shadow: var(--mantine-shadow-md);
+
+  &:focus {
+    top: 8px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .qrm-root *,
+  .qrm-root *::before,
+  .qrm-root *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

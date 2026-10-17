@@ -406,6 +406,13 @@ export const MDX_NAV_DATA: MdxNavCategory[] = [
           { label: 'Icon libraries', link: '/guides/icons' },
         ],
       },
+      {
+        title: 'Showcases',
+        pages: [
+          { label: 'All showcases', link: '/showcases' },
+          { label: 'Restaurant QR menu', link: '/showcases/restaurant-qr-menu' },
+        ],
+      },
     ],
   },
 
