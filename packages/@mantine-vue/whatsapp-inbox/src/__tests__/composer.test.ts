@@ -1,8 +1,9 @@
-import { describe, expect, it, vi } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import { h, nextTick } from 'vue'
 import { WhatsAppComposer } from '../components/WhatsAppComposer'
+import type { WhatsAppTemplateSelectorSlotProps } from '../component-props'
 import type { WhatsAppConversationCapabilities, WhatsAppOutgoingMessage } from '../types'
-import { createUpload, mountReactive, mountWithProvider } from './test-utils'
+import { createTemplate, createUpload, mountReactive, mountWithProvider } from './test-utils'
 
 const OPEN_WINDOW: WhatsAppConversationCapabilities = {
   canSendFreeForm: true,
@@ -371,5 +372,93 @@ describe('WhatsAppComposer emoji integration', () => {
 
     wrapper.unmount()
     document.body.innerHTML = ''
+  })
+})
+
+describe('WhatsAppComposer custom template selector', () => {
+  const TEMPLATE_WINDOW: WhatsAppConversationCapabilities = {
+    ...OPEN_WINDOW,
+    canSendTemplates: true,
+  }
+
+  function mountWithSelector(props: Record<string, unknown> = {}) {
+    let selector: WhatsAppTemplateSelectorSlotProps | undefined
+
+    const wrapper = mountWithProvider(
+      WhatsAppComposer,
+      { conversationId: 'conversation-1', capabilities: TEMPLATE_WINDOW, ...props },
+      {
+        attachTo: true,
+        slots: {
+          templateSelector: (slotProps: WhatsAppTemplateSelectorSlotProps) => {
+            selector = slotProps
+            return h('div', { 'data-custom-selector': slotProps.opened ? 'open' : 'closed' })
+          },
+        },
+      },
+    )
+
+    return { wrapper, selector: () => selector! }
+  }
+
+  afterEach(() => {
+    document.body.innerHTML = ''
+  })
+
+  it('renders the slot instead of the built-in modal', async () => {
+    const templates = [createTemplate()]
+    const { wrapper, selector } = mountWithSelector({ templates, templatesLoading: true })
+
+    expect(wrapper.get('[data-custom-selector]').attributes('data-custom-selector')).toBe('closed')
+
+    await wrapper.get('button[aria-label="Send template"]').trigger('click')
+
+    expect(wrapper.get('[data-custom-selector]').attributes('data-custom-selector')).toBe('open')
+    expect(selector()).toMatchObject({ opened: true, templates, loading: true })
+    expect(document.body.querySelector('[role="dialog"]')).toBeNull()
+  })
+
+  it('sends through the composer and closes on submit', async () => {
+    const onSend = vi.fn()
+    const onUpdateReplyTo = vi.fn()
+    const template = createTemplate()
+    const { wrapper, selector } = mountWithSelector({
+      replyTo: { id: 'message-1' },
+      onSend,
+      'onUpdate:replyTo': onUpdateReplyTo,
+    })
+
+    await wrapper.get('button[aria-label="Send template"]').trigger('click')
+    selector().submit({ template, values: { body: { '1': 'Amina', '2': 'Monday' } } })
+    await nextTick()
+
+    expect(onSend).toHaveBeenCalledTimes(1)
+    expect(onSend.mock.calls[0][0]).toMatchObject({
+      kind: 'template',
+      conversationId: 'conversation-1',
+      replyTo: 'message-1',
+      templateId: 'template-1',
+      name: 'appointment_reminder',
+      language: 'en_US',
+      values: { body: { '1': 'Amina', '2': 'Monday' } },
+      template,
+    })
+    expect(onUpdateReplyTo).toHaveBeenCalledWith(null)
+    expect(selector().opened).toBe(false)
+  })
+
+  it('closes without sending and forwards retries', async () => {
+    const onSend = vi.fn()
+    const onTemplatesRetryLoad = vi.fn()
+    const { wrapper, selector } = mountWithSelector({ onSend, onTemplatesRetryLoad })
+
+    await wrapper.get('button[aria-label="Send template"]').trigger('click')
+    selector().retryLoad()
+    selector().close()
+    await nextTick()
+
+    expect(onTemplatesRetryLoad).toHaveBeenCalledTimes(1)
+    expect(selector().opened).toBe(false)
+    expect(onSend).not.toHaveBeenCalled()
   })
 })

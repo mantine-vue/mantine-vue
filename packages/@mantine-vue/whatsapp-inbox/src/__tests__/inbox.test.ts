@@ -1,13 +1,15 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { h } from 'vue'
+import { h, nextTick } from 'vue'
 import { WhatsAppInbox } from '../components/WhatsAppInbox'
 import { WhatsAppInboxDrawer } from '../components/WhatsAppInboxDrawer'
 import { WhatsAppInboxModal } from '../components/WhatsAppInboxModal'
 import { WhatsAppInboxProvider } from '../components/WhatsAppInboxProvider'
 import { WhatsAppConversationList } from '../components/WhatsAppConversationList'
+import type { WhatsAppTemplateSelectorSlotProps } from '../component-props'
 import type { WhatsAppConversationData } from '../types'
 import {
   createConversation,
+  createTemplate,
   createTextMessage,
   mountReactive,
   mountWithProvider,
@@ -217,6 +219,18 @@ describe('WhatsAppInboxModal', () => {
     expect(dialog!.querySelector('textarea')).not.toBeNull()
   })
 
+  it('uses the size from modalProps over its default', () => {
+    mountWithProvider(
+      WhatsAppInboxModal,
+      { opened: true, conversationId: 'conversation-1', conversation, modalProps: { size: 'xl' } },
+      { attachTo: true },
+    )
+
+    const root = document.body.querySelector<HTMLElement>('.mantine-Modal-root')!
+
+    expect(root.style.getPropertyValue('--modal-size')).toBe('var(--modal-size-xl)')
+  })
+
   it('renders nothing while closed', () => {
     mountWithProvider(
       WhatsAppInboxModal,
@@ -331,5 +345,60 @@ describe('WhatsAppInboxDrawer', () => {
     closeButton?.click()
 
     expect(onClose).toHaveBeenCalledTimes(1)
+  })
+})
+
+describe('templateSelector slot forwarding', () => {
+  const templateConversation: WhatsAppConversationData = {
+    ...conversation,
+    capabilities: {
+      canSendFreeForm: true,
+      canSendTemplates: true,
+      messagingWindow: { state: 'open' },
+    },
+  }
+
+  it.each([
+    [
+      'WhatsAppInbox',
+      WhatsAppInbox,
+      { conversations: [templateConversation], selectedConversationId: 'conversation-1' },
+    ],
+    ['WhatsAppInboxModal', WhatsAppInboxModal, { opened: true, conversationId: 'conversation-1' }],
+    [
+      'WhatsAppInboxDrawer',
+      WhatsAppInboxDrawer,
+      { opened: true, conversationId: 'conversation-1' },
+    ],
+  ] as const)('reaches the composer through %s', async (_, component, props) => {
+    const onSend = vi.fn()
+    let selector: WhatsAppTemplateSelectorSlotProps | undefined
+
+    mountWithProvider(
+      component,
+      { ...props, conversation: templateConversation, onSend },
+      {
+        attachTo: true,
+        slots: {
+          templateSelector: (slotProps: WhatsAppTemplateSelectorSlotProps) => {
+            selector = slotProps
+            return h('div', { 'data-custom-selector': slotProps.opened ? 'open' : 'closed' })
+          },
+        },
+      },
+    )
+
+    document.body.querySelector<HTMLButtonElement>('button[aria-label="Send template"]')!.click()
+    await nextTick()
+
+    expect(
+      document.body.querySelector('[data-custom-selector]')!.getAttribute('data-custom-selector'),
+    ).toBe('open')
+
+    selector!.submit({ template: createTemplate(), values: {} })
+
+    expect(onSend).toHaveBeenCalledWith(
+      expect.objectContaining({ kind: 'template', conversationId: 'conversation-1' }),
+    )
   })
 })

@@ -187,7 +187,7 @@ watch(
     v-bind="props.modalProps"
     :opened="Boolean(props.opened)"
     :title="title"
-    size="lg"
+    :size="props.modalProps?.size ?? 'lg'"
     :class="getStyles('modalRoot').class"
     :style="getStyles('modalRoot').style"
     :class-names="{ content: contentClassName, body: bodyClassName }"

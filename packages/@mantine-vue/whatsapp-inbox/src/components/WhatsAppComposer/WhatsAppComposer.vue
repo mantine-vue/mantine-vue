@@ -167,6 +167,7 @@ const uploadsInFlight = computed(() =>
 const showAttachments = computed(() => props.withAttachments ?? capabilities.value.canSendMedia)
 const showTemplates = computed(() => props.withTemplates ?? capabilities.value.canSendTemplates)
 const useCustomPicker = computed(() => Boolean(slots.emojiPicker))
+const useCustomTemplateSelector = computed(() => Boolean(slots.templateSelector))
 const useBuiltInPicker = computed(() => !useCustomPicker.value && props.withEmojiPicker !== false)
 
 /*
@@ -610,7 +611,20 @@ defineExpose({ focus, insert, openTemplates })
       </Box>
     </Box>
 
+    <slot
+      v-if="useCustomTemplateSelector"
+      name="templateSelector"
+      :opened="Boolean(templatesOpened)"
+      :close="() => setTemplatesOpened(false)"
+      :submit="submitTemplate"
+      :templates="props.templates ?? []"
+      :loading="Boolean(props.templatesLoading)"
+      :error="props.templatesError"
+      :retry-load="() => emit('templatesRetryLoad')"
+    />
+
     <Modal
+      v-else
       v-bind="props.templateModalProps"
       :opened="templatesOpened"
       :title="config.labels.templateSelectorTitle"
