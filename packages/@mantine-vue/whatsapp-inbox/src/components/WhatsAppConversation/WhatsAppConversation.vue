@@ -345,6 +345,9 @@ defineExpose({ focusComposer, scrollToBottom })
         <template v-if="slots.templatePreview" #templatePreview="templateProps">
           <slot name="templatePreview" v-bind="templateProps" />
         </template>
+        <template v-if="slots.templateSelector" #templateSelector="selectorProps">
+          <slot name="templateSelector" v-bind="selectorProps" />
+        </template>
       </WhatsAppComposer>
     </template>
   </Box>

@@ -1,3 +1,4 @@
+import { Code } from '@mantine-vue/core'
 import { WhatsAppTemplatesDemos } from '@/demos'
 import { Layout } from '@/layout'
 import { MDX_DATA } from '@/mdx'
@@ -14,7 +15,79 @@ hands you a typed payload. It never calls the WhatsApp API.
 
 Inside the composer the selector opens in a modal from the template control, or from the
 **Send a template** action of the closed-window notice. You only need the component directly when
-you build your own composer.
+you build your own composer, or when you put it in a dialog of your own.
+
+## Using your own dialog
+
+When the modal has to match your design system rather than Mantine's, supply a `templateSelector`
+slot. The composer stops rendering its modal and hands the slot everything it needs instead. The
+template control, the closed-window notice action and `v-model:templates-opened` keep working –
+only what opens changes.
+
+```vue
+<WhatsAppInbox ... @send="handleSend">
+  <template #templateSelector="{ opened, close, submit, templates, loading, error, retryLoad }">
+    <MyDialog :open="opened" title="Send a template" @close="close">
+      <WhatsAppTemplateSelector
+        :templates="templates"
+        :loading="loading"
+        :error="error"
+        @submit="submit"
+        @retry-load="retryLoad"
+      />
+    </MyDialog>
+  </template>
+</WhatsAppInbox>
+```
+
+<DataTable
+  head={['Slot prop', 'Description']}
+  data={[
+    [<Code>opened</Code>, 'Whether the selector should be shown'],
+    [<Code>close</Code>, 'Closes it without sending'],
+    [
+      <Code>submit</Code>,
+      <>
+        Sends <Code>{'{ template, values }'}</Code> through the composer and closes the selector
+      </>,
+    ],
+    [
+      <Code>templates</Code>,
+      <>
+        The <Code>templates</Code> passed to the composer
+      </>,
+    ],
+    [
+      <Code>loading</Code>,
+      <>
+        The <Code>templatesLoading</Code> passed to the composer
+      </>,
+    ],
+    [
+      <Code>error</Code>,
+      <>
+        The <Code>templatesError</Code> passed to the composer
+      </>,
+    ],
+    [
+      <Code>retryLoad</Code>,
+      <>
+        Emits <Code>templatesRetryLoad</Code>, as the built-in error state does
+      </>,
+    ],
+  ]}
+/>
+
+`submit` takes the same route as the built-in modal: the payload your `send` handler receives
+carries the conversation id, a client id and the reply target, and the reply is cleared afterwards.
+
+Keeping `WhatsAppTemplateSelector` inside your dialog is optional. A picker of your own only has to
+call `submit({ template, values })` – but the values are sent as given, so check them with
+`validateTemplateValues` first, the way the built-in selector does.
+
+The slot is available on `WhatsAppComposer`, `WhatsAppConversation`, `WhatsAppInbox`,
+`WhatsAppInboxModal` and `WhatsAppInboxDrawer`. With it in place, `templateModalProps` and the
+`templatePreview` slot no longer apply, since the built-in modal is not rendered.
 
 ## Template shape
 

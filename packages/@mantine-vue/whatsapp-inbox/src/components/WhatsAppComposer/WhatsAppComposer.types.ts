@@ -1,7 +1,7 @@
 import type { VNodeChild } from 'vue'
 import type { BoxProps, Factory, ModalProps } from '@mantine-vue/core'
 import type { StylesApiProps } from '@mantine-vue/core/styles-api'
-import type { ForwardedProps } from '../../component-props'
+import type { ForwardedProps, WhatsAppTemplateSelectorSlotProps } from '../../component-props'
 import type { WhatsAppInboxLabelsOverride } from '../../labels'
 import type {
   WhatsAppAttachmentsAddPayload,
@@ -66,6 +66,9 @@ export interface WhatsAppComposerSlots {
 
   /** Replaces the preview shown inside the template selector. */
   templatePreview?: (props: { template: WhatsAppTemplate }) => VNodeChild
+
+  /** Replaces the template modal with a dialog of your own. */
+  templateSelector?: (props: WhatsAppTemplateSelectorSlotProps) => VNodeChild
 }
 
 export interface WhatsAppComposerOwnProps extends StylesApiProps<WhatsAppComposerFactory> {

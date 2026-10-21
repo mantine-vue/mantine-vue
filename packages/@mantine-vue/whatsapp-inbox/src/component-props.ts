@@ -6,8 +6,31 @@ import type {
   WhatsAppConversationSummary,
   WhatsAppMessageData,
   WhatsAppTemplate,
+  WhatsAppTemplateValues,
   WhatsAppUpload,
 } from './types'
+
+export interface WhatsAppTemplateSelectorSlotProps {
+  /** Whether the selector should be shown. */
+  opened: boolean
+
+  /** Closes the selector without sending. */
+  close: () => void
+
+  submit: (payload: { template: WhatsAppTemplate; values: WhatsAppTemplateValues }) => void
+
+  /** Approved templates passed to the composer. */
+  templates: WhatsAppTemplate[]
+
+  /** Whether the template list is loading. */
+  loading: boolean
+
+  /** Failure of the last template load. */
+  error: string | null | undefined
+
+  /** Asks the consumer to load the templates again, through the `templatesRetryLoad` event. */
+  retryLoad: () => void
+}
 
 /**
  * Props forwarded to a component the inbox renders internally, plus the `on*` listeners for its
@@ -150,6 +173,9 @@ export interface WhatsAppConversationSlots extends WhatsAppMessageSlots {
 
   /** Replaces the preview of a template inside the template selector. */
   templatePreview?: (props: { template: WhatsAppTemplate }) => VNodeChild
+
+  /** Replaces the composer's template modal with a dialog of your own. */
+  templateSelector?: (props: WhatsAppTemplateSelectorSlotProps) => VNodeChild
 }
 
 /** Slots of the contact panel. */
