@@ -14,8 +14,14 @@
 .modalBody {
   display: flex;
   flex-direction: column;
-  flex: 1;
+  flex: 0 1 auto;
   height: var(--wa-modal-height, 70vh);
   min-height: 0;
+  overflow: hidden;
   padding: 0;
+}
+
+.modalRoot:where([data-full-screen]) .modalBody {
+  flex: 1 1 0;
+  height: auto;
 }
