@@ -10,8 +10,7 @@ import { Button, Group, Paper } from '@mantine-vue/core'
 import { useClickOutside } from '@mantine-vue/hooks'
 
 const opened = ref(false)
-const paperRef = ref()
-useClickOutside(() => (opened.value = false), undefined, () => [paperRef.value?.$el])
+const paperRef = useClickOutside(() => (opened.value = false))
 </script>
 
 <template>
@@ -36,12 +35,7 @@ const Demo = defineComponent({
   name: 'UseClickOutsideUsageDemo',
   setup() {
     const opened = ref(false)
-    const paperRef = ref<{ $el: HTMLElement } | null>(null)
-    useClickOutside(
-      () => (opened.value = false),
-      undefined,
-      () => [paperRef.value?.$el],
-    )
+    const paperRef = useClickOutside(() => (opened.value = false))
 
     return () =>
       h('div', { style: { position: 'relative' } }, [

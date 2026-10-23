@@ -10,6 +10,16 @@ import {
 
 type OutsideEvent = MouseEvent | TouchEvent
 
+type ElementRefValue<T extends HTMLElement> = T | { $el?: T } | null
+
+function resolveElement<T extends HTMLElement>(value: ElementRefValue<T>): T | null {
+  if (!value) {
+    return null
+  }
+
+  return '$el' in value ? (value.$el ?? null) : (value as T)
+}
+
 export function useClickOutside<T extends HTMLElement = HTMLElement>(
   callback: (event: OutsideEvent) => void,
   events: MaybeRefOrGetter<string[] | null | undefined> = ['mousedown', 'touchstart'],
@@ -17,7 +27,7 @@ export function useClickOutside<T extends HTMLElement = HTMLElement>(
   enabled: MaybeRefOrGetter<boolean> = true,
   capture: MaybeRefOrGetter<boolean> = false,
 ): Ref<T | null> {
-  const element = ref<T | null>(null) as Ref<T | null>
+  const element = ref<ElementRefValue<T>>(null)
   let activeEvents: string[] = []
   let activeCapture = false
   const listener = (event: Event) => {
@@ -29,7 +39,10 @@ export function useClickOutside<T extends HTMLElement = HTMLElement>(
     if (resolvedNodes) {
       if (resolvedNodes.every((node) => !!node && !path.includes(node)))
         callback(event as OutsideEvent)
-    } else if (element.value && !path.includes(element.value)) callback(event as OutsideEvent)
+    } else {
+      const targetElement = resolveElement(element.value)
+      if (targetElement && !path.includes(targetElement)) callback(event as OutsideEvent)
+    }
   }
   const cleanup = () => {
     activeEvents.forEach((event) => document.removeEventListener(event, listener, activeCapture))
@@ -45,5 +58,5 @@ export function useClickOutside<T extends HTMLElement = HTMLElement>(
   onMounted(bind)
   watch([() => toValue(events)?.join(','), () => toValue(enabled), () => toValue(capture)], bind)
   onBeforeUnmount(cleanup)
-  return element
+  return element as Ref<T | null>
 }

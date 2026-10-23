@@ -405,6 +405,10 @@ export function useDrag<T extends HTMLElement = any>(
   }
 
   const refCallback = (newNode: T | null) => {
+    if (newNode === node) {
+      return
+    }
+
     cleanupNode?.()
     cleanupNode = undefined
     node = newNode
