@@ -12,6 +12,8 @@ const props = defineProps<{
   code: string
   controls: ConfiguratorControlOptions[]
   centered?: boolean
+  maxWidth?: number | string
+  minHeight?: number | string
 }>()
 
 // Live state initialised from each control's initialValue.
@@ -26,14 +28,22 @@ const state = reactive<Record<string, unknown>>(
 // makes the preview's render track every control value.
 const previewProps = computed(() => ({ ...state }))
 
+const toLength = (v?: number | string) => (typeof v === 'number' ? `${v}px` : v)
+const previewStyle = computed(() => ({
+  width: props.maxWidth ? '100%' : undefined,
+  maxWidth: toLength(props.maxWidth),
+}))
+
 const generatedCode = computed(() => getCode(props.code, props.controls, { ...state }))
 </script>
 
 <template>
   <DemoRoot>
-    <DemoColumns :centered="centered">
+    <DemoColumns :centered="centered" :min-height="minHeight">
       <template #preview>
-        <component :is="component" v-bind="previewProps" />
+        <div :style="previewStyle">
+          <component :is="component" v-bind="previewProps" />
+        </div>
       </template>
       <template #controls>
         <ConfiguratorControl
