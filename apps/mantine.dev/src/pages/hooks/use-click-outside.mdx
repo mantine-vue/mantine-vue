@@ -18,9 +18,8 @@ The `use-click-outside` hook accepts 4 arguments:
 - `enabled` - optional boolean (or `MaybeRefOrGetter<boolean>`) to dynamically enable/disable the listener, `true` by default
 
 The hook returns a `Ref` object that must be bound to the element (via the `ref` attribute)
-based on which outside clicks should be captured. Note that binding the returned ref directly
-only works with plain DOM elements – to track a component, pass its root element through
-the `nodes` argument instead (see [Multiple nodes](#multiple-nodes) below).
+based on which outside clicks should be captured. It can be bound to a plain DOM element or a
+component with a DOM root element.
 
 ```ts
 import { useClickOutside } from '@mantine-vue/hooks'
@@ -53,9 +52,8 @@ you can change these events by passing an array of events as second argument:
 
 ## Multiple nodes
 
-Since binding a `ref` to a Mantine Vue component only gives you the component's public
-instance (not its root DOM node), pass the resolved `$el` values through the `nodes` argument
-when you need to track components rather than plain elements:
+Pass a list of elements through the `nodes` argument when multiple elements, including elements
+rendered in a portal, should be treated as inside the target:
 
 ```vue
 <script setup lang="ts">
