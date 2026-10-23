@@ -23,10 +23,10 @@ const innerStyle = computed(() => ({
 <template>
   <div
     class="area"
-    :class="{ centered }"
+    :class="{ centered, pad: withPadding !== false }"
     :style="{ minHeight: typeof minHeight === 'number' ? `${minHeight}px` : minHeight }"
   >
-    <div class="inner" :class="{ pad: withPadding !== false }" :style="innerStyle">
+    <div class="inner" :style="innerStyle">
       <slot />
     </div>
   </div>
@@ -44,10 +44,10 @@ const innerStyle = computed(() => ({
   justify-content: center;
   min-height: 220px;
 }
+.area.pad {
+  padding: 32px;
+}
 .inner {
   width: 100%;
-}
-.inner.pad {
-  padding: 32px;
 }
 </style>

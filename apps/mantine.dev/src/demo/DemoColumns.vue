@@ -24,6 +24,7 @@ defineProps<{ centered?: boolean; minHeight?: number | string }>()
   padding: 32px;
 }
 .preview.centered {
+  display: flex;
   align-items: center;
   justify-content: center;
   min-height: 240px;

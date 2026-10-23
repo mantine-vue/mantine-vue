@@ -14,8 +14,7 @@ import { Spoiler } from '@mantine-vue/core'
 </template>
 `
 
-const imgSrc =
-  'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e2/Rock_in_caputh-WBTBWB-47.jpg/600px-Rock_in_caputh-WBTBWB-47.jpg'
+const imgSrc = 'https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-5.png'
 
 const Demo = defineComponent({
   name: 'SpoilerUsageDemo',
@@ -41,7 +40,7 @@ const Demo = defineComponent({
                       maw: '100%',
                       style: { float: 'right' },
                       src: imgSrc,
-                      alt: 'We Butter the Bread with Butter',
+                      alt: 'Moonlit mountain landscape',
                     }),
                     h(
                       Text,

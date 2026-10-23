@@ -18,6 +18,8 @@ export const Demo = defineComponent({
           code: data.code,
           controls: data.controls,
           centered: data.centered,
+          maxWidth: data.maxWidth,
+          minHeight: data.minHeight,
         })
       }
       if (data.type === 'styles-api') {
