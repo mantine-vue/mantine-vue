@@ -42,7 +42,7 @@
 .messageListGroupItems {
   display: flex;
   flex-direction: column;
-  gap: 6x;
+  gap: 6px;
   list-style: none;
   margin: 0;
   padding: 0;
