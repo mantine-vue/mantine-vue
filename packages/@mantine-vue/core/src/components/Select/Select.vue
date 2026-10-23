@@ -302,7 +302,7 @@ const hiddenWhenEmpty = computed(() => !props.nothingFoundMessage && !slots.noth
         __static-selector="Select"
         component="input"
         :disabled="disabled"
-        :read-only="readOnly || !props.searchable"
+        :readOnly="readOnly || !props.searchable"
         :pointer="!props.searchable"
         :model-value="search()"
         :right-section="(attrs as any).rightSection"
