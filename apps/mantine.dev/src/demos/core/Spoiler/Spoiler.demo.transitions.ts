@@ -14,8 +14,7 @@ import { Spoiler } from '@mantine-vue/core'
 </template>
 `
 
-const imgSrc =
-  'https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-5.png'
+const imgSrc = 'https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-5.png'
 
 const Demo = defineComponent({
   name: 'SpoilerTransitionsDemo',
