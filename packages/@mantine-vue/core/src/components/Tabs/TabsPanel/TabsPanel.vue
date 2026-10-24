@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { RootRefProps } from '../../../core'
 import { ref, computed, useAttrs } from 'vue'
 import { assignRef } from '@mantine-vue/hooks'
 import { Box } from '../../../core'
@@ -7,7 +8,7 @@ import type { TabsPanelOwnProps, TabsPanelSlots } from './TabsPanel.types'
 
 defineOptions({ name: 'TabsPanel', inheritAttrs: false })
 
-const props = withDefaults(defineProps<TabsPanelOwnProps>(), {
+const props = withDefaults(defineProps<TabsPanelOwnProps & RootRefProps<Element>>(), {
   rootRef: undefined,
   keepMounted: false,
   mod: undefined,

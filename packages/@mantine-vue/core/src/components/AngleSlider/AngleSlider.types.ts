@@ -1,4 +1,4 @@
-import type { VNodeChild } from 'vue'
+import type { InputHTMLAttributes, VNodeChild } from 'vue'
 import type { BoxProps, StylesApiProps, Factory } from '../../core'
 
 export type AngleSliderStylesNames = 'root' | 'thumb' | 'label' | 'marks' | 'mark'
@@ -64,7 +64,7 @@ export interface AngleSliderOwnProps extends StylesApiProps<AngleSliderFactory> 
   restrictToMarks?: boolean
 
   /** Props passed down to the hidden input. */
-  hiddenInputProps?: Record<string, any>
+  hiddenInputProps?: InputHTMLAttributes
 
   /** `name` of the hidden input, used when the slider is part of a form. */
   name?: string

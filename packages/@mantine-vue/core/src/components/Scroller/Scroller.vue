@@ -19,6 +19,7 @@ export { varsResolver }
 </script>
 
 <script setup lang="ts">
+import type { RootRefProps } from '../../core'
 import { ref, computed, useAttrs } from 'vue'
 import { assignRef, useScroller } from '@mantine-vue/hooks'
 import { Box, hasNode, resolveNode, useProps, useStyles } from '../../core'
@@ -29,7 +30,7 @@ import classes from './Scroller.module.css'
 
 defineOptions({ name: 'Scroller', inheritAttrs: false })
 
-const rawProps = withDefaults(defineProps<ScrollerOwnProps>(), {
+const rawProps = withDefaults(defineProps<ScrollerOwnProps & RootRefProps<Element>>(), {
   rootRef: undefined,
   scrollAmount: undefined,
   controlSize: undefined,

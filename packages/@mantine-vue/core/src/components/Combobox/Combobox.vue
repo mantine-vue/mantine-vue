@@ -143,7 +143,7 @@ const popoverBindings = computed(() => ({
   keepMounted: true,
   withinPortal: true,
   width: 'target',
-  transitionProps: { transition: 'fade', duration: 0 },
+  transitionProps: { transition: 'fade' as const, duration: 0 },
   ...popoverProps.value,
   ...attrs,
   opened: store.dropdownOpened,

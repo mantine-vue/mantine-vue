@@ -1,6 +1,7 @@
-import type { VNodeChild } from 'vue'
+import type { InputHTMLAttributes, VNodeChild } from 'vue'
 import type { MantineNode, Primitive } from '../../core'
-import type { ComboboxData, ComboboxItem, OptionsFilter } from '../Combobox'
+import type { ComboboxData, ComboboxItem, ComboboxProps, OptionsFilter } from '../Combobox'
+import type { ScrollAreaProps } from '../ScrollArea'
 
 export type SelectStylesNames = string
 
@@ -158,10 +159,10 @@ export interface SelectProps<Value extends Primitive = string> {
   maxDropdownHeight?: number | string
 
   /** Props passed down to the underlying `Combobox`. */
-  comboboxProps?: Record<string, any>
+  comboboxProps?: ComboboxProps
 
   /** Props passed down to the hidden input that carries the value in a form. */
-  hiddenInputProps?: Record<string, any>
+  hiddenInputProps?: Omit<InputHTMLAttributes, 'value'>
 
   /**
    * Custom markup for a dropdown option.
@@ -170,7 +171,7 @@ export interface SelectProps<Value extends Primitive = string> {
   renderOption?: (input: SelectOptionRenderPayload) => any
 
   /** Props passed down to the `ScrollArea.Autosize` of the dropdown. */
-  scrollAreaProps?: Record<string, any>
+  scrollAreaProps?: ScrollAreaProps
 
   /**
    * If set, the highlighted option is selected when the input loses focus.

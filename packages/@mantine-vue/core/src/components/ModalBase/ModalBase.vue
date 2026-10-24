@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { RootRefProps } from '../../core'
 import { ref, computed, useAttrs } from 'vue'
 import { assignRef, useId } from '@mantine-vue/hooks'
 import { Box, getDefaultZIndex, getShadow, getSpacing } from '../../core'
@@ -13,7 +14,7 @@ defineOptions({
   inheritAttrs: false,
 })
 
-const props = withDefaults(defineProps<ModalBaseOwnProps>(), {
+const props = withDefaults(defineProps<ModalBaseOwnProps & RootRefProps<Element>>(), {
   id: undefined,
   keepMounted: false,
   lockScroll: true,

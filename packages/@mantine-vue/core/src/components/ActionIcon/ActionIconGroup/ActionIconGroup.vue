@@ -9,6 +9,7 @@ export { varsResolver }
 </script>
 
 <script setup lang="ts">
+import type { RootRefProps } from '../../../core'
 import { ref, useAttrs } from 'vue'
 import { assignRef } from '@mantine-vue/hooks'
 import { Box, useProps, useStyles } from '../../../core'
@@ -16,7 +17,7 @@ import type { ActionIconGroupOwnProps, ActionIconGroupSlots } from './ActionIcon
 import classes from '../ActionIcon.module.css'
 
 defineOptions({ name: 'ActionIconGroup', inheritAttrs: false })
-const rawProps = withDefaults(defineProps<ActionIconGroupOwnProps>(), {
+const rawProps = withDefaults(defineProps<ActionIconGroupOwnProps & RootRefProps<Element>>(), {
   rootRef: undefined,
   orientation: undefined,
   classNames: undefined,

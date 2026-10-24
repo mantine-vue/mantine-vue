@@ -17,9 +17,6 @@ export interface TabsTabSlots extends SectionSlots {
 
 /** Props declared by `TabsTab` itself. See `TabsTabProps` for the full public type. */
 export interface TabsTabOwnProps {
-  /** Receives the root DOM node. */
-  rootRef?: VueRefTarget<Element>
-
   /** Value of the associated panel. */
   value: string
 
@@ -71,11 +68,10 @@ export interface TabsTabEmits {
 }
 
 export type TabsTabFactory = Factory<{
-  props: Omit<TabsTabProps, 'rootRef'>
+  props: TabsTabProps
   ref: HTMLButtonElement
   slots: TabsTabSlots
   emits: TabsTabEmits
   element: 'button'
   stylesNames: TabsTabStylesNames
 }>
-import type { VueRefTarget } from '@mantine-vue/hooks'

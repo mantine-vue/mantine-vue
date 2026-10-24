@@ -15,6 +15,7 @@ export { PassThrough }
 </script>
 
 <script setup lang="ts">
+import type { RootRefProps } from '../../../core'
 import { ref, computed, useAttrs, useSlots } from 'vue'
 import { assignRef } from '@mantine-vue/hooks'
 import {
@@ -35,7 +36,7 @@ defineOptions({
   inheritAttrs: false,
 })
 
-const rawProps = withDefaults(defineProps<AccordionControlOwnProps>(), {
+const rawProps = withDefaults(defineProps<AccordionControlOwnProps & RootRefProps<Element>>(), {
   rootRef: undefined,
   disabled: false,
   // Intentionally undefined to preserve downstream defaults

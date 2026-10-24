@@ -33,6 +33,7 @@ export { KEYBOARD_STEP, clampDimension }
 </script>
 
 <script setup lang="ts">
+import type { RootRefProps } from '../../core'
 import { ref, computed, onBeforeUnmount, onMounted, useAttrs } from 'vue'
 import { assignRef } from '@mantine-vue/hooks'
 import { Box } from '../../core'
@@ -47,11 +48,14 @@ defineOptions({
   inheritAttrs: false,
 })
 
-const props = withDefaults(defineProps<FloatingWindowResizeHandleOwnProps>(), {
-  rootRef: undefined,
-  ariaLabel: 'Resize window',
-  tabindex: 0,
-})
+const props = withDefaults(
+  defineProps<FloatingWindowResizeHandleOwnProps & RootRefProps<Element>>(),
+  {
+    rootRef: undefined,
+    ariaLabel: 'Resize window',
+    tabindex: 0,
+  },
+)
 
 defineSlots<FloatingWindowResizeHandleSlots>()
 

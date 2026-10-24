@@ -3,6 +3,7 @@ const defaultProps = { span: 12 } as const
 </script>
 
 <script setup lang="ts">
+import type { RootRefProps } from '../../../core'
 import { ref, useAttrs } from 'vue'
 import { assignRef } from '@mantine-vue/hooks'
 import { Box, useProps, useRandomClassName } from '../../../core'
@@ -12,7 +13,7 @@ import type { GridColOwnProps, GridColSlots } from './GridCol.types'
 
 defineOptions({ name: 'GridCol', inheritAttrs: false })
 
-const rawProps = withDefaults(defineProps<GridColOwnProps>(), {
+const rawProps = withDefaults(defineProps<GridColOwnProps & RootRefProps<Element>>(), {
   span: undefined,
   order: undefined,
   offset: undefined,

@@ -13,13 +13,14 @@ export const varsResolver = createVarsResolver<any>((theme, { size, color }) => 
 }))
 </script>
 <script setup lang="ts">
+import type { RootRefProps } from '../../core'
 import { ref, computed, useAttrs } from 'vue'
 import { assignRef } from '@mantine-vue/hooks'
 import { Box, useProps, useStyles } from '../../core'
 import type { LoaderOwnProps, LoaderSlots } from './Loader.types'
 import classes from './Loader.module.css'
 defineOptions({ name: 'Loader', inheritAttrs: false })
-const rawProps = withDefaults(defineProps<LoaderOwnProps>(), {
+const rawProps = withDefaults(defineProps<LoaderOwnProps & RootRefProps<Element>>(), {
   size: undefined,
   color: undefined,
   type: undefined,

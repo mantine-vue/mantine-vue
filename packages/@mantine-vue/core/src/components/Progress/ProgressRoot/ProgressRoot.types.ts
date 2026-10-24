@@ -12,9 +12,6 @@ export type ProgressRootStylesNames = 'root' | 'section' | 'label'
 
 /** Props declared by `ProgressRoot` itself. See `ProgressRootProps` for the full public type. */
 export interface ProgressRootOwnProps extends StylesApiProps<ProgressRootFactory> {
-  /** Receives the root DOM node. */
-  rootRef?: VueRefTarget<Element>
-
   /**
    * Controls track height
    *
@@ -63,11 +60,10 @@ export type ProgressRootCssVariables = {
 }
 
 export type ProgressRootFactory = Factory<{
-  props: Omit<ProgressRootProps, 'rootRef'>
+  props: ProgressRootProps
   ref: HTMLDivElement
   slots: ProgressRootSlots
   element: 'div'
   stylesNames: ProgressRootStylesNames
   vars: ProgressRootCssVariables
 }>
-import type { VueRefTarget } from '@mantine-vue/hooks'

@@ -5,9 +5,6 @@ export type TabsListStylesNames = 'list'
 
 /** Props declared by `TabsList` itself. See `TabsListProps` for the full public type. */
 export interface TabsListOwnProps {
-  /** Receives the root DOM node. */
-  rootRef?: VueRefTarget<Element>
-
   /**
    * Determines whether tabs should take all available space
    *
@@ -40,9 +37,8 @@ export interface TabsListSlots {
 export interface TabsListProps extends Omit<BoxProps, keyof TabsListOwnProps>, TabsListOwnProps {}
 
 export type TabsListFactory = Factory<{
-  props: Omit<TabsListProps, 'rootRef'>
+  props: TabsListProps
   ref: HTMLDivElement
   slots: TabsListSlots
   element: 'div'
 }>
-import type { VueRefTarget } from '@mantine-vue/hooks'

@@ -9,6 +9,7 @@ import type {
   Factory,
 } from '../../core'
 import type { CloseButtonProps } from '../CloseButton'
+import type { LoaderProps } from '../Loader'
 
 export type NotificationStylesNames =
   | 'root'
@@ -21,9 +22,6 @@ export type NotificationStylesNames =
 
 /** Props declared by `Notification` itself. See `NotificationProps` for the full public type. */
 export interface NotificationOwnProps extends StylesApiProps<NotificationFactory> {
-  /** Receives the root DOM node. */
-  rootRef?: VueRefTarget<Element>
-
   /**
    * Controls icon background color or notification accent line color, key of `theme.colors` or any valid CSS color. When `icon` is provided, sets the icon background color. When no icon is provided, sets the colored accent line on the left.
    *
@@ -69,7 +67,7 @@ export interface NotificationOwnProps extends StylesApiProps<NotificationFactory
   closeButtonProps?: CloseButtonProps
 
   /** Props passed down to the `Loader` component */
-  loaderProps?: Record<string, any>
+  loaderProps?: LoaderProps
 
   /** Element modifiers transformed into `data-` attributes, for example, `{ 'data-size': 'xl' }`, falsy values are removed */
   mod?: BoxMod
@@ -92,11 +90,10 @@ export type NotificationCssVariables = {
 }
 
 export type NotificationFactory = Factory<{
-  props: Omit<NotificationProps, 'rootRef'>
+  props: NotificationProps
   ref: HTMLDivElement
   slots: NotificationSlots
   element: 'div'
   stylesNames: NotificationStylesNames
   vars: NotificationCssVariables
 }>
-import type { VueRefTarget } from '@mantine-vue/hooks'

@@ -3,9 +3,6 @@ import type { BoxProps, Factory } from '../../../core'
 
 /** Props declared by `PaginationDots` itself. See `PaginationDotsProps` for the full public type. */
 export interface PaginationDotsOwnProps {
-  /** Receives the root DOM node. */
-  rootRef?: VueRefTarget<Element>
-
   /** Custom dots icon component, must accept svg element props and size prop */
   icon?: any
 }
@@ -21,9 +18,8 @@ export interface PaginationDotsProps
 export type PaginationDotsStylesNames = 'dots'
 
 export type PaginationDotsFactory = Factory<{
-  props: Omit<PaginationDotsProps, 'rootRef'>
+  props: PaginationDotsProps
   ref: HTMLSpanElement
   slots: PaginationDotsSlots
   element: 'span'
 }>
-import type { VueRefTarget } from '@mantine-vue/hooks'

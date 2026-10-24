@@ -7,9 +7,6 @@ export type PillsInputFieldStylesNames = 'field'
  * See `PillsInputFieldProps` for the full public type.
  */
 export interface PillsInputFieldOwnProps extends StylesApiProps<PillsInputFieldFactory> {
-  /** Receives the root DOM node. */
-  rootRef?: VueRefTarget<Element>
-
   /** Controlled value, bound with `v-model`. */
   modelValue?: string
 
@@ -53,9 +50,8 @@ export interface PillsInputFieldProps
   extends Omit<BoxProps, keyof PillsInputFieldOwnProps>, PillsInputFieldOwnProps {}
 
 export type PillsInputFieldFactory = Factory<{
-  props: Omit<PillsInputFieldProps, 'rootRef'>
+  props: PillsInputFieldProps
   ref: HTMLInputElement
   element: 'input'
   stylesNames: PillsInputFieldStylesNames
 }>
-import type { VueRefTarget } from '@mantine-vue/hooks'

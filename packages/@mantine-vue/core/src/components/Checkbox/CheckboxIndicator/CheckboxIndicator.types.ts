@@ -13,9 +13,6 @@ export type CheckboxIndicatorVariant = 'filled' | 'outline' | 'light'
 
 /** Props declared by `CheckboxIndicator` itself. See `CheckboxIndicatorProps` for the full public type. */
 export interface CheckboxIndicatorOwnProps extends StylesApiProps<CheckboxIndicatorFactory> {
-  /** Receives the root DOM node. */
-  rootRef?: VueRefTarget<Element>
-
   /**
    * Key of `theme.colors` or any valid CSS color to set input background color in checked state
    *
@@ -94,7 +91,7 @@ export type CheckboxIndicatorCssVariables = {
 }
 
 export type CheckboxIndicatorFactory = Factory<{
-  props: Omit<CheckboxIndicatorProps, 'rootRef'>
+  props: CheckboxIndicatorProps
   ref: HTMLDivElement
   slots: CheckboxIndicatorSlots
   element: 'div'
@@ -102,4 +99,3 @@ export type CheckboxIndicatorFactory = Factory<{
   vars: CheckboxIndicatorCssVariables
   variant: CheckboxIndicatorVariant
 }>
-import type { VueRefTarget } from '@mantine-vue/hooks'

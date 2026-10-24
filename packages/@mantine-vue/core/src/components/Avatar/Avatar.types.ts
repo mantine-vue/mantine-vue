@@ -1,5 +1,4 @@
 import type { ImgHTMLAttributes, VNodeChild } from 'vue'
-import type { VueRefTarget } from '@mantine-vue/hooks'
 import type {
   BoxMod,
   BoxProps,
@@ -24,9 +23,6 @@ export type AvatarVariant =
 
 /** Props declared by `Avatar` itself. See `AvatarProps` for the full public type. */
 export interface AvatarOwnProps extends StylesApiProps<AvatarProps> {
-  /** Receives the root DOM node. The factory narrows this to the element the selected root renders. */
-  rootRef?: VueRefTarget<Element>
-
   /**
    * Root element or component rendered by `Avatar`.
    *
@@ -99,7 +95,7 @@ export type AvatarCssVariables = {
 
 /** Public contract of `Avatar`. `component` and `rootRef` come from the factory. */
 export type AvatarFactory = PolymorphicFactory<{
-  props: Omit<AvatarProps, 'component' | 'rootRef'>
+  props: Omit<AvatarProps, 'component'>
   slots: AvatarSlots
   ref: HTMLDivElement
   exposed: { rootElement: Element | null }

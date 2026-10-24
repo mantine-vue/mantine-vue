@@ -1,6 +1,9 @@
 import type { VNodeChild } from 'vue'
 import type { ClassNames, Factory, MantineNode, Styles, Vars } from '../../core'
 import type { ModalBaseOwnProps } from '../ModalBase/ModalBase.types'
+import type { ModalBaseCloseButtonProps } from '../ModalBase/ModalBaseCloseButton.types'
+import type { ModalBaseOverlayProps } from '../ModalBase/ModalBaseOverlay.types'
+import type { TransitionOverride } from '../Transition'
 import type {
   ModalBody,
   ModalCloseButton,
@@ -67,7 +70,7 @@ export interface ModalCompoundProps {
   visible?: boolean
 
   /** Props passed down to the `Transition` of the part. */
-  transitionProps?: Record<string, any>
+  transitionProps?: TransitionOverride
 
   /** Internal: hides the part without unmounting it. */
   __hidden?: boolean
@@ -156,7 +159,7 @@ export interface ModalProps extends ModalRootProps {
   withOverlay?: boolean
 
   /** Props passed down to `Modal.Overlay`. */
-  overlayProps?: Record<string, any>
+  overlayProps?: ModalBaseOverlayProps
 
   /**
    * If set, a close button is rendered in the header.
@@ -166,5 +169,5 @@ export interface ModalProps extends ModalRootProps {
   withCloseButton?: boolean
 
   /** Props passed down to `Modal.CloseButton`. */
-  closeButtonProps?: Record<string, any>
+  closeButtonProps?: ModalBaseCloseButtonProps
 }

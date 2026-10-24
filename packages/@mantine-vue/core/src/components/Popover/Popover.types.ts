@@ -7,6 +7,9 @@ import type {
   FloatingPosition,
   FloatingStrategy,
 } from '../../utils/Floating'
+import type { OverlayProps } from '../Overlay'
+import type { PortalProps } from '../Portal'
+import type { TransitionOverride } from '../Transition'
 
 export type PopoverStylesNames = 'dropdown' | 'arrow' | 'overlay'
 
@@ -126,7 +129,7 @@ export interface PopoverProps {
   withinPortal?: boolean
 
   /** Props passed down to the `Portal` when `withinPortal` is set. */
-  portalProps?: Record<string, any>
+  portalProps?: PortalProps
 
   /**
    * If set, the dropdown closes on a click outside the target and the dropdown.
@@ -189,7 +192,7 @@ export interface PopoverProps {
    *
    * @default { transition: 'fade', duration: 150 }
    */
-  transitionProps?: Record<string, any>
+  transitionProps?: TransitionOverride
 
   /**
    * `z-index` of the dropdown.
@@ -212,6 +215,13 @@ export interface PopoverProps {
    */
   middlewares?: PopoverMiddlewares
 
+  /**
+   * If set, the dropdown is hidden when the target is hidden with styles or not visible on the screen.
+   *
+   * @default true
+   */
+  hideDetached?: boolean
+
   /** Base `id` used to connect the target with the dropdown. Generated when not set. */
   id?: string
 
@@ -226,7 +236,7 @@ export interface PopoverProps {
   withOverlay?: boolean
 
   /** Props passed down to the `Overlay`. */
-  overlayProps?: Record<string, any>
+  overlayProps?: OverlayProps
 
   /** Key of `theme.radius` or any valid CSS value to set `border-radius`. */
   radius?: string | number

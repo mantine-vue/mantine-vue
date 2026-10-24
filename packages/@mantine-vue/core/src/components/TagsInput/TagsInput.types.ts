@@ -1,6 +1,7 @@
-import type { VNodeChild } from 'vue'
+import type { InputHTMLAttributes, VNodeChild } from 'vue'
 import type { MantineNode } from '../../core'
-import type { ComboboxData, OptionsFilter } from '../Combobox'
+import type { ComboboxData, ComboboxProps, OptionsFilter } from '../Combobox'
+import type { ScrollAreaProps } from '../ScrollArea'
 
 export type TagsInputStylesNames = string
 
@@ -144,7 +145,7 @@ export interface TagsInputProps {
   hiddenInputValuesDivider?: string
 
   /** Props passed down to the hidden input that carries the tags in a form. */
-  hiddenInputProps?: Record<string, any>
+  hiddenInputProps?: Omit<InputHTMLAttributes, 'value'>
 
   /**
    * Content rendered when no option matches the current search.
@@ -179,7 +180,7 @@ export interface TagsInputProps {
   defaultDropdownOpened?: boolean
 
   /** Props passed down to the underlying `Combobox`. */
-  comboboxProps?: Record<string, any>
+  comboboxProps?: ComboboxProps
 
   /**
    * Custom markup for a dropdown option.
@@ -194,7 +195,7 @@ export interface TagsInputProps {
   renderPill?: (input: TagsInputPillRenderPayload) => VNodeChild
 
   /** Props passed down to the `ScrollArea.Autosize` of the dropdown. */
-  scrollAreaProps?: Record<string, any>
+  scrollAreaProps?: ScrollAreaProps
 
   /**
    * If set, the dropdown opens when the input receives focus.

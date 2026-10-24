@@ -28,6 +28,7 @@ export { varsResolver }
 </script>
 
 <script setup lang="ts">
+import type { RootRefProps } from '../../core'
 import { ref, useAttrs } from 'vue'
 import { assignRef } from '@mantine-vue/hooks'
 import { Box, useProps, useStyles } from '../../core'
@@ -39,7 +40,7 @@ defineOptions({
   inheritAttrs: false,
 })
 
-const rawProps = withDefaults(defineProps<ThemeIconOwnProps>(), {
+const rawProps = withDefaults(defineProps<ThemeIconOwnProps & RootRefProps<Element>>(), {
   rootRef: undefined,
   // Intentionally undefined to preserve downstream defaults.
   autoContrast: undefined,

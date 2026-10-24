@@ -37,6 +37,7 @@ export { defaultProps, varsResolver, getDataSignature, getEl }
 </script>
 
 <script setup lang="ts">
+import type { RootRefProps } from '../../core'
 import {
   cloneVNode,
   computed,
@@ -61,7 +62,7 @@ defineOptions({
   inheritAttrs: false,
 })
 
-const rawProps = withDefaults(defineProps<OverflowListOwnProps>(), {
+const rawProps = withDefaults(defineProps<OverflowListOwnProps & RootRefProps<Element>>(), {
   rootRef: undefined,
   collapseFrom: 'end',
   unstyled: false,

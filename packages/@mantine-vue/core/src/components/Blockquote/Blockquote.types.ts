@@ -10,9 +10,6 @@ import type {
 
 /** Props declared by `Blockquote` itself. See `BlockquoteProps` for the full public type. */
 export interface BlockquoteOwnProps extends StylesApiProps<BlockquoteFactory> {
-  /** Receives the root DOM node. */
-  rootRef?: VueRefTarget<Element>
-
   /** Blockquote icon, displayed at the top left side */
   icon?: MantineNode
 
@@ -69,10 +66,9 @@ export type BlockquoteCssVariables = {
 }
 
 export type BlockquoteFactory = Factory<{
-  props: Omit<BlockquoteProps, 'rootRef'>
+  props: BlockquoteProps
   ref: HTMLQuoteElement
   slots: BlockquoteSlots
   element: 'blockquote'
   stylesNames: BlockquoteStylesNames
 }>
-import type { VueRefTarget } from '@mantine-vue/hooks'

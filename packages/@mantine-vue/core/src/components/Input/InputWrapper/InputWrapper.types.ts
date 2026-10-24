@@ -1,5 +1,15 @@
 import type { VNodeChild } from 'vue'
-import type { BoxMod, BoxProps, MantineFontSize, MantineNode, StylesApiProps } from '../../../core'
+import type {
+  BoxMod,
+  BoxProps,
+  DataAttributes,
+  MantineFontSize,
+  MantineNode,
+  StylesApiProps,
+} from '../../../core'
+import type { InputDescriptionProps } from '../InputDescription/InputDescription.types'
+import type { InputErrorProps } from '../InputError/InputError.types'
+import type { InputLabelProps } from '../InputLabel/InputLabel.types'
 import type { InputWrapperOrderPart } from './get-input-offsets/get-input-offsets'
 
 export type InputWrapperStylesNames = 'root' | 'label' | 'required' | 'description' | 'error'
@@ -68,13 +78,13 @@ export interface InputWrapperOwnProps extends StylesApiProps {
   withAsterisk?: boolean
 
   /** Props passed down to the `Input.Label` component. */
-  labelProps?: Record<string, any>
+  labelProps?: InputLabelProps & DataAttributes
 
   /** Props passed down to the `Input.Description` component. */
-  descriptionProps?: Record<string, any>
+  descriptionProps?: InputDescriptionProps & DataAttributes
 
   /** Props passed down to the `Input.Error` component. */
-  errorProps?: Record<string, any>
+  errorProps?: InputErrorProps & DataAttributes
 
   /** Function that wraps the input before it is rendered in the layout. */
   inputContainer?: (children: any) => any

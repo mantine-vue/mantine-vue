@@ -1,11 +1,12 @@
 <script setup lang="ts">
+import type { RootRefProps } from '../../../core'
 import { ref, cloneVNode, isVNode, useAttrs, useSlots } from 'vue'
 import { assignRef } from '@mantine-vue/hooks'
 import { Box, hasNode, resolveNode, useProps } from '../../../core'
 import { useListContext } from '../List.context'
 import type { ListItemOwnProps, ListItemSlots } from './ListItem.types'
 defineOptions({ name: 'ListItem', inheritAttrs: false })
-const rawProps = withDefaults(defineProps<ListItemOwnProps>(), {
+const rawProps = withDefaults(defineProps<ListItemOwnProps & RootRefProps<Element>>(), {
   rootRef: undefined,
   icon: undefined,
   mod: undefined,

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { RootRefProps } from '../../core'
 import { computed, onBeforeUnmount, onMounted, ref, useAttrs } from 'vue'
 import { assignRef, useId } from '@mantine-vue/hooks'
 import { Box, useDirection, useStyles } from '../../core'
@@ -8,7 +9,7 @@ import { varsResolver } from './Tour.vue'
 import type { TourEmits, TourRootProps } from './Tour.types'
 import classes from './Tour.module.css'
 defineOptions({ name: 'TourRoot', inheritAttrs: false })
-const props = withDefaults(defineProps<TourRootProps>(), {
+const props = withDefaults(defineProps<TourRootProps & RootRefProps<Element>>(), {
   active: false,
   defaultStep: 0,
   withOverlay: true,

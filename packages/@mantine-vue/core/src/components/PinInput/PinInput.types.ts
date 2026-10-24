@@ -1,12 +1,15 @@
 import type { VueRefTarget } from '@mantine-vue/hooks'
+import type { InputHTMLAttributes } from 'vue'
 import type {
   BoxProps,
+  DataAttributes,
   MantineRadius,
   MantineSize,
   MantineSpacing,
   StylesApiProps,
   Factory,
 } from '../../core'
+import type { InputProps } from '../Input'
 
 export type PinInputStylesNames = 'root' | 'pinInput' | 'input'
 export type PinInputCssVariables = {
@@ -165,16 +168,13 @@ export interface PinInputOwnProps extends StylesApiProps<PinInputFactory> {
   ariaLabel?: string
 
   /** Props passed down to the hidden input that carries the code in a form. */
-  hiddenInputProps?: Record<string, any>
-
-  /** Ref assigned to the root element. */
-  rootRef?: VueRefTarget<HTMLDivElement>
+  hiddenInputProps?: InputHTMLAttributes
 
   /** Ref assigned to the first field. */
   inputRef?: VueRefTarget<HTMLInputElement>
 
   /** Returns extra props for the field at the given index. */
-  getInputProps?: (index: number) => Record<string, any>
+  getInputProps?: (index: number) => InputProps & Omit<InputHTMLAttributes, 'size'> & DataAttributes
 
   /** Controls the visual representation of the fields. */
   variant?: string
@@ -194,7 +194,7 @@ export interface PinInputEmits {
 }
 
 export type PinInputFactory = Factory<{
-  props: Omit<PinInputProps, 'rootRef'>
+  props: PinInputProps
   ref: HTMLDivElement
   exposed: { rootElement: Element | null }
   emits: PinInputEmits

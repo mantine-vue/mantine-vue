@@ -61,9 +61,6 @@ export interface StepperSlots {
 
 /** Props declared by `Stepper` itself. See `StepperProps` for the full public type. */
 export interface StepperOwnProps extends StylesApiProps<StepperFactory> {
-  /** Receives the root DOM node. */
-  rootRef?: VueRefTarget<Element>
-
   /** Zero based index of the active step, bound with `v-model:active`. */
   active: number
 
@@ -169,7 +166,7 @@ export interface StepperEmits {
 }
 
 export type StepperFactory = Factory<{
-  props: Omit<StepperProps, 'rootRef'>
+  props: StepperProps
   ref: HTMLDivElement
   slots: StepperSlots
   emits: StepperEmits
@@ -181,4 +178,3 @@ export type StepperFactory = Factory<{
     Completed: typeof StepperCompleted
   }
 }>
-import type { VueRefTarget } from '@mantine-vue/hooks'

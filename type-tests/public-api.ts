@@ -20,7 +20,10 @@ import type {
   MantineColor,
   MantineRadius,
   MantineSpacing,
+  LoaderProps,
   PaperProps,
+  ScrollAreaProps,
+  SelectProps as SelectNamedProps,
   TableProps,
   TableThProps,
   TextInputProps,
@@ -54,7 +57,12 @@ type GroupProps = InstanceType<typeof Group>['$props']
 type StackProps = InstanceType<typeof Stack>['$props']
 type ContextMenuProviderPublicProps = InstanceType<typeof ContextMenuProvider>['$props']
 
-const buttonProps: ButtonProps = { variant: 'filled', size: 'sm', fullWidth: true }
+const buttonProps: ButtonProps = {
+  variant: 'filled',
+  size: 'sm',
+  fullWidth: true,
+  rootRef: (node: HTMLButtonElement | null) => node,
+}
 const customButtonProps: ButtonProps = { variant: 'danger' }
 const customBadgeProps: BadgeProps = { variant: 'danger' }
 const customThemeIconProps: ThemeIconProps = { variant: 'danger' }
@@ -67,6 +75,7 @@ const boxProps: BoxPublicProps = {
   bg: 'red.5',
   mx: { base: 'xs', md: 24 },
   pos: 'relative',
+  rootRef: (node: Element | null) => node,
 }
 const badgeThemeProps: BadgeProps = {
   size: 'xl',
@@ -96,7 +105,12 @@ const flexWrap: FlexWrap = 'wrap-reverse'
 const color: MantineColor = 'violet.7'
 const radius: MantineRadius = 'md'
 const spacing: MantineSpacing = 'xl'
-const actionIconNamedProps: ActionIconProps = { color: 'blue.6', radius: 'md', size: 'sm' }
+const actionIconNamedProps: ActionIconProps = {
+  color: 'blue.6',
+  radius: 'md',
+  size: 'sm',
+  loaderProps: { type: 'bars' },
+}
 const paperNamedProps: PaperProps = { radius: 'lg', shadow: 'sm', withBorder: true }
 const tableNamedProps: TableProps = { layout: 'fixed', striped: 'odd', withTableBorder: true }
 const tableThNamedProps: TableThProps = { className: 'header-cell' }
@@ -110,6 +124,11 @@ const contextMenuProviderProps: ContextMenuProviderProps = {
 const contextMenuProviderPublicProps: ContextMenuProviderPublicProps = {
   zIndex: 9999,
   borderRadius: 4,
+}
+const selectForwardedProps: SelectNamedProps = {
+  comboboxProps: { position: 'bottom-start', withinPortal: false },
+  hiddenInputProps: { autocomplete: 'off', form: 'profile' },
+  scrollAreaProps: { type: 'always', scrollbarSize: 8 },
 }
 const contextMenuOptions: ContextMenuOptions = {
   classNames: { root: 'menu', item: 'item', divider: 'divider' },
@@ -149,6 +168,7 @@ void tableThNamedProps
 void textInputNamedProps
 void contextMenuProviderProps
 void contextMenuProviderPublicProps
+void selectForwardedProps
 void contextMenuOptions
 void contextMenuItems
 void showContextMenu
@@ -171,6 +191,19 @@ void invalidThemeIconVariant
 // @ts-expect-error PinInput inputMode matches the HTML inputmode attribute.
 const invalidPinInputProps: PinInputProps = { inputMode: 'not-an-input-mode' }
 void invalidPinInputProps
+
+const invalidSelectScrollAreaProps: SelectNamedProps = {
+  // @ts-expect-error Select scrollAreaProps reuse ScrollArea's closed `type` union.
+  scrollAreaProps: { type: 'sometimes' },
+}
+void invalidSelectScrollAreaProps
+
+// @ts-expect-error rootRef is added to the public component by the Vue factory.
+const invalidLoaderNamedRootRef: LoaderProps = { rootRef: () => undefined }
+// @ts-expect-error rootRef is added to the public component by the Vue factory.
+const invalidScrollAreaNamedRootRef: ScrollAreaProps = { rootRef: () => undefined }
+void invalidLoaderNamedRootRef
+void invalidScrollAreaNamedRootRef
 
 // @ts-expect-error Badge size follows React Mantine and does not accept numbers.
 const invalidBadgeSize: BadgeProps = { size: 12 }

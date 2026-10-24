@@ -1,5 +1,5 @@
-import { defineComponent, h } from 'vue'
-import { Button, Menu } from '@mantine-vue/core'
+import { defineComponent, h, type PropType } from 'vue'
+import { Button, Menu, type MantineTransition } from '@mantine-vue/core'
 import type { MantineDemo } from '@/demo'
 
 const code = `
@@ -31,7 +31,7 @@ const Demo = defineComponent({
   name: 'MenuTransitionsDemo',
   inheritAttrs: false,
   props: {
-    transition: { type: String, default: 'rotate-right' },
+    transition: { type: String as PropType<MantineTransition>, default: 'rotate-right' },
   },
   setup(props) {
     return () =>

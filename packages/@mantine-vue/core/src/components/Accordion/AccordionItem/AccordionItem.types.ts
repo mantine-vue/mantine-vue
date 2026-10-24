@@ -10,9 +10,6 @@ export interface AccordionItemSlots {
 
 /** Props declared by `AccordionItem` itself. See `AccordionItemProps` for the full public type. */
 export interface AccordionItemOwnProps extends StylesApiProps<AccordionItemFactory> {
-  /** Receives the root DOM node. */
-  rootRef?: VueRefTarget<Element>
-
   /** Value that is used to manage the accordion state. */
   value: string
 
@@ -24,9 +21,8 @@ export interface AccordionItemProps
   extends Omit<BoxProps, keyof AccordionItemOwnProps>, AccordionItemOwnProps {}
 
 export type AccordionItemFactory = Factory<{
-  props: Omit<AccordionItemProps, 'rootRef'>
+  props: AccordionItemProps
   ref: HTMLDivElement
   slots: AccordionItemSlots
   element: 'div'
 }>
-import type { VueRefTarget } from '@mantine-vue/hooks'

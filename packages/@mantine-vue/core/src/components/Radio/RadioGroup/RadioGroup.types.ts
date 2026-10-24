@@ -1,5 +1,11 @@
-import type { VNodeChild } from 'vue'
-import type { BoxProps, MantineNode, MantineSize, StylesApiProps } from '../../../core'
+import type { HTMLAttributes, VNodeChild } from 'vue'
+import type {
+  BoxProps,
+  DataAttributes,
+  MantineNode,
+  MantineSize,
+  StylesApiProps,
+} from '../../../core'
 
 export interface RadioGroupContextValue {
   /** Value of the currently selected radio. */
@@ -44,7 +50,7 @@ export interface RadioGroupOwnProps extends StylesApiProps<RadioGroupProps> {
   size?: MantineSize
 
   /** Props passed down to the `Input.Wrapper` root element. */
-  wrapperProps?: Record<string, any>
+  wrapperProps?: HTMLAttributes & DataAttributes
 
   /** `name` shared by every radio in the group. Generated automatically when not set. */
   name?: string

@@ -1,5 +1,6 @@
 <script lang="ts">
 import { createVarsResolver, getSize, rem } from '../../core'
+import type { MantineTransition } from '../Transition'
 import type { DrawerPosition } from './Drawer.types'
 
 /** Module scope: created once, not per component instance. */
@@ -26,7 +27,7 @@ const varsResolver = createVarsResolver<any>((_, props) => ({
 }))
 
 /** The drawer slides in from the side it is anchored to. */
-const transitions: Record<DrawerPosition, string> = {
+const transitions: Record<DrawerPosition, MantineTransition> = {
   top: 'slide-down',
   bottom: 'slide-up',
   left: 'slide-right',
@@ -34,7 +35,7 @@ const transitions: Record<DrawerPosition, string> = {
 }
 
 /** In RTL the horizontal sides are mirrored, so the slide directions swap with them. */
-const rtlTransitions: Record<DrawerPosition, string> = {
+const rtlTransitions: Record<DrawerPosition, MantineTransition> = {
   top: 'slide-down',
   bottom: 'slide-up',
   left: 'slide-left',

@@ -14,9 +14,6 @@ export interface KbdSlots {
 
 /** Props declared by `Kbd` itself. See `KbdProps` for the full public type. */
 export interface KbdOwnProps extends StylesApiProps<KbdFactory> {
-  /** Receives the root DOM node. */
-  rootRef?: VueRefTarget<Element>
-
   /**
    * Controls `font-size` and `padding`.
    * @default 'sm'
@@ -27,11 +24,10 @@ export interface KbdOwnProps extends StylesApiProps<KbdFactory> {
 export interface KbdProps extends Omit<BoxProps, keyof KbdOwnProps>, KbdOwnProps {}
 
 export type KbdFactory = Factory<{
-  props: Omit<KbdProps, 'rootRef'>
+  props: KbdProps
   ref: HTMLElement
   slots: KbdSlots
   element: 'kbd'
   stylesNames: KbdStylesNames
   vars: KbdCssVariables
 }>
-import type { VueRefTarget } from '@mantine-vue/hooks'

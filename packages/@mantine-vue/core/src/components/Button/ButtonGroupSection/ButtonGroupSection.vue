@@ -32,6 +32,7 @@ export { varsResolver }
 </script>
 
 <script setup lang="ts">
+import type { RootRefProps } from '../../../core'
 import { ref, useAttrs } from 'vue'
 import { assignRef } from '@mantine-vue/hooks'
 import { Box, useProps, useStyles } from '../../../core'
@@ -43,7 +44,7 @@ import classes from '../Button.module.css'
 
 defineOptions({ name: 'ButtonGroupSection', inheritAttrs: false })
 
-const rawProps = withDefaults(defineProps<ButtonGroupSectionOwnProps>(), {
+const rawProps = withDefaults(defineProps<ButtonGroupSectionOwnProps & RootRefProps<Element>>(), {
   rootRef: undefined,
   size: undefined,
   color: undefined,

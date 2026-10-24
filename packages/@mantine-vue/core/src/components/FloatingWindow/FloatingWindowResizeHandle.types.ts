@@ -11,9 +11,6 @@ export interface FloatingWindowResizeHandleSlots {
  * `FloatingWindowResizeHandleProps` for the full public type.
  */
 export interface FloatingWindowResizeHandleOwnProps {
-  /** Receives the root DOM node. */
-  rootRef?: VueRefTarget<Element>
-
   /**
    * `aria-label` of the handle. A consumer `aria-label` attribute takes precedence.
    *
@@ -36,9 +33,8 @@ export interface FloatingWindowResizeHandleProps
     FloatingWindowResizeHandleOwnProps {}
 
 export type FloatingWindowResizeHandleFactory = Factory<{
-  props: Omit<FloatingWindowResizeHandleProps, 'rootRef'>
+  props: FloatingWindowResizeHandleProps
   ref: HTMLDivElement
   slots: FloatingWindowResizeHandleSlots
   element: 'div'
 }>
-import type { VueRefTarget } from '@mantine-vue/hooks'

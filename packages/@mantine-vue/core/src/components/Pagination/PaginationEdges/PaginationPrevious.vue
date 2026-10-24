@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { RootRefProps } from '../../../core'
 import { useAttrs } from 'vue'
 import PaginationEdge from './PaginationEdge.vue'
 import type { PaginationEdgeOwnProps, PaginationEdgeSlots } from './PaginationEdges.types'
@@ -8,10 +9,13 @@ defineOptions({
   inheritAttrs: false,
 })
 
-const props = withDefaults(defineProps<PaginationEdgeOwnProps>(), {
-  icon: undefined,
-  disabled: false,
-})
+const props = withDefaults(
+  defineProps<PaginationEdgeOwnProps & RootRefProps<HTMLButtonElement>>(),
+  {
+    icon: undefined,
+    disabled: false,
+  },
+)
 
 defineSlots<PaginationEdgeSlots>()
 

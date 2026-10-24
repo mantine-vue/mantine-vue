@@ -22,6 +22,7 @@ export { varsResolver }
 </script>
 
 <script setup lang="ts">
+import type { RootRefProps } from '../../core'
 import { Comment, h, ref, useAttrs, useSlots, type VNode } from 'vue'
 import { assignRef } from '@mantine-vue/hooks'
 import { Box, useProps, useStyles } from '../../core'
@@ -29,7 +30,7 @@ import type { GroupOwnProps, GroupSlots } from './Group.types'
 import classes from './Group.module.css'
 
 defineOptions({ name: 'Group', inheritAttrs: false })
-const rawProps = withDefaults(defineProps<GroupOwnProps>(), {
+const rawProps = withDefaults(defineProps<GroupOwnProps & RootRefProps<Element>>(), {
   justify: undefined,
   align: undefined,
   wrap: undefined,

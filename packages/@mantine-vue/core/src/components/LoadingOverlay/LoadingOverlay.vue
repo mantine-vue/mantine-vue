@@ -15,18 +15,19 @@ export { varsResolver }
 </script>
 
 <script setup lang="ts">
+import type { RootRefProps } from '../../core'
 import { ref, computed, useAttrs } from 'vue'
 import { assignRef } from '@mantine-vue/hooks'
 import { Box, useMantineTheme, useProps, useStyles } from '../../core'
 import { Loader } from '../Loader'
 import { Overlay } from '../Overlay'
 import { Transition as MantineTransition } from '../Transition'
-import type { LoadingOverlayOwnProps } from './LoadingOverlay.types'
+import type { LoadingOverlayOwnProps, LoadingOverlaySlots } from './LoadingOverlay.types'
 import classes from './LoadingOverlay.module.css'
 
 defineOptions({ name: 'LoadingOverlay', inheritAttrs: false })
 
-const rawProps = withDefaults(defineProps<LoadingOverlayOwnProps>(), {
+const rawProps = withDefaults(defineProps<LoadingOverlayOwnProps & RootRefProps<Element>>(), {
   transitionProps: undefined,
   loaderProps: undefined,
   overlayProps: undefined,
@@ -37,6 +38,8 @@ const rawProps = withDefaults(defineProps<LoadingOverlayOwnProps>(), {
   vars: undefined,
   unstyled: false,
 })
+
+const slots = defineSlots<LoadingOverlaySlots>()
 
 const emit = defineEmits<{
   enter: []
@@ -102,7 +105,9 @@ defineExpose({ rootElement })
               style: props.loaderProps?.style,
             }),
           }"
-        />
+        >
+          <template v-if="slots.loader" #default><slot name="loader" /></template>
+        </Loader>
         <Overlay
           v-bind="{
             ...overlayProps,

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { RootRefProps } from '../../../core'
 import { ref, computed, useAttrs } from 'vue'
 import { assignRef } from '@mantine-vue/hooks'
 import { Box } from '../../../core'
@@ -14,7 +15,7 @@ defineOptions({
   inheritAttrs: false,
 })
 
-const props = defineProps<ScrollAreaViewportOwnProps>()
+const props = defineProps<ScrollAreaViewportOwnProps & RootRefProps<Element>>()
 
 const emit = defineEmits<ScrollAreaViewportEmits>()
 

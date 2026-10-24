@@ -5,6 +5,7 @@ export { defaultProps }
 </script>
 
 <script setup lang="ts">
+import type { RootRefProps } from '../../../core'
 import { computed, ref, useAttrs } from 'vue'
 import { assignRef } from '@mantine-vue/hooks'
 import { Box, useProps } from '../../../core'
@@ -20,7 +21,7 @@ defineOptions({
  * `scrollbars` is a union containing `false`, so it needs an explicit `undefined`
  * default or Vue casts an absent prop to `false`.
  */
-const rawProps = withDefaults(defineProps<ScrollAreaRootOwnProps>(), {
+const rawProps = withDefaults(defineProps<ScrollAreaRootOwnProps & RootRefProps<Element>>(), {
   rootRef: undefined,
   scrollbars: undefined,
 })

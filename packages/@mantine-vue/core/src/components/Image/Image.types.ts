@@ -5,13 +5,9 @@ import type {
   StylesApiProps,
   PolymorphicFactory,
 } from '../../core'
-import type { VueRefTarget } from '@mantine-vue/hooks'
 
 /** Props declared by `Image` itself. See `ImageProps` for the full public type. */
 export interface ImageOwnProps extends StylesApiProps<ImageProps> {
-  /** Receives the root DOM node. The factory narrows this to the element the selected root renders. */
-  rootRef?: VueRefTarget<Element>
-
   /** Image url */
   src?: any
 
@@ -43,7 +39,7 @@ export interface ImageEmits {
 
 /** Public contract of `Image`. `component` and `rootRef` come from the factory. */
 export type ImageFactory = PolymorphicFactory<{
-  props: Omit<ImageProps, 'component' | 'rootRef'>
+  props: Omit<ImageProps, 'component'>
   emits: ImageEmits
   ref: HTMLImageElement
   exposed: { rootElement: Element | null }

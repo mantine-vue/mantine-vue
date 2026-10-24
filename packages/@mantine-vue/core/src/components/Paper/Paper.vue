@@ -13,6 +13,7 @@ export { varsResolver }
 </script>
 
 <script setup lang="ts">
+import type { RootRefProps } from '../../core'
 import { ref, useAttrs } from 'vue'
 import { assignRef } from '@mantine-vue/hooks'
 import { Box, useForwardedRef, useProps, useStyles } from '../../core'
@@ -24,7 +25,7 @@ defineOptions({
   inheritAttrs: false,
 })
 
-const rawProps = withDefaults(defineProps<PaperOwnProps>(), {
+const rawProps = withDefaults(defineProps<PaperOwnProps & RootRefProps<Element>>(), {
   rootRef: undefined,
   component: 'div',
   shadow: undefined,

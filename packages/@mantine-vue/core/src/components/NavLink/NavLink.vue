@@ -25,6 +25,7 @@ export { varsResolver }
 </script>
 
 <script setup lang="ts">
+import type { RootRefProps } from '../../core'
 import { Comment, ref, computed, useAttrs, useSlots } from 'vue'
 import { assignRef, useUncontrolled } from '@mantine-vue/hooks'
 import { Box, hasNode, resolveNode, useStyles } from '../../core'
@@ -36,7 +37,7 @@ import classes from './NavLink.module.css'
 
 defineOptions({ name: 'NavLink', inheritAttrs: false })
 
-const props = withDefaults(defineProps<NavLinkOwnProps>(), {
+const props = withDefaults(defineProps<NavLinkOwnProps & RootRefProps<Element>>(), {
   rootRef: undefined,
   component: 'a',
   label: undefined,

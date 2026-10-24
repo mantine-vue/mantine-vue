@@ -12,6 +12,7 @@ export { callHandler }
 </script>
 
 <script setup lang="ts">
+import type { RootRefProps } from '../../core'
 import { computed, ref, useAttrs, useSlots } from 'vue'
 import { assignRef } from '@mantine-vue/hooks'
 import { omitAttrs } from '../../core'
@@ -24,7 +25,7 @@ defineOptions({
   inheritAttrs: false,
 })
 
-const props = withDefaults(defineProps<PillsInputOwnProps>(), {
+const props = withDefaults(defineProps<PillsInputOwnProps & RootRefProps<Element>>(), {
   size: 'sm',
   disabled: false,
   error: undefined,

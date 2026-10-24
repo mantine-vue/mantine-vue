@@ -83,7 +83,7 @@ export type CloseButtonCssVariables = {
 }
 
 export type CloseButtonFactory = PolymorphicFactory<{
-  props: Omit<CloseButtonProps, 'component' | 'rootRef'>
+  props: Omit<CloseButtonProps, 'component'>
   slots: CloseButtonSlots
   ref: HTMLButtonElement
   exposed: { rootElement: Element | null }

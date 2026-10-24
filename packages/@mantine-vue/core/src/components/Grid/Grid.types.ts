@@ -1,4 +1,3 @@
-import type { VueRefTarget } from '@mantine-vue/hooks'
 import type { GridCol } from './GridCol/GridCol'
 import type { VNodeChild } from 'vue'
 import type {
@@ -15,9 +14,6 @@ import type { GridBreakpoints } from './Grid.context'
 
 /** Props declared by `Grid` itself. See `GridProps` for the full public type. */
 export interface GridOwnProps extends StylesApiProps<GridFactory> {
-  /** Receives the root DOM node. */
-  rootRef?: VueRefTarget<Element>
-
   /**
    * Gap between columns and rows, key of `theme.spacing` or any valid CSS value
    *
@@ -86,7 +82,7 @@ export type GridStylesNames = 'root' | 'col' | 'inner' | 'container'
 export type GridCssVariables = { root: '--grid-justify' | '--grid-align' | '--grid-overflow' }
 
 export type GridFactory = Factory<{
-  props: Omit<GridProps, 'rootRef'>
+  props: GridProps
   ref: HTMLDivElement
   exposed: { rootElement: Element | null }
   slots: GridSlots

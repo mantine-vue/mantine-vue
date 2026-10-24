@@ -27,6 +27,7 @@ const varsResolver = createVarsResolver<any>(
 export { varsResolver }
 </script>
 <script setup lang="ts">
+import type { RootRefProps } from '../../core'
 import { onBeforeUnmount, onMounted, ref, useAttrs } from 'vue'
 import { assignRef } from '@mantine-vue/hooks'
 import { Box, omitAttrs, useDirection, useProps, useStyles } from '../../core'
@@ -35,7 +36,7 @@ import type { ToolbarOwnProps, ToolbarSlots } from './Toolbar.types'
 import classes from './Toolbar.module.css'
 
 defineOptions({ name: 'Toolbar', inheritAttrs: false })
-const rawProps = withDefaults(defineProps<ToolbarOwnProps>(), {
+const rawProps = withDefaults(defineProps<ToolbarOwnProps & RootRefProps<Element>>(), {
   orientation: undefined,
   loop: undefined,
   withBorder: undefined,

@@ -14,6 +14,7 @@ export { defaultProps }
 </script>
 
 <script setup lang="ts">
+import type { RootRefProps } from '../../core'
 import { onBeforeUnmount, ref, useAttrs, watchEffect } from 'vue'
 import { assignRef } from '@mantine-vue/hooks'
 import { useProps, useStyles } from '../../core'
@@ -26,7 +27,7 @@ import classes from './ActionBar.module.css'
 
 defineOptions({ name: 'ActionBar', inheritAttrs: false })
 
-const rawProps = withDefaults(defineProps<ActionBarOwnProps>(), {
+const rawProps = withDefaults(defineProps<ActionBarOwnProps & RootRefProps<Element>>(), {
   rootRef: undefined,
   transitionProps: undefined,
   shadow: undefined,

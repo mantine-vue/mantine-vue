@@ -6,9 +6,6 @@ export type FieldsetVariant = 'default' | 'filled' | 'unstyled'
 
 /** Props declared by `Fieldset` itself. See `FieldsetProps` for the full public type. */
 export interface FieldsetOwnProps extends StylesApiProps<FieldsetFactory> {
-  /** Receives the root DOM node. */
-  rootRef?: VueRefTarget<Element>
-
   /** Fieldset legend */
   legend?: MantineNode
 
@@ -41,7 +38,7 @@ export type FieldsetCssVariables = {
 }
 
 export type FieldsetFactory = Factory<{
-  props: Omit<FieldsetProps, 'rootRef'>
+  props: FieldsetProps
   ref: HTMLFieldSetElement
   slots: FieldsetSlots
   element: 'fieldset'
@@ -49,4 +46,3 @@ export type FieldsetFactory = Factory<{
   vars: FieldsetCssVariables
   variant: FieldsetVariant
 }>
-import type { VueRefTarget } from '@mantine-vue/hooks'

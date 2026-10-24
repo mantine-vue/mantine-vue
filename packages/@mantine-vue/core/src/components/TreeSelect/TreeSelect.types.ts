@@ -1,7 +1,8 @@
-import type { VNodeChild } from 'vue'
+import type { InputHTMLAttributes, VNodeChild } from 'vue'
 import type { MantineNode } from '../../core'
 import type { TreeNodeData } from '../Tree'
 import type { ComboboxProps } from '../Combobox'
+import type { ScrollAreaProps } from '../ScrollArea'
 
 export type TreeSelectMode = 'single' | 'multiple' | 'checkbox'
 export type TreeSelectValue<Mode extends TreeSelectMode> = Mode extends 'single'
@@ -157,7 +158,7 @@ export interface TreeSelectProps<Mode extends TreeSelectMode = 'single'> {
   withLines?: boolean
 
   /** Props passed down to the hidden input that carries the value in a form. */
-  hiddenInputProps?: Record<string, any>
+  hiddenInputProps?: Omit<InputHTMLAttributes, 'value'>
 
   /**
    * Separator used to join several values in the hidden input.
@@ -174,7 +175,7 @@ export interface TreeSelectProps<Mode extends TreeSelectMode = 'single'> {
   maxDropdownHeight?: number | string
 
   /** Props passed down to the scrollable wrapper of the dropdown. */
-  scrollAreaProps?: Record<string, any>
+  scrollAreaProps?: ScrollAreaProps
 
   /** Open state of the dropdown. */
   dropdownOpened?: boolean

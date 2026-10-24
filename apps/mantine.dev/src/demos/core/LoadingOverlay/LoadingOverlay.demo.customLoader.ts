@@ -13,7 +13,9 @@ const [visible, { toggle }] = useDisclosure(false)
 
 <template>
   <Box pos="relative">
-    <LoadingOverlay :visible="visible" :loader-props="{ children: 'Loading...' }" />
+    <LoadingOverlay :visible="visible">
+      <template #loader>Loading...</template>
+    </LoadingOverlay>
     <!-- ...other content -->
   </Box>
 
@@ -35,10 +37,7 @@ const Demo = defineComponent({
           { pos: 'relative' },
           {
             default: () => [
-              h(LoadingOverlay, {
-                visible: visible.value,
-                loaderProps: { children: 'Loading...' },
-              }),
+              h(LoadingOverlay, { visible: visible.value }, { loader: () => 'Loading...' }),
               h(TextInput, {
                 label: 'Email',
                 placeholder: 'your@email.com',

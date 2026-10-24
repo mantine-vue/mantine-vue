@@ -1,5 +1,4 @@
 import type { VNodeChild } from 'vue'
-import type { VueRefTarget } from '@mantine-vue/hooks'
 import type {
   AlignItems,
   BoxProps,
@@ -18,9 +17,6 @@ export type GroupCssVariables = {
 
 /** Props declared by `Group` itself. See `GroupProps` for the full public type. */
 export interface GroupOwnProps extends StylesApiProps<GroupFactory> {
-  /** Receives the root DOM node. */
-  rootRef?: VueRefTarget<Element>
-
   /**
    * Controls `justify-content` CSS property
    *
@@ -72,7 +68,7 @@ export interface GroupSlots {
 }
 
 export type GroupFactory = Factory<{
-  props: Omit<GroupProps, 'rootRef'>
+  props: GroupProps
   slots: GroupSlots
   ref: HTMLDivElement
   exposed: { rootElement: Element | null }

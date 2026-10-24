@@ -1,15 +1,18 @@
-import type { VueRefTarget } from '@mantine-vue/hooks'
 import type { Component, HTMLAttributes, SVGAttributes, VNodeChild } from 'vue'
-import type { BoxProps, MantineColor, MantineSize, StylesApiProps, Factory } from '../../core'
+import type {
+  BoxProps,
+  DataAttributes,
+  MantineColor,
+  MantineSize,
+  StylesApiProps,
+  Factory,
+} from '../../core'
 
 export type MantineLoader = 'bars' | 'oval' | 'dots' | (string & {})
 export type MantineLoaderComponent = Component
 export type MantineLoadersRecord = Record<string, MantineLoaderComponent>
 
 export interface LoaderOwnProps extends StylesApiProps<LoaderFactory> {
-  /** Receives the root DOM node. */
-  rootRef?: VueRefTarget<Element>
-
   /** Controls loader width and height. @default 'md' */
   size?: MantineSize | (string & {}) | number
   /** Loader color. @default theme.primaryColor */
@@ -19,7 +22,8 @@ export interface LoaderOwnProps extends StylesApiProps<LoaderFactory> {
   /** Custom loader component registry. */
   loaders?: MantineLoadersRecord
 }
-export interface LoaderProps extends Omit<BoxProps, keyof LoaderOwnProps>, LoaderOwnProps {}
+export interface LoaderProps
+  extends Omit<BoxProps & HTMLAttributes & DataAttributes, keyof LoaderOwnProps>, LoaderOwnProps {}
 export interface LoaderSlots {
   /** Overrides the selected loader. */ default?: () => VNodeChild
 }
@@ -31,7 +35,7 @@ export type OvalProps = HTMLAttributes
 export type LoaderSvgProps = SVGAttributes
 
 export type LoaderFactory = Factory<{
-  props: Omit<LoaderProps, 'rootRef'>
+  props: LoaderProps
   slots: LoaderSlots
   ref: HTMLSpanElement
   exposed: { rootElement: Element | null }

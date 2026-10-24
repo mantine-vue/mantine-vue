@@ -15,6 +15,7 @@ export { varsResolver, defaultProps }
 </script>
 
 <script setup lang="ts">
+import type { RootRefProps } from '../../../core'
 import { ref, computed, useAttrs } from 'vue'
 import { assignRef } from '@mantine-vue/hooks'
 import { Box, omitAttrs, useProps, useStyles } from '../../../core'
@@ -27,7 +28,7 @@ defineOptions({
   inheritAttrs: false,
 })
 
-const rawProps = withDefaults(defineProps<InputLabelOwnProps>(), {
+const rawProps = withDefaults(defineProps<InputLabelOwnProps & RootRefProps<Element>>(), {
   rootRef: undefined,
   required: false,
   unstyled: false,

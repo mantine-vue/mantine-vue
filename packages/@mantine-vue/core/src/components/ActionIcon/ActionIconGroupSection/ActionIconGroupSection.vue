@@ -29,6 +29,7 @@ export { varsResolver }
 </script>
 
 <script setup lang="ts">
+import type { RootRefProps } from '../../../core'
 import { ref, useAttrs } from 'vue'
 import { assignRef } from '@mantine-vue/hooks'
 import { Box, useProps, useStyles } from '../../../core'
@@ -40,19 +41,22 @@ import classes from '../ActionIcon.module.css'
 
 defineOptions({ name: 'ActionIconGroupSection', inheritAttrs: false })
 
-const rawProps = withDefaults(defineProps<ActionIconGroupSectionOwnProps>(), {
-  rootRef: undefined,
-  size: undefined,
-  color: undefined,
-  radius: undefined,
-  gradient: undefined,
-  autoContrast: undefined,
-  variant: undefined,
-  classNames: undefined,
-  styles: undefined,
-  vars: undefined,
-  unstyled: undefined,
-})
+const rawProps = withDefaults(
+  defineProps<ActionIconGroupSectionOwnProps & RootRefProps<Element>>(),
+  {
+    rootRef: undefined,
+    size: undefined,
+    color: undefined,
+    radius: undefined,
+    gradient: undefined,
+    autoContrast: undefined,
+    variant: undefined,
+    classNames: undefined,
+    styles: undefined,
+    vars: undefined,
+    unstyled: undefined,
+  },
+)
 defineSlots<ActionIconGroupSectionSlots>()
 
 const attrs = useAttrs()

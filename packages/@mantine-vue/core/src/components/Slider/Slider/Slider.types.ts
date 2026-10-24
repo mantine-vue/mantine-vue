@@ -1,5 +1,4 @@
-import type { VueRefTarget } from '@mantine-vue/hooks'
-import type { VNodeChild } from 'vue'
+import type { HTMLAttributes, InputHTMLAttributes, VNodeChild } from 'vue'
 import type {
   BoxProps,
   MantineColor,
@@ -11,6 +10,7 @@ import type {
 } from '../../../core'
 import type { SliderStylesNames } from '../Slider.context'
 import type { SliderMark } from '../SliderMark'
+import type { TransitionOverride } from '../../Transition'
 
 export type { SliderStylesNames }
 
@@ -28,9 +28,6 @@ export interface SliderSlots {
 
 /** Props declared by `Slider` itself. See `SliderProps` for the full public type. */
 export interface SliderOwnProps extends StylesApiProps<SliderFactory> {
-  /** Receives the root DOM node. */
-  rootRef?: VueRefTarget<Element>
-
   /**
    * Key of `theme.colors` or any valid CSS color.
    *
@@ -104,7 +101,7 @@ export interface SliderOwnProps extends StylesApiProps<SliderFactory> {
   label?: MantineNode | ((value: number) => MantineNode)
 
   /** Props passed down to the label transition. */
-  labelTransitionProps?: Record<string, any>
+  labelTransitionProps?: TransitionOverride
 
   /**
    * If set, the label is always visible.
@@ -172,7 +169,7 @@ export interface SliderOwnProps extends StylesApiProps<SliderFactory> {
   orientation?: 'horizontal' | 'vertical'
 
   /** Props passed down to the hidden input. */
-  hiddenInputProps?: Record<string, any>
+  hiddenInputProps?: InputHTMLAttributes
 
   /**
    * If set, the value can only be one of the `marks` values.
@@ -182,7 +179,7 @@ export interface SliderOwnProps extends StylesApiProps<SliderFactory> {
   restrictToMarks?: boolean
 
   /** Props passed down to the thumb element. */
-  thumbProps?: Record<string, any>
+  thumbProps?: HTMLAttributes
 }
 
 export interface SliderProps extends Omit<BoxProps, keyof SliderOwnProps>, SliderOwnProps {}
@@ -199,7 +196,7 @@ export interface SliderEmits {
 }
 
 export type SliderFactory = Factory<{
-  props: Omit<SliderProps, 'rootRef'>
+  props: SliderProps
   slots: SliderSlots
   emits: SliderEmits
   ref: HTMLDivElement

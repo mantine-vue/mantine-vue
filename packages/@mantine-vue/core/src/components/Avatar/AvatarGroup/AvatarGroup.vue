@@ -5,6 +5,7 @@ export const varsResolver = createVarsResolver<any>((_, { spacing }) => ({
 }))
 </script>
 <script setup lang="ts">
+import type { RootRefProps } from '../../../core'
 import { ref, provide, useAttrs } from 'vue'
 import { assignRef } from '@mantine-vue/hooks'
 import { Box, useProps, useStyles } from '../../../core'
@@ -12,7 +13,7 @@ import { AvatarGroupContextKey } from './AvatarGroup.context'
 import type { AvatarGroupOwnProps, AvatarGroupSlots } from './AvatarGroup.types'
 import classes from '../Avatar.module.css'
 defineOptions({ name: 'AvatarGroup', inheritAttrs: false })
-const rawProps = withDefaults(defineProps<AvatarGroupOwnProps>(), {
+const rawProps = withDefaults(defineProps<AvatarGroupOwnProps & RootRefProps<Element>>(), {
   rootRef: undefined,
   spacing: undefined,
   classNames: undefined,

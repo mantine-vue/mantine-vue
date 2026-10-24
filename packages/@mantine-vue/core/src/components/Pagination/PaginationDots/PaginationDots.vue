@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { RootRefProps } from '../../../core'
 import { ref, useAttrs } from 'vue'
 import { assignRef } from '@mantine-vue/hooks'
 import { Box } from '../../../core'
@@ -7,7 +8,7 @@ import { usePaginationContext } from '../Pagination.context'
 import type { PaginationDotsOwnProps, PaginationDotsSlots } from './PaginationDots.types'
 
 defineOptions({ name: 'PaginationDots', inheritAttrs: false })
-const props = withDefaults(defineProps<PaginationDotsOwnProps>(), {
+const props = withDefaults(defineProps<PaginationDotsOwnProps & RootRefProps<Element>>(), {
   rootRef: undefined,
   icon: undefined,
 })

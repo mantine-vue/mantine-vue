@@ -35,6 +35,7 @@ export { varsResolver, defaultProps }
 </script>
 
 <script setup lang="ts">
+import type { RootRefProps } from '../../core'
 import { ref, computed, h, useAttrs, useSlots } from 'vue'
 import { assignRef, useId, useUncontrolled } from '@mantine-vue/hooks'
 import { Box, omitAttrs, useProps, useStyles } from '../../core'
@@ -48,7 +49,7 @@ defineOptions({
   inheritAttrs: false,
 })
 
-const rawProps = withDefaults(defineProps<ChipOwnProps>(), {
+const rawProps = withDefaults(defineProps<ChipOwnProps & RootRefProps<Element>>(), {
   modelValue: undefined,
   checked: undefined,
   defaultChecked: undefined,

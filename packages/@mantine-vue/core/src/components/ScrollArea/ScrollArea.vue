@@ -40,6 +40,7 @@ export { defaultProps, varsResolver, toOffsetScrollbars }
 </script>
 
 <script setup lang="ts">
+import type { RootRefProps } from '../../core'
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, useAttrs, watch } from 'vue'
 import { assignRef } from '@mantine-vue/hooks'
 import { useProps, useStyles } from '../../core'
@@ -59,7 +60,7 @@ defineOptions({
 /**
 Intentionally undefined to preserve downstream defaults
  */
-const rawProps = withDefaults(defineProps<ScrollAreaOwnProps>(), {
+const rawProps = withDefaults(defineProps<ScrollAreaOwnProps & RootRefProps<Element>>(), {
   scrollbars: undefined,
   offsetScrollbars: undefined,
   unstyled: false,

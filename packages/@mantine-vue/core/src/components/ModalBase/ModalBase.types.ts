@@ -1,6 +1,7 @@
-import type { VueRefTarget } from '@mantine-vue/hooks'
 import type { VNodeChild } from 'vue'
 import type { BoxProps, Factory } from '../../core'
+import type { PortalProps } from '../Portal'
+import type { TransitionOverride } from '../Transition'
 
 export interface ModalBaseSlots {
   /** Modal parts, usually `ModalBase.Overlay` and `ModalBase.Content`. */
@@ -11,9 +12,6 @@ export interface ModalBaseSlots {
 export interface ModalBaseOwnProps {
   /** Internal set used by modal and drawer stacks to handle each Escape event once. */
   __handledEscapeEvents?: WeakSet<KeyboardEvent>
-
-  /** Receives the root DOM node. */
-  rootRef?: VueRefTarget<Element>
 
   /** Open state of the modal. */
   opened: boolean
@@ -50,7 +48,7 @@ export interface ModalBaseOwnProps {
   withinPortal?: boolean
 
   /** Props passed down to the `Portal` when `withinPortal` is set. */
-  portalProps?: Record<string, any>
+  portalProps?: PortalProps
 
   /**
    * If set, the modal is closed when the overlay is clicked.
@@ -60,7 +58,7 @@ export interface ModalBaseOwnProps {
   closeOnClickOutside?: boolean
 
   /** Props passed down to the `Transition` used by the overlay and the content. */
-  transitionProps?: Record<string, any>
+  transitionProps?: TransitionOverride
 
   /** Called after the exit transition of the content has finished. */
   onExitTransitionEnd?: () => void
@@ -115,7 +113,7 @@ export interface ModalBaseProps
   extends Omit<BoxProps, keyof ModalBaseOwnProps>, ModalBaseOwnProps {}
 
 export type ModalBaseFactory = Factory<{
-  props: Omit<ModalBaseProps, 'rootRef'>
+  props: ModalBaseProps
   slots: ModalBaseSlots
   ref: HTMLDivElement
   exposed: { rootElement: Element | null }

@@ -2,9 +2,6 @@ import type { BoxProps, Factory } from '../../core'
 
 /** Props declared by `Space` itself. See `SpaceProps` for the full public type. */
 export interface SpaceOwnProps {
-  /** Receives the root DOM node. */
-  rootRef?: VueRefTarget<Element>
-
   /** Width, theme key: theme.spacing */
   w?: string | number
 
@@ -21,8 +18,7 @@ export interface SpaceOwnProps {
 export interface SpaceProps extends Omit<BoxProps, keyof SpaceOwnProps>, SpaceOwnProps {}
 
 export type SpaceFactory = Factory<{
-  props: Omit<SpaceProps, 'rootRef'>
+  props: SpaceProps
   ref: HTMLDivElement
   element: 'div'
 }>
-import type { VueRefTarget } from '@mantine-vue/hooks'

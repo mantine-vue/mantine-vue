@@ -9,6 +9,7 @@ export { varsResolver }
 </script>
 
 <script setup lang="ts">
+import type { RootRefProps } from '../../core'
 import { ref, computed, useAttrs, useSlots } from 'vue'
 import { assignRef } from '@mantine-vue/hooks'
 import { Box, hasNode, resolveNode, useProps, useStyles } from '../../core'
@@ -16,7 +17,7 @@ import type { FieldsetOwnProps, FieldsetSlots } from './Fieldset.types'
 import classes from './Fieldset.module.css'
 
 defineOptions({ name: 'Fieldset', inheritAttrs: false })
-const rawProps = withDefaults(defineProps<FieldsetOwnProps>(), {
+const rawProps = withDefaults(defineProps<FieldsetOwnProps & RootRefProps<Element>>(), {
   rootRef: undefined,
   legend: undefined,
   radius: undefined,

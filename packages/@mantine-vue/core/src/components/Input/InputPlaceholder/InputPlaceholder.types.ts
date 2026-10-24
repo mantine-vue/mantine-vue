@@ -5,9 +5,6 @@ export type InputPlaceholderStylesNames = 'placeholder'
 
 /** Props declared by `InputPlaceholder` itself. See `InputPlaceholderProps` for the full public type. */
 export interface InputPlaceholderOwnProps {
-  /** Receives the root DOM node. */
-  rootRef?: VueRefTarget<Element>
-
   /**
    * If set, the placeholder has error styles
    *
@@ -37,9 +34,8 @@ export interface InputPlaceholderProps
   extends Omit<BoxProps, keyof InputPlaceholderOwnProps>, InputPlaceholderOwnProps {}
 
 export type InputPlaceholderFactory = Factory<{
-  props: Omit<InputPlaceholderProps, 'rootRef'>
+  props: InputPlaceholderProps
   ref: HTMLSpanElement
   slots: InputPlaceholderSlots
   element: 'span'
 }>
-import type { VueRefTarget } from '@mantine-vue/hooks'

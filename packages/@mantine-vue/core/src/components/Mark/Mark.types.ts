@@ -14,9 +14,6 @@ export interface MarkSlots {
 
 /** Props declared by `Mark` itself. See `MarkProps` for the full public type. */
 export interface MarkOwnProps extends StylesApiProps<MarkFactory> {
-  /** Receives the root DOM node. */
-  rootRef?: VueRefTarget<Element>
-
   /**
    * Key of `theme.colors` or any valid CSS color.
    * @default 'yellow'
@@ -27,11 +24,10 @@ export interface MarkOwnProps extends StylesApiProps<MarkFactory> {
 export interface MarkProps extends Omit<BoxProps, keyof MarkOwnProps>, MarkOwnProps {}
 
 export type MarkFactory = Factory<{
-  props: Omit<MarkProps, 'rootRef'>
+  props: MarkProps
   ref: HTMLElement
   slots: MarkSlots
   element: 'mark'
   stylesNames: MarkStylesNames
   vars: MarkCssVariables
 }>
-import type { VueRefTarget } from '@mantine-vue/hooks'

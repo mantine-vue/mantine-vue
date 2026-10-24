@@ -1,5 +1,4 @@
-import type { VueRefTarget } from '@mantine-vue/hooks'
-import type { VNodeChild } from 'vue'
+import type { HTMLAttributes, VNodeChild } from 'vue'
 import type { BoxProps, MantineNode, StylesApiProps, Factory } from '../../../core'
 import type { SliderCssVariables, SliderOwnProps, SliderStylesNames } from '../Slider/Slider.types'
 
@@ -38,9 +37,6 @@ export interface RangeSliderOwnProps
       | 'startPointValue'
     >,
     StylesApiProps<RangeSliderFactory> {
-  /** Receives the root DOM node. */
-  rootRef?: VueRefTarget<Element>
-
   /** Selected range, bound with `v-model`. */
   modelValue?: RangeSliderValue
 
@@ -78,7 +74,7 @@ export interface RangeSliderOwnProps
   thumbChildren?: [MantineNode, MantineNode]
 
   /** Returns the props passed down to the thumb at the given index. */
-  thumbProps?: (index: number) => Record<string, any>
+  thumbProps?: (index: 0 | 1) => HTMLAttributes
 }
 
 export interface RangeSliderProps
@@ -96,7 +92,7 @@ export interface RangeSliderEmits {
 }
 
 export type RangeSliderFactory = Factory<{
-  props: Omit<RangeSliderProps, 'rootRef'>
+  props: RangeSliderProps
   slots: RangeSliderSlots
   emits: RangeSliderEmits
   ref: HTMLDivElement

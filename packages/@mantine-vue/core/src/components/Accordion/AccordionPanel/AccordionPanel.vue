@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { RootRefProps } from '../../../core'
 import { ref, useAttrs } from 'vue'
 import { assignRef } from '@mantine-vue/hooks'
 import { Box } from '../../../core'
@@ -8,7 +9,7 @@ import { useAccordionItemContext } from '../AccordionItem.context'
 import type { AccordionPanelOwnProps, AccordionPanelSlots } from './AccordionPanel.types'
 
 defineOptions({ name: 'AccordionPanel', inheritAttrs: false })
-const props = withDefaults(defineProps<AccordionPanelOwnProps>(), {
+const props = withDefaults(defineProps<AccordionPanelOwnProps & RootRefProps<Element>>(), {
   keepMounted: undefined,
   classNames: undefined,
   styles: undefined,

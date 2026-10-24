@@ -1,5 +1,4 @@
 import type { VNodeChild } from 'vue'
-import type { VueRefTarget } from '@mantine-vue/hooks'
 import type {
   BoxProps,
   MantineColor,
@@ -22,8 +21,6 @@ export type ToggleCssVariables = {
 }
 
 export interface ToggleOwnProps extends StylesApiProps<ToggleFactory> {
-  /** Receives the root DOM node. The factory narrows this to the element the selected root renders. */
-  rootRef?: VueRefTarget<Element>
   /** Root element or Vue component rendered by the component. @default 'button' */
   component?: MantineElementType
   /** Controlled active state */
@@ -54,7 +51,7 @@ export interface ToggleEmits {
   activeChange: [active: boolean]
 }
 export type ToggleFactory = PolymorphicFactory<{
-  props: Omit<ToggleProps, 'component' | 'rootRef'>
+  props: Omit<ToggleProps, 'component'>
   slots: ToggleSlots
   emits: ToggleEmits
   ref: HTMLButtonElement

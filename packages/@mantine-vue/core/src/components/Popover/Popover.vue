@@ -21,6 +21,7 @@ const defaults = {
   clickOutsideCapture: false,
   zIndex: getDefaultZIndex('popover'),
   floatingStrategy: 'absolute',
+  hideDetached: true,
   transitionProps: { transition: 'fade', duration: 150 },
 } as const
 
@@ -77,6 +78,7 @@ const rawProps = withDefaults(defineProps<PopoverProps>(), {
   withRoles: undefined,
   returnFocus: undefined,
   keepMounted: undefined,
+  hideDetached: undefined,
   defaultOpened: false,
   disabled: false,
   withOverlay: false,
@@ -380,6 +382,11 @@ providePopoverContext({
   },
   get floatingStrategy() {
     return props.floatingStrategy ?? 'absolute'
+  },
+  get referenceHidden() {
+    return (
+      props.hideDetached !== false && !!floatingState.middlewareData.value.hide?.referenceHidden
+    )
   },
   getStyles,
 })

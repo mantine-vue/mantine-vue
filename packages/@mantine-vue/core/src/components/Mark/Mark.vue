@@ -18,6 +18,7 @@ export { defaultProps, varsResolver }
 </script>
 
 <script setup lang="ts">
+import type { RootRefProps } from '../../core'
 import { ref, useAttrs } from 'vue'
 import { assignRef } from '@mantine-vue/hooks'
 import { Box, useProps, useStyles } from '../../core'
@@ -29,7 +30,7 @@ defineOptions({
   inheritAttrs: false,
 })
 
-const rawProps = withDefaults(defineProps<MarkOwnProps>(), {
+const rawProps = withDefaults(defineProps<MarkOwnProps & RootRefProps<Element>>(), {
   rootRef: undefined,
   color: undefined,
   classNames: undefined,

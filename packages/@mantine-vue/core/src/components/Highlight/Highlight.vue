@@ -17,6 +17,7 @@ function normalizeKey(value: string, caseInsensitive?: boolean, accentInsensitiv
 </script>
 
 <script setup lang="ts">
+import type { RootRefProps } from '../../core'
 import { computed, ref, useAttrs, useSlots } from 'vue'
 import { assignRef } from '@mantine-vue/hooks'
 import { useMantineTheme, useProps } from '../../core'
@@ -27,7 +28,7 @@ import type { HighlightOwnProps, HighlightSlots, HighlightTerm } from './Highlig
 
 defineOptions({ name: 'Highlight', inheritAttrs: false })
 
-const rawProps = withDefaults(defineProps<HighlightOwnProps>(), {
+const rawProps = withDefaults(defineProps<HighlightOwnProps & RootRefProps<Element>>(), {
   rootRef: undefined,
   color: undefined,
   highlightStyles: undefined,

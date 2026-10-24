@@ -1,4 +1,3 @@
-import type { VueRefTarget } from '@mantine-vue/hooks'
 import type {
   BoxProps,
   MantineColor,
@@ -12,9 +11,6 @@ import type { Ref } from 'vue'
 
 /** Props declared by `TableOfContents` itself. See `TableOfContentsProps` for the full public type. */
 export interface TableOfContentsOwnProps extends StylesApiProps<TableOfContentsFactory> {
-  /** Receives the root DOM node. */
-  rootRef?: VueRefTarget<Element>
-
   /**
    * Key of `theme.colors` or any valid CSS color value
    *
@@ -91,7 +87,7 @@ export interface InitialTableOfContentsData {
 }
 
 export type TableOfContentsFactory = Factory<{
-  props: Omit<TableOfContentsProps, 'rootRef'>
+  props: TableOfContentsProps
   ref: HTMLDivElement
   exposed: { rootElement: Element | null }
   element: 'div'

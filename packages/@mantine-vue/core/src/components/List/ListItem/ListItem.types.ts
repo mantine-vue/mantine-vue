@@ -6,9 +6,6 @@ export interface ListItemOwnProps extends Pick<
   StylesApiProps<ListItemFactory>,
   'classNames' | 'styles' | 'vars'
 > {
-  /** Receives the root DOM node. */
-  rootRef?: VueRefTarget<Element>
-
   /** Icon to replace item bullet */
   icon?: MantineNode
 
@@ -28,10 +25,9 @@ export interface ListItemProps extends Omit<BoxProps, keyof ListItemOwnProps>, L
 export type ListItemStylesNames = 'item' | 'itemWrapper' | 'itemIcon' | 'itemLabel'
 
 export type ListItemFactory = Factory<{
-  props: Omit<ListItemProps, 'rootRef'>
+  props: ListItemProps
   ref: HTMLLIElement
   slots: ListItemSlots
   element: 'li'
   stylesNames: ListItemStylesNames
 }>
-import type { VueRefTarget } from '@mantine-vue/hooks'

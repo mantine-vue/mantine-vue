@@ -14,6 +14,7 @@ export { varsResolver }
 </script>
 
 <script setup lang="ts">
+import type { RootRefProps } from '../../../core'
 import { ref, useAttrs } from 'vue'
 import { assignRef } from '@mantine-vue/hooks'
 import { Box, useProps, useStyles } from '../../../core'
@@ -23,7 +24,7 @@ import classes from '../Progress.module.css'
 
 defineOptions({ name: 'ProgressRoot', inheritAttrs: false })
 
-const rawProps = withDefaults(defineProps<ProgressRootOwnProps>(), {
+const rawProps = withDefaults(defineProps<ProgressRootOwnProps & RootRefProps<Element>>(), {
   rootRef: undefined,
   size: undefined,
   radius: undefined,

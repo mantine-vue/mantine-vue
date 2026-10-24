@@ -3,9 +3,6 @@ import type { BoxProps, Factory } from '../../core'
 
 /** Props declared by `Collapse` itself. See `CollapseProps` for the full public type. */
 export interface CollapseOwnProps {
-  /** Receives the root DOM node. */
-  rootRef?: VueRefTarget<Element>
-
   /**
    * Collapse orientation
    *
@@ -53,9 +50,8 @@ export interface CollapseSlots {
 }
 
 export type CollapseFactory = Factory<{
-  props: Omit<CollapseProps, 'rootRef'>
+  props: CollapseProps
   ref: HTMLDivElement
   slots: CollapseSlots
   element: 'div'
 }>
-import type { VueRefTarget } from '@mantine-vue/hooks'

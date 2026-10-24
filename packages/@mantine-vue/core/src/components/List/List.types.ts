@@ -12,9 +12,6 @@ import type {
 
 /** Props declared by `List` itself. See `ListProps` for the full public type. */
 export interface ListOwnProps extends StylesApiProps<ListFactory> {
-  /** Receives the root DOM node. */
-  rootRef?: VueRefTarget<Element>
-
   /**
    * List type
    *
@@ -83,7 +80,7 @@ export type ListStylesNames = 'root' | 'item' | 'itemWrapper' | 'itemIcon' | 'it
 export type ListCssVariables = { root: '--list-fz' | '--list-lh' | '--list-spacing' }
 
 export type ListFactory = Factory<{
-  props: Omit<ListProps, 'rootRef'>
+  props: ListProps
   ref: HTMLUListElement
   slots: ListSlots
   element: 'ul'
@@ -93,4 +90,3 @@ export type ListFactory = Factory<{
     Item: typeof ListItem
   }
 }>
-import type { VueRefTarget } from '@mantine-vue/hooks'

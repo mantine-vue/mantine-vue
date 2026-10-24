@@ -7,10 +7,7 @@ export interface ScrollAreaViewportSlots {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export interface ScrollAreaViewportOwnProps {
-  /** Receives the root DOM node. */
-  rootRef?: VueRefTarget<Element>
-}
+export interface ScrollAreaViewportOwnProps {}
 
 export interface ScrollAreaViewportEmits {
   /** Emitted with the viewport element once it is mounted. */
@@ -26,10 +23,9 @@ export interface ScrollAreaViewportProps
 export type ScrollAreaViewportStylesNames = 'content'
 
 export type ScrollAreaViewportFactory = Factory<{
-  props: Omit<ScrollAreaViewportProps, 'rootRef'>
+  props: ScrollAreaViewportProps
   ref: HTMLDivElement
   slots: ScrollAreaViewportSlots
   emits: ScrollAreaViewportEmits
   element: 'div'
 }>
-import type { VueRefTarget } from '@mantine-vue/hooks'

@@ -1,9 +1,9 @@
 import type { SwitchGroup } from './SwitchGroup/SwitchGroup'
-import type { VueRefTarget } from '@mantine-vue/hooks'
-import type { VNodeChild } from 'vue'
+import type { HTMLAttributes, VNodeChild } from 'vue'
 import type {
   BoxMod,
   BoxProps,
+  DataAttributes,
   MantineColor,
   MantineNode,
   MantineRadius,
@@ -101,7 +101,7 @@ export interface SwitchOwnProps extends StylesApiProps<SwitchFactory> {
   radius?: MantineRadius
 
   /** Props passed down to the root element. */
-  wrapperProps?: Record<string, any>
+  wrapperProps?: HTMLAttributes & DataAttributes
 
   /**
    * Icon rendered inside the thumb.
@@ -127,9 +127,6 @@ export interface SwitchOwnProps extends StylesApiProps<SwitchFactory> {
    * Can also be set with the `error` slot – the slot takes precedence.
    */
   error?: MantineNode | boolean
-
-  /** Ref assigned to the root element. */
-  rootRef?: VueRefTarget<Element>
 
   /**
    * If set, the thumb displays an indicator when the switch is unchecked.
@@ -180,7 +177,7 @@ export interface SwitchEmits {
 }
 
 export type SwitchFactory = Factory<{
-  props: Omit<SwitchProps, 'rootRef'>
+  props: SwitchProps
   slots: SwitchSlots
   emits: SwitchEmits
   ref: HTMLDivElement

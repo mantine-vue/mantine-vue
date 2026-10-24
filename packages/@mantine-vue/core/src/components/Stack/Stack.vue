@@ -19,6 +19,7 @@ export { defaultProps, varsResolver }
 </script>
 
 <script setup lang="ts">
+import type { RootRefProps } from '../../core'
 import { ref, useAttrs } from 'vue'
 import { assignRef } from '@mantine-vue/hooks'
 import { Box, useProps, useStyles } from '../../core'
@@ -28,7 +29,7 @@ defineOptions({
   name: 'Stack',
   inheritAttrs: false,
 })
-const rawProps = withDefaults(defineProps<StackOwnProps>(), {
+const rawProps = withDefaults(defineProps<StackOwnProps & RootRefProps<Element>>(), {
   rootRef: undefined,
   align: undefined,
   justify: undefined,

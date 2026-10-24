@@ -1,5 +1,5 @@
 import type { PillGroup } from './PillGroup/PillGroup'
-import type { VNodeChild } from 'vue'
+import type { ButtonHTMLAttributes, VNodeChild } from 'vue'
 import type {
   BoxMod,
   BoxProps,
@@ -8,15 +8,13 @@ import type {
   StylesApiProps,
   Factory,
 } from '../../core'
+import type { CloseButtonProps } from '../CloseButton'
 
 export type PillStylesNames = 'root' | 'label' | 'remove'
 export type PillVariant = 'default' | 'contrast'
 
 /** Props declared by `Pill` itself. See `PillProps` for the full public type. */
 export interface PillOwnProps extends StylesApiProps<PillFactory> {
-  /** Receives the root DOM node. */
-  rootRef?: VueRefTarget<Element>
-
   /**
    * Controls pill `font-size` and `padding`
    *
@@ -32,7 +30,8 @@ export interface PillOwnProps extends StylesApiProps<PillFactory> {
   withRemoveButton?: boolean
 
   /** Props passed down to the remove button */
-  removeButtonProps?: Record<string, any>
+  removeButtonProps?: CloseButtonProps &
+    ButtonHTMLAttributes & { onMouseDown?: (event: MouseEvent) => void }
 
   /**
    * Key of `theme.radius` or any valid CSS value to set border-radius. Numbers are converted to rem.
@@ -71,7 +70,7 @@ export type PillCssVariables = {
 }
 
 export type PillFactory = Factory<{
-  props: Omit<PillProps, 'rootRef'>
+  props: PillProps
   ref: HTMLSpanElement
   slots: PillSlots
   element: 'span'
@@ -82,4 +81,3 @@ export type PillFactory = Factory<{
     Group: typeof PillGroup
   }
 }>
-import type { VueRefTarget } from '@mantine-vue/hooks'

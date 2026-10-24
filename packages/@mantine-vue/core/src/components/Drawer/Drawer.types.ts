@@ -1,6 +1,9 @@
 import type { VNodeChild } from 'vue'
 import type { MantineNode, StylesApiProps, Factory } from '../../core'
 import type { ModalBaseOwnProps } from '../ModalBase/ModalBase.types'
+import type { ModalBaseCloseButtonProps } from '../ModalBase/ModalBaseCloseButton.types'
+import type { ModalBaseOverlayProps } from '../ModalBase/ModalBaseOverlay.types'
+import type { TransitionOverride } from '../Transition'
 import type {
   DrawerBody,
   DrawerCloseButton,
@@ -81,7 +84,7 @@ export interface DrawerCompoundProps {
   visible?: boolean
 
   /** Props passed down to the `Transition` of the part. */
-  transitionProps?: Record<string, any>
+  transitionProps?: TransitionOverride
 
   /** Internal: hides the part without unmounting it. */
   __hidden?: boolean
@@ -149,7 +152,7 @@ export interface DrawerProps extends DrawerRootProps {
   withOverlay?: boolean
 
   /** Props passed down to `Drawer.Overlay`. */
-  overlayProps?: Record<string, any>
+  overlayProps?: ModalBaseOverlayProps
 
   /**
    * If set, a close button is rendered in the header.
@@ -159,7 +162,7 @@ export interface DrawerProps extends DrawerRootProps {
   withCloseButton?: boolean
 
   /** Props passed down to `Drawer.CloseButton`. */
-  closeButtonProps?: Record<string, any>
+  closeButtonProps?: ModalBaseCloseButtonProps
 
   /** Id of the drawer within its `Drawer.Stack`. Required for stacked drawers. */
   stackId?: string

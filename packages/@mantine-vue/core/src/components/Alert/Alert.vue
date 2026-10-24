@@ -24,6 +24,7 @@ export { varsResolver }
 </script>
 
 <script setup lang="ts">
+import type { RootRefProps } from '../../core'
 import { ref, computed, useAttrs, useSlots } from 'vue'
 import { assignRef, useId } from '@mantine-vue/hooks'
 import { Box, hasNode, resolveNode, useProps, useStyles } from '../../core'
@@ -36,7 +37,7 @@ defineOptions({
   inheritAttrs: false,
 })
 
-const rawProps = withDefaults(defineProps<AlertOwnProps>(), {
+const rawProps = withDefaults(defineProps<AlertOwnProps & RootRefProps<Element>>(), {
   rootRef: undefined,
   id: undefined,
   radius: undefined,

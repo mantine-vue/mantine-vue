@@ -5,6 +5,7 @@ export { defaultProps }
 </script>
 
 <script setup lang="ts">
+import type { RootRefProps } from '../../core'
 import { ref, computed, h, useAttrs, useSlots } from 'vue'
 import { assignRef } from '@mantine-vue/hooks'
 import { useProps } from '../../core'
@@ -19,7 +20,7 @@ defineOptions({
   inheritAttrs: false,
 })
 
-const rawProps = withDefaults(defineProps<NativeSelectOwnProps>(), {
+const rawProps = withDefaults(defineProps<NativeSelectOwnProps & RootRefProps<Element>>(), {
   error: undefined,
   rightSection: undefined,
   label: undefined,

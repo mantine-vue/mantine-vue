@@ -40,6 +40,7 @@ export { varsResolver, renderContent, defaultProps }
 </script>
 
 <script setup lang="ts">
+import type { RootRefProps } from '../../core'
 import { computed, h, reactive, ref, useAttrs, useSlots, watchEffect } from 'vue'
 import { assignRef, useUncontrolled } from '@mantine-vue/hooks'
 import { Box, omitAttrs, resolveNode, useProps, useStyles } from '../../core'
@@ -55,7 +56,7 @@ defineOptions({
   inheritAttrs: false,
 })
 
-const rawProps = withDefaults(defineProps<InputOwnProps>(), {
+const rawProps = withDefaults(defineProps<InputOwnProps & RootRefProps<Element>>(), {
   leftSection: undefined,
   rightSection: undefined,
   __clearSection: undefined,

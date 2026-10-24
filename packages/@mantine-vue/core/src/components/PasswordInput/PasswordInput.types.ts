@@ -1,5 +1,13 @@
-import type { Component, VNodeChild } from 'vue'
-import type { BoxProps, MantineNode, MantineRadius, MantineSize, StylesApiProps } from '../../core'
+import type { Component, HTMLAttributes, VNodeChild } from 'vue'
+import type {
+  BoxProps,
+  DataAttributes,
+  MantineNode,
+  MantineRadius,
+  MantineSize,
+  StylesApiProps,
+} from '../../core'
+import type { InputDescriptionProps, InputErrorProps, InputLabelProps } from '../Input'
 
 export type PasswordInputStylesNames =
   | 'root'
@@ -48,7 +56,7 @@ export interface PasswordInputSlots {
  * See `PasswordInputProps` for the full public type.
  *
  * The Styles API payload is left open because the resolved props are forwarded to
- * `Input` and `Input.Wrapper` as `__stylesApiProps`.
+ * `Input` and `Input.Wrapper` as `__styles`ApiProps`.
  */
 export interface PasswordInputOwnProps extends StylesApiProps {
   /** Controlled value, bound with `v-model`. */
@@ -107,13 +115,13 @@ export interface PasswordInputOwnProps extends StylesApiProps {
   withAsterisk?: boolean
 
   /** Props passed down to the `Input.Label` component. */
-  labelProps?: Record<string, any>
+  labelProps?: InputLabelProps & DataAttributes
 
   /** Props passed down to the `Input.Description` component. */
-  descriptionProps?: Record<string, any>
+  descriptionProps?: InputDescriptionProps & DataAttributes
 
   /** Props passed down to the `Input.Error` component. */
-  errorProps?: Record<string, any>
+  errorProps?: InputErrorProps & DataAttributes
 
   /** Function that renders the input around the given children. */
   inputContainer?: (children: any) => any
@@ -126,7 +134,7 @@ export interface PasswordInputOwnProps extends StylesApiProps {
   inputWrapperOrder?: Array<'label' | 'input' | 'description' | 'error'>
 
   /** Props passed down to the root element (`Input.Wrapper` component). */
-  wrapperProps?: Record<string, any>
+  wrapperProps?: HTMLAttributes & DataAttributes
 
   /** `id` shared by the input, label, description and error elements. Generated when not set. */
   id?: string
@@ -169,7 +177,7 @@ export interface PasswordInputOwnProps extends StylesApiProps {
   leftSectionWidth?: string | number
 
   /** Props passed down to the left section element. */
-  leftSectionProps?: Record<string, any>
+  leftSectionProps?: HTMLAttributes
 
   /** Sets `pointer-events` on the left section. */
   leftSectionPointerEvents?: string
@@ -184,7 +192,7 @@ export interface PasswordInputOwnProps extends StylesApiProps {
   rightSectionWidth?: string | number
 
   /** Props passed down to the right section element. */
-  rightSectionProps?: Record<string, any>
+  rightSectionProps?: HTMLAttributes
 
   /**
    * Sets `pointer-events` on the right section.

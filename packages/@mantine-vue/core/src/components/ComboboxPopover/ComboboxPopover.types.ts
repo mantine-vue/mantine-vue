@@ -1,4 +1,4 @@
-import type { VNodeChild } from 'vue'
+import type { InputHTMLAttributes, VNodeChild } from 'vue'
 import type { MantineNode, Primitive, StylesApiProps } from '../../core'
 import type {
   ComboboxData,
@@ -8,6 +8,7 @@ import type {
   ComboboxStylesNames,
   OptionsFilter,
 } from '../Combobox'
+import type { ScrollAreaProps } from '../ScrollArea'
 
 export type ComboboxPopoverValue<
   Multiple extends boolean,
@@ -84,10 +85,10 @@ export interface ComboboxPopoverProps<
   renderOption?: (item: ComboboxLikeRenderOptionInput<ComboboxItem>) => VNodeChild
 
   /** Props passed down to the underlying ScrollArea component in the dropdown */
-  scrollAreaProps?: Record<string, any>
+  scrollAreaProps?: ScrollAreaProps
 
   /** Props passed down to the hidden input */
-  hiddenInputProps?: Record<string, any>
+  hiddenInputProps?: Omit<InputHTMLAttributes, 'value'>
 
   /** Hidden input name for form submission */
   name?: string

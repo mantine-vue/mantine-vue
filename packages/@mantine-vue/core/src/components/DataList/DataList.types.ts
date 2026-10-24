@@ -24,9 +24,6 @@ export interface DataListSlots {
 
 /** Props declared by `DataList` itself. See `DataListProps` for the full public type. */
 export interface DataListOwnProps extends StylesApiProps<DataListFactory> {
-  /** Receives the root DOM node. */
-  rootRef?: VueRefTarget<Element>
-
   /** Controls the `font-size` and `line-height` of the list. */
   size?: MantineSize | (string & {})
 
@@ -53,7 +50,7 @@ export interface DataListOwnProps extends StylesApiProps<DataListFactory> {
 export interface DataListProps extends Omit<BoxProps, keyof DataListOwnProps>, DataListOwnProps {}
 
 export type DataListFactory = Factory<{
-  props: Omit<DataListProps, 'rootRef'>
+  props: DataListProps
   ref: HTMLElement
   slots: DataListSlots
   element: 'dl'
@@ -65,4 +62,3 @@ export type DataListFactory = Factory<{
     ItemValue: typeof DataListItemValue
   }
 }>
-import type { VueRefTarget } from '@mantine-vue/hooks'

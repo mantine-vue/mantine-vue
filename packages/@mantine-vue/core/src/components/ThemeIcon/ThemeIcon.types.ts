@@ -32,9 +32,6 @@ export interface ThemeIconSlots {
 
 /** Props declared by `ThemeIcon` itself. See `ThemeIconProps` for the full public type. */
 export interface ThemeIconOwnProps extends StylesApiProps<ThemeIconFactory> {
-  /** Receives the root DOM node. */
-  rootRef?: VueRefTarget<Element>
-
   /**
    * Controls width and height of the component. Numbers are converted to rem.
    * @default 'md'
@@ -77,7 +74,7 @@ export interface ThemeIconProps
   extends Omit<BoxProps, keyof ThemeIconOwnProps>, ThemeIconOwnProps {}
 
 export type ThemeIconFactory = Factory<{
-  props: Omit<ThemeIconProps, 'rootRef'>
+  props: ThemeIconProps
   ref: HTMLDivElement
   slots: ThemeIconSlots
   element: 'div'
@@ -85,4 +82,3 @@ export type ThemeIconFactory = Factory<{
   vars: ThemeIconCssVariables
   variant: ThemeIconVariant
 }>
-import type { VueRefTarget } from '@mantine-vue/hooks'

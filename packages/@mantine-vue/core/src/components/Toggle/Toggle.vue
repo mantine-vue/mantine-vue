@@ -25,6 +25,7 @@ export { varsResolver }
 </script>
 
 <script setup lang="ts">
+import type { RootRefProps } from '../../core'
 import { ref, useAttrs } from 'vue'
 import { assignRef, useUncontrolled } from '@mantine-vue/hooks'
 import { Box, omitAttrs, useProps, useStyles } from '../../core'
@@ -32,7 +33,7 @@ import type { ToggleOwnProps, ToggleSlots } from './Toggle.types'
 import classes from './Toggle.module.css'
 
 defineOptions({ name: 'Toggle', inheritAttrs: false })
-const rawProps = withDefaults(defineProps<ToggleOwnProps>(), {
+const rawProps = withDefaults(defineProps<ToggleOwnProps & RootRefProps<Element>>(), {
   component: 'button',
   active: undefined,
   defaultActive: false,

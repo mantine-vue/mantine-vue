@@ -1,4 +1,5 @@
 import type { VNodeChild } from 'vue'
+import type { TransitionOverride } from '../../Transition'
 
 export interface MenubarMenuSlots {
   /** `Menubar.Target` and `Menubar.Dropdown` of this menu. */
@@ -8,7 +9,7 @@ export interface MenubarMenuSlots {
 /** Props declared by `MenubarMenu` itself. */
 export interface MenubarMenuProps {
   /** Props passed down to the underlying transition. */
-  transitionProps?: { duration?: number; exitDuration?: number; [key: string]: any }
+  transitionProps?: TransitionOverride
 
   /**
    * Position of this menu within the menubar, assigned by the parent `Menubar`.

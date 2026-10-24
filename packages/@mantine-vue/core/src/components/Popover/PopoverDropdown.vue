@@ -71,6 +71,7 @@ const dropdownStyle = computed(() => (transitionStyle: any) => [
           ? undefined
           : `${ctx.targetWidth}px`
         : rem(ctx.width as any),
+    ...(ctx.referenceHidden ? { display: 'none' } : null),
   },
   attrs.style,
 ])

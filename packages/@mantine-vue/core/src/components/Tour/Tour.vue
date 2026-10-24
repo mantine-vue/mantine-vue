@@ -17,6 +17,7 @@ export { varsResolver }
 </script>
 
 <script setup lang="ts">
+import type { RootRefProps } from '../../core'
 import { autoUpdate, flip, offset, shift, useFloating } from '@floating-ui/vue'
 import {
   computed,
@@ -49,7 +50,7 @@ import type { TourEmits, TourOwnProps, TourStepData } from './Tour.types'
 import classes from './Tour.module.css'
 
 defineOptions({ name: 'Tour', inheritAttrs: false })
-const rawProps = withDefaults(defineProps<TourOwnProps>(), {
+const rawProps = withDefaults(defineProps<TourOwnProps & RootRefProps<Element>>(), {
   active: false,
   defaultStep: 0,
   mode: 'guided',

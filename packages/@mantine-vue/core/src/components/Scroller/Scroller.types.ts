@@ -1,4 +1,4 @@
-import type { VNodeChild } from 'vue'
+import type { ButtonHTMLAttributes, VNodeChild } from 'vue'
 import type { BoxProps, MantineNode, StylesApiProps, Factory } from '../../core'
 
 export type ScrollerStylesNames = 'root' | 'container' | 'content' | 'control' | 'chevron'
@@ -8,9 +8,6 @@ export type ScrollerCssVariables = {
 
 /** Props declared by `Scroller` itself. See `ScrollerProps` for the full public type. */
 export interface ScrollerOwnProps extends StylesApiProps<ScrollerFactory> {
-  /** Receives the root DOM node. */
-  rootRef?: VueRefTarget<Element>
-
   /** Amount of pixels scrolled when a control is clicked. @default 200 */
   scrollAmount?: number
 
@@ -21,10 +18,10 @@ export interface ScrollerOwnProps extends StylesApiProps<ScrollerFactory> {
   edgeGradientColor?: string
 
   /** Props passed to the start control button. */
-  startControlProps?: Record<string, any>
+  startControlProps?: ButtonHTMLAttributes
 
   /** Props passed to the end control button. */
-  endControlProps?: Record<string, any>
+  endControlProps?: ButtonHTMLAttributes
 
   /** Start control icon. Defaults to `AccordionChevron`. */
   startControlIcon?: MantineNode
@@ -56,11 +53,10 @@ export interface ScrollerSlots {
 }
 
 export type ScrollerFactory = Factory<{
-  props: Omit<ScrollerProps, 'rootRef'>
+  props: ScrollerProps
   ref: HTMLDivElement
   slots: ScrollerSlots
   element: 'div'
   stylesNames: ScrollerStylesNames
   vars: ScrollerCssVariables
 }>
-import type { VueRefTarget } from '@mantine-vue/hooks'

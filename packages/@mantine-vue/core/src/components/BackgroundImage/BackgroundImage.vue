@@ -10,6 +10,7 @@ export { varsResolver }
 </script>
 
 <script setup lang="ts">
+import type { RootRefProps } from '../../core'
 import { ref, useAttrs } from 'vue'
 import { assignRef } from '@mantine-vue/hooks'
 import { Box, useProps, useStyles } from '../../core'
@@ -19,7 +20,7 @@ defineOptions({
   name: 'BackgroundImage',
   inheritAttrs: false,
 })
-const rawProps = withDefaults(defineProps<BackgroundImageOwnProps>(), {
+const rawProps = withDefaults(defineProps<BackgroundImageOwnProps & RootRefProps<Element>>(), {
   rootRef: undefined,
   classNames: undefined,
   styles: undefined,

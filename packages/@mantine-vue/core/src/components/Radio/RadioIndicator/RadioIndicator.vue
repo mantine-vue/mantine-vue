@@ -57,6 +57,7 @@ export { varsResolver }
 </script>
 
 <script setup lang="ts">
+import type { RootRefProps } from '../../../core'
 import { ref, computed, useAttrs } from 'vue'
 import { assignRef } from '@mantine-vue/hooks'
 import { Box, useStyles } from '../../../core'
@@ -66,7 +67,7 @@ import type { RadioIndicatorOwnProps, RadioIndicatorSlots } from './RadioIndicat
 import classes from './RadioIndicator.module.css'
 
 defineOptions({ name: 'RadioIndicator', inheritAttrs: false })
-const props = withDefaults(defineProps<RadioIndicatorOwnProps>(), {
+const props = withDefaults(defineProps<RadioIndicatorOwnProps & RootRefProps<Element>>(), {
   rootRef: undefined,
   color: undefined,
   size: 'sm',

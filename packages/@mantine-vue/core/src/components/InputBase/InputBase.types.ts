@@ -1,8 +1,8 @@
-import type { VNodeChild } from 'vue'
-import type { VueRefTarget } from '@mantine-vue/hooks'
+import type { HTMLAttributes, VNodeChild } from 'vue'
 import type {
   BoxMod,
   BoxProps,
+  DataAttributes,
   MantineElementType,
   MantineNode,
   MantineRadius,
@@ -10,7 +10,7 @@ import type {
   PolymorphicFactory,
   StylesApiProps,
 } from '../../core'
-import type { InputSlots } from '../Input/Input'
+import type { InputDescriptionProps, InputErrorProps, InputLabelProps, InputSlots } from '../Input'
 
 export type InputBaseStylesNames =
   | 'input'
@@ -93,13 +93,13 @@ export interface InputBaseOwnProps extends StylesApiProps<InputBaseFactory> {
   withAsterisk?: boolean
 
   /** Props passed down to the `Input.Label` component. */
-  labelProps?: Record<string, any>
+  labelProps?: InputLabelProps & DataAttributes
 
   /** Props passed down to the `Input.Description` component. */
-  descriptionProps?: Record<string, any>
+  descriptionProps?: InputDescriptionProps & DataAttributes
 
   /** Props passed down to the `Input.Error` component. */
-  errorProps?: Record<string, any>
+  errorProps?: InputErrorProps & DataAttributes
 
   /** Function that renders the input around the given children. */
   inputContainer?: (children: any) => any
@@ -136,7 +136,7 @@ export interface InputBaseOwnProps extends StylesApiProps<InputBaseFactory> {
   variant?: InputBaseVariant
 
   /** Props passed down to the root element (`Input.Wrapper` component). */
-  wrapperProps?: Record<string, any>
+  wrapperProps?: HTMLAttributes & DataAttributes
 
   /**
    * If set, the input can have multiple lines, for example when `component="textarea"`.
@@ -162,7 +162,7 @@ export interface InputBaseOwnProps extends StylesApiProps<InputBaseFactory> {
   leftSectionWidth?: string | number
 
   /** Props passed down to the left section element. */
-  leftSectionProps?: Record<string, any>
+  leftSectionProps?: HTMLAttributes
 
   /**
    * Sets `pointer-events` on the left section.
@@ -181,7 +181,7 @@ export interface InputBaseOwnProps extends StylesApiProps<InputBaseFactory> {
   rightSectionWidth?: string | number
 
   /** Props passed down to the right section element. */
-  rightSectionProps?: Record<string, any>
+  rightSectionProps?: HTMLAttributes
 
   /**
    * Sets `pointer-events` on the right section.
@@ -255,12 +255,7 @@ export interface InputBaseOwnProps extends StylesApiProps<InputBaseFactory> {
   __bottomSection?: MantineNode
 
   /** Props passed down to the `__bottomSection` element. */
-  __bottomSectionProps?: Record<string, any>
-
-  /**
-   * Receives the input element
-   */
-  rootRef?: VueRefTarget<Element>
+  __bottomSectionProps?: HTMLAttributes
 
   /** Element modifiers transformed into `data-` attributes, for example, `{ 'data-size': 'xl' }`, falsy values are removed */
   mod?: BoxMod
@@ -270,7 +265,7 @@ export interface InputBaseProps
   extends Omit<BoxProps, keyof InputBaseOwnProps>, InputBaseOwnProps {}
 
 export type InputBaseFactory = PolymorphicFactory<{
-  props: Omit<InputBaseProps, 'component' | 'rootRef'>
+  props: Omit<InputBaseProps, 'component'>
   slots: InputBaseSlots
   ref: HTMLInputElement
   defaultComponent: 'input'

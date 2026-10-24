@@ -24,6 +24,7 @@ export { defaultProps, varsResolver }
 </script>
 
 <script setup lang="ts">
+import type { RootRefProps } from '../../core'
 import { ref, useAttrs } from 'vue'
 import { assignRef } from '@mantine-vue/hooks'
 import { Box, useProps, useStyles } from '../../core'
@@ -33,7 +34,7 @@ defineOptions({
   name: 'Overlay',
   inheritAttrs: false,
 })
-const rawProps = withDefaults(defineProps<OverlayOwnProps>(), {
+const rawProps = withDefaults(defineProps<OverlayOwnProps & RootRefProps<Element>>(), {
   rootRef: undefined,
   component: 'div',
   backgroundOpacity: undefined,

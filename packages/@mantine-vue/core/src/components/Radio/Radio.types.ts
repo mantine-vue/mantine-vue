@@ -1,11 +1,11 @@
 import type { RadioCard } from './RadioCard/RadioCard'
 import type { RadioIndicator } from './RadioIndicator/RadioIndicator'
 import type { RadioGroup } from './RadioGroup/RadioGroup'
-import type { VueRefTarget } from '@mantine-vue/hooks'
-import type { Component, VNodeChild } from 'vue'
+import type { Component, HTMLAttributes, VNodeChild } from 'vue'
 import type {
   BoxMod,
   BoxProps,
+  DataAttributes,
   MantineColor,
   MantineNode,
   MantineRadius,
@@ -92,7 +92,7 @@ export interface RadioOwnProps extends StylesApiProps<RadioFactory> {
   icon?: Component
 
   /** Props passed down to the root element. */
-  wrapperProps?: Record<string, any>
+  wrapperProps?: HTMLAttributes & DataAttributes
 
   /**
    * Position of the label relative to the radio.
@@ -119,9 +119,6 @@ export interface RadioOwnProps extends StylesApiProps<RadioFactory> {
    * @default 'xl'
    */
   radius?: MantineRadius
-
-  /** Ref assigned to the root element. */
-  rootRef?: VueRefTarget<Element>
 
   /** Key of `theme.colors` or any valid CSS color used for the icon. */
   iconColor?: MantineColor
@@ -187,7 +184,7 @@ export interface RadioEmits {
 }
 
 export type RadioFactory = Factory<{
-  props: Omit<RadioProps, 'rootRef'>
+  props: RadioProps
   slots: RadioSlots
   emits: RadioEmits
   ref: HTMLDivElement

@@ -1,6 +1,5 @@
-import type { VueRefTarget } from '@mantine-vue/hooks'
-import type { VNodeChild } from 'vue'
-import type { Factory, MantineNode, MantineSize, StylesApiProps } from '../../core'
+import type { HTMLAttributes, VNodeChild } from 'vue'
+import type { DataAttributes, Factory, MantineNode, MantineSize, StylesApiProps } from '../../core'
 import type { ThousandsGroupStyle } from '../NumberFormatter'
 
 export interface NumberInputHandlers {
@@ -69,9 +68,6 @@ export interface NumberInputValueChangePayload {
  * Every prop of `InputBase` is also accepted and forwarded to the underlying input.
  */
 export interface NumberInputProps extends StylesApiProps<NumberInputFactory> {
-  /** Receives the input element */
-  rootRef?: VueRefTarget<Element>
-
   /** Value, bound with `v-model`. */
   modelValue?: NumberInputValue
 
@@ -267,7 +263,7 @@ export interface NumberInputProps extends StylesApiProps<NumberInputFactory> {
   withAsterisk?: boolean
 
   /** Props passed down to the root element. */
-  wrapperProps?: Record<string, any>
+  wrapperProps?: HTMLAttributes & DataAttributes
 
   /**
    * If set, all Mantine classes are removed.
@@ -298,7 +294,7 @@ export interface NumberInputEmits {
 }
 
 export type NumberInputFactory = Factory<{
-  props: Omit<NumberInputProps, 'rootRef'>
+  props: NumberInputProps
   slots: NumberInputSlots
   emits: NumberInputEmits
   ref: HTMLInputElement

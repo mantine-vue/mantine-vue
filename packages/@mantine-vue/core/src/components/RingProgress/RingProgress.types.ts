@@ -27,9 +27,6 @@ export interface RingProgressSlots {
 
 /** Props declared by `RingProgress` itself. See `RingProgressProps` for the full public type. */
 export interface RingProgressOwnProps extends StylesApiProps<RingProgressFactory> {
-  /** Receives the root DOM node. */
-  rootRef?: VueRefTarget<Element>
-
   /**
    * Content rendered in the middle of the ring.
    * Can also be set with the `label` slot – the slot takes precedence.
@@ -81,11 +78,10 @@ export interface RingProgressProps
   extends Omit<BoxProps, keyof RingProgressOwnProps>, RingProgressOwnProps {}
 
 export type RingProgressFactory = Factory<{
-  props: Omit<RingProgressProps, 'rootRef'>
+  props: RingProgressProps
   ref: HTMLDivElement
   slots: RingProgressSlots
   element: 'div'
   stylesNames: RingProgressStylesNames
   vars: RingProgressCssVariables
 }>
-import type { VueRefTarget } from '@mantine-vue/hooks'

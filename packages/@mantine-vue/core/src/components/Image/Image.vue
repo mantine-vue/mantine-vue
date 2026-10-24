@@ -8,13 +8,14 @@ export const varsResolver = createVarsResolver<any>((_, { radius, fit }) => ({
 }))
 </script>
 <script setup lang="ts">
+import type { RootRefProps } from '../../core'
 import { computed, ref, useAttrs, watch } from 'vue'
 import { assignRef } from '@mantine-vue/hooks'
 import { Box, useProps, useStyles } from '../../core'
 import type { ImageEmits, ImageOwnProps } from './Image.types'
 import classes from './Image.module.css'
 defineOptions({ name: 'Image', inheritAttrs: false })
-const rawProps = withDefaults(defineProps<ImageOwnProps>(), {
+const rawProps = withDefaults(defineProps<ImageOwnProps & RootRefProps<Element>>(), {
   rootRef: undefined,
   src: undefined,
   fallbackSrc: undefined,

@@ -1,4 +1,5 @@
-import type { BoxMod, BoxProps, MantineSize, StylesApiProps } from '../../core'
+import type { InputHTMLAttributes } from 'vue'
+import type { BoxMod, BoxProps, DataAttributes, MantineSize, StylesApiProps } from '../../core'
 import type { ColorFormat } from './ColorPicker.types'
 
 export type ColorPickerStylesNames =
@@ -91,7 +92,7 @@ export interface ColorPickerOwnProps extends StylesApiProps<ColorPickerProps> {
   name?: string
 
   /** Props passed down to the hidden input. */
-  hiddenInputProps?: Record<string, any>
+  hiddenInputProps?: InputHTMLAttributes & DataAttributes
 
   /**
    * Static selector used as the base of the generated class names.

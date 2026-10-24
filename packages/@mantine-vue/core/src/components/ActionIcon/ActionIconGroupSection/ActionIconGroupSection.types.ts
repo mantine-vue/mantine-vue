@@ -24,9 +24,6 @@ export type ActionIconGroupSectionCssVariables = {
 
 /** Props declared by `ActionIconGroupSection` itself. See `ActionIconGroupSectionProps` for the full public type. */
 export interface ActionIconGroupSectionOwnProps extends StylesApiProps<ActionIconGroupSectionFactory> {
-  /** Receives the root DOM node. */
-  rootRef?: VueRefTarget<Element>
-
   /** Controls section `height`, `font-size` and horizontal `padding`. @default 'sm' */
   size?: MantineSize | (string & {}) | number
 
@@ -55,11 +52,10 @@ export interface ActionIconGroupSectionSlots {
 }
 
 export type ActionIconGroupSectionFactory = Factory<{
-  props: Omit<ActionIconGroupSectionProps, 'rootRef'>
+  props: ActionIconGroupSectionProps
   ref: HTMLDivElement
   slots: ActionIconGroupSectionSlots
   element: 'div'
   stylesNames: ActionIconGroupSectionStylesNames
   vars: ActionIconGroupSectionCssVariables
 }>
-import type { VueRefTarget } from '@mantine-vue/hooks'

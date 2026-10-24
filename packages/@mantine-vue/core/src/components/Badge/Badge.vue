@@ -31,6 +31,7 @@ export { varsResolver }
 </script>
 
 <script setup lang="ts">
+import type { RootRefProps } from '../../core'
 import { ref, computed, useAttrs, useSlots } from 'vue'
 import { assignRef } from '@mantine-vue/hooks'
 import { Box, hasNode, resolveNode, useProps, useStyles } from '../../core'
@@ -42,7 +43,7 @@ defineOptions({
   inheritAttrs: false,
 })
 
-const rawProps = withDefaults(defineProps<BadgeOwnProps>(), {
+const rawProps = withDefaults(defineProps<BadgeOwnProps & RootRefProps<Element>>(), {
   rootRef: undefined,
   component: 'div',
   // Intentionally undefined to preserve downstream defaults.

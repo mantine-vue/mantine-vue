@@ -12,6 +12,7 @@ export { defaultProps }
 </script>
 
 <script setup lang="ts">
+import type { RootRefProps } from '../../core'
 import { computed, useAttrs, useSlots } from 'vue'
 import { useUncontrolled } from '@mantine-vue/hooks'
 import { STYLE_PROPS_DATA, useProps } from '../../core'
@@ -35,7 +36,7 @@ defineOptions({
  * Defaulting to `undefined` keeps the prop optional for callers: Vue only strips
  * `undefined` from a prop's type when the default is a real value.
  */
-const rawProps = withDefaults(defineProps<InputBaseOwnProps>(), {
+const rawProps = withDefaults(defineProps<InputBaseOwnProps & RootRefProps<Element>>(), {
   label: undefined,
   description: undefined,
   error: undefined,

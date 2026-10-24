@@ -1,4 +1,3 @@
-import type { VueRefTarget } from '@mantine-vue/hooks'
 import type { VNodeChild } from 'vue'
 import type {
   BoxProps,
@@ -9,6 +8,7 @@ import type {
   StylesApiProps,
 } from '../../core'
 import type { AffixPosition } from '../Affix'
+import type { PortalProps } from '../Portal'
 import type { TransitionOverride } from '../Transition'
 import type { ActionBarCloseButton } from './ActionBarCloseButton/ActionBarCloseButton'
 import type { ActionBarDivider } from './ActionBarDivider/ActionBarDivider'
@@ -16,8 +16,6 @@ import type { ActionBarDivider } from './ActionBarDivider/ActionBarDivider'
 export type ActionBarStylesNames = 'root' | 'divider' | 'closeButton'
 
 export interface ActionBarOwnProps extends StylesApiProps<ActionBarFactory> {
-  /** Receives the root DOM node. */
-  rootRef?: VueRefTarget<Element>
   /** Controls visibility. */
   opened: boolean
   /** Props passed to the transition. @default { transition: 'pop', duration: 200 } */
@@ -39,7 +37,7 @@ export interface ActionBarOwnProps extends StylesApiProps<ActionBarFactory> {
   /** Determines whether the action bar is rendered in a portal. @default true */
   withinPortal?: boolean
   /** Props passed to the portal. */
-  portalProps?: Record<string, any>
+  portalProps?: PortalProps
   /** Closes the action bar when Escape is pressed. @default false */
   closeOnEscape?: boolean
   /** Keeps the root node mounted with `display: none` when closed. @default false */
@@ -59,7 +57,7 @@ export interface ActionBarEmits {
 }
 
 export type ActionBarFactory = Factory<{
-  props: Omit<ActionBarProps, 'rootRef'>
+  props: ActionBarProps
   ref: HTMLDivElement
   slots: ActionBarSlots
   emits: ActionBarEmits

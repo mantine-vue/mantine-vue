@@ -3,9 +3,6 @@ import type { BoxProps, MantineColor, MantineSize, StylesApiProps, Factory } fro
 
 /** Props declared by `Burger` itself. See `BurgerProps` for the full public type. */
 export interface BurgerOwnProps extends StylesApiProps<BurgerFactory> {
-  /** Receives the root DOM node. */
-  rootRef?: VueRefTarget<Element>
-
   /**
    * Controls burger `width` and `height`, numbers are converted to rem
    *
@@ -60,11 +57,10 @@ export type BurgerCssVariables = {
 }
 
 export type BurgerFactory = Factory<{
-  props: Omit<BurgerProps, 'rootRef'>
+  props: BurgerProps
   ref: HTMLButtonElement
   slots: BurgerSlots
   element: 'button'
   stylesNames: BurgerStylesNames
   vars: BurgerCssVariables
 }>
-import type { VueRefTarget } from '@mantine-vue/hooks'

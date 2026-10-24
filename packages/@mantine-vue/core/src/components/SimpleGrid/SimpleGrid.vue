@@ -3,6 +3,7 @@ const defaultProps = { cols: 1, spacing: 'md', type: 'media' } as const
 </script>
 
 <script setup lang="ts">
+import type { RootRefProps } from '../../core'
 import { ref, computed, useAttrs } from 'vue'
 import { assignRef } from '@mantine-vue/hooks'
 import { Box, useProps, useRandomClassName, useStyles } from '../../core'
@@ -12,7 +13,7 @@ import classes from './SimpleGrid.module.css'
 
 defineOptions({ name: 'SimpleGrid', inheritAttrs: false })
 
-const rawProps = withDefaults(defineProps<SimpleGridOwnProps>(), {
+const rawProps = withDefaults(defineProps<SimpleGridOwnProps & RootRefProps<Element>>(), {
   cols: undefined,
   spacing: undefined,
   verticalSpacing: undefined,

@@ -24,7 +24,7 @@ const TRANSITIONS = [
   'pop-top-right',
   'pop-bottom-left',
   'pop-bottom-right',
-]
+] as const
 
 const Demo = defineComponent({
   name: 'TooltipTransitionsDemo',

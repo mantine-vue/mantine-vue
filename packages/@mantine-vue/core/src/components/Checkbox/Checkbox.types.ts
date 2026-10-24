@@ -1,11 +1,11 @@
 import type { CheckboxCard } from './CheckboxCard/CheckboxCard'
 import type { CheckboxIndicator } from './CheckboxIndicator/CheckboxIndicator'
 import type { CheckboxGroup } from './CheckboxGroup/CheckboxGroup'
-import type { VueRefTarget } from '@mantine-vue/hooks'
-import type { Component, VNodeChild } from 'vue'
+import type { Component, HTMLAttributes, VNodeChild } from 'vue'
 import type {
   BoxMod,
   BoxProps,
+  DataAttributes,
   MantineColor,
   MantineNode,
   MantineRadius,
@@ -95,7 +95,7 @@ export interface CheckboxOwnProps extends StylesApiProps<CheckboxFactory> {
   radius?: MantineRadius
 
   /** Props passed down to the root element. */
-  wrapperProps?: Record<string, any>
+  wrapperProps?: HTMLAttributes & DataAttributes
 
   /**
    * Position of the label relative to the checkbox.
@@ -128,9 +128,6 @@ export interface CheckboxOwnProps extends StylesApiProps<CheckboxFactory> {
    * Can also be set with the scoped `icon` slot – the slot takes precedence.
    */
   icon?: Component
-
-  /** Ref assigned to the root element. */
-  rootRef?: VueRefTarget<Element>
 
   /** Key of `theme.colors` or any valid CSS color used for the icon. */
   iconColor?: MantineColor
@@ -196,7 +193,7 @@ export interface CheckboxEmits {
 }
 
 export type CheckboxFactory = Factory<{
-  props: Omit<CheckboxProps, 'rootRef'>
+  props: CheckboxProps
   slots: CheckboxSlots
   emits: CheckboxEmits
   ref: HTMLDivElement

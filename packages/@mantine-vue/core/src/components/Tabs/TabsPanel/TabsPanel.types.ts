@@ -5,9 +5,6 @@ export type TabsPanelStylesNames = 'panel'
 
 /** Props declared by `TabsPanel` itself. See `TabsPanelProps` for the full public type. */
 export interface TabsPanelOwnProps {
-  /** Receives the root DOM node. */
-  rootRef?: VueRefTarget<Element>
-
   /** Value of associated control */
   value: string
 
@@ -37,10 +34,9 @@ export interface TabsPanelSlots {
 }
 
 export type TabsPanelFactory = Factory<{
-  props: Omit<TabsPanelProps, 'rootRef'>
+  props: TabsPanelProps
   ref: HTMLDivElement
   slots: TabsPanelSlots
   element: 'div'
   stylesNames: TabsPanelStylesNames
 }>
-import type { VueRefTarget } from '@mantine-vue/hooks'

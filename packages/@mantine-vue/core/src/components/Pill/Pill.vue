@@ -18,6 +18,7 @@ export { varsResolver }
 </script>
 
 <script setup lang="ts">
+import type { RootRefProps } from '../../core'
 import { ref, computed, useAttrs } from 'vue'
 import { assignRef } from '@mantine-vue/hooks'
 import { Box, useProps, useStyles } from '../../core'
@@ -29,7 +30,7 @@ import classes from './Pill.module.css'
 
 defineOptions({ name: 'Pill', inheritAttrs: false })
 
-const rawProps = withDefaults(defineProps<PillOwnProps>(), {
+const rawProps = withDefaults(defineProps<PillOwnProps & RootRefProps<Element>>(), {
   rootRef: undefined,
   size: undefined,
   withRemoveButton: false,

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { RootRefProps } from '../../../core'
 import { ref, computed, useAttrs } from 'vue'
 import { assignRef } from '@mantine-vue/hooks'
 import { CloseButton } from '../../CloseButton'
@@ -6,7 +7,7 @@ import { useInputContext } from '../Input.context'
 import type { InputClearButtonOwnProps, InputClearButtonSlots } from './InputClearButton.types'
 
 defineOptions({ name: 'InputClearButton', inheritAttrs: false })
-const props = withDefaults(defineProps<InputClearButtonOwnProps>(), {
+const props = withDefaults(defineProps<InputClearButtonOwnProps & RootRefProps<Element>>(), {
   size: undefined,
   variant: undefined,
   classNames: undefined,

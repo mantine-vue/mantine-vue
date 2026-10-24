@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { RootRefProps } from '../../core'
 import { ref, computed, useAttrs } from 'vue'
 import { assignRef } from '@mantine-vue/hooks'
 import { omitAttrs } from '../../core'
@@ -14,7 +15,7 @@ defineOptions({
   inheritAttrs: false,
 })
 
-const props = withDefaults(defineProps<ModalBaseContentOwnProps>(), {
+const props = withDefaults(defineProps<ModalBaseContentOwnProps & RootRefProps<Element>>(), {
   transitionProps: undefined,
   innerProps: () => ({}),
 })

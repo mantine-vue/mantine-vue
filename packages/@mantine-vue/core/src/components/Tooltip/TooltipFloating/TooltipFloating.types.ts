@@ -1,6 +1,7 @@
 import type { VNodeChild } from 'vue'
 import type { ClassNames, MantineNode, Styles, Vars } from '../../../core'
 import type { FloatingPosition } from '../../../utils/Floating'
+import type { PortalProps } from '../../Portal'
 
 export interface TooltipFloatingSlots {
   /**
@@ -86,7 +87,7 @@ export interface TooltipFloatingProps {
   color?: string
 
   /** Props passed down to the `Portal` when `withinPortal` is set. */
-  portalProps?: Record<string, any>
+  portalProps?: PortalProps
 
   /** `classNames` of the Styles API. */
   classNames?: ClassNames<TooltipFloatingProps>

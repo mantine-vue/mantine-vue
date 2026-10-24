@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { RootRefProps } from '../../core'
 import { ref, computed, useAttrs, useSlots } from 'vue'
 import { assignRef } from '@mantine-vue/hooks'
 import { resolveNode, useMantineEnv, useProps } from '../../core'
@@ -11,7 +12,7 @@ defineOptions({
   inheritAttrs: false,
 })
 
-const rawProps = withDefaults(defineProps<TextareaOwnProps>(), {
+const rawProps = withDefaults(defineProps<TextareaOwnProps & RootRefProps<Element>>(), {
   modelValue: undefined,
   defaultValue: undefined,
   autosize: false,

@@ -1,5 +1,4 @@
 import type { VNodeChild } from 'vue'
-import type { VueRefTarget } from '@mantine-vue/hooks'
 import type {
   BoxProps,
   MantineRadius,
@@ -12,9 +11,6 @@ import type { CardSection } from './CardSection/CardSection'
 
 /** Props declared by `Card` itself. See `CardProps` for the full public type. */
 export interface CardOwnProps extends StylesApiProps<CardProps> {
-  /** Receives the root DOM node. The factory narrows this to the element the selected root renders. */
-  rootRef?: VueRefTarget<Element>
-
   /**
    * Root element or component rendered by `Card`.
    *
@@ -64,7 +60,7 @@ export type CardCssVariables = { root: '--card-padding' }
 
 /** Public contract of `Card`. `component` and `rootRef` come from the factory. */
 export type CardFactory = PolymorphicFactory<{
-  props: Omit<CardProps, 'component' | 'rootRef'>
+  props: Omit<CardProps, 'component'>
   slots: CardSlots
   ref: HTMLDivElement
   exposed: { rootElement: Element | null }

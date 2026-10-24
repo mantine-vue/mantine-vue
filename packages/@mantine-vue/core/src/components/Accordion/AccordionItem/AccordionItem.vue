@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { RootRefProps } from '../../../core'
 import { ref, computed, useAttrs } from 'vue'
 import { assignRef } from '@mantine-vue/hooks'
 import { Box } from '../../../core'
@@ -11,7 +12,7 @@ defineOptions({
   inheritAttrs: false,
 })
 
-const props = defineProps<AccordionItemOwnProps>()
+const props = defineProps<AccordionItemOwnProps & RootRefProps<Element>>()
 
 defineSlots<AccordionItemSlots>()
 

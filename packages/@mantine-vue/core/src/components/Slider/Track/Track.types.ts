@@ -1,4 +1,4 @@
-import type { VNodeChild } from 'vue'
+import type { HTMLAttributes, VNodeChild } from 'vue'
 import type { SliderMark } from '../SliderMark'
 
 export interface SliderTrackSlots {
@@ -51,5 +51,5 @@ export interface SliderTrackProps {
   inverted?: boolean
 
   /** Props passed down to the track container element. */
-  containerProps?: Record<string, any>
+  containerProps?: HTMLAttributes
 }

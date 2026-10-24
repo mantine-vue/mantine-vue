@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { RootRefProps } from '../../../core'
 import { ref, useAttrs } from 'vue'
 import { assignRef } from '@mantine-vue/hooks'
 import { Box } from '../../../core'
@@ -6,7 +7,7 @@ import { useAppShellContext } from '../AppShell.context'
 import type { AppShellMainOwnProps, AppShellMainSlots } from './AppShellMain.types'
 
 defineOptions({ name: 'AppShellMain', inheritAttrs: false })
-const props = withDefaults(defineProps<AppShellMainOwnProps>(), {
+const props = withDefaults(defineProps<AppShellMainOwnProps & RootRefProps<Element>>(), {
   rootRef: undefined,
   classNames: undefined,
   styles: undefined,

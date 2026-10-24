@@ -10,6 +10,7 @@ export const varsResolver = createVarsResolver<any>((_, { size, spacing }) => ({
 const defaultProps = { type: 'unordered' } as const
 </script>
 <script setup lang="ts">
+import type { RootRefProps } from '../../core'
 import { ref, useAttrs, useSlots } from 'vue'
 import { assignRef } from '@mantine-vue/hooks'
 import { Box, hasNode, resolveNode, useProps, useStyles } from '../../core'
@@ -17,7 +18,7 @@ import { provideListContext } from './List.context'
 import type { ListOwnProps, ListSlots } from './List.types'
 import classes from './List.module.css'
 defineOptions({ name: 'List', inheritAttrs: false })
-const rawProps = withDefaults(defineProps<ListOwnProps>(), {
+const rawProps = withDefaults(defineProps<ListOwnProps & RootRefProps<Element>>(), {
   rootRef: undefined,
   type: undefined,
   withPadding: false,

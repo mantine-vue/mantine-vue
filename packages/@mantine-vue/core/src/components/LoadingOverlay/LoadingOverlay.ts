@@ -13,5 +13,6 @@ export type {
   LoadingOverlayFactory,
   LoadingOverlayOwnProps,
   LoadingOverlayProps,
+  LoadingOverlaySlots,
   LoadingOverlayStylesNames,
 } from './LoadingOverlay.types'

@@ -1,6 +1,6 @@
-import type { VueRefTarget } from '@mantine-vue/hooks'
 import type { VNodeChild } from 'vue'
 import type { BoxProps, StylesApiProps, Factory } from '../../core'
+import type { PortalProps } from '../Portal'
 
 export type AffixStylesNames = 'root'
 
@@ -17,9 +17,6 @@ export interface AffixPosition {
 
 /** Props declared by `Affix` itself. See `AffixProps` for the full public type. */
 export interface AffixOwnProps extends StylesApiProps<AffixFactory> {
-  /** Receives the root DOM node. */
-  rootRef?: VueRefTarget<Element>
-
   /**
    * Root element `z-index` property
    *
@@ -35,7 +32,7 @@ export interface AffixOwnProps extends StylesApiProps<AffixFactory> {
   withinPortal?: boolean
 
   /** Props passed down to the `Portal` component. Ignored when `withinPortal` is `false`. */
-  portalProps?: Record<string, any>
+  portalProps?: PortalProps
 
   /**
    * Affix position on screen
@@ -53,7 +50,7 @@ export interface AffixSlots {
 }
 
 export type AffixFactory = Factory<{
-  props: Omit<AffixProps, 'rootRef'>
+  props: AffixProps
   slots: AffixSlots
   ref: HTMLDivElement
   exposed: { rootElement: Element | null }

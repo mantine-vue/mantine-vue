@@ -5,9 +5,6 @@ export type EmptyStateActionsStylesNames = 'actions'
 
 /** Props declared by `EmptyStateActions` itself. See `EmptyStateActionsProps` for the full public type. */
 export interface EmptyStateActionsOwnProps {
-  /** Receives the root DOM node. */
-  rootRef?: VueRefTarget<Element>
-
   /** Class names applied to EmptyState elements. */
   classNames?: StylesApiProps<EmptyStateActionsFactory>['classNames']
 
@@ -27,10 +24,9 @@ export interface EmptyStateActionsSlots {
 }
 
 export type EmptyStateActionsFactory = Factory<{
-  props: Omit<EmptyStateActionsProps, 'rootRef'>
+  props: EmptyStateActionsProps
   ref: HTMLDivElement
   slots: EmptyStateActionsSlots
   element: 'div'
   stylesNames: EmptyStateActionsStylesNames
 }>
-import type { VueRefTarget } from '@mantine-vue/hooks'

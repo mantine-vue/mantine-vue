@@ -53,6 +53,7 @@ export { varsResolver }
 </script>
 
 <script setup lang="ts">
+import type { RootRefProps } from '../../core'
 import { ref, computed, useAttrs, useSlots } from 'vue'
 import { assignRef } from '@mantine-vue/hooks'
 import { Box, hasNode, resolveNode, useProps, useStyles } from '../../core'
@@ -64,7 +65,7 @@ import classes from './SemiCircleProgress.module.css'
 
 defineOptions({ name: 'SemiCircleProgress', inheritAttrs: false })
 
-const rawProps = withDefaults(defineProps<SemiCircleProgressOwnProps>(), {
+const rawProps = withDefaults(defineProps<SemiCircleProgressOwnProps & RootRefProps<Element>>(), {
   rootRef: undefined,
   size: undefined,
   thickness: undefined,

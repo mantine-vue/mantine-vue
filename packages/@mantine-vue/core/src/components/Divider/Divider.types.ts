@@ -12,9 +12,6 @@ export type DividerVariant = 'solid' | 'dashed' | 'dotted'
 
 /** Props declared by `Divider` itself. See `DividerProps` for the full public type. */
 export interface DividerOwnProps extends StylesApiProps<DividerFactory> {
-  /** Receives the root DOM node. */
-  rootRef?: VueRefTarget<Element>
-
   /** Key of `theme.colors` or any valid CSS color value */
   color?: MantineColor
 
@@ -66,7 +63,7 @@ export type DividerCssVariables = {
 }
 
 export type DividerFactory = Factory<{
-  props: Omit<DividerProps, 'rootRef'>
+  props: DividerProps
   ref: HTMLSpanElement
   slots: DividerSlots
   element: 'span'
@@ -74,4 +71,3 @@ export type DividerFactory = Factory<{
   vars: DividerCssVariables
   variant: DividerVariant
 }>
-import type { VueRefTarget } from '@mantine-vue/hooks'

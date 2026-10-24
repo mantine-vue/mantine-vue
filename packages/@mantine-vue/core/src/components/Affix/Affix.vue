@@ -21,6 +21,7 @@ export { varsResolver }
 </script>
 
 <script setup lang="ts">
+import type { RootRefProps } from '../../core'
 import { ref, useAttrs } from 'vue'
 import { assignRef } from '@mantine-vue/hooks'
 import { Box, useProps, useStyles } from '../../core'
@@ -30,7 +31,7 @@ import classes from './Affix.module.css'
 
 defineOptions({ name: 'Affix', inheritAttrs: false })
 
-const rawProps = withDefaults(defineProps<AffixOwnProps>(), {
+const rawProps = withDefaults(defineProps<AffixOwnProps & RootRefProps<Element>>(), {
   zIndex: undefined,
   withinPortal: undefined,
   portalProps: undefined,

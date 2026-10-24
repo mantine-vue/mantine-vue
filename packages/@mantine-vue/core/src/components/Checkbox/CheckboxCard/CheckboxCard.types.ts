@@ -21,9 +21,6 @@ export interface CheckboxCardSlots {
 
 /** Props declared by `CheckboxCard` itself. See `CheckboxCardProps` for the full public type. */
 export interface CheckboxCardOwnProps extends StylesApiProps<CheckboxCardFactory> {
-  /** Receives the root DOM node. */
-  rootRef?: VueRefTarget<Element>
-
   /** Checked state, bound with `v-model`. */
   modelValue?: boolean
 
@@ -61,11 +58,10 @@ export interface CheckboxCardProps
   extends Omit<BoxProps, keyof CheckboxCardOwnProps>, CheckboxCardOwnProps {}
 
 export type CheckboxCardFactory = Factory<{
-  props: Omit<CheckboxCardProps, 'rootRef'>
+  props: CheckboxCardProps
   ref: HTMLButtonElement
   slots: CheckboxCardSlots
   element: 'button'
   stylesNames: CheckboxCardStylesNames
   vars: CheckboxCardCssVariables
 }>
-import type { VueRefTarget } from '@mantine-vue/hooks'

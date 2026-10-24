@@ -1,4 +1,5 @@
-import type { VNodeChild } from 'vue'
+import type { ButtonHTMLAttributes, VNodeChild } from 'vue'
+import type { DataAttributes } from '../../core'
 import type { CloseButtonProps } from '../CloseButton'
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
@@ -8,6 +9,8 @@ export interface ModalBaseCloseButtonOwnProps {}
 export interface ModalBaseCloseButtonProps
   extends
     Omit<CloseButtonProps, keyof ModalBaseCloseButtonOwnProps>,
+    Omit<ButtonHTMLAttributes, keyof CloseButtonProps>,
+    DataAttributes,
     ModalBaseCloseButtonOwnProps {}
 
 export interface ModalBaseCloseButtonSlots {
