@@ -55,5 +55,3 @@ export type {
   PolymorphicComponentWithProps,
   PolymorphicProps,
 } from './polymorphic-factory'
-
-export { useForwardedRef } from './use-forwarded-ref'

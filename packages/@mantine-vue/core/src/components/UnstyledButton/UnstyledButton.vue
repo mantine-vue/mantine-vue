@@ -2,7 +2,7 @@
 import type { RootRefProps } from '../../core'
 import { ref, useAttrs } from 'vue'
 import { assignRef } from '@mantine-vue/hooks'
-import { Box, useForwardedRef, useStyles } from '../../core'
+import { Box, useStyles } from '../../core'
 import type { UnstyledButtonOwnProps, UnstyledButtonSlots } from './UnstyledButton.types'
 import classes from './UnstyledButton.module.css'
 defineOptions({ name: 'UnstyledButton', inheritAttrs: false })
@@ -42,8 +42,6 @@ const getStyles = useStyles({
     return props.unstyled
   },
 })
-const elementRef = ref<HTMLElement | null>(null)
-useForwardedRef(elementRef)
 
 const rootElement = ref<Element | null>(null)
 
@@ -62,7 +60,6 @@ defineExpose({ rootElement })
     :mod="props.mod"
     :type="attrs.type ?? (props.component === 'button' ? 'button' : undefined)"
     :rootRef="setRootRef"
-    ref="elementRef"
     ><slot
   /></Box>
 </template>

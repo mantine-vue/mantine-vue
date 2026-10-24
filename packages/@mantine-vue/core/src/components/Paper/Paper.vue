@@ -16,7 +16,7 @@ export { varsResolver }
 import type { RootRefProps } from '../../core'
 import { ref, useAttrs } from 'vue'
 import { assignRef } from '@mantine-vue/hooks'
-import { Box, useForwardedRef, useProps, useStyles } from '../../core'
+import { Box, useProps, useStyles } from '../../core'
 import type { PaperOwnProps, PaperSlots } from './Paper.types'
 import classes from './Paper.module.css'
 
@@ -52,9 +52,6 @@ const getStyles = useStyles({
   unstyled: props.unstyled,
 })
 
-const elementRef = ref<HTMLElement | null>(null)
-useForwardedRef(elementRef)
-
 const rootElement = ref<Element | null>(null)
 
 const setRootRef = (node: Element | null) => {
@@ -71,7 +68,6 @@ defineExpose({ rootElement })
       ...attrs,
       ...getStyles('root', { className: attrs.class, style: attrs.style as any }),
     }"
-    ref="elementRef"
     :component="props.component"
     :mod="[{ 'with-border': props.withBorder }, (attrs as any).mod]"
     :rootRef="setRootRef"
