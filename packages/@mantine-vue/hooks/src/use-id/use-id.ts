@@ -1,19 +1,13 @@
-import { onMounted, ref, type Ref } from 'vue'
+import { getCurrentInstance, ref, useId as useVueId, type Ref } from 'vue'
 
 let idCounter = 0
 
 export function useId(staticId?: string): Ref<string> {
-  const id = ref(staticId || '')
-
-  onMounted(() => {
-    if (!id.value) {
-      id.value = `mantine-vue-${++idCounter}`
-    }
-  })
-
   if (staticId) {
-    id.value = staticId
+    return ref(staticId)
   }
 
-  return id
+  const id = getCurrentInstance() ? useVueId() : `fallback-${++idCounter}`
+
+  return ref(`mantine-vue-${id}`)
 }
