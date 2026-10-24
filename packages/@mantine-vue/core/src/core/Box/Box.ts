@@ -3,7 +3,6 @@ import { assignRef, type VueRefTarget } from '@mantine-vue/hooks'
 import { camelToKebabCase, filterProps, isNumberLike } from '@mantine-vue/utils'
 import { InlineStyles } from '../InlineStyles'
 import { useSafeMantineTheme } from '../MantineProvider'
-import { useForwardedRef } from '../factory/use-forwarded-ref'
 import {
   hashStyleProps,
   parseStyleProps,
@@ -185,16 +184,17 @@ export const Box = defineComponent({
       default: undefined,
     },
   },
-  setup(props, { attrs, slots }) {
+  setup(props, { attrs, slots, expose }) {
     const theme = useSafeMantineTheme()
-    const elementRef = ref<Element | null>(null)
-    useForwardedRef(elementRef)
+    const rootElement = ref<Element | null>(null)
+
+    expose({ rootElement })
 
     // Vue passes a component's public instance rather than a node when `component` is a
     // component, so `$el` is unwrapped to keep `rootRef` a DOM node in every case.
     const setRootRef = (value: unknown) => {
       const node = (value as { $el?: Element } | null)?.$el ?? (value as Element | null) ?? null
-      elementRef.value = node
+      rootElement.value = node
       assignRef(props.rootRef, node)
     }
 

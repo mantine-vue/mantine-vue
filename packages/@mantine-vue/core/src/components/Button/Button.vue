@@ -49,7 +49,7 @@ export { loaderTransition, varsResolver }
 import type { RootRefProps } from '../../core'
 import { computed, ref, useAttrs, useSlots } from 'vue'
 import { assignRef } from '@mantine-vue/hooks'
-import { Box, hasNode, resolveNode, useForwardedRef, useProps, useStyles } from '../../core'
+import { Box, hasNode, resolveNode, useProps, useStyles } from '../../core'
 import { Loader } from '../Loader'
 import { Transition as MantineTransitionComponent } from '../Transition'
 import { UnstyledButton } from '../UnstyledButton'
@@ -85,9 +85,6 @@ defineSlots<ButtonSlots>()
 const slots = useSlots()
 const attrs = useAttrs()
 const props = useProps('Button', null, rawProps)
-
-const elementRef = ref<HTMLElement | null>(null)
-useForwardedRef(elementRef)
 
 const rootElement = ref<Element | null>(null)
 
@@ -163,7 +160,6 @@ const loaderStyleProps = computed(() => ({
 
 <template>
   <UnstyledButton
-    ref="elementRef"
     v-bind="{ ...attrs, ...rootStyles }"
     :component="props.component"
     :unstyled="props.unstyled"
