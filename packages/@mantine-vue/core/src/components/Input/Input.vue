@@ -41,7 +41,7 @@ export { varsResolver, renderContent, defaultProps }
 
 <script setup lang="ts">
 import type { RootRefProps } from '../../core'
-import { computed, h, reactive, ref, useAttrs, useSlots, watchEffect } from 'vue'
+import { computed, h, nextTick, reactive, ref, useAttrs, useSlots, watchEffect } from 'vue'
 import { assignRef, useUncontrolled } from '@mantine-vue/hooks'
 import { Box, omitAttrs, resolveNode, useProps, useStyles } from '../../core'
 import { Loader } from '../Loader'
@@ -86,7 +86,7 @@ const attrs = useAttrs()
 
 const props = useProps('Input', defaultProps, rawProps)
 
-const [value, setValue] = useUncontrolled<any>({
+const [value, setValue, isControlled] = useUncontrolled<any>({
   value: () => props.modelValue,
   defaultValue: props.defaultValue,
   finalValue: undefined,
@@ -202,17 +202,39 @@ function callHandler(handler: unknown, event: Event) {
   }
 }
 
+/**
+ * A controlled field shows `modelValue`, not what was typed. When the parent does not take the
+ * new value there is nothing to re-render, so the element is put back once the parent has had
+ * its tick to respond.
+ */
+function restoreControlledValue(element: HTMLInputElement | HTMLSelectElement) {
+  if (!isControlled.value) {
+    return
+  }
+
+  nextTick(() => {
+    const expected = inputValue.value == null ? '' : String(inputValue.value)
+    if (element.value !== expected) {
+      element.value = expected
+    }
+  })
+}
+
 function onInput(event: Event) {
   callHandler(attrs.onInput, event)
 
   if (props.component !== 'select') {
-    setValue((event.currentTarget as HTMLInputElement).value)
+    const element = event.currentTarget as HTMLInputElement
+    setValue(element.value)
+    restoreControlledValue(element)
   }
 }
 
 function onChange(event: Event) {
   if (props.component === 'select') {
-    setValue((event.currentTarget as HTMLSelectElement).value)
+    const element = event.currentTarget as HTMLSelectElement
+    setValue(element.value)
+    restoreControlledValue(element)
   }
 }
 

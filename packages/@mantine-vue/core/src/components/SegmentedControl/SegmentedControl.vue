@@ -107,9 +107,23 @@ const ItemLabel = (item: SegmentedControlItem<any>) =>
 const handleClick = (event: MouseEvent) => {
   if (props.readOnly) event.preventDefault()
 }
-const handleChange = (event: Event, item: SegmentedControlItem<any>, active: boolean) => {
-  if (props.readOnly) (event.currentTarget as HTMLInputElement).checked = active
-  else setValue(item.value)
+const handleChange = (event: Event, item: SegmentedControlItem<any>) => {
+  if (!props.readOnly) {
+    setValue(item.value)
+    return
+  }
+
+  const input = event.currentTarget as HTMLInputElement
+  const group = input.name
+    ? Array.from(
+        (input.getRootNode() as ParentNode).querySelectorAll<HTMLInputElement>(
+          'input[type="radio"]',
+        ),
+      ).filter((radio) => radio.name === input.name)
+    : [input]
+  group.forEach((radio) => {
+    radio.checked = radio.value === String(value.value)
+  })
 }
 </script>
 <template>
@@ -159,7 +173,7 @@ const handleChange = (event: Event, item: SegmentedControlItem<any>, active: boo
         :checked="value === item.value"
         :data-focus-ring="theme.focusRing"
         @click="handleClick"
-        @change="handleChange($event, item, value === item.value)"
+        @change="handleChange($event, item)"
       />
       <Box
         component="label"
