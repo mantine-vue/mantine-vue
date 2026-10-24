@@ -278,7 +278,7 @@ const setRootRef = (node: Element | null) => {
   assignRef(props.rootRef, node)
 }
 
-defineExpose({ rootElement })
+defineExpose({ rootElement, viewport })
 </script>
 
 <template>

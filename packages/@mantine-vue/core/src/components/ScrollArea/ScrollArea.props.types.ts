@@ -93,7 +93,7 @@ export type ScrollAreaFactory = Factory<{
   slots: ScrollAreaSlots
   emits: ScrollAreaEmits
   ref: HTMLDivElement
-  exposed: { rootElement: Element | null }
+  exposed: { rootElement: Element | null; viewport: HTMLDivElement | null }
   element: 'div'
   stylesNames: ScrollAreaStylesNames
   vars: ScrollAreaCssVariables

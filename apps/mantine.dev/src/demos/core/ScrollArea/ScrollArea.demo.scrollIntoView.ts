@@ -1,10 +1,10 @@
-import { defineComponent, h, ref, computed } from 'vue'
+import { defineComponent, h, ref, computed, useTemplateRef } from 'vue'
 import { ScrollArea, TextInput, UnstyledButton } from '@mantine-vue/core'
 import type { MantineDemo } from '@/demo'
 
 const code = `
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, useTemplateRef } from 'vue'
 import { ScrollArea, UnstyledButton, TextInput } from '@mantine-vue/core'
 
 const groceries = [
@@ -14,7 +14,8 @@ const groceries = [
   '🥬 Lettuce', '🍃 Spinach', '🥦 Broccoli', '🧀 Cheese', '🍦 Yogurt',
 ]
 
-const viewport = ref<any>(null)
+const area = useTemplateRef('area')
+const viewport = computed(() => area.value?.viewport ?? null)
 const query = ref('')
 const hovered = ref(-1)
 const filtered = computed(() =>
@@ -25,14 +26,14 @@ const onKeyDown = (event: KeyboardEvent) => {
   if (event.key === 'ArrowDown') {
     event.preventDefault()
     hovered.value = Math.min(hovered.value + 1, filtered.value.length - 1)
-    viewport.value?.$el
+    viewport.value
       ?.querySelectorAll('[data-list-item]')
       ?.[hovered.value]?.scrollIntoView({ block: 'nearest' })
   }
   if (event.key === 'ArrowUp') {
     event.preventDefault()
     hovered.value = Math.max(hovered.value - 1, 0)
-    viewport.value?.$el
+    viewport.value
       ?.querySelectorAll('[data-list-item]')
       ?.[hovered.value]?.scrollIntoView({ block: 'nearest' })
   }
@@ -46,7 +47,7 @@ const onKeyDown = (event: KeyboardEvent) => {
     @input="() => (hovered = -1)"
     @keydown="onKeyDown"
   />
-  <ScrollArea :h="150" type="always" mt="md" :viewportProps="{ ref: viewport }">
+  <ScrollArea :h="150" type="always" mt="md" ref="area">
     <UnstyledButton
       v-for="(item, index) in filtered"
       :key="item"
@@ -98,7 +99,8 @@ const groceries: string[] = [
 const Demo = defineComponent({
   name: 'ScrollAreaScrollIntoViewDemo',
   setup() {
-    const viewport = ref<any>(null)
+    const area = useTemplateRef<InstanceType<typeof ScrollArea>>('area')
+    const viewport = computed(() => area.value?.viewport ?? null)
     const query = ref('')
     const hovered = ref(-1)
     const filtered = computed(() =>
@@ -110,7 +112,7 @@ const Demo = defineComponent({
         event.preventDefault()
         const next = Math.min(hovered.value + 1, filtered.value.length - 1)
         hovered.value = next
-        viewport.value?.$el
+        viewport.value
           ?.querySelectorAll('[data-list-item]')
           ?.[next]?.scrollIntoView({ block: 'nearest' })
       }
@@ -118,7 +120,7 @@ const Demo = defineComponent({
         event.preventDefault()
         const prev = Math.max(hovered.value - 1, 0)
         hovered.value = prev
-        viewport.value?.$el
+        viewport.value
           ?.querySelectorAll('[data-list-item]')
           ?.[prev]?.scrollIntoView({ block: 'nearest' })
       }
@@ -136,7 +138,7 @@ const Demo = defineComponent({
       }),
       h(
         ScrollArea,
-        { h: 150, type: 'always', mt: 'md', viewportProps: { ref: viewport } },
+        { ref: 'area', h: 150, type: 'always', mt: 'md' },
         {
           default: () =>
             filtered.value.map((item, index) =>
