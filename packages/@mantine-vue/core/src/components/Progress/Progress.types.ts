@@ -2,7 +2,6 @@ import type { ProgressRootCssVariables } from './ProgressRoot/ProgressRoot.types
 import type { ProgressLabel } from './ProgressLabel/ProgressLabel'
 import type { ProgressSection } from './ProgressSection/ProgressSection'
 import type { ProgressRoot } from './ProgressRoot/ProgressRoot'
-import type { VueRefTarget } from '@mantine-vue/hooks'
 import type {
   BoxProps,
   MantineColor,
@@ -16,9 +15,6 @@ export type ProgressStylesNames = 'root' | 'section' | 'label'
 
 /** Props declared by `Progress` itself. See `ProgressProps` for the full public type. */
 export interface ProgressOwnProps extends StylesApiProps<ProgressFactory> {
-  /** Receives the root DOM node. */
-  rootRef?: VueRefTarget<Element>
-
   /** Value of the progress */
   value: number
 
@@ -78,7 +74,7 @@ export interface ProgressOwnProps extends StylesApiProps<ProgressFactory> {
 export interface ProgressProps extends Omit<BoxProps, keyof ProgressOwnProps>, ProgressOwnProps {}
 
 export type ProgressFactory = Factory<{
-  props: Omit<ProgressProps, 'rootRef'>
+  props: ProgressProps
   ref: HTMLDivElement
   exposed: { rootElement: Element | null }
   element: 'div'

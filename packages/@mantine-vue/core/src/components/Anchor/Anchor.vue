@@ -3,6 +3,7 @@ const defaultProps = { underline: 'hover' } as const
 </script>
 
 <script setup lang="ts">
+import type { RootRefProps } from '../../core'
 import { ref, useAttrs } from 'vue'
 import { assignRef } from '@mantine-vue/hooks'
 import { useProps } from '../../core'
@@ -12,7 +13,7 @@ import classes from './Anchor.module.css'
 
 defineOptions({ name: 'Anchor', inheritAttrs: false })
 
-const rawProps = withDefaults(defineProps<AnchorOwnProps>(), {
+const rawProps = withDefaults(defineProps<AnchorOwnProps & RootRefProps<Element>>(), {
   rootRef: undefined,
   component: 'a',
   underline: undefined,

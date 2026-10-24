@@ -32,7 +32,7 @@ export interface AppShellSectionSlots {
 export type AppShellSectionStylesNames = 'section'
 
 export type AppShellSectionFactory = PolymorphicFactory<{
-  props: Omit<AppShellSectionProps, 'component' | 'rootRef'>
+  props: Omit<AppShellSectionProps, 'component'>
   slots: AppShellSectionSlots
   ref: HTMLDivElement
   exposed: { rootElement: Element | null }

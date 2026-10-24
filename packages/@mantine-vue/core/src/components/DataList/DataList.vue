@@ -22,6 +22,7 @@ export { defaultProps, varsResolver }
 </script>
 
 <script setup lang="ts">
+import type { RootRefProps } from '../../core'
 import { ref, useAttrs } from 'vue'
 import { assignRef } from '@mantine-vue/hooks'
 import { Box, useProps, useStyles } from '../../core'
@@ -34,7 +35,7 @@ defineOptions({
   inheritAttrs: false,
 })
 
-const rawProps = withDefaults(defineProps<DataListOwnProps>(), {
+const rawProps = withDefaults(defineProps<DataListOwnProps & RootRefProps<Element>>(), {
   rootRef: undefined,
   withDivider: undefined,
   unstyled: false,

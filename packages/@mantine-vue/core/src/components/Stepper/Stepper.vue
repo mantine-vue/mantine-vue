@@ -63,6 +63,7 @@ export { defaultProps, varsResolver, getSlotContent, flattenChildren }
 </script>
 
 <script setup lang="ts">
+import type { RootRefProps } from '../../core'
 import { computed, cloneVNode, h, useAttrs, useSlots, type VNodeChild } from 'vue'
 import { Box, useProps, useStyles } from '../../core'
 import { provideStepperContext } from './Stepper.context'
@@ -77,7 +78,7 @@ defineOptions({
 })
 
 // Intentionally undefined to preserve downstream defaults.
-const rawProps = withDefaults(defineProps<StepperOwnProps>(), {
+const rawProps = withDefaults(defineProps<StepperOwnProps & RootRefProps<Element>>(), {
   rootRef: undefined,
   allowNextStepsSelect: undefined,
   wrap: undefined,

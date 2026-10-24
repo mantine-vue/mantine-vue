@@ -1,5 +1,4 @@
 import type { VNodeChild } from 'vue'
-import type { VueRefTarget } from '@mantine-vue/hooks'
 import type {
   BoxProps,
   Factory,
@@ -24,8 +23,6 @@ export type ToolbarCssVariables = {
     | '--toolbar-toggle-active-color'
 }
 export interface ToolbarOwnProps extends StylesApiProps<ToolbarFactory> {
-  /** Receives the root DOM node. */
-  rootRef?: VueRefTarget<Element>
   /** Toolbar orientation, `'horizontal'` by default */
   orientation?: 'horizontal' | 'vertical'
   /** Whether arrow key navigation wraps from last to first item, `true` by default */
@@ -48,7 +45,7 @@ export interface ToolbarSlots {
   default?: () => VNodeChild
 }
 export type ToolbarFactory = Factory<{
-  props: Omit<ToolbarProps, 'rootRef'>
+  props: ToolbarProps
   slots: ToolbarSlots
   ref: HTMLDivElement
   exposed: { rootElement: Element | null }

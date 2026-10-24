@@ -9,9 +9,6 @@ import type {
 
 /** Props declared by `Stack` itself. See `StackProps` for the full public type. */
 export interface StackOwnProps extends StylesApiProps<StackFactory> {
-  /** Receives the root DOM node. */
-  rootRef?: VueRefTarget<Element>
-
   /**
    * Key of `theme.spacing` or any valid CSS value to set `gap` property, numbers are converted to rem
    *
@@ -43,10 +40,9 @@ export type StackCssVariables = {
 }
 
 export type StackFactory = Factory<{
-  props: Omit<StackProps, 'rootRef'>
+  props: StackProps
   ref: HTMLDivElement
   element: 'div'
   stylesNames: StackStylesNames
   vars: StackCssVariables
 }>
-import type { VueRefTarget } from '@mantine-vue/hooks'

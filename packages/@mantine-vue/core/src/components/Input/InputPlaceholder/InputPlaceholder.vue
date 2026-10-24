@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { RootRefProps } from '../../../core'
 import { ref, useAttrs } from 'vue'
 import { assignRef } from '@mantine-vue/hooks'
 import { Box, useStyles } from '../../../core'
@@ -6,7 +7,7 @@ import type { InputPlaceholderOwnProps, InputPlaceholderSlots } from './InputPla
 import classes from '../Input.module.css'
 
 defineOptions({ name: 'InputPlaceholder', inheritAttrs: false })
-const props = withDefaults(defineProps<InputPlaceholderOwnProps>(), {
+const props = withDefaults(defineProps<InputPlaceholderOwnProps & RootRefProps<Element>>(), {
   rootRef: undefined,
   error: undefined,
   mod: undefined,

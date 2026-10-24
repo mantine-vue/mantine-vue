@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { RootRefProps } from '../../../core'
 import { ref, computed, isVNode, useAttrs, useSlots } from 'vue'
 import { assignRef } from '@mantine-vue/hooks'
 import { getThemeColor, useMantineTheme, useProps } from '../../../core'
@@ -16,7 +17,7 @@ import type {
 
 defineOptions({ name: 'StepperStep', inheritAttrs: false })
 
-const rawProps = withDefaults(defineProps<StepperStepOwnProps>(), {
+const rawProps = withDefaults(defineProps<StepperStepOwnProps & RootRefProps<Element>>(), {
   rootRef: undefined,
   step: undefined,
   state: undefined,

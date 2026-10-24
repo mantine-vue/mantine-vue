@@ -22,6 +22,7 @@ const defaultProps = {
 </script>
 
 <script setup lang="ts">
+import type { RootRefProps } from '../../core'
 import { ref, useAttrs } from 'vue'
 import { assignRef } from '@mantine-vue/hooks'
 import { Box, useProps, useStyles } from '../../core'
@@ -30,7 +31,7 @@ import classes from './Marquee.module.css'
 
 defineOptions({ name: 'Marquee', inheritAttrs: false })
 
-const rawProps = withDefaults(defineProps<MarqueeOwnProps>(), {
+const rawProps = withDefaults(defineProps<MarqueeOwnProps & RootRefProps<Element>>(), {
   rootRef: undefined,
   reverse: false,
   pauseOnHover: false,

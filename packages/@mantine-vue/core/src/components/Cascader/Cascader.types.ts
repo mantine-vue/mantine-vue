@@ -1,5 +1,7 @@
-import type { VNodeChild } from 'vue'
+import type { InputHTMLAttributes, VNodeChild } from 'vue'
 import type { ClassNames, MantineNode, Styles } from '../../core'
+import type { InputClearButtonProps } from '../Input'
+import type { ScrollAreaProps } from '../ScrollArea'
 
 export interface CascaderOption {
   value: string
@@ -194,7 +196,7 @@ export interface CascaderProps {
   clearSectionMode?: 'both' | 'rightSection' | 'clear'
 
   /** Props passed down to the clear button. */
-  clearButtonProps?: Record<string, unknown>
+  clearButtonProps?: InputClearButtonProps
 
   /** Open state of the dropdown. */
   dropdownOpened?: boolean
@@ -206,13 +208,13 @@ export interface CascaderProps {
   comboboxProps?: Record<string, unknown>
 
   /** Props passed down to the scrollable wrapper of the dropdown. */
-  scrollAreaProps?: Record<string, unknown>
+  scrollAreaProps?: ScrollAreaProps
 
   /** Key of `theme.colors` or any valid CSS color used by the chevron. */
   chevronColor?: string
 
   /** Props passed down to the hidden input that carries the value in a form. */
-  hiddenInputProps?: Record<string, unknown>
+  hiddenInputProps?: Omit<InputHTMLAttributes, 'value'>
 
   /**
    * If set, the dropdown opens when a searchable input receives focus.

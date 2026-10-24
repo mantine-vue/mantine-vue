@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { RootRefProps } from '../../../core'
 import { ref, useAttrs } from 'vue'
 import { assignRef } from '@mantine-vue/hooks'
 import { Box, useProps } from '../../../core'
@@ -7,7 +8,7 @@ import type { EmptyStateActionsOwnProps, EmptyStateActionsSlots } from './EmptyS
 
 defineOptions({ name: 'EmptyStateActions', inheritAttrs: false })
 
-const rawProps = withDefaults(defineProps<EmptyStateActionsOwnProps>(), {
+const rawProps = withDefaults(defineProps<EmptyStateActionsOwnProps & RootRefProps<Element>>(), {
   rootRef: undefined,
   classNames: undefined,
   styles: undefined,

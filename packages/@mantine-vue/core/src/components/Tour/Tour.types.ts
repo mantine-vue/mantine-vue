@@ -1,8 +1,8 @@
 import type { Ref, VNodeChild } from 'vue'
-import type { VueRefTarget } from '@mantine-vue/hooks'
 import type { BoxProps, Factory, MantineColor, StylesApiProps } from '../../core'
 import type { FloatingPosition } from '../../utils/Floating'
-import type { TransitionProps } from '../Transition'
+import type { PortalProps } from '../Portal'
+import type { TransitionOverride } from '../Transition'
 
 export type TourTarget = string | Ref<HTMLElement | null>
 export interface TourLabels {
@@ -39,7 +39,7 @@ export interface TourTooltipProps extends BoxProps {
   targetElement?: HTMLElement | null
   position?: FloatingPosition
   mounted?: boolean
-  transitionProps?: Partial<TransitionProps>
+  transitionProps?: TransitionOverride
 }
 export interface TourBeaconProps extends BoxProps {
   target?: TourTarget
@@ -72,8 +72,6 @@ export type TourCssVariables = {
     | '--tour-color'
 }
 export interface TourOwnProps extends StylesApiProps<TourFactory> {
-  /** Receives the root DOM node. */
-  rootRef?: VueRefTarget<Element>
   /** Whether the tour is active @default false */
   active?: boolean
   /** Controlled current step index */
@@ -107,11 +105,11 @@ export interface TourOwnProps extends StylesApiProps<TourFactory> {
   /** Whether to render inside a portal @default true */
   withinPortal?: boolean
   /** Props passed to the Portal component */
-  portalProps?: Record<string, any>
+  portalProps?: PortalProps
   /** z-index of the tour @default 10000 */
   zIndex?: string | number
   /** Transition props for the tooltip @default { duration: 200, transition: 'pop' } */
-  transitionProps?: Partial<TransitionProps>
+  transitionProps?: TransitionOverride
   /** Duration of the tooltip position transition between steps in ms @default 300 */
   stepTransitionDuration?: number
   /** Max width of the tooltip, tooltip always takes this width if viewport allows @default 360 */
@@ -135,7 +133,7 @@ export interface TourEmits {
   stepClose: [step: number]
 }
 export type TourFactory = Factory<{
-  props: Omit<TourProps, 'rootRef'>
+  props: TourProps
   slots: TourSlots
   emits: TourEmits
   ref: HTMLDivElement

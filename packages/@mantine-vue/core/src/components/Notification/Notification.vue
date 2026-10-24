@@ -13,6 +13,7 @@ export { varsResolver }
 </script>
 
 <script setup lang="ts">
+import type { RootRefProps } from '../../core'
 import { ref, computed, useAttrs, useSlots } from 'vue'
 import { assignRef } from '@mantine-vue/hooks'
 import { Box, hasNode, resolveNode, useProps, useStyles } from '../../core'
@@ -23,7 +24,7 @@ import classes from './Notification.module.css'
 
 defineOptions({ name: 'Notification', inheritAttrs: false })
 
-const rawProps = withDefaults(defineProps<NotificationOwnProps>(), {
+const rawProps = withDefaults(defineProps<NotificationOwnProps & RootRefProps<Element>>(), {
   rootRef: undefined,
   color: undefined,
   radius: undefined,

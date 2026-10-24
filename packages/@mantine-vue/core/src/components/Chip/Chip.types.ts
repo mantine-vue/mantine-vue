@@ -1,9 +1,9 @@
-import type { VueRefTarget } from '@mantine-vue/hooks'
 import type { ChipGroup } from './ChipGroup/ChipGroup'
-import type { VNodeChild } from 'vue'
+import type { HTMLAttributes, VNodeChild } from 'vue'
 import type {
   BoxMod,
   BoxProps,
+  DataAttributes,
   MantineColor,
   MantineRadius,
   MantineSize,
@@ -100,16 +100,13 @@ export interface ChipOwnProps extends StylesApiProps<ChipFactory> {
   disabled?: boolean
 
   /** Props passed down to the root element. */
-  wrapperProps?: Record<string, any>
+  wrapperProps?: HTMLAttributes & DataAttributes
 
   /**
    * Checked icon. `null` or `false` hides it; a function receives the generated icon
    * styles. Can also be set with the scoped `icon` slot.
    */
   icon?: any
-
-  /** Receives the root DOM node. */
-  rootRef?: VueRefTarget<Element>
 
   /**
    * If set, adjusts text color based on background color.
@@ -131,7 +128,7 @@ export interface ChipOwnProps extends StylesApiProps<ChipFactory> {
 export interface ChipProps extends Omit<BoxProps, keyof ChipOwnProps>, ChipOwnProps {}
 
 export type ChipFactory = Factory<{
-  props: Omit<ChipProps, 'rootRef'>
+  props: ChipProps
   slots: ChipSlots
   ref: HTMLDivElement
   exposed: { rootElement: Element | null }

@@ -12,9 +12,6 @@ export interface ScrollAreaRootSlots {
  * See `ScrollAreaRootProps` for the full public type.
  */
 export interface ScrollAreaRootOwnProps {
-  /** Receives the root DOM node. */
-  rootRef?: VueRefTarget<Element>
-
   /** Styles resolver shared with every part of the scroll area through context. */
   getStyles: ScrollAreaContextValue['getStyles']
 
@@ -40,9 +37,8 @@ export interface ScrollAreaRootProps
   extends Omit<BoxProps, keyof ScrollAreaRootOwnProps>, ScrollAreaRootOwnProps {}
 
 export type ScrollAreaRootFactory = Factory<{
-  props: Omit<ScrollAreaRootProps, 'rootRef'>
+  props: ScrollAreaRootProps
   ref: HTMLDivElement
   slots: ScrollAreaRootSlots
   element: 'div'
 }>
-import type { VueRefTarget } from '@mantine-vue/hooks'

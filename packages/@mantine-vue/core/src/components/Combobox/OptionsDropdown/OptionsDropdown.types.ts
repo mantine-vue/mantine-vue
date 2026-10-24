@@ -5,6 +5,7 @@ import type {
   ComboboxParsedItem,
   OptionsFilter,
 } from '../Combobox.types'
+import type { ScrollAreaProps } from '../../ScrollArea'
 
 export type OptionsData = ComboboxParsedItem<Primitive>[]
 
@@ -127,5 +128,5 @@ export interface OptionsDropdownProps {
   renderOption?: (input: ComboboxLikeRenderOptionInput<any>) => VNodeChild
 
   /** Props passed down to the `ScrollArea.Autosize` of the dropdown. */
-  scrollAreaProps?: Record<string, any>
+  scrollAreaProps?: ScrollAreaProps
 }

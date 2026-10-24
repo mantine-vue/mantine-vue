@@ -54,7 +54,7 @@ export interface CardSectionProps
 export type CardSectionStylesNames = 'section'
 
 export type CardSectionFactory = PolymorphicFactory<{
-  props: Omit<CardSectionProps, 'component' | 'rootRef'>
+  props: Omit<CardSectionProps, 'component'>
   slots: CardSectionSlots
   ref: HTMLDivElement
   exposed: { rootElement: Element | null }

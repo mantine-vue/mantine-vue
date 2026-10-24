@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { RootRefProps } from '../../../core'
 import { ref, useAttrs } from 'vue'
 import { assignRef } from '@mantine-vue/hooks'
 import { Box, useProps } from '../../../core'
@@ -7,7 +8,7 @@ import type { DataListItemOwnProps, DataListItemSlots } from './DataListItem.typ
 
 defineOptions({ name: 'DataListItem', inheritAttrs: false })
 
-const rawProps = withDefaults(defineProps<DataListItemOwnProps>(), {
+const rawProps = withDefaults(defineProps<DataListItemOwnProps & RootRefProps<Element>>(), {
   rootRef: undefined,
   classNames: undefined,
   styles: undefined,

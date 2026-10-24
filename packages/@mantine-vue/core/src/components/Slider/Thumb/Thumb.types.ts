@@ -1,5 +1,6 @@
 import type { VNodeChild } from 'vue'
 import type { BoxProps } from '../../../core'
+import type { TransitionOverride } from '../../Transition'
 
 export interface SliderThumbSlots {
   /** Content rendered inside the thumb. */
@@ -34,7 +35,7 @@ export interface SliderThumbOwnProps {
   thumbValueText?: string | ((value: number) => string)
 
   /** Props passed down to the label transition. */
-  labelTransitionProps?: Record<string, any>
+  labelTransitionProps?: TransitionOverride
 
   /**
    * If set, the label is always visible.

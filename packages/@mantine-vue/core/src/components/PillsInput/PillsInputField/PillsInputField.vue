@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { RootRefProps } from '../../../core'
 import { ref, computed, useAttrs } from 'vue'
 import { assignRef, useUncontrolled } from '@mantine-vue/hooks'
 import { Box, omitAttrs, useProps, useStyles } from '../../../core'
@@ -12,7 +13,7 @@ defineOptions({
   inheritAttrs: false,
 })
 
-const rawProps = withDefaults(defineProps<PillsInputFieldOwnProps>(), {
+const rawProps = withDefaults(defineProps<PillsInputFieldOwnProps & RootRefProps<Element>>(), {
   rootRef: undefined,
   type: 'visible',
   pointer: false,

@@ -1,9 +1,10 @@
-import type { VNodeChild } from 'vue'
+import type { InputHTMLAttributes, VNodeChild } from 'vue'
 import type { Primitive } from '../../core'
-import type { ComboboxData, ComboboxStylesNames, OptionsFilter } from '../Combobox'
+import type { ComboboxData, ComboboxProps, ComboboxStylesNames, OptionsFilter } from '../Combobox'
 import type { PillGroupStylesNames } from '../Pill'
 import type { PillsInputFieldStylesNames } from '../PillsInput/PillsInputField/PillsInputField.types'
 import type { PillsInputStylesNames } from '../PillsInput'
+import type { ScrollAreaProps } from '../ScrollArea'
 
 export type MultiSelectStylesNames =
   | PillsInputStylesNames
@@ -192,10 +193,10 @@ export interface MultiSelectProps<Value extends Primitive = string> {
   defaultDropdownOpened?: boolean
 
   /** Props passed down to the underlying `Combobox`. */
-  comboboxProps?: Record<string, any>
+  comboboxProps?: ComboboxProps
 
   /** Props passed down to the hidden input that carries the values in a form. */
-  hiddenInputProps?: Record<string, any>
+  hiddenInputProps?: Omit<InputHTMLAttributes, 'value'>
 
   /**
    * Custom markup for a dropdown option.
@@ -210,7 +211,7 @@ export interface MultiSelectProps<Value extends Primitive = string> {
   renderPill?: (input: MultiSelectPillRenderPayload) => any
 
   /** Props passed down to the `ScrollArea.Autosize` of the dropdown. */
-  scrollAreaProps?: Record<string, any>
+  scrollAreaProps?: ScrollAreaProps
 
   /**
    * If set, the dropdown opens when a searchable input receives focus.

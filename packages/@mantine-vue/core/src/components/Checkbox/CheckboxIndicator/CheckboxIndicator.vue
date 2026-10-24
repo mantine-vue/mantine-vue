@@ -53,6 +53,7 @@ export { varsResolver }
 </script>
 
 <script setup lang="ts">
+import type { RootRefProps } from '../../../core'
 import { ref, computed, useAttrs } from 'vue'
 import { assignRef } from '@mantine-vue/hooks'
 import { Box, useStyles } from '../../../core'
@@ -62,7 +63,7 @@ import type { CheckboxIndicatorOwnProps, CheckboxIndicatorSlots } from './Checkb
 import classes from './CheckboxIndicator.module.css'
 
 defineOptions({ name: 'CheckboxIndicator', inheritAttrs: false })
-const props = withDefaults(defineProps<CheckboxIndicatorOwnProps>(), {
+const props = withDefaults(defineProps<CheckboxIndicatorOwnProps & RootRefProps<Element>>(), {
   rootRef: undefined,
   color: undefined,
   size: 'sm',

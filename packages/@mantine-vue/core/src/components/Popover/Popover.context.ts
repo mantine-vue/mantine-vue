@@ -36,6 +36,7 @@ export interface PopoverContextValue {
   width: string | number | null
   zIndex: string | number
   floatingStrategy: FloatingStrategy
+  referenceHidden: boolean
   getStyles: any
 }
 export const [providePopoverContext, usePopoverContext] = createSafeContext<PopoverContextValue>(

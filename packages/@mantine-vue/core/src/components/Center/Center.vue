@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { RootRefProps } from '../../core'
 import { ref, useAttrs } from 'vue'
 import { assignRef } from '@mantine-vue/hooks'
 import { Box, useProps, useStyles } from '../../core'
@@ -10,7 +11,7 @@ defineOptions({
   inheritAttrs: false,
 })
 
-const rawProps = withDefaults(defineProps<CenterOwnProps>(), {
+const rawProps = withDefaults(defineProps<CenterOwnProps & RootRefProps<Element>>(), {
   rootRef: undefined,
   component: 'div',
   classNames: undefined,

@@ -3,9 +3,6 @@ import type { TitleOrder, TitleSize } from './get-title-size'
 
 /** Props declared by `Title` itself. See `TitleProps` for the full public type. */
 export interface TitleOwnProps extends StylesApiProps<TitleFactory> {
-  /** Receives the root DOM node. */
-  rootRef?: VueRefTarget<Element>
-
   /**
    * Heading order (1-6), controls `font-size` style if `size` prop is not set
    *
@@ -36,10 +33,9 @@ export type TitleCssVariables = {
 }
 
 export type TitleFactory = Factory<{
-  props: Omit<TitleProps, 'rootRef'>
+  props: TitleProps
   ref: HTMLHeadingElement
   element: 'h1'
   stylesNames: TitleStylesNames
   vars: TitleCssVariables
 }>
-import type { VueRefTarget } from '@mantine-vue/hooks'

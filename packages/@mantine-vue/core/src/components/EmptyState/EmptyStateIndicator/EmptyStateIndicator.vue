@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { RootRefProps } from '../../../core'
 import { ref, useAttrs } from 'vue'
 import { assignRef } from '@mantine-vue/hooks'
 import { Box, useProps } from '../../../core'
@@ -10,7 +11,7 @@ import type {
 
 defineOptions({ name: 'EmptyStateIndicator', inheritAttrs: false })
 
-const rawProps = withDefaults(defineProps<EmptyStateIndicatorOwnProps>(), {
+const rawProps = withDefaults(defineProps<EmptyStateIndicatorOwnProps & RootRefProps<Element>>(), {
   rootRef: undefined,
   classNames: undefined,
   styles: undefined,

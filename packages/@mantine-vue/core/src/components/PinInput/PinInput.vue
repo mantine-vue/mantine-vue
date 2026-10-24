@@ -47,6 +47,7 @@ export { regex, defaultProps, varsResolver, getInputElement }
 </script>
 
 <script setup lang="ts">
+import type { RootRefProps } from '../../core'
 import { computed, ref, useAttrs } from 'vue'
 import { assignRef, useId, useUncontrolled } from '@mantine-vue/hooks'
 import { useProps, useStyles } from '../../core'
@@ -62,7 +63,7 @@ defineOptions({
 })
 
 // Intentionally undefined to preserve downstream defaults.
-const rawProps = withDefaults(defineProps<PinInputOwnProps>(), {
+const rawProps = withDefaults(defineProps<PinInputOwnProps & RootRefProps<HTMLDivElement>>(), {
   manageFocus: undefined,
   oneTimeCode: undefined,
   autoFocus: false,

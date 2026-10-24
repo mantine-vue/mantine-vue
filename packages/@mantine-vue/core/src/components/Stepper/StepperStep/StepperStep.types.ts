@@ -31,9 +31,6 @@ export type StepperStepStylesNames =
 
 /** Props declared by `StepperStep` itself. See `StepperStepProps` for the full public type. */
 export interface StepperStepOwnProps {
-  /** Receives the root DOM node. */
-  rootRef?: VueRefTarget<Element>
-
   /** 0-based step index, automatically set by Stepper component */
   step?: number
 
@@ -128,10 +125,9 @@ export interface StepperStepProps
   extends Omit<BoxProps, keyof StepperStepOwnProps>, StepperStepOwnProps {}
 
 export type StepperStepFactory = Factory<{
-  props: Omit<StepperStepProps, 'rootRef'>
+  props: StepperStepProps
   ref: HTMLButtonElement
   slots: StepperStepSlots
   element: 'button'
   stylesNames: StepperStepStylesNames
 }>
-import type { VueRefTarget } from '@mantine-vue/hooks'

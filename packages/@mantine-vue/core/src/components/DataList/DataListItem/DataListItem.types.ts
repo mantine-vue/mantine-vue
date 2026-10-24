@@ -5,9 +5,6 @@ export type DataListItemStylesNames = 'item'
 
 /** Props declared by `DataListItem` itself. See `DataListItemProps` for the full public type. */
 export interface DataListItemOwnProps {
-  /** Receives the root DOM node. */
-  rootRef?: VueRefTarget<Element>
-
   /** Class names applied to DataList elements. */
   classNames?: StylesApiProps<DataListItemFactory>['classNames']
 
@@ -27,10 +24,9 @@ export interface DataListItemSlots {
 }
 
 export type DataListItemFactory = Factory<{
-  props: Omit<DataListItemProps, 'rootRef'>
+  props: DataListItemProps
   ref: HTMLDivElement
   slots: DataListItemSlots
   element: 'div'
   stylesNames: DataListItemStylesNames
 }>
-import type { VueRefTarget } from '@mantine-vue/hooks'

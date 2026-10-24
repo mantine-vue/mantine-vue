@@ -1,5 +1,11 @@
-import type { VNodeChild } from 'vue'
-import type { BoxProps, MantineFontSize, StylesApiProps, Factory } from '../../../core'
+import type { HTMLAttributes, VNodeChild } from 'vue'
+import type {
+  BoxProps,
+  DataAttributes,
+  MantineFontSize,
+  StylesApiProps,
+  Factory,
+} from '../../../core'
 
 export type InputErrorStylesNames = 'error'
 
@@ -14,9 +20,6 @@ export interface InputErrorSlots {
 
 /** Props declared by `InputError` itself. See `InputErrorProps` for the full public type. */
 export interface InputErrorOwnProps extends StylesApiProps<InputErrorFactory> {
-  /** Receives the root DOM node. */
-  rootRef?: VueRefTarget<Element>
-
   /**
    * Controls error `font-size`.
    *
@@ -34,14 +37,15 @@ export interface InputErrorOwnProps extends StylesApiProps<InputErrorFactory> {
 }
 
 export interface InputErrorProps
-  extends Omit<BoxProps, keyof InputErrorOwnProps>, InputErrorOwnProps {}
+  extends
+    Omit<BoxProps & HTMLAttributes & DataAttributes, keyof InputErrorOwnProps>,
+    InputErrorOwnProps {}
 
 export type InputErrorFactory = Factory<{
-  props: Omit<InputErrorProps, 'rootRef'>
+  props: InputErrorProps
   ref: HTMLParagraphElement
   slots: InputErrorSlots
   element: 'p'
   stylesNames: InputErrorStylesNames
   vars: InputErrorCssVariables
 }>
-import type { VueRefTarget } from '@mantine-vue/hooks'

@@ -40,6 +40,7 @@ export { defaultProps, varsResolver, RingLabel, getClampedThickness }
 </script>
 
 <script setup lang="ts">
+import type { RootRefProps } from '../../core'
 import { ref, computed, useAttrs, useSlots } from 'vue'
 import { assignRef } from '@mantine-vue/hooks'
 import { Box, useProps, useStyles } from '../../core'
@@ -57,7 +58,7 @@ defineOptions({
   inheritAttrs: false,
 })
 
-const rawProps = withDefaults(defineProps<RingProgressOwnProps>(), {
+const rawProps = withDefaults(defineProps<RingProgressOwnProps & RootRefProps<Element>>(), {
   rootRef: undefined,
   label: undefined,
   roundCaps: false,

@@ -1,4 +1,4 @@
-import type { VNodeChild } from 'vue'
+import type { InputHTMLAttributes, VNodeChild } from 'vue'
 
 /** Payload passed to the default slot so the trigger can open the file dialog. */
 export interface FileButtonSlotProps {
@@ -49,7 +49,7 @@ export interface FileButtonProps {
   capture?: boolean | 'user' | 'environment'
 
   /** Props passed down to the hidden file input. */
-  inputProps?: Record<string, any>
+  inputProps?: InputHTMLAttributes
 
   /** Ref assigned to the hidden file input. */
   inputRef?: any

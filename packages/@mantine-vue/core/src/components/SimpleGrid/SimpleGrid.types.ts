@@ -1,4 +1,3 @@
-import type { VueRefTarget } from '@mantine-vue/hooks'
 import type { VNodeChild } from 'vue'
 import type { BoxProps, StyleProp, StylesApiProps, Factory } from '../../core'
 
@@ -6,9 +5,6 @@ export type SimpleGridStylesNames = 'root' | 'container'
 
 /** Props declared by `SimpleGrid` itself. See `SimpleGridProps` for the full public type. */
 export interface SimpleGridOwnProps extends StylesApiProps<SimpleGridFactory> {
-  /** Receives the root DOM node. */
-  rootRef?: VueRefTarget<Element>
-
   /**
    * Number of columns
    *
@@ -60,7 +56,7 @@ export interface SimpleGridSlots {
 }
 
 export type SimpleGridFactory = Factory<{
-  props: Omit<SimpleGridProps, 'rootRef'>
+  props: SimpleGridProps
   ref: HTMLDivElement
   exposed: { rootElement: Element | null }
   slots: SimpleGridSlots

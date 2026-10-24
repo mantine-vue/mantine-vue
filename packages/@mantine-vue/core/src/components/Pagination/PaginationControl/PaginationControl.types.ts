@@ -11,9 +11,6 @@ export interface PaginationControlSlots {
  * See `PaginationControlProps` for the full public type.
  */
 export interface PaginationControlOwnProps {
-  /** Receives the root DOM node. */
-  rootRef?: VueRefTarget<Element>
-
   /**
    * If set, the control is marked as the current page.
    *
@@ -52,10 +49,9 @@ export interface PaginationControlProps
 export type PaginationControlStylesNames = 'control'
 
 export type PaginationControlFactory = Factory<{
-  props: Omit<PaginationControlProps, 'rootRef'>
+  props: PaginationControlProps
   ref: HTMLButtonElement
   slots: PaginationControlSlots
   element: 'button'
   stylesNames: PaginationControlStylesNames
 }>
-import type { VueRefTarget } from '@mantine-vue/hooks'

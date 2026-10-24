@@ -1,4 +1,5 @@
 import type { VNodeChild } from 'vue'
+import type { FlipOptions, InlineOptions, ShiftOptions, SizeOptions } from '@floating-ui/vue'
 import type { ClassNames, MantineNode, Styles, Vars } from '../../core'
 import type {
   ArrowPosition,
@@ -6,21 +7,23 @@ import type {
   FloatingPosition,
   FloatingStrategy,
 } from '../../utils/Floating'
+import type { PortalProps } from '../Portal'
+import type { TransitionOverride } from '../Transition'
 
 export type TooltipStylesNames = 'tooltip' | 'arrow'
 export type TooltipCssVariables = '--tooltip-radius' | '--tooltip-bg' | '--tooltip-color'
 export interface TooltipMiddlewares {
   /** Shifts the tooltip along its axis so it stays inside the viewport. */
-  shift?: boolean | Record<string, any>
+  shift?: boolean | ShiftOptions
 
   /** Flips the tooltip to the opposite side when it does not fit. */
-  flip?: boolean | Record<string, any>
+  flip?: boolean | FlipOptions
 
   /** Improves the position for targets that span multiple lines. */
-  inline?: boolean | Record<string, any>
+  inline?: boolean | InlineOptions
 
   /** Constrains the tooltip to the available space. */
-  size?: boolean | Record<string, any>
+  size?: boolean | SizeOptions
 }
 
 export interface TooltipSlots {
@@ -87,7 +90,7 @@ export interface TooltipBaseProps {
   disabled?: boolean
 
   /** Props passed down to the `Portal` when `withinPortal` is set. */
-  portalProps?: Record<string, any>
+  portalProps?: PortalProps
 
   /**
    * Floating UI middlewares applied to the tooltip.
@@ -176,7 +179,7 @@ export interface TooltipProps extends TooltipBaseProps {
    *
    * @default { duration: 100, transition: 'fade' }
    */
-  transitionProps?: Record<string, any>
+  transitionProps?: TransitionOverride
 
   /**
    * Events that open and close the tooltip.

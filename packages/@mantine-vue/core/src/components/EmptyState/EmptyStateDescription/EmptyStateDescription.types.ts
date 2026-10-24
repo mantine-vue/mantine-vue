@@ -5,9 +5,6 @@ export type EmptyStateDescriptionStylesNames = 'description'
 
 /** Props declared by `EmptyStateDescription` itself. See `EmptyStateDescriptionProps` for the full public type. */
 export interface EmptyStateDescriptionOwnProps {
-  /** Receives the root DOM node. */
-  rootRef?: VueRefTarget<Element>
-
   /** Class names applied to EmptyState elements. */
   classNames?: StylesApiProps<EmptyStateDescriptionFactory>['classNames']
 
@@ -27,10 +24,9 @@ export interface EmptyStateDescriptionSlots {
 }
 
 export type EmptyStateDescriptionFactory = Factory<{
-  props: Omit<EmptyStateDescriptionProps, 'rootRef'>
+  props: EmptyStateDescriptionProps
   ref: HTMLParagraphElement
   slots: EmptyStateDescriptionSlots
   element: 'p'
   stylesNames: EmptyStateDescriptionStylesNames
 }>
-import type { VueRefTarget } from '@mantine-vue/hooks'

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { RootRefProps } from '../../core'
 import { ref, useAttrs } from 'vue'
 import { assignRef } from '@mantine-vue/hooks'
 import { useProps } from '../../core'
@@ -7,7 +8,7 @@ import { ProgressSection } from './ProgressSection/ProgressSection'
 import type { ProgressOwnProps } from './Progress.types'
 
 defineOptions({ name: 'Progress', inheritAttrs: false })
-const rawProps = withDefaults(defineProps<ProgressOwnProps>(), {
+const rawProps = withDefaults(defineProps<ProgressOwnProps & RootRefProps<Element>>(), {
   color: undefined,
   size: undefined,
   radius: undefined,

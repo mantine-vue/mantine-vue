@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { RootRefProps } from '../../core'
 import { ref, computed, useAttrs } from 'vue'
 import { assignRef } from '@mantine-vue/hooks'
 import {
@@ -18,7 +19,7 @@ import { FLEX_STYLE_PROPS_DATA } from './flex-props'
 import classes from './Flex.module.css'
 
 defineOptions({ name: 'Flex', inheritAttrs: false })
-const rawProps = withDefaults(defineProps<FlexOwnProps>(), {
+const rawProps = withDefaults(defineProps<FlexOwnProps & RootRefProps<Element>>(), {
   rootRef: undefined,
   component: 'div',
   classNames: undefined,

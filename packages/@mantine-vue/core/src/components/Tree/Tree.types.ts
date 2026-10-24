@@ -1,5 +1,5 @@
-import type { Component, VNodeChild } from 'vue'
-import type { BoxProps, StylesApiProps, Factory } from '../../core'
+import type { Component, HTMLAttributes, VNodeChild } from 'vue'
+import type { BoxProps, DataAttributes, StylesApiProps, Factory } from '../../core'
 import type { TreeAllowDrop, TreeDragHandleProps } from './use-tree-node-drag-drop'
 import type { TreeController } from './use-tree'
 
@@ -50,7 +50,7 @@ export interface RenderTreeNodePayload {
   tree: TreeController
 
   /** Props that must be spread onto the element rendered for the node. */
-  elementProps: Record<string, any>
+  elementProps: HTMLAttributes & DataAttributes
 
   /** Props for the drag handle. Only set when `withDragHandle` is set. */
   dragHandleProps: TreeDragHandleProps | undefined
@@ -72,7 +72,7 @@ export interface TreeDragState {
 }
 
 export type TreeFactory = Factory<{
-  props: Omit<TreeProps, 'rootRef'>
+  props: TreeProps
   ref: HTMLUListElement
   slots: TreeSlots
   element: 'ul'
@@ -93,9 +93,6 @@ export interface TreeSlots {
 
 /** Props declared by `Tree` itself. See `TreeProps` for the full public type. */
 export interface TreeOwnProps extends StylesApiProps<TreeFactory> {
-  /** Receives the root DOM node. */
-  rootRef?: VueRefTarget<Element>
-
   /**
    * Element or component rendered as the root.
    *
@@ -188,6 +185,5 @@ export interface TreeOwnProps extends StylesApiProps<TreeFactory> {
    */
   withLines?: boolean
 }
-import type { VueRefTarget } from '@mantine-vue/hooks'
 
 export interface TreeProps extends Omit<BoxProps, keyof TreeOwnProps>, TreeOwnProps {}

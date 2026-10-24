@@ -16,6 +16,7 @@ export const varsResolver = createVarsResolver<any>(
 </script>
 
 <script setup lang="ts">
+import type { RootRefProps } from '../../core'
 import { computed, ref, toRef, useAttrs } from 'vue'
 import { assignRef, useReducedMotion } from '@mantine-vue/hooks'
 import { Box, useStyles } from '../../core'
@@ -25,7 +26,7 @@ import classes from './FloatingIndicator.module.css'
 
 defineOptions({ name: 'FloatingIndicator', inheritAttrs: false })
 
-const props = withDefaults(defineProps<FloatingIndicatorOwnProps>(), {
+const props = withDefaults(defineProps<FloatingIndicatorOwnProps & RootRefProps<Element>>(), {
   rootRef: undefined,
   target: undefined,
   parent: undefined,

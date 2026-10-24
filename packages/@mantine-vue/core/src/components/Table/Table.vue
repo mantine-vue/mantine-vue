@@ -45,6 +45,7 @@ export { defaultProps, varsResolver }
 </script>
 
 <script setup lang="ts">
+import type { RootRefProps } from '../../core'
 import { ref, computed, useAttrs, useSlots } from 'vue'
 import { assignRef } from '@mantine-vue/hooks'
 import { Box, useProps, useStyles } from '../../core'
@@ -61,7 +62,7 @@ defineOptions({
 /**
  * Intentionally undefined to preserve downstream defaults.
  */
-const rawProps = withDefaults(defineProps<TableOwnProps>(), {
+const rawProps = withDefaults(defineProps<TableOwnProps & RootRefProps<Element>>(), {
   rootRef: undefined,
   withTableBorder: false,
   withColumnBorders: false,

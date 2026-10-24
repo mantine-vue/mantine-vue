@@ -1,6 +1,7 @@
 import type { Ref, VNodeChild } from 'vue'
 import type { FloatingWindowPositionConfig, SetFloatingWindowPosition } from '@mantine-vue/hooks'
 import type { BoxMod, BoxProps, StylesApiProps } from '../../core'
+import type { PortalProps } from '../Portal'
 import type { FloatingWindowDimensions } from './FloatingWindow.context'
 
 export type FloatingWindowStylesNames = 'root'
@@ -52,7 +53,7 @@ export interface FloatingWindowOwnProps extends StylesApiProps<FloatingWindowPro
   withinPortal?: boolean
 
   /** Props passed down to the `Portal` when `withinPortal` is set. */
-  portalProps?: Record<string, any>
+  portalProps?: PortalProps
 
   /**
    * `z-index` of the window.

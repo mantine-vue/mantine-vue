@@ -1,6 +1,7 @@
 import type { VNodeChild } from 'vue'
 import type { ColorFormat } from '../ColorPicker'
 import type { InputBaseSlots } from '../InputBase'
+import type { PopoverProps } from '../Popover'
 
 export type ColorInputStylesNames = string
 
@@ -62,7 +63,7 @@ export interface ColorInputProps {
   withEyeDropper?: boolean
 
   /** Props passed down to the `Popover` that holds the picker. */
-  popoverProps?: Record<string, any>
+  popoverProps?: PopoverProps
 
   /**
    * If set, the dropdown closes when a swatch is clicked.

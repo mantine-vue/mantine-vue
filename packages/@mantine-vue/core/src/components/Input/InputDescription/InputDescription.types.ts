@@ -1,5 +1,11 @@
-import type { VNodeChild } from 'vue'
-import type { BoxProps, MantineFontSize, StylesApiProps, Factory } from '../../../core'
+import type { HTMLAttributes, VNodeChild } from 'vue'
+import type {
+  BoxProps,
+  DataAttributes,
+  MantineFontSize,
+  StylesApiProps,
+  Factory,
+} from '../../../core'
 
 export type InputDescriptionStylesNames = 'description'
 
@@ -14,9 +20,6 @@ export interface InputDescriptionSlots {
 
 /** Props declared by `InputDescription` itself. See `InputDescriptionProps` for the full public type. */
 export interface InputDescriptionOwnProps extends StylesApiProps<InputDescriptionFactory> {
-  /** Receives the root DOM node. */
-  rootRef?: VueRefTarget<Element>
-
   /**
    * Controls description `font-size`.
    *
@@ -34,14 +37,15 @@ export interface InputDescriptionOwnProps extends StylesApiProps<InputDescriptio
 }
 
 export interface InputDescriptionProps
-  extends Omit<BoxProps, keyof InputDescriptionOwnProps>, InputDescriptionOwnProps {}
+  extends
+    Omit<BoxProps & HTMLAttributes & DataAttributes, keyof InputDescriptionOwnProps>,
+    InputDescriptionOwnProps {}
 
 export type InputDescriptionFactory = Factory<{
-  props: Omit<InputDescriptionProps, 'rootRef'>
+  props: InputDescriptionProps
   ref: HTMLParagraphElement
   slots: InputDescriptionSlots
   element: 'p'
   stylesNames: InputDescriptionStylesNames
   vars: InputDescriptionCssVariables
 }>
-import type { VueRefTarget } from '@mantine-vue/hooks'

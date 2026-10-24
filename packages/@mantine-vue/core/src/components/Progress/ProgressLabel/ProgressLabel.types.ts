@@ -3,9 +3,6 @@ import type { BoxProps, StylesApiProps, Factory } from '../../../core'
 
 /** Props declared by `ProgressLabel` itself. See `ProgressLabelProps` for the full public type. */
 export interface ProgressLabelOwnProps {
-  /** Receives the root DOM node. */
-  rootRef?: VueRefTarget<Element>
-
   /** Class names applied to Progress elements. */
   classNames?: StylesApiProps<ProgressLabelFactory>['classNames']
 
@@ -30,10 +27,9 @@ export interface ProgressLabelProps
 export type ProgressLabelStylesNames = 'label'
 
 export type ProgressLabelFactory = Factory<{
-  props: Omit<ProgressLabelProps, 'rootRef'>
+  props: ProgressLabelProps
   ref: HTMLDivElement
   slots: ProgressLabelSlots
   element: 'div'
   stylesNames: ProgressLabelStylesNames
 }>
-import type { VueRefTarget } from '@mantine-vue/hooks'

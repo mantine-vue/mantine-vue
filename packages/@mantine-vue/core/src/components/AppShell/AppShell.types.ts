@@ -96,9 +96,6 @@ export interface AppShellSlots {
 
 /** Props declared by `AppShell` itself. See `AppShellProps` for the full public type. */
 export interface AppShellOwnProps extends StylesApiProps<AppShellFactory> {
-  /** Receives the root DOM node. */
-  rootRef?: VueRefTarget<Element>
-
   /**
    * If set, associated components have a border.
    *
@@ -203,7 +200,7 @@ export type AppShellCssVariables = {
 }
 
 export type AppShellFactory = Factory<{
-  props: Omit<AppShellProps, 'rootRef'>
+  props: AppShellProps
   ref: HTMLDivElement
   slots: AppShellSlots
   element: 'div'
@@ -218,4 +215,3 @@ export type AppShellFactory = Factory<{
     Section: typeof AppShellSection
   }
 }>
-import type { VueRefTarget } from '@mantine-vue/hooks'

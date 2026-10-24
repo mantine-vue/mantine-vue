@@ -7,6 +7,7 @@ export const varsResolver = createVarsResolver<any>((_, { gap }, ctx) => ({
 </script>
 
 <script setup lang="ts">
+import type { RootRefProps } from '../../../core'
 import { ref, provide, useAttrs } from 'vue'
 import { assignRef } from '@mantine-vue/hooks'
 import { Box, useProps, useStyles } from '../../../core'
@@ -17,7 +18,7 @@ import classes from '../Pill.module.css'
 
 defineOptions({ name: 'PillGroup', inheritAttrs: false })
 
-const rawProps = withDefaults(defineProps<PillGroupOwnProps>(), {
+const rawProps = withDefaults(defineProps<PillGroupOwnProps & RootRefProps<Element>>(), {
   rootRef: undefined,
   gap: undefined,
   size: undefined,

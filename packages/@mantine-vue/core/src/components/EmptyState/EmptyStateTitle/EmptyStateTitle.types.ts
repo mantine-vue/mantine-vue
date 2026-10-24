@@ -5,9 +5,6 @@ export type EmptyStateTitleStylesNames = 'title'
 
 /** Props declared by `EmptyStateTitle` itself. See `EmptyStateTitleProps` for the full public type. */
 export interface EmptyStateTitleOwnProps {
-  /** Receives the root DOM node. */
-  rootRef?: VueRefTarget<Element>
-
   /** Heading order. When set, renders an `h1`–`h6`; otherwise renders a `div`. */
   order?: 1 | 2 | 3 | 4 | 5 | 6
 
@@ -30,10 +27,9 @@ export interface EmptyStateTitleSlots {
 }
 
 export type EmptyStateTitleFactory = Factory<{
-  props: Omit<EmptyStateTitleProps, 'rootRef'>
+  props: EmptyStateTitleProps
   ref: HTMLDivElement
   slots: EmptyStateTitleSlots
   element: 'div'
   stylesNames: EmptyStateTitleStylesNames
 }>
-import type { VueRefTarget } from '@mantine-vue/hooks'

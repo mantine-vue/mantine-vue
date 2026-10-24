@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { RootRefProps } from '../../../core'
 import { ref, computed, useAttrs, useSlots } from 'vue'
 import { assignRef } from '@mantine-vue/hooks'
 import {
@@ -20,7 +21,7 @@ defineOptions({
   inheritAttrs: false,
 })
 
-const rawProps = withDefaults(defineProps<TabsTabOwnProps>(), {
+const rawProps = withDefaults(defineProps<TabsTabOwnProps & RootRefProps<Element>>(), {
   rootRef: undefined,
   // Intentionally undefined to preserve downstream defaults.
   rightSection: undefined,

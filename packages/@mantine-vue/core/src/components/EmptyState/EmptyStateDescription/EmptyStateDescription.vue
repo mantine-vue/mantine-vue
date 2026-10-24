@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { RootRefProps } from '../../../core'
 import { ref, useAttrs } from 'vue'
 import { assignRef } from '@mantine-vue/hooks'
 import { Box, useProps } from '../../../core'
@@ -10,12 +11,15 @@ import type {
 
 defineOptions({ name: 'EmptyStateDescription', inheritAttrs: false })
 
-const rawProps = withDefaults(defineProps<EmptyStateDescriptionOwnProps>(), {
-  rootRef: undefined,
-  classNames: undefined,
-  styles: undefined,
-  mod: undefined,
-})
+const rawProps = withDefaults(
+  defineProps<EmptyStateDescriptionOwnProps & RootRefProps<Element>>(),
+  {
+    rootRef: undefined,
+    classNames: undefined,
+    styles: undefined,
+    mod: undefined,
+  },
+)
 defineSlots<EmptyStateDescriptionSlots>()
 
 const attrs = useAttrs()

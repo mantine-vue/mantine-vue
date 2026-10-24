@@ -20,6 +20,7 @@ export { defaultProps, varsResolver }
 </script>
 
 <script setup lang="ts">
+import type { RootRefProps } from '../../core'
 import { computed, ref, useAttrs, watch } from 'vue'
 import { assignRef } from '@mantine-vue/hooks'
 import { Box, useProps, useStyles } from '../../core'
@@ -36,7 +37,7 @@ defineOptions({
 })
 
 // Intentionally undefined to preserve downstream defaults.
-const rawProps = withDefaults(defineProps<RollingNumberOwnProps>(), {
+const rawProps = withDefaults(defineProps<RollingNumberOwnProps & RootRefProps<Element>>(), {
   rootRef: undefined,
   fixedDecimalScale: false,
   tabularNumbers: undefined,

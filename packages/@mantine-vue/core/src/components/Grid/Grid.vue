@@ -6,6 +6,7 @@ export const varsResolver = createVarsResolver<any>((_, { justify, align, overfl
 const defaultProps = { gap: 'md', columns: 12 } as const
 </script>
 <script setup lang="ts">
+import type { RootRefProps } from '../../core'
 import { ref, useAttrs } from 'vue'
 import { assignRef } from '@mantine-vue/hooks'
 import { Box, useProps, useRandomClassName, useStyles } from '../../core'
@@ -14,7 +15,7 @@ import { GridVariables } from './GridVariables'
 import type { GridOwnProps, GridSlots } from './Grid.types'
 import classes from './Grid.module.css'
 defineOptions({ name: 'Grid', inheritAttrs: false })
-const rawProps = withDefaults(defineProps<GridOwnProps>(), {
+const rawProps = withDefaults(defineProps<GridOwnProps & RootRefProps<Element>>(), {
   gap: undefined,
   rowGap: undefined,
   columnGap: undefined,

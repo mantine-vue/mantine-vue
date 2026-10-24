@@ -2,9 +2,6 @@ import type { BoxProps, MantineSize, StylesApiProps, Factory } from '../../core'
 
 /** Props declared by `Container` itself. See `ContainerProps` for the full public type. */
 export interface ContainerOwnProps extends StylesApiProps<ContainerFactory> {
-  /** Receives the root DOM node. */
-  rootRef?: VueRefTarget<Element>
-
   /**
    * `max-width` of the container, value is not responsive – it is the same for all screen sizes. Numbers are converted to rem. Ignored when `fluid` prop is set.
    *
@@ -37,10 +34,9 @@ export type ContainerCssVariables = {
 }
 
 export type ContainerFactory = Factory<{
-  props: Omit<ContainerProps, 'rootRef'>
+  props: ContainerProps
   ref: HTMLDivElement
   element: 'div'
   stylesNames: ContainerStylesNames
   vars: ContainerCssVariables
 }>
-import type { VueRefTarget } from '@mantine-vue/hooks'

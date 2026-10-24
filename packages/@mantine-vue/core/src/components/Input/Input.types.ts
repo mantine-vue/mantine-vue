@@ -1,8 +1,8 @@
-import type { VNodeChild } from 'vue'
-import type { VueRefTarget } from '@mantine-vue/hooks'
+import type { HTMLAttributes, VNodeChild } from 'vue'
 import type {
   BoxMod,
   BoxProps,
+  DataAttributes,
   MantineElementType,
   MantineNode,
   MantineRadius,
@@ -86,7 +86,7 @@ export interface InputOwnProps extends StylesApiProps<InputFactory> {
   leftSectionWidth?: string | number
 
   /** Props passed down to the left section element. */
-  leftSectionProps?: Record<string, any>
+  leftSectionProps?: HTMLAttributes
 
   /**
    * Sets `pointer-events` on the left section.
@@ -105,7 +105,7 @@ export interface InputOwnProps extends StylesApiProps<InputFactory> {
   rightSectionWidth?: string | number
 
   /** Props passed down to the right section element. */
-  rightSectionProps?: Record<string, any>
+  rightSectionProps?: HTMLAttributes
 
   /**
    * Sets `pointer-events` on the right section.
@@ -197,7 +197,7 @@ export interface InputOwnProps extends StylesApiProps<InputFactory> {
   __bottomSection?: MantineNode
 
   /** Props passed down to the `__bottomSection` element. */
-  __bottomSectionProps?: Record<string, any>
+  __bottomSectionProps?: HTMLAttributes
 
   /**
    * Controls the visual representation of the input.
@@ -227,12 +227,7 @@ export interface InputOwnProps extends StylesApiProps<InputFactory> {
   withAria?: boolean
 
   /** Props passed down to the wrapper element. */
-  wrapperProps?: Record<string, any>
-
-  /**
-   * Receives the input element -- the node `component` selects,
-   */
-  rootRef?: VueRefTarget<Element>
+  wrapperProps?: HTMLAttributes & DataAttributes
 
   /** Element modifiers transformed into `data-` attributes, for example, `{ 'data-size': 'xl' }`, falsy values are removed */
   mod?: BoxMod
@@ -241,7 +236,7 @@ export interface InputOwnProps extends StylesApiProps<InputFactory> {
 export interface InputProps extends Omit<BoxProps, keyof InputOwnProps>, InputOwnProps {}
 
 export type InputFactory = PolymorphicFactory<{
-  props: Omit<InputProps, 'component' | 'rootRef'>
+  props: Omit<InputProps, 'component'>
   slots: InputSlots
   ref: HTMLInputElement
   exposed: {

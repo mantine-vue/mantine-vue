@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { RootRefProps } from '../../../core'
 import { ref, computed, useAttrs } from 'vue'
 import { assignRef } from '@mantine-vue/hooks'
 import { Box } from '../../../core'
@@ -10,7 +11,7 @@ defineOptions({
   inheritAttrs: false,
 })
 
-const props = withDefaults(defineProps<SplitterPaneOwnProps>(), {
+const props = withDefaults(defineProps<SplitterPaneOwnProps & RootRefProps<Element>>(), {
   rootRef: undefined,
   min: undefined,
   max: undefined,

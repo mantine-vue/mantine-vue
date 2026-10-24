@@ -8,9 +8,6 @@ export interface PillGroupContextValue {
 
 /** Props declared by `PillGroup` itself. See `PillGroupProps` for the full public type. */
 export interface PillGroupOwnProps extends StylesApiProps<PillGroupFactory> {
-  /** Receives the root DOM node. */
-  rootRef?: VueRefTarget<Element>
-
   /** Controls spacing between pills, by default controlled by `size` */
   gap?: MantineSize | (string & {}) | number
 
@@ -40,11 +37,10 @@ export type PillGroupCssVariables = {
 }
 
 export type PillGroupFactory = Factory<{
-  props: Omit<PillGroupProps, 'rootRef'>
+  props: PillGroupProps
   ref: HTMLDivElement
   slots: PillGroupSlots
   element: 'div'
   stylesNames: PillGroupStylesNames
   vars: PillGroupCssVariables
 }>
-import type { VueRefTarget } from '@mantine-vue/hooks'

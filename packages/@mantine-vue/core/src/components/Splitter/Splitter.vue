@@ -36,6 +36,7 @@ export { defaultProps, varsResolver, flattenChildren }
 </script>
 
 <script setup lang="ts">
+import type { RootRefProps } from '../../core'
 import { ref, cloneVNode, computed, h, shallowRef, useAttrs, useSlots, type VNodeChild } from 'vue'
 import { assignRef } from '@mantine-vue/hooks'
 import { Box, resolveNode, useDirection, useProps, useStyles } from '../../core'
@@ -53,7 +54,7 @@ defineOptions({
 /**
  * Intentionally undefined to preserve downstream defaults.
  */
-const rawProps = withDefaults(defineProps<SplitterOwnProps>(), {
+const rawProps = withDefaults(defineProps<SplitterOwnProps & RootRefProps<Element>>(), {
   rootRef: undefined,
   withHandle: undefined,
   resetOnDoubleClick: undefined,

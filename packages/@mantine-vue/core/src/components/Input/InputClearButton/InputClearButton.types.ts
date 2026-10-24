@@ -1,12 +1,8 @@
-import type { VueRefTarget } from '@mantine-vue/hooks'
 import type { VNodeChild } from 'vue'
 import type { BoxProps, MantineSize, StylesApiProps, Factory } from '../../../core'
 
 /** Props declared by `InputClearButton` itself. See `InputClearButtonProps` for the full public type. */
 export interface InputClearButtonOwnProps {
-  /** Receives the root DOM node. */
-  rootRef?: VueRefTarget<Element>
-
   /** Size of the button, by default value is based on input context */
   size?: MantineSize | (string & {})
 
@@ -29,7 +25,7 @@ export interface InputClearButtonProps
   extends Omit<BoxProps, keyof InputClearButtonOwnProps>, InputClearButtonOwnProps {}
 
 export type InputClearButtonFactory = Factory<{
-  props: Omit<InputClearButtonProps, 'rootRef'>
+  props: InputClearButtonProps
   slots: InputClearButtonSlots
   ref: HTMLButtonElement
   exposed: { rootElement: Element | null }

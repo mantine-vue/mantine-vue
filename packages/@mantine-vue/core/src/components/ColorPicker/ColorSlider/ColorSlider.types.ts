@@ -1,3 +1,4 @@
+import type { CSSProperties } from 'vue'
 import type { BoxProps, StylesApiProps } from '../../../core'
 
 export type ColorSliderStylesNames = 'slider' | 'sliderOverlay' | 'thumb'
@@ -31,7 +32,7 @@ export interface ColorSliderOwnProps extends ColorSliderBaseProps {
   maxValue: number
 
   /** Style objects layered over the track to draw the gradient. */
-  overlays: Record<string, any>[]
+  overlays: CSSProperties[]
 
   /** If set, the value is rounded to a whole number. */
   round: boolean

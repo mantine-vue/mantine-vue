@@ -30,6 +30,7 @@ export const varsResolver = createVarsResolver<any>(
 )
 </script>
 <script setup lang="ts">
+import type { RootRefProps } from '../../core'
 import { computed, ref, useAttrs, watch } from 'vue'
 import { assignRef } from '@mantine-vue/hooks'
 import { Box, useProps, useStyles } from '../../core'
@@ -39,7 +40,7 @@ import { getInitials } from './get-initials/get-initials'
 import type { AvatarOwnProps, AvatarSlots } from './Avatar.types'
 import classes from './Avatar.module.css'
 defineOptions({ name: 'Avatar', inheritAttrs: false })
-const rawProps = withDefaults(defineProps<AvatarOwnProps>(), {
+const rawProps = withDefaults(defineProps<AvatarOwnProps & RootRefProps<Element>>(), {
   rootRef: undefined,
   component: 'div',
   size: undefined,

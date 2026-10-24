@@ -1,4 +1,3 @@
-import type { VueRefTarget } from '@mantine-vue/hooks'
 import type { VNodeChild } from 'vue'
 import type { BoxProps, StylesApiProps, Factory } from '../../../core'
 
@@ -6,9 +5,6 @@ export type AccordionPanelStylesNames = 'panel' | 'content'
 
 /** Props declared by `AccordionPanel` itself. See `AccordionPanelProps` for the full public type. */
 export interface AccordionPanelOwnProps {
-  /** Receives the root DOM node. */
-  rootRef?: VueRefTarget<Element>
-
   /** If set, overrides the Accordion-level `keepMounted` value. When undefined (default), uses Accordion's `keepMounted` setting. */
   keepMounted?: boolean
 
@@ -28,7 +24,7 @@ export interface AccordionPanelProps
   extends Omit<BoxProps, keyof AccordionPanelOwnProps>, AccordionPanelOwnProps {}
 
 export type AccordionPanelFactory = Factory<{
-  props: Omit<AccordionPanelProps, 'rootRef'>
+  props: AccordionPanelProps
   slots: AccordionPanelSlots
   ref: HTMLDivElement
   exposed: { rootElement: Element | null }

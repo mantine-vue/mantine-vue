@@ -11,6 +11,7 @@ export { varsResolver }
 </script>
 
 <script setup lang="ts">
+import type { RootRefProps } from '../../core'
 import { computed, h, onBeforeUnmount, ref, useAttrs, useSlots } from 'vue'
 import { assignRef, useUncontrolled } from '@mantine-vue/hooks'
 import { Box, useStyles } from '../../core'
@@ -51,7 +52,7 @@ defineOptions({
 })
 
 // Intentionally undefined to preserve downstream defaults.
-const props = withDefaults(defineProps<NumberInputProps>(), {
+const props = withDefaults(defineProps<NumberInputProps & RootRefProps<Element>>(), {
   modelValue: undefined,
   defaultValue: undefined,
   allowLeadingZeros: true,

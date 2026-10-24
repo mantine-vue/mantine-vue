@@ -11,13 +11,9 @@ import type {
   PolymorphicFactory,
   MantineElementType,
 } from '../../core'
-import type { VueRefTarget } from '@mantine-vue/hooks'
 
 /** Props declared by `Flex` itself. See `FlexProps` for the full public type. */
 export interface FlexOwnProps extends StylesApiProps<FlexProps> {
-  /** Receives the root DOM node. The factory narrows this to the element the selected root renders. */
-  rootRef?: VueRefTarget<Element>
-
   /**
    * Root element or component rendered by `Flex`.
    *
@@ -57,7 +53,7 @@ export interface FlexSlots {
 
 /** Public contract of `Flex`. `component` and `rootRef` come from the factory. */
 export type FlexFactory = PolymorphicFactory<{
-  props: Omit<FlexProps, 'component' | 'rootRef'>
+  props: Omit<FlexProps, 'component'>
   slots: FlexSlots
   ref: HTMLDivElement
   exposed: { rootElement: Element | null }

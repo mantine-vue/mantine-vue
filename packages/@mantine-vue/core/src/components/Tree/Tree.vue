@@ -22,6 +22,7 @@ export { varsResolver, getFlatValues }
 </script>
 
 <script setup lang="ts">
+import type { RootRefProps } from '../../core'
 import { computed, onBeforeUnmount, onMounted, ref, useAttrs, useSlots, watch } from 'vue'
 import { assignRef } from '@mantine-vue/hooks'
 import { Box, useStyles } from '../../core'
@@ -36,7 +37,7 @@ defineOptions({
   inheritAttrs: false,
 })
 
-const props = withDefaults(defineProps<TreeOwnProps>(), {
+const props = withDefaults(defineProps<TreeOwnProps & RootRefProps<Element>>(), {
   rootRef: undefined,
   component: 'ul',
   levelOffset: 'lg',

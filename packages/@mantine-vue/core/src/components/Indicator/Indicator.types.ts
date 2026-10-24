@@ -16,9 +16,6 @@ export type IndicatorPosition = `${Position}-${Placement}`
 
 /** Props declared by `Indicator` itself. See `IndicatorProps` for the full public type. */
 export interface IndicatorOwnProps extends StylesApiProps<IndicatorFactory> {
-  /** Receives the root DOM node. */
-  rootRef?: VueRefTarget<Element>
-
   /**
    * Indicator position relative to the target element
    *
@@ -126,11 +123,10 @@ export type IndicatorCssVariables = {
 }
 
 export type IndicatorFactory = Factory<{
-  props: Omit<IndicatorProps, 'rootRef'>
+  props: IndicatorProps
   ref: HTMLDivElement
   slots: IndicatorSlots
   element: 'div'
   stylesNames: IndicatorStylesNames
   vars: IndicatorCssVariables
 }>
-import type { VueRefTarget } from '@mantine-vue/hooks'

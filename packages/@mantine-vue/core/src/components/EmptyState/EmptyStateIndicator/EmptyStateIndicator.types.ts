@@ -5,9 +5,6 @@ export type EmptyStateIndicatorStylesNames = 'indicator'
 
 /** Props declared by `EmptyStateIndicator` itself. See `EmptyStateIndicatorProps` for the full public type. */
 export interface EmptyStateIndicatorOwnProps {
-  /** Receives the root DOM node. */
-  rootRef?: VueRefTarget<Element>
-
   /** Class names applied to EmptyState elements. */
   classNames?: StylesApiProps<EmptyStateIndicatorFactory>['classNames']
 
@@ -27,10 +24,9 @@ export interface EmptyStateIndicatorSlots {
 }
 
 export type EmptyStateIndicatorFactory = Factory<{
-  props: Omit<EmptyStateIndicatorProps, 'rootRef'>
+  props: EmptyStateIndicatorProps
   ref: HTMLDivElement
   slots: EmptyStateIndicatorSlots
   element: 'div'
   stylesNames: EmptyStateIndicatorStylesNames
 }>
-import type { VueRefTarget } from '@mantine-vue/hooks'

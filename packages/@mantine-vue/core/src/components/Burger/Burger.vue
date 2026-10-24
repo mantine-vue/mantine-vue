@@ -16,6 +16,7 @@ export const varsResolver = createVarsResolver<any>(
 </script>
 
 <script setup lang="ts">
+import type { RootRefProps } from '../../core'
 import { ref, computed, useAttrs } from 'vue'
 import { assignRef } from '@mantine-vue/hooks'
 import { Box, useProps, useStyles } from '../../core'
@@ -25,7 +26,7 @@ import classes from './Burger.module.css'
 
 defineOptions({ name: 'Burger', inheritAttrs: false })
 
-const rawProps = withDefaults(defineProps<BurgerOwnProps>(), {
+const rawProps = withDefaults(defineProps<BurgerOwnProps & RootRefProps<Element>>(), {
   rootRef: undefined,
   size: undefined,
   lineSize: undefined,

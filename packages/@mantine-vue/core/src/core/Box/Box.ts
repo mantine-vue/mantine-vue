@@ -26,15 +26,6 @@ export interface BoxProps extends MantineStyleProps {
   darkHidden?: boolean
   /** Element modifiers transformed into `data-` attributes, for example, `{ 'data-size': 'xl' }`, falsy values are removed */
   mod?: BoxMod
-
-  /**
-   * Receives the root DOM node rendered by `Box`.
-   *
-   * Vue resolves a template `ref` on a component to the component instance rather than the
-   * node it renders, so this prop is how a parent reaches the real element. When `component`
-   * is a Vue component, the component's own root node (`$el`) is assigned.
-   */
-  rootRef?: VueRefTarget<Element>
 }
 
 function styleProp<Key extends keyof MantineStyleProps>() {

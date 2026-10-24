@@ -12,6 +12,7 @@ const defaultProps = { withShadow: true } as const
 </script>
 
 <script setup lang="ts">
+import type { RootRefProps } from '../../core'
 import { ref, useAttrs } from 'vue'
 import { assignRef } from '@mantine-vue/hooks'
 import { Box, useProps, useStyles } from '../../core'
@@ -20,7 +21,7 @@ import classes from './ColorSwatch.module.css'
 
 defineOptions({ name: 'ColorSwatch', inheritAttrs: false })
 
-const rawProps = withDefaults(defineProps<ColorSwatchOwnProps>(), {
+const rawProps = withDefaults(defineProps<ColorSwatchOwnProps & RootRefProps<Element>>(), {
   rootRef: undefined,
   size: undefined,
   radius: undefined,

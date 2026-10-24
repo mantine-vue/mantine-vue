@@ -1,5 +1,4 @@
 import type { VNodeChild } from 'vue'
-import type { VueRefTarget } from '@mantine-vue/hooks'
 import type {
   BoxMod,
   BoxProps,
@@ -24,9 +23,6 @@ export type NavLinkVariant = 'filled' | 'light' | 'subtle'
 
 /** Props declared by `NavLink` itself. See `NavLinkProps` for the full public type. */
 export interface NavLinkOwnProps extends StylesApiProps<NavLinkProps> {
-  /** Receives the root DOM node. The factory narrows this to the element the selected root renders. */
-  rootRef?: VueRefTarget<Element>
-
   /**
    * Root element or component rendered by `NavLink`.
    *
@@ -142,7 +138,7 @@ export interface NavLinkEmits {
 
 /** Public contract of `NavLink`. `component` and `rootRef` come from the factory. */
 export type NavLinkFactory = PolymorphicFactory<{
-  props: Omit<NavLinkProps, 'component' | 'rootRef'>
+  props: Omit<NavLinkProps, 'component'>
   slots: NavLinkSlots
   emits: NavLinkEmits
   ref: HTMLAnchorElement

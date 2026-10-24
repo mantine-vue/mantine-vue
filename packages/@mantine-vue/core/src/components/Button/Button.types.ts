@@ -1,5 +1,4 @@
 import type { CSSProperties, VNodeChild } from 'vue'
-import type { VueRefTarget } from '@mantine-vue/hooks'
 import type {
   BoxMod,
   BoxProps,
@@ -13,6 +12,7 @@ import type {
   PolymorphicFactory,
   StylesApiProps,
 } from '../../core'
+import type { LoaderProps } from '../Loader'
 import type { ButtonGroup } from './ButtonGroup/ButtonGroup'
 import type { ButtonGroupSection } from './ButtonGroupSection/ButtonGroupSection'
 
@@ -118,7 +118,7 @@ export interface ButtonOwnProps extends StylesApiProps<ButtonFactory> {
   loading?: boolean
 
   /** Props passed down to the `Loader`. Only used when `loading` is set. */
-  loaderProps?: Record<string, any>
+  loaderProps?: LoaderProps
 
   /**
    * If set, adjusts the text color based on the background color for the `filled` variant.
@@ -153,9 +153,6 @@ export interface ButtonOwnProps extends StylesApiProps<ButtonFactory> {
 
   /** Element modifiers transformed into `data-` attributes, for example, `{ 'data-size': 'xl' }`, falsy values are removed */
   mod?: BoxMod
-
-  /** Receives the root DOM node. The factory narrows this to the element the selected root renders. */
-  rootRef?: VueRefTarget<Element>
 }
 
 export interface ButtonProps extends Omit<BoxProps, keyof ButtonOwnProps>, ButtonOwnProps {}
@@ -164,7 +161,7 @@ export interface ButtonProps extends Omit<BoxProps, keyof ButtonOwnProps>, Butto
  * Public contract of `Button`.
  */
 export type ButtonFactory = PolymorphicFactory<{
-  props: Omit<ButtonProps, 'component' | 'rootRef'>
+  props: Omit<ButtonProps, 'component'>
   slots: ButtonSlots
   ref: HTMLButtonElement
   exposed: { rootElement: Element | null }

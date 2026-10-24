@@ -3,9 +3,6 @@ import type { BoxProps, StylesApiProps, Factory } from '../../../core'
 
 /** Props declared by `ButtonGroup` itself. See `ButtonGroupProps` for the full public type. */
 export interface ButtonGroupOwnProps extends StylesApiProps<ButtonGroupFactory> {
-  /** Receives the root DOM node. */
-  rootRef?: VueRefTarget<Element>
-
   /**
    * Orientation of the group
    *
@@ -36,11 +33,10 @@ export type ButtonGroupCssVariables = {
 }
 
 export type ButtonGroupFactory = Factory<{
-  props: Omit<ButtonGroupProps, 'rootRef'>
+  props: ButtonGroupProps
   ref: HTMLDivElement
   slots: ButtonGroupSlots
   element: 'div'
   stylesNames: ButtonGroupStylesNames
   vars: ButtonGroupCssVariables
 }>
-import type { VueRefTarget } from '@mantine-vue/hooks'

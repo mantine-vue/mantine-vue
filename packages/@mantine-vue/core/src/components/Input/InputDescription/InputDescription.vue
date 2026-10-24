@@ -13,6 +13,7 @@ export { varsResolver }
 </script>
 
 <script setup lang="ts">
+import type { RootRefProps } from '../../../core'
 import { ref, computed, useAttrs } from 'vue'
 import { assignRef } from '@mantine-vue/hooks'
 import { Box, useProps, useStyles } from '../../../core'
@@ -25,7 +26,7 @@ defineOptions({
   inheritAttrs: false,
 })
 
-const rawProps = withDefaults(defineProps<InputDescriptionOwnProps>(), {
+const rawProps = withDefaults(defineProps<InputDescriptionOwnProps & RootRefProps<Element>>(), {
   rootRef: undefined,
   __inheritStyles: true,
   unstyled: false,

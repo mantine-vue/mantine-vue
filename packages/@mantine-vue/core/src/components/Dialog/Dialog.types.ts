@@ -7,7 +7,8 @@ import type {
   StylesApiProps,
 } from '../../core'
 import type { AffixPosition } from '../Affix'
-import type { MantineTransition } from '../Transition'
+import type { PortalProps } from '../Portal'
+import type { TransitionOverride } from '../Transition'
 
 /** Props declared by `Dialog` itself. See `DialogProps` for the full public type. */
 export interface DialogOwnProps extends StylesApiProps<DialogProps> {
@@ -33,11 +34,7 @@ export interface DialogOwnProps extends StylesApiProps<DialogProps> {
    *
    * @default { transition: 'pop-top-right', duration: 200 }
    */
-  transitionProps?: {
-    transition?: MantineTransition
-    duration?: number
-    keepMounted?: boolean
-  }
+  transitionProps?: TransitionOverride
 
   /**
    * Controls `width` of the dialog
@@ -61,7 +58,7 @@ export interface DialogOwnProps extends StylesApiProps<DialogProps> {
   withinPortal?: boolean
 
   /** Props passed down to the `Portal` component. Ignored when `withinPortal` is `false`. */
-  portalProps?: Record<string, any>
+  portalProps?: PortalProps
 
   /**
    * Affix position on screen

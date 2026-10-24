@@ -46,6 +46,7 @@ export { loaderTransition, varsResolver }
 </script>
 
 <script setup lang="ts">
+import type { RootRefProps } from '../../core'
 import { computed, ref, useAttrs, useSlots } from 'vue'
 import { assignRef } from '@mantine-vue/hooks'
 import { Box, hasNode, resolveNode, useForwardedRef, useProps, useStyles } from '../../core'
@@ -65,7 +66,7 @@ defineOptions({
  * runtime type array containing `Boolean` – a cast to `false` would make `resolveNode`
  * ignore the matching slot.
  */
-const rawProps = withDefaults(defineProps<ButtonOwnProps>(), {
+const rawProps = withDefaults(defineProps<ButtonOwnProps & RootRefProps<Element>>(), {
   component: 'button',
   leftSection: undefined,
   rightSection: undefined,

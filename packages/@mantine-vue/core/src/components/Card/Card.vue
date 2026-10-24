@@ -6,6 +6,7 @@ export const varsResolver = createVarsResolver<any>((_, { padding }) => ({
 const defaultProps = { orientation: 'vertical' } as const
 </script>
 <script setup lang="ts">
+import type { RootRefProps } from '../../core'
 import { ref, cloneVNode, h, useAttrs, useSlots, type VNode } from 'vue'
 import { assignRef } from '@mantine-vue/hooks'
 import { useProps, useStyles } from '../../core'
@@ -15,7 +16,7 @@ import { provideCardContext } from './Card.context'
 import type { CardOwnProps, CardSlots } from './Card.types'
 import classes from './Card.module.css'
 defineOptions({ name: 'Card', inheritAttrs: false })
-const rawProps = withDefaults(defineProps<CardOwnProps>(), {
+const rawProps = withDefaults(defineProps<CardOwnProps & RootRefProps<Element>>(), {
   rootRef: undefined,
   component: 'div',
   shadow: undefined,

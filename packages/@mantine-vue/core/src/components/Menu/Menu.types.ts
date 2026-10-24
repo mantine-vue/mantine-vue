@@ -1,7 +1,8 @@
 import type { VNodeChild } from 'vue'
 import type { MantineNode, SectionSlots, MantineElementType } from '../../core'
-import type { PopoverProps } from '../Popover/Popover.types'
-import type { FloatingPosition } from '../../utils/Floating'
+import type { FloatingAxesOffsets, FloatingPosition } from '../../utils/Floating'
+import type { PopoverMiddlewares, PopoverProps } from '../Popover/Popover.types'
+import type { TransitionOverride } from '../Transition'
 
 export type MenuStylesNames =
   | 'item'
@@ -357,21 +358,21 @@ export interface MenuSubProps {
    *
    * @default 0
    */
-  offset?: number | Record<string, any>
+  offset?: number | FloatingAxesOffsets
 
   /**
    * Props passed down to the `Transition`.
    *
    * @default { duration: 0 }
    */
-  transitionProps?: Record<string, any>
+  transitionProps?: TransitionOverride
 
   /**
    * Floating UI middlewares applied to the submenu.
    *
    * @default { shift: { crossAxis: true } }
    */
-  middlewares?: Record<string, any>
+  middlewares?: PopoverMiddlewares
 
   /** Any other prop is forwarded to the underlying `Menu`. */
   [key: string]: any

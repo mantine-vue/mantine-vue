@@ -8,9 +8,6 @@ export interface SliderRootSlots {
 
 /** Props declared by `SliderRoot` itself. See `SliderRootProps` for the full public type. */
 export interface SliderRootOwnProps {
-  /** Receives the root DOM node. */
-  rootRef?: VueRefTarget<Element>
-
   /** Controls the size of the track. Passed through to the Styles API payload. */
   size: string | number
 
@@ -38,9 +35,8 @@ export interface SliderRootProps
 export type SliderRootStylesNames = 'root'
 
 export type SliderRootFactory = Factory<{
-  props: Omit<SliderRootProps, 'rootRef'>
+  props: SliderRootProps
   ref: HTMLDivElement
   slots: SliderRootSlots
   element: 'div'
 }>
-import type { VueRefTarget } from '@mantine-vue/hooks'

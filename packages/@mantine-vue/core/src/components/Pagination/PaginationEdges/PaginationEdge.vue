@@ -50,6 +50,7 @@ export { EDGES }
 </script>
 
 <script setup lang="ts">
+import type { RootRefProps } from '../../../core'
 import { computed, useAttrs } from 'vue'
 import { usePaginationContext } from '../Pagination.context'
 import { PaginationControl } from '../PaginationControl/PaginationControl'
@@ -60,10 +61,15 @@ defineOptions({
   inheritAttrs: false,
 })
 
-const props = withDefaults(defineProps<PaginationEdgeOwnProps & { __edge: PaginationEdgeKind }>(), {
-  icon: undefined,
-  disabled: false,
-})
+const props = withDefaults(
+  defineProps<
+    PaginationEdgeOwnProps & { __edge: PaginationEdgeKind } & RootRefProps<HTMLButtonElement>
+  >(),
+  {
+    icon: undefined,
+    disabled: false,
+  },
+)
 
 defineSlots<{ icon?: () => any }>()
 

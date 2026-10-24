@@ -23,6 +23,7 @@ export const varsResolver = createVarsResolver<any>(
 const defaultProps = { active: -1, align: 'left' } as const
 </script>
 <script setup lang="ts">
+import type { RootRefProps } from '../../core'
 import { ref, cloneVNode, h, useAttrs, useSlots, type VNode } from 'vue'
 import { assignRef } from '@mantine-vue/hooks'
 import { Box, useProps, useStyles } from '../../core'
@@ -30,7 +31,7 @@ import { provideTimelineContext } from './Timeline.context'
 import type { TimelineOwnProps, TimelineSlots } from './Timeline.types'
 import classes from './Timeline.module.css'
 defineOptions({ name: 'Timeline', inheritAttrs: false })
-const rawProps = withDefaults(defineProps<TimelineOwnProps>(), {
+const rawProps = withDefaults(defineProps<TimelineOwnProps & RootRefProps<Element>>(), {
   active: undefined,
   color: undefined,
   radius: undefined,

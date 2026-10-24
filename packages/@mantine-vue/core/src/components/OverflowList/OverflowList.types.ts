@@ -28,9 +28,6 @@ export interface OverflowListSlots {
 
 /** Props declared by `OverflowList` itself. See `OverflowListProps` for the full public type. */
 export interface OverflowListOwnProps extends StylesApiProps<OverflowListFactory> {
-  /** Receives the root DOM node. */
-  rootRef?: VueRefTarget<Element>
-
   /** Items rendered in the list. */
   data: any[]
 
@@ -82,11 +79,10 @@ export interface OverflowListProps
   extends Omit<BoxProps, keyof OverflowListOwnProps>, OverflowListOwnProps {}
 
 export type OverflowListFactory = Factory<{
-  props: Omit<OverflowListProps, 'rootRef'>
+  props: OverflowListProps
   ref: HTMLDivElement
   slots: OverflowListSlots
   element: 'div'
   stylesNames: OverflowListStylesNames
   vars: OverflowListCssVariables
 }>
-import type { VueRefTarget } from '@mantine-vue/hooks'

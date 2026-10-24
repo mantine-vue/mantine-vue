@@ -24,6 +24,7 @@ export const varsResolver = createVarsResolver<any>(
 )
 </script>
 <script setup lang="ts">
+import type { RootRefProps } from '../../core'
 import { ref, computed, useAttrs } from 'vue'
 import { assignRef } from '@mantine-vue/hooks'
 import { Box, useProps, useStyles } from '../../core'
@@ -33,7 +34,7 @@ import { UnstyledButton } from '../UnstyledButton'
 import type { ActionIconOwnProps, ActionIconSlots } from './ActionIcon.types'
 import classes from './ActionIcon.module.css'
 defineOptions({ name: 'ActionIcon', inheritAttrs: false })
-const rawProps = withDefaults(defineProps<ActionIconOwnProps>(), {
+const rawProps = withDefaults(defineProps<ActionIconOwnProps & RootRefProps<Element>>(), {
   rootRef: undefined,
   component: 'button',
   loading: false,

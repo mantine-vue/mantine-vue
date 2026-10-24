@@ -12,6 +12,7 @@ export { varsResolver }
 </script>
 
 <script setup lang="ts">
+import type { RootRefProps } from '../../../core'
 import { ref, computed, provide, useAttrs } from 'vue'
 import { assignRef, useUncontrolled } from '@mantine-vue/hooks'
 import { omitAttrs, useStyles } from '../../../core'
@@ -26,7 +27,7 @@ defineOptions({
   inheritAttrs: false,
 })
 
-const props = withDefaults(defineProps<CheckboxCardOwnProps>(), {
+const props = withDefaults(defineProps<CheckboxCardOwnProps & RootRefProps<Element>>(), {
   rootRef: undefined,
   modelValue: undefined,
   checked: undefined,

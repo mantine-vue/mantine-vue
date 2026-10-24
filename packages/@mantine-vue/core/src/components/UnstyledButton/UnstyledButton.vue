@@ -1,11 +1,12 @@
 <script setup lang="ts">
+import type { RootRefProps } from '../../core'
 import { ref, useAttrs } from 'vue'
 import { assignRef } from '@mantine-vue/hooks'
 import { Box, useForwardedRef, useStyles } from '../../core'
 import type { UnstyledButtonOwnProps, UnstyledButtonSlots } from './UnstyledButton.types'
 import classes from './UnstyledButton.module.css'
 defineOptions({ name: 'UnstyledButton', inheritAttrs: false })
-const props = withDefaults(defineProps<UnstyledButtonOwnProps>(), {
+const props = withDefaults(defineProps<UnstyledButtonOwnProps & RootRefProps<Element>>(), {
   component: 'button',
   __staticSelector: undefined,
   variant: undefined,

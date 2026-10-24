@@ -18,9 +18,6 @@ export interface SplitterSlots {
 
 /** Props declared by `Splitter` itself. See `SplitterProps` for the full public type. */
 export interface SplitterOwnProps extends StylesApiProps<SplitterFactory> {
-  /** Receives the root DOM node. */
-  rootRef?: VueRefTarget<Element>
-
   /**
    * Direction the panes are laid out in.
    *
@@ -111,7 +108,7 @@ export interface SplitterEmits {
 }
 
 export type SplitterFactory = Factory<{
-  props: Omit<SplitterProps, 'rootRef'>
+  props: SplitterProps
   ref: HTMLDivElement
   slots: SplitterSlots
   emits: SplitterEmits

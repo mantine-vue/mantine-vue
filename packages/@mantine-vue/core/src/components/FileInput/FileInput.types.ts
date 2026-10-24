@@ -1,5 +1,11 @@
-import type { VNodeChild } from 'vue'
-import type { MantineNode, MantineSize, StylesApiProps, MantineElementType } from '../../core'
+import type { ButtonHTMLAttributes, HTMLAttributes, InputHTMLAttributes, VNodeChild } from 'vue'
+import type {
+  DataAttributes,
+  MantineElementType,
+  MantineNode,
+  MantineSize,
+  StylesApiProps,
+} from '../../core'
 import type { ClearSectionMode } from '../Input'
 import type { InputBaseStylesNames } from '../InputBase'
 
@@ -84,7 +90,7 @@ export interface FileInputProps extends StylesApiProps<FileInputProps> {
   clearSectionMode?: ClearSectionMode
 
   /** Props passed down to the clear button. */
-  clearButtonProps?: Record<string, any>
+  clearButtonProps?: Omit<ButtonHTMLAttributes, 'disabled'> & { disabled?: boolean }
 
   /**
    * If set, the file picker cannot be opened.
@@ -97,7 +103,7 @@ export interface FileInputProps extends StylesApiProps<FileInputProps> {
   capture?: boolean | 'user' | 'environment'
 
   /** Props passed down to the underlying file input. */
-  fileInputProps?: Record<string, any>
+  fileInputProps?: InputHTMLAttributes
 
   /**
    * Content rendered while no file is selected.
@@ -147,7 +153,7 @@ export interface FileInputProps extends StylesApiProps<FileInputProps> {
   withAsterisk?: boolean
 
   /** Props passed down to the root element. */
-  wrapperProps?: Record<string, any>
+  wrapperProps?: HTMLAttributes & DataAttributes
 
   /**
    * If set, all Mantine classes are removed.

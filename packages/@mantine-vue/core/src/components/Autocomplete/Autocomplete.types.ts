@@ -1,6 +1,7 @@
 import type { VNodeChild } from 'vue'
-import type { ComboboxGenericData, OptionsFilter } from '../Combobox'
+import type { ComboboxGenericData, ComboboxProps, OptionsFilter } from '../Combobox'
 import type { InputBaseProps } from '../InputBase'
+import type { ScrollAreaProps } from '../ScrollArea'
 
 export type AutocompleteStylesNames = string
 
@@ -102,7 +103,7 @@ export interface AutocompleteOwnProps {
   maxDropdownHeight?: number | string
 
   /** Props passed down to the underlying `Combobox`. */
-  comboboxProps?: Record<string, any>
+  comboboxProps?: ComboboxProps
 
   /**
    * Custom markup for a dropdown option.
@@ -111,7 +112,7 @@ export interface AutocompleteOwnProps {
   renderOption?: RenderAutocompleteOption
 
   /** Props passed down to the `ScrollArea.Autosize` of the dropdown. */
-  scrollAreaProps?: Record<string, any>
+  scrollAreaProps?: ScrollAreaProps
 
   /**
    * If set, a clear button is rendered in the right section when the input is not empty.

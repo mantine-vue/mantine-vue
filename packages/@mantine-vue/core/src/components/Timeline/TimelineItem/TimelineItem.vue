@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { RootRefProps } from '../../../core'
 import { ref, computed, useAttrs, useSlots } from 'vue'
 import { assignRef } from '@mantine-vue/hooks'
 import {
@@ -18,7 +19,7 @@ defineOptions({
   inheritAttrs: false,
 })
 
-const rawProps = withDefaults(defineProps<TimelineItemOwnProps>(), {
+const rawProps = withDefaults(defineProps<TimelineItemOwnProps & RootRefProps<Element>>(), {
   rootRef: undefined,
   __active: false,
   __lineActive: false,

@@ -56,9 +56,6 @@ export interface TableSlots {
 
 /** Props declared by `Table` itself. See `TableProps` for the full public type. */
 export interface TableOwnProps extends StylesApiProps<TableFactory> {
-  /** Receives the root DOM node. */
-  rootRef?: VueRefTarget<Element>
-
   /** Value of the `table-layout` CSS property. */
   layout?: CSSProperties['tableLayout']
 
@@ -156,7 +153,7 @@ export interface TableOwnProps extends StylesApiProps<TableFactory> {
 export interface TableProps extends Omit<BoxProps, keyof TableOwnProps>, TableOwnProps {}
 
 export type TableFactory = Factory<{
-  props: Omit<TableProps, 'rootRef'>
+  props: TableProps
   ref: HTMLTableElement
   slots: TableSlots
   element: 'table'
@@ -175,4 +172,3 @@ export type TableFactory = Factory<{
     DataRenderer: typeof TableDataRenderer
   }
 }>
-import type { VueRefTarget } from '@mantine-vue/hooks'

@@ -3,9 +3,6 @@ import type { BoxMod, BoxProps, MantineSpacing, StylesApiProps, Factory } from '
 
 /** Props declared by `Marquee` itself. See `MarqueeProps` for the full public type. */
 export interface MarqueeOwnProps extends StylesApiProps<MarqueeFactory> {
-  /** Receives the root DOM node. */
-  rootRef?: VueRefTarget<Element>
-
   /**
    * Reverses animation direction
    *
@@ -92,11 +89,10 @@ export type MarqueeCssVariables = {
 }
 
 export type MarqueeFactory = Factory<{
-  props: Omit<MarqueeProps, 'rootRef'>
+  props: MarqueeProps
   ref: HTMLDivElement
   slots: MarqueeSlots
   element: 'div'
   stylesNames: MarqueeStylesNames
   vars: MarqueeCssVariables
 }>
-import type { VueRefTarget } from '@mantine-vue/hooks'

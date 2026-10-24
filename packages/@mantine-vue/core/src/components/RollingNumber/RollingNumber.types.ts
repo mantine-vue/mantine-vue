@@ -11,9 +11,6 @@ export type RollingNumberCssVariables = {
  * See `RollingNumberProps` for the full public type.
  */
 export interface RollingNumberOwnProps extends StylesApiProps<RollingNumberFactory> {
-  /** Receives the root DOM node. */
-  rootRef?: VueRefTarget<Element>
-
   /** Number to display. Changing it rolls the digits to the new value. */
   value: number
 
@@ -80,10 +77,9 @@ export interface RollingNumberProps
   extends Omit<BoxProps, keyof RollingNumberOwnProps>, RollingNumberOwnProps {}
 
 export type RollingNumberFactory = Factory<{
-  props: Omit<RollingNumberProps, 'rootRef'>
+  props: RollingNumberProps
   ref: HTMLDivElement
   element: 'div'
   stylesNames: RollingNumberStylesNames
   vars: RollingNumberCssVariables
 }>
-import type { VueRefTarget } from '@mantine-vue/hooks'

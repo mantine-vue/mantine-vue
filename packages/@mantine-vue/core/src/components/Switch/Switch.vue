@@ -35,6 +35,7 @@ export { mergedClasses, varsResolver, defaultProps, DEFAULT_SIZE }
 </script>
 
 <script setup lang="ts">
+import type { RootRefProps } from '../../core'
 import { ref, computed, useAttrs, useSlots } from 'vue'
 import { assignRef, useId, useUncontrolled } from '@mantine-vue/hooks'
 import { Box, extractStyleProps, omitAttrs, resolveNode, useProps, useStyles } from '../../core'
@@ -47,7 +48,7 @@ defineOptions({
   inheritAttrs: false,
 })
 
-const rawProps = withDefaults(defineProps<SwitchOwnProps>(), {
+const rawProps = withDefaults(defineProps<SwitchOwnProps & RootRefProps<Element>>(), {
   label: undefined,
   offLabel: undefined,
   onLabel: undefined,

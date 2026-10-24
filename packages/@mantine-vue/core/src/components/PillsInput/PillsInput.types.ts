@@ -1,8 +1,8 @@
 import type { PillsInputField } from './PillsInputField/PillsInputField'
-import type { VueRefTarget } from '@mantine-vue/hooks'
-import type { VNodeChild } from 'vue'
+import type { HTMLAttributes, VNodeChild } from 'vue'
 import type {
   BoxMod,
+  DataAttributes,
   MantineNode,
   MantineRadius,
   MantineSize,
@@ -35,9 +35,6 @@ export interface PillsInputSlots {
 
 /** Props declared by `PillsInput` itself. See `PillsInputProps` for the full public type. */
 export interface PillsInputOwnProps extends StylesApiProps<PillsInputFactory> {
-  /** Receives the input element */
-  rootRef?: VueRefTarget<Element>
-
   /**
    * Controls input height and horizontal padding.
    *
@@ -101,7 +98,7 @@ export interface PillsInputOwnProps extends StylesApiProps<PillsInputFactory> {
   withAsterisk?: boolean
 
   /** Props passed down to the root element (`Input.Wrapper` component). */
-  wrapperProps?: Record<string, any>
+  wrapperProps?: HTMLAttributes & DataAttributes
 
   /**
    * Key of `theme.radius` or any valid CSS value to set `border-radius`.
@@ -121,7 +118,7 @@ export interface PillsInputProps
     PillsInputOwnProps {}
 
 export type PillsInputFactory = Factory<{
-  props: Omit<PillsInputProps, 'rootRef'>
+  props: PillsInputProps
   slots: PillsInputSlots
   ref: HTMLDivElement
   stylesNames: PillsInputStylesNames

@@ -17,10 +17,12 @@ export { varsResolver }
 </script>
 
 <script setup lang="ts">
+import type { RootRefProps } from '../../core'
 import { ref, computed, useAttrs } from 'vue'
 import { assignRef } from '@mantine-vue/hooks'
 import { Box, useProps, useStyles } from '../../core'
 import { ScrollArea } from '../ScrollArea'
+import type { ScrollAreaProps } from '../ScrollArea'
 import type {
   TableScrollContainerOwnProps,
   TableScrollContainerSlots,
@@ -29,7 +31,7 @@ import classes from './Table.module.css'
 
 defineOptions({ name: 'TableScrollContainer', inheritAttrs: false })
 
-const rawProps = withDefaults(defineProps<TableScrollContainerOwnProps>(), {
+const rawProps = withDefaults(defineProps<TableScrollContainerOwnProps & RootRefProps<Element>>(), {
   maxHeight: undefined,
   type: undefined,
   scrollAreaProps: undefined,
@@ -61,7 +63,9 @@ const rootProps = computed(() =>
     ? {
         ...attrs,
         rootRef: setRootRef,
-        offsetScrollbars: props.maxHeight ? 'xy' : 'x',
+        offsetScrollbars: (props.maxHeight
+          ? 'xy'
+          : 'x') as unknown as ScrollAreaProps['offsetScrollbars'],
         ...props.scrollAreaProps,
         ...getStyles('scrollContainer'),
       }

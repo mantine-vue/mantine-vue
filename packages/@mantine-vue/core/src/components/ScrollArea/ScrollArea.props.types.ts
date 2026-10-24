@@ -1,7 +1,6 @@
 import type { ScrollAreaAutosize } from './ScrollArea'
-import type { VueRefTarget } from '@mantine-vue/hooks'
-import type { VNodeChild } from 'vue'
-import type { BoxProps, StylesApiProps, Factory } from '../../core'
+import type { HTMLAttributes, VNodeChild } from 'vue'
+import type { BoxProps, DataAttributes, StylesApiProps, Factory } from '../../core'
 
 export type ScrollAreaStylesNames =
   | 'root'
@@ -26,9 +25,6 @@ export interface ScrollAreaSlots {
 
 /** Props declared by `ScrollArea` itself. See `ScrollAreaProps` for the full public type. */
 export interface ScrollAreaOwnProps extends StylesApiProps<ScrollAreaFactory> {
-  /** Receives the root DOM node. */
-  rootRef?: VueRefTarget<Element>
-
   /** Width of the scrollbars in px. */
   scrollbarSize?: number | string
 
@@ -58,7 +54,7 @@ export interface ScrollAreaOwnProps extends StylesApiProps<ScrollAreaFactory> {
   offsetScrollbars?: boolean | 'x' | 'y' | 'present'
 
   /** Props passed down to the viewport element. */
-  viewportProps?: Record<string, any>
+  viewportProps?: HTMLAttributes & DataAttributes
 
   /** Value of the `overscroll-behavior` CSS property applied to the viewport. */
   overscrollBehavior?: string
@@ -71,7 +67,9 @@ export interface ScrollAreaOwnProps extends StylesApiProps<ScrollAreaFactory> {
 }
 
 export interface ScrollAreaProps
-  extends Omit<BoxProps, keyof ScrollAreaOwnProps>, ScrollAreaOwnProps {}
+  extends
+    Omit<BoxProps & HTMLAttributes & DataAttributes, keyof ScrollAreaOwnProps>,
+    ScrollAreaOwnProps {}
 
 export interface ScrollAreaEmits {
   /** Emitted with the scroll offsets whenever the viewport scrolls. */
@@ -95,7 +93,7 @@ export type ScrollAreaFactory = Factory<{
   slots: ScrollAreaSlots
   emits: ScrollAreaEmits
   ref: HTMLDivElement
-  exposed: { rootElement: Element | null }
+  exposed: { rootElement: Element | null; viewport: HTMLDivElement | null }
   element: 'div'
   stylesNames: ScrollAreaStylesNames
   vars: ScrollAreaCssVariables

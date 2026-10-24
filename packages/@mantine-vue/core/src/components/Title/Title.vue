@@ -18,6 +18,7 @@ export { varsResolver }
 </script>
 
 <script setup lang="ts">
+import type { RootRefProps } from '../../core'
 import { ref, computed, useAttrs } from 'vue'
 import { assignRef } from '@mantine-vue/hooks'
 import { Box, useProps, useStyles } from '../../core'
@@ -25,7 +26,7 @@ import type { TitleOwnProps } from './Title.types'
 import classes from './Title.module.css'
 
 defineOptions({ name: 'Title', inheritAttrs: false })
-const rawProps = withDefaults(defineProps<TitleOwnProps>(), {
+const rawProps = withDefaults(defineProps<TitleOwnProps & RootRefProps<Element>>(), {
   rootRef: undefined,
   order: undefined,
   lineClamp: undefined,

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { RootRefProps } from '../../../core'
 import { ref, computed, useAttrs } from 'vue'
 import { assignRef } from '@mantine-vue/hooks'
 import { UnstyledButton } from '../../UnstyledButton'
@@ -10,7 +11,7 @@ defineOptions({
   inheritAttrs: false,
 })
 
-const props = withDefaults(defineProps<PaginationControlOwnProps>(), {
+const props = withDefaults(defineProps<PaginationControlOwnProps & RootRefProps<Element>>(), {
   rootRef: undefined,
   active: false,
   disabled: false,

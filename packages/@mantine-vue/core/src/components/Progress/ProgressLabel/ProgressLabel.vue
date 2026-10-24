@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { RootRefProps } from '../../../core'
 import { ref, useAttrs } from 'vue'
 import { assignRef } from '@mantine-vue/hooks'
 import { Box, useProps } from '../../../core'
@@ -6,7 +7,7 @@ import { useProgressContext } from '../Progress.context'
 import type { ProgressLabelOwnProps, ProgressLabelSlots } from './ProgressLabel.types'
 
 defineOptions({ name: 'ProgressLabel', inheritAttrs: false })
-const rawProps = withDefaults(defineProps<ProgressLabelOwnProps>(), {
+const rawProps = withDefaults(defineProps<ProgressLabelOwnProps & RootRefProps<Element>>(), {
   rootRef: undefined,
   classNames: undefined,
   styles: undefined,

@@ -1,18 +1,15 @@
-import type { VNodeChild } from 'vue'
+import type { HTMLAttributes, VNodeChild } from 'vue'
 import type {
   BoxProps,
+  DataAttributes,
   MantineRadius,
   StylesApiProps,
   PolymorphicFactory,
   MantineElementType,
 } from '../../core'
-import type { VueRefTarget } from '@mantine-vue/hooks'
 
 /** Props declared by `Overlay` itself. See `OverlayProps` for the full public type. */
 export interface OverlayOwnProps extends StylesApiProps<OverlayProps> {
-  /** Receives the root DOM node. The factory narrows this to the element the selected root renders. */
-  rootRef?: VueRefTarget<Element>
-
   /**
    * Root element or component rendered by `Overlay`.
    *
@@ -73,7 +70,10 @@ export interface OverlayOwnProps extends StylesApiProps<OverlayProps> {
   fixed?: boolean
 }
 
-export interface OverlayProps extends Omit<BoxProps, keyof OverlayOwnProps>, OverlayOwnProps {}
+export interface OverlayProps
+  extends
+    Omit<BoxProps & HTMLAttributes & DataAttributes, keyof OverlayOwnProps>,
+    OverlayOwnProps {}
 
 export type OverlayStylesNames = 'root'
 
@@ -87,7 +87,7 @@ export interface OverlaySlots {
 
 /** Public contract of `Overlay`. `component` and `rootRef` come from the factory. */
 export type OverlayFactory = PolymorphicFactory<{
-  props: Omit<OverlayProps, 'component' | 'rootRef'>
+  props: Omit<OverlayProps, 'component'>
   slots: OverlaySlots
   ref: HTMLDivElement
   exposed: { rootElement: Element | null }

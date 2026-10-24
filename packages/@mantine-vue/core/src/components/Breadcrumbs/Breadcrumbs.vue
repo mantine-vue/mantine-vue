@@ -9,6 +9,7 @@ const defaultProps = { separator: '/' } as const
 </script>
 
 <script setup lang="ts">
+import type { RootRefProps } from '../../core'
 import { ref, cloneVNode, Comment, Fragment, h, Text, useAttrs, useSlots, type VNode } from 'vue'
 import { assignRef } from '@mantine-vue/hooks'
 import { Box, resolveNode, useProps, useStyles } from '../../core'
@@ -17,7 +18,7 @@ import classes from './Breadcrumbs.module.css'
 
 defineOptions({ name: 'Breadcrumbs', inheritAttrs: false })
 
-const rawProps = withDefaults(defineProps<BreadcrumbsOwnProps>(), {
+const rawProps = withDefaults(defineProps<BreadcrumbsOwnProps & RootRefProps<Element>>(), {
   separator: undefined,
   separatorMargin: undefined,
   classNames: undefined,

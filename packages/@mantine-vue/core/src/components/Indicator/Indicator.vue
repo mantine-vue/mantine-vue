@@ -28,6 +28,7 @@ export { varsResolver }
 </script>
 
 <script setup lang="ts">
+import type { RootRefProps } from '../../core'
 import { ref, computed, useAttrs, useSlots } from 'vue'
 import { assignRef } from '@mantine-vue/hooks'
 import { Box, hasNode, resolveNode, useProps, useStyles } from '../../core'
@@ -35,7 +36,7 @@ import type { IndicatorOwnProps, IndicatorSlots } from './Indicator.types'
 import classes from './Indicator.module.css'
 
 defineOptions({ name: 'Indicator', inheritAttrs: false })
-const rawProps = withDefaults(defineProps<IndicatorOwnProps>(), {
+const rawProps = withDefaults(defineProps<IndicatorOwnProps & RootRefProps<Element>>(), {
   rootRef: undefined,
   position: undefined,
   offset: undefined,

@@ -9,6 +9,7 @@ const defaultProps = {
 </script>
 
 <script setup lang="ts">
+import type { RootRefProps } from '../../core'
 import { ref, computed, useAttrs } from 'vue'
 import { assignRef, useCollapse, useHorizontalCollapse, useReducedMotion } from '@mantine-vue/hooks'
 import { Box, useMantineEnv, useMantineTheme } from '../../core'
@@ -16,7 +17,7 @@ import type { CollapseOwnProps, CollapseSlots } from './Collapse.types'
 
 defineOptions({ name: 'Collapse', inheritAttrs: false })
 
-const props = withDefaults(defineProps<CollapseOwnProps>(), {
+const props = withDefaults(defineProps<CollapseOwnProps & RootRefProps<Element>>(), {
   rootRef: undefined,
   orientation: undefined,
   transitionDuration: undefined,

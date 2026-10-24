@@ -18,6 +18,7 @@ export { defaultProps, varsResolver }
 </script>
 
 <script setup lang="ts">
+import type { RootRefProps } from '../../core'
 import { ref, computed, useAttrs, useSlots } from 'vue'
 import { assignRef, useElementSize, useId, useUncontrolled } from '@mantine-vue/hooks'
 import { Box, hasNode, rem, resolveNode, useProps, useStyles } from '../../core'
@@ -30,7 +31,7 @@ defineOptions({
   inheritAttrs: false,
 })
 
-const rawProps = withDefaults(defineProps<SpoilerOwnProps>(), {
+const rawProps = withDefaults(defineProps<SpoilerOwnProps & RootRefProps<Element>>(), {
   rootRef: undefined,
   maxHeight: undefined,
   // Intentionally undefined to preserve downstream defaults

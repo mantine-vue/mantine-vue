@@ -49,9 +49,6 @@ export interface EmptyStateSlots {
 
 /** Props declared by `EmptyState` itself. See `EmptyStateProps` for the full public type. */
 export interface EmptyStateOwnProps extends StylesApiProps<EmptyStateFactory> {
-  /** Receives the root DOM node. */
-  rootRef?: VueRefTarget<Element>
-
   /**
    * Controls the indicator size, the gap between elements and the font sizes of the
    * title and the description.
@@ -116,7 +113,7 @@ export interface EmptyStateProps
   extends Omit<BoxProps, keyof EmptyStateOwnProps>, EmptyStateOwnProps {}
 
 export type EmptyStateFactory = Factory<{
-  props: Omit<EmptyStateProps, 'rootRef'>
+  props: EmptyStateProps
   ref: HTMLDivElement
   slots: EmptyStateSlots
   element: 'div'
@@ -130,4 +127,3 @@ export type EmptyStateFactory = Factory<{
     Actions: typeof EmptyStateActions
   }
 }>
-import type { VueRefTarget } from '@mantine-vue/hooks'

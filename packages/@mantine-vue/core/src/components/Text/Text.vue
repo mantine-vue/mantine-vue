@@ -14,13 +14,14 @@ export const varsResolver = createVarsResolver<any>(
 const defaultProps = { inherit: false }
 </script>
 <script setup lang="ts">
+import type { RootRefProps } from '../../core'
 import { ref, useAttrs } from 'vue'
 import { assignRef } from '@mantine-vue/hooks'
 import { Box, useForwardedRef, useProps, useStyles } from '../../core'
 import type { TextOwnProps, TextSlots, TextTruncate } from './Text.types'
 import classes from './Text.module.css'
 defineOptions({ name: 'Text', inheritAttrs: false })
-const rawProps = withDefaults(defineProps<TextOwnProps>(), {
+const rawProps = withDefaults(defineProps<TextOwnProps & RootRefProps<Element>>(), {
   rootRef: undefined,
   component: undefined,
   __staticSelector: undefined,

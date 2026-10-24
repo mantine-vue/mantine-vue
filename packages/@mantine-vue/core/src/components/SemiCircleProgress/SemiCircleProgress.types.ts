@@ -10,9 +10,6 @@ export type SemiCircleProgressStylesNames =
 
 /** Props declared by `SemiCircleProgress` itself. See `SemiCircleProgressProps` for the full public type. */
 export interface SemiCircleProgressOwnProps extends StylesApiProps<SemiCircleProgressFactory> {
-  /** Receives the root DOM node. */
-  rootRef?: VueRefTarget<Element>
-
   /** Progress value from `0` to `100` */
   value: number
 
@@ -89,11 +86,10 @@ export type SemiCircleProgressCssVariables = {
 }
 
 export type SemiCircleProgressFactory = Factory<{
-  props: Omit<SemiCircleProgressProps, 'rootRef'>
+  props: SemiCircleProgressProps
   ref: HTMLDivElement
   slots: SemiCircleProgressSlots
   element: 'div'
   stylesNames: SemiCircleProgressStylesNames
   vars: SemiCircleProgressCssVariables
 }>
-import type { VueRefTarget } from '@mantine-vue/hooks'

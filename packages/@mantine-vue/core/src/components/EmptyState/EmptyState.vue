@@ -64,6 +64,7 @@ export { defaultProps, varsResolver, flattenChildren }
 </script>
 
 <script setup lang="ts">
+import type { RootRefProps } from '../../core'
 import { computed, h, useAttrs, useSlots } from 'vue'
 import { Box, hasNode, resolveNode, useProps, useStyles } from '../../core'
 import { provideEmptyStateContext } from './EmptyState.context'
@@ -79,7 +80,7 @@ defineOptions({
 })
 
 // Intentionally undefined to preserve downstream defaults.
-const rawProps = withDefaults(defineProps<EmptyStateOwnProps>(), {
+const rawProps = withDefaults(defineProps<EmptyStateOwnProps & RootRefProps<Element>>(), {
   rootRef: undefined,
   title: undefined,
   description: undefined,

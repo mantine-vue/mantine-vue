@@ -21,9 +21,6 @@ export interface PaperSlots {
 
 /** Props declared by `Paper` itself. See `PaperProps` for the full public type. */
 export interface PaperOwnProps extends StylesApiProps<PaperFactory> {
-  /** Receives the root DOM node. See the polymorphic components guide. */
-  rootRef?: VueRefTarget<Element>
-
   /**
    * Root element or component rendered by `Paper`.
    * @default 'div'
@@ -46,12 +43,11 @@ export interface PaperOwnProps extends StylesApiProps<PaperFactory> {
    */
   withBorder?: boolean
 }
-import type { VueRefTarget } from '@mantine-vue/hooks'
 
 export interface PaperProps extends Omit<BoxProps, keyof PaperOwnProps>, PaperOwnProps {}
 
 export type PaperFactory = PolymorphicFactory<{
-  props: Omit<PaperProps, 'component' | 'rootRef'>
+  props: Omit<PaperProps, 'component'>
   slots: PaperSlots
   ref: HTMLDivElement
   exposed: { rootElement: Element | null }

@@ -12,6 +12,7 @@ export { varsResolver }
 </script>
 
 <script setup lang="ts">
+import type { RootRefProps } from '../../core'
 import { ref, useAttrs } from 'vue'
 import { assignRef } from '@mantine-vue/hooks'
 import { Box, useProps, useStyles } from '../../core'
@@ -21,7 +22,7 @@ defineOptions({
   name: 'AspectRatio',
   inheritAttrs: false,
 })
-const rawProps = withDefaults(defineProps<AspectRatioOwnProps>(), {
+const rawProps = withDefaults(defineProps<AspectRatioOwnProps & RootRefProps<Element>>(), {
   rootRef: undefined,
   ratio: undefined,
   classNames: undefined,

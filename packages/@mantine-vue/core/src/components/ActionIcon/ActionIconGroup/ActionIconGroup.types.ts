@@ -3,9 +3,6 @@ import type { BoxProps, StylesApiProps, Factory } from '../../../core'
 
 /** Props declared by `ActionIconGroup` itself. See `ActionIconGroupProps` for the full public type. */
 export interface ActionIconGroupOwnProps extends StylesApiProps<ActionIconGroupFactory> {
-  /** Receives the root DOM node. */
-  rootRef?: VueRefTarget<Element>
-
   /**
    * Group orientation
    *
@@ -36,11 +33,10 @@ export type ActionIconGroupCssVariables = {
 }
 
 export type ActionIconGroupFactory = Factory<{
-  props: Omit<ActionIconGroupProps, 'rootRef'>
+  props: ActionIconGroupProps
   ref: HTMLDivElement
   slots: ActionIconGroupSlots
   element: 'div'
   stylesNames: ActionIconGroupStylesNames
   vars: ActionIconGroupCssVariables
 }>
-import type { VueRefTarget } from '@mantine-vue/hooks'

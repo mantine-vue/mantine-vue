@@ -25,6 +25,7 @@ const defaultProps = {
 } as const
 </script>
 <script setup lang="ts">
+import type { RootRefProps } from '../../core'
 import { ref, h, useAttrs } from 'vue'
 import { assignRef, useId, useScrollSpy, type UseScrollSpyHeadingData } from '@mantine-vue/hooks'
 import { Box, useProps, useStyles } from '../../core'
@@ -32,7 +33,7 @@ import { UnstyledButton } from '../UnstyledButton'
 import type { InitialTableOfContentsData, TableOfContentsOwnProps } from './TableOfContents.types'
 import classes from './TableOfContents.module.css'
 defineOptions({ name: 'TableOfContents', inheritAttrs: false })
-const rawProps = withDefaults(defineProps<TableOfContentsOwnProps>(), {
+const rawProps = withDefaults(defineProps<TableOfContentsOwnProps & RootRefProps<Element>>(), {
   color: undefined,
   size: undefined,
   autoContrast: undefined,

@@ -1,27 +1,28 @@
-import { defineComponent, h, ref } from 'vue'
+import { computed, defineComponent, h, useTemplateRef } from 'vue'
 import { Button, Group, ScrollArea, Stack, Text } from '@mantine-vue/core'
 import type { MantineDemo } from '@/demo'
 
 const code = `
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, useTemplateRef } from 'vue'
 import { ScrollArea, Button, Stack, Group } from '@mantine-vue/core'
 
-const viewport = ref<any>(null)
+const area = useTemplateRef('area')
+const viewport = computed(() => area.value?.viewport ?? null)
 
 const scrollToBottom = () =>
-  viewport.value?.$el?.scrollTo({ top: viewport.value.$el.scrollHeight, behavior: 'smooth' })
+  viewport.value?.scrollTo({ top: viewport.value.scrollHeight, behavior: 'smooth' })
 
 const scrollToCenter = () =>
-  viewport.value?.$el?.scrollTo({ top: viewport.value.$el.scrollHeight / 2, behavior: 'smooth' })
+  viewport.value?.scrollTo({ top: viewport.value.scrollHeight / 2, behavior: 'smooth' })
 
 const scrollToTop = () =>
-  viewport.value?.$el?.scrollTo({ top: 0, behavior: 'smooth' })
+  viewport.value?.scrollTo({ top: 0, behavior: 'smooth' })
 </script>
 
 <template>
   <Stack align="center">
-    <ScrollArea :w="300" :h="200" :viewportProps="{ ref: viewport }">
+    <ScrollArea :w="300" :h="200" ref="area">
       <!-- ... content -->
     </ScrollArea>
 
@@ -37,18 +38,19 @@ const scrollToTop = () =>
 const Demo = defineComponent({
   name: 'ScrollAreaScrollToDemo',
   setup() {
-    const viewport = ref<any>(null)
+    const area = useTemplateRef<InstanceType<typeof ScrollArea>>('area')
+    const viewport = computed(() => area.value?.viewport ?? null)
 
     const scrollToBottom = () =>
-      viewport.value?.$el?.scrollTo({ top: viewport.value.$el.scrollHeight, behavior: 'smooth' })
+      viewport.value?.scrollTo({ top: viewport.value.scrollHeight, behavior: 'smooth' })
 
     const scrollToCenter = () =>
-      viewport.value?.$el?.scrollTo({
-        top: viewport.value.$el.scrollHeight / 2,
+      viewport.value?.scrollTo({
+        top: viewport.value.scrollHeight / 2,
         behavior: 'smooth',
       })
 
-    const scrollToTop = () => viewport.value?.$el?.scrollTo({ top: 0, behavior: 'smooth' })
+    const scrollToTop = () => viewport.value?.scrollTo({ top: 0, behavior: 'smooth' })
 
     return () =>
       h(
@@ -58,7 +60,7 @@ const Demo = defineComponent({
           default: () => [
             h(
               ScrollArea,
-              { w: 300, h: 200, viewportProps: { ref: viewport } },
+              { ref: 'area', w: 300, h: 200 },
               {
                 default: () => [
                   h(Text, { size: 'xl', fw: 700 }, { default: () => 'Charizard (Pokémon)' }),

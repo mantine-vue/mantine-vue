@@ -36,6 +36,7 @@ export { defaultProps, varsResolver }
 </script>
 
 <script setup lang="ts">
+import type { RootRefProps } from '../../../core'
 import { computed, ref, useAttrs, useSlots, watch } from 'vue'
 import { assignRef, useMove, useUncontrolled } from '@mantine-vue/hooks'
 import { useDirection, useProps, useStyles } from '../../../core'
@@ -68,7 +69,7 @@ defineOptions({
 })
 
 // Intentionally undefined to preserve downstream defaults.
-const rawProps = withDefaults(defineProps<RangeSliderOwnProps>(), {
+const rawProps = withDefaults(defineProps<RangeSliderOwnProps & RootRefProps<Element>>(), {
   modelValue: undefined,
   defaultValue: undefined,
   label: undefined,

@@ -18,6 +18,7 @@ export { varsResolver }
 </script>
 
 <script setup lang="ts">
+import type { RootRefProps } from '../../core'
 import { ref, computed, useAttrs, useSlots } from 'vue'
 import { assignRef } from '@mantine-vue/hooks'
 import { Box, hasNode, resolveNode, useProps, useStyles } from '../../core'
@@ -25,7 +26,7 @@ import type { DividerOwnProps, DividerSlots } from './Divider.types'
 import classes from './Divider.module.css'
 
 defineOptions({ name: 'Divider', inheritAttrs: false })
-const rawProps = withDefaults(defineProps<DividerOwnProps>(), {
+const rawProps = withDefaults(defineProps<DividerOwnProps & RootRefProps<Element>>(), {
   rootRef: undefined,
   color: undefined,
   label: undefined,

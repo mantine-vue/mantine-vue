@@ -20,9 +20,6 @@ export interface SpoilerSlots {
 
 /** Props declared by `Spoiler` itself. See `SpoilerProps` for the full public type. */
 export interface SpoilerOwnProps extends StylesApiProps<SpoilerFactory> {
-  /** Receives the root DOM node. */
-  rootRef?: VueRefTarget<Element>
-
   /**
    * Maximum height of visible content in px. When content exceeds this height,
    * the toggle control appears.
@@ -76,7 +73,7 @@ export interface SpoilerEmits {
 }
 
 export type SpoilerFactory = Factory<{
-  props: Omit<SpoilerProps, 'rootRef'>
+  props: SpoilerProps
   ref: HTMLDivElement
   slots: SpoilerSlots
   emits: SpoilerEmits
@@ -84,4 +81,3 @@ export type SpoilerFactory = Factory<{
   stylesNames: SpoilerStylesNames
   vars: SpoilerCssVariables
 }>
-import type { VueRefTarget } from '@mantine-vue/hooks'

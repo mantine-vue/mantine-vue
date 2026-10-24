@@ -1,11 +1,12 @@
 <script setup lang="ts">
+import type { RootRefProps } from '../../core'
 import { ref, useAttrs } from 'vue'
 import { assignRef } from '@mantine-vue/hooks'
 import { Box, useProps } from '../../core'
 import type { SpaceOwnProps } from './Space.types'
 
 defineOptions({ name: 'Space', inheritAttrs: false })
-const rawProps = defineProps<SpaceOwnProps>()
+const rawProps = defineProps<SpaceOwnProps & RootRefProps<Element>>()
 const attrs = useAttrs()
 const props = useProps('Space', null, rawProps)
 

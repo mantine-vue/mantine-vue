@@ -1,5 +1,11 @@
-import type { VNodeChild } from 'vue'
-import type { BoxProps, MantineNode, MantineSize, StylesApiProps } from '../../../core'
+import type { HTMLAttributes, InputHTMLAttributes, VNodeChild } from 'vue'
+import type {
+  BoxProps,
+  DataAttributes,
+  MantineNode,
+  MantineSize,
+  StylesApiProps,
+} from '../../../core'
 
 export interface CheckboxGroupContextValue {
   /** Values of the currently selected checkboxes. */
@@ -41,7 +47,7 @@ export interface CheckboxGroupOwnProps extends StylesApiProps<CheckboxGroupProps
   size?: MantineSize | (string & {})
 
   /** Props passed down to the `Input.Wrapper` root element. */
-  wrapperProps?: Record<string, any>
+  wrapperProps?: HTMLAttributes & DataAttributes
 
   /**
    * If set, the selection cannot be changed by the user.
@@ -54,7 +60,7 @@ export interface CheckboxGroupOwnProps extends StylesApiProps<CheckboxGroupProps
   name?: string
 
   /** Props passed down to the hidden input. */
-  hiddenInputProps?: Record<string, any>
+  hiddenInputProps?: InputHTMLAttributes & DataAttributes
 
   /**
    * Separator used to join the values in the hidden input.

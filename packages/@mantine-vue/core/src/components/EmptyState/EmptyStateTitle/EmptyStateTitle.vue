@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { RootRefProps } from '../../../core'
 import { ref, useAttrs } from 'vue'
 import { assignRef } from '@mantine-vue/hooks'
 import { Box, useProps } from '../../../core'
@@ -7,7 +8,7 @@ import type { EmptyStateTitleOwnProps, EmptyStateTitleSlots } from './EmptyState
 
 defineOptions({ name: 'EmptyStateTitle', inheritAttrs: false })
 
-const rawProps = withDefaults(defineProps<EmptyStateTitleOwnProps>(), {
+const rawProps = withDefaults(defineProps<EmptyStateTitleOwnProps & RootRefProps<Element>>(), {
   rootRef: undefined,
   order: undefined,
   classNames: undefined,
