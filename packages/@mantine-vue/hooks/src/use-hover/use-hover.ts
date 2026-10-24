@@ -1,4 +1,4 @@
-import { onBeforeUnmount, onMounted, ref, type Ref } from 'vue'
+import { ref, watch, type Ref } from 'vue'
 
 export interface UseHoverReturnValue<T extends HTMLElement = HTMLElement> {
   ref: Ref<T | null>
@@ -8,27 +8,32 @@ export interface UseHoverReturnValue<T extends HTMLElement = HTMLElement> {
 export function useHover<T extends HTMLElement = HTMLElement>(): UseHoverReturnValue<T> {
   const refTarget = ref<T | null>(null) as Ref<T | null>
   const hovered = ref(false)
-  let cleanup: (() => void) | undefined
 
-  onMounted(() => {
-    const node = refTarget.value
-    if (!node) {
-      return
-    }
+  watch(
+    refTarget,
+    (node, _, onCleanup) => {
+      hovered.value = false
 
-    const onEnter = () => (hovered.value = true)
-    const onLeave = () => (hovered.value = false)
+      if (!node) return
 
-    node.addEventListener('mouseenter', onEnter)
-    node.addEventListener('mouseleave', onLeave)
+      const onEnter = () => {
+        hovered.value = true
+      }
 
-    cleanup = () => {
-      node.removeEventListener('mouseenter', onEnter)
-      node.removeEventListener('mouseleave', onLeave)
-    }
-  })
+      const onLeave = () => {
+        hovered.value = false
+      }
 
-  onBeforeUnmount(() => cleanup?.())
+      node.addEventListener('mouseenter', onEnter)
+      node.addEventListener('mouseleave', onLeave)
+
+      onCleanup(() => {
+        node.removeEventListener('mouseenter', onEnter)
+        node.removeEventListener('mouseleave', onLeave)
+      })
+    },
+    { immediate: true, flush: 'sync' },
+  )
 
   return { ref: refTarget, hovered }
 }
