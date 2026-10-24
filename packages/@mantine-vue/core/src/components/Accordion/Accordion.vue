@@ -1,5 +1,4 @@
 <script lang="ts">
-import type { VNodeChild } from 'vue'
 import { createVarsResolver, getRadius, rem } from '../../core'
 
 const VALUE_ERROR = 'Accordion.Item component was rendered with invalid value or without value'
@@ -39,12 +38,7 @@ const varsResolver = createVarsResolver<any>((_, { transitionDuration, chevronSi
   },
 }))
 
-/** The default slot may be a function or already-rendered children. */
-function renderContent(content: any): VNodeChild {
-  return typeof content === 'function' ? content() : content
-}
-
-export { VALUE_ERROR, defaultProps, getSafeId, varsResolver, renderContent }
+export { VALUE_ERROR, defaultProps, getSafeId, varsResolver }
 </script>
 
 <script setup lang="ts">
@@ -189,11 +183,6 @@ provideAccordionContext(
 const rootStyles = computed(() =>
   getStyles('root', { className: attrs.class, style: attrs.style as any }),
 )
-
-const renderDefault = Object.assign(
-  (slotProps: { nodes?: () => VNodeChild }) => renderContent(slotProps.nodes as any),
-  { props: { nodes: { type: Function, required: false } } },
-)
 </script>
 
 <template>
@@ -203,6 +192,6 @@ const renderDefault = Object.assign(
     :variant="props.variant"
     :data-accordion="true"
   >
-    <component :is="renderDefault" :nodes="slots.default" />
+    <slot />
   </Box>
 </template>
