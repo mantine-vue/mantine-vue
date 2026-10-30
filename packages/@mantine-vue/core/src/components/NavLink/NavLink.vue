@@ -27,7 +27,7 @@ export { varsResolver }
 <script setup lang="ts">
 import type { RootRefProps } from '../../core'
 import { Comment, ref, computed, useAttrs, useSlots } from 'vue'
-import { assignRef, useUncontrolled } from '@mantine-vue/hooks'
+import { assignRef, useId, useUncontrolled } from '@mantine-vue/hooks'
 import { Box, hasNode, resolveNode, useStyles } from '../../core'
 import { AccordionChevron } from '../Accordion'
 import { Collapse } from '../Collapse'
@@ -84,6 +84,7 @@ const getStyles = useStyles({
 
 const children = computed(() => slots.default?.() ?? [])
 const withChildren = computed(() => children.value.some((child) => child.type !== Comment))
+const collapseId = useId()
 const rightSection = computed(() => resolveNode(props.rightSection, slots.rightSection))
 const leftSection = computed(() => resolveNode(props.leftSection, slots.leftSection))
 const label = computed(() => resolveNode(props.label, slots.label))
@@ -140,6 +141,8 @@ defineExpose({ rootElement })
 
 <template>
   <UnstyledButton
+    :aria-expanded="withChildren ? opened : undefined"
+    :aria-controls="withChildren ? collapseId : undefined"
     v-bind="{
       ...rootAttrs,
       ...getStyles('root', { className: attrs.class, style: attrs.style as any }),
@@ -187,6 +190,7 @@ defineExpose({ rootElement })
   </UnstyledButton>
   <Collapse
     v-if="withChildren"
+    :id="collapseId"
     :expanded="opened"
     :keep-mounted="props.keepMounted"
     v-bind="getStyles('collapse')"
