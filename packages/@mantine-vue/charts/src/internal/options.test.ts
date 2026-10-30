@@ -118,3 +118,31 @@ describe('@mantine-vue/charts radial options', () => {
     })
   })
 })
+
+describe('@mantine-vue/charts legend position', () => {
+  it('moves the legend to the bottom and reserves grid space', () => {
+    const option = cartesianOption(
+      { data: [], series: [], withLegend: true, legendProps: { position: 'bottom' } },
+      'line',
+    )
+
+    expect(option.legend).toMatchObject({ top: 'auto', bottom: 8 })
+    expect(option.legend).not.toHaveProperty('position')
+    expect(grid(option)).toMatchObject({ top: 16, bottom: 62 })
+  })
+
+  it('moves the radial legend to the top', () => {
+    const option = radialOption({ data: [], legendProps: { position: 'top' } }, 'pie')
+
+    expect(option.legend).toMatchObject({ top: 8, bottom: 'auto' })
+  })
+
+  it('keeps explicit ECharts placement options', () => {
+    const option = cartesianOption(
+      { data: [], series: [], legendProps: { position: 'bottom', bottom: 24 } },
+      'line',
+    )
+
+    expect(option.legend).toMatchObject({ bottom: 24 })
+  })
+})
