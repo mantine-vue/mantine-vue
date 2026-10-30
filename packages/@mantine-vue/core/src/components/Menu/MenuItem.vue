@@ -45,7 +45,10 @@ const leftSection = computed(() => resolveNode(props.leftSection, slots.leftSect
 const rightSection = computed(() => resolveNode(props.rightSection, slots.rightSection))
 
 /** `data-disabled` marks an item disabled without setting the attribute on a link. */
-const isDisabled = computed(() => props.disabled || (attrs as any)['data-disabled'] || undefined)
+const isDisabled = computed(() => {
+  const dataDisabled = (attrs as any)['data-disabled']
+  return props.disabled || (dataDisabled != null && dataDisabled !== false) || undefined
+})
 
 /** Prevents the dropdown from losing focus before the click is handled. */
 function onMousedown(event: MouseEvent) {
@@ -56,11 +59,7 @@ function onMousedown(event: MouseEvent) {
 function onClick(event: MouseEvent) {
   call((attrs as any).onClick, event)
 
-  if (
-    !props.disabled &&
-    !(attrs as any)['data-disabled'] &&
-    (props.closeMenuOnClick ?? ctx.closeOnItemClick)
-  ) {
+  if (!isDisabled.value && (props.closeMenuOnClick ?? ctx.closeOnItemClick)) {
     ctx.closeDropdownImmediately()
   }
 }
@@ -79,6 +78,7 @@ const renderRightSection = (): VNodeChild => rightSection.value
     :role="(attrs as any).role ?? 'menuitem'"
     :tabindex="ctx.menuItemTabIndex"
     :disabled="props.disabled"
+    :aria-disabled="isDisabled"
     data-menu-item=""
     :data-disabled="isDisabled"
     data-mantine-stop-propagation=""

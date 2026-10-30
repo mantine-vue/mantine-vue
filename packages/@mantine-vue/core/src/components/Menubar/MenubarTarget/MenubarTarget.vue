@@ -243,6 +243,7 @@ const targetStyles = computed(() =>
       role="menuitem"
       :tabindex="isActive || isUnresolvedTabStop ? 0 : -1"
       :disabled="props.disabled"
+      :aria-disabled="hasDataDisabled || undefined"
       data-menubar-target=""
       :data-menubar-id="menuCtx.id"
       :data-disabled="hasDataDisabled || undefined"
