@@ -11,7 +11,10 @@ export type ScrollAreaStylesNames =
   | 'content'
 
 export type ScrollAreaCssVariables = {
-  root: '--scrollarea-scrollbar-size' | '--scrollarea-over-scroll-behavior'
+  root:
+    | '--scrollarea-scrollbar-size'
+    | '--scrollarea-offset-size'
+    | '--scrollarea-over-scroll-behavior'
 }
 
 export type ScrollAreaType = 'auto' | 'always' | 'scroll' | 'hover' | 'never'

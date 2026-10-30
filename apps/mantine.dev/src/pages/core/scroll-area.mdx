@@ -16,6 +16,12 @@ both axes. In this example `w={300}` limits the visible width and the inner `Box
 
 <Demo data={ScrollAreaDemos.horizontal} />
 
+## Offset size
+
+By default, `offsetScrollbars` reserves a gap equal to `scrollbarSize`. To change the gap without changing the scrollbar size, set the `--scrollarea-offset-size` CSS variable with the `style` or `vars` prop. The gap stays on the scrollbar side, including in RTL and with `verticalScrollbarPosition`:
+
+<Demo data={ScrollAreaDemos.offsetSize} />
+
 ## Disable horizontal scrollbars
 
 Set `scrollbars="y"` to show only the vertical scrollbar and hide the horizontal one, even when the
