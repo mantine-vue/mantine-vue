@@ -36,6 +36,7 @@ export function useClipboard({ timeout = 2000 }: UseClipboardInput = {}): UseCli
         error.value = null
       } catch (err) {
         error.value = err as Error
+        copied.value = false
         succeeded = false
       }
     }
