@@ -78,6 +78,7 @@ export interface FlatTreeNodeProps {
 
 <script setup lang="ts">
 import { computed, ref } from 'vue'
+import { useDirection } from '../../core'
 import classes from './Tree.module.css'
 
 defineOptions({
@@ -130,20 +131,24 @@ function onClick(event: MouseEvent) {
   element.value?.focus()
 }
 
+const { dir } = useDirection()
+const expandKey = computed(() => (dir.value === 'rtl' ? 'ArrowLeft' : 'ArrowRight'))
+const collapseKey = computed(() => (dir.value === 'rtl' ? 'ArrowRight' : 'ArrowLeft'))
+
 function onKeydown(event: KeyboardEvent) {
-  if (event.code === 'ArrowRight') {
+  if (event.code === expandKey.value) {
     event.preventDefault()
 
-    // Right expands a collapsed node, then moves into it once it is open.
+    // The expand key opens a collapsed node, then moves into it once it is open.
     if (props.expanded && props.hasChildren) {
       focusSibling(1)
     } else if (props.hasChildren) {
       props.tree.expand(props.node.value)
     }
-  } else if (event.code === 'ArrowLeft') {
+  } else if (event.code === collapseKey.value) {
     event.preventDefault()
 
-    // Left collapses an open node, then moves out to the parent.
+    // The collapse key closes an open node, then moves out to the parent.
     if (props.expanded && props.hasChildren) {
       props.tree.collapse(props.node.value)
     } else if (props.parent) {

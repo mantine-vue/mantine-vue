@@ -103,7 +103,7 @@ export { getValuesRange, visible }
 
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { Box } from '../../core'
+import { Box, useDirection } from '../../core'
 import { Loader } from '../Loader'
 import { useTreeNodeDragDrop } from './use-tree-node-drag-drop'
 
@@ -146,12 +146,16 @@ const dnd = useTreeNodeDragDrop({
   withDragHandle: props.withDragHandle,
 })
 
+const { dir } = useDirection()
+const expandKey = computed(() => (dir.value === 'rtl' ? 'ArrowLeft' : 'ArrowRight'))
+const collapseKey = computed(() => (dir.value === 'rtl' ? 'ArrowRight' : 'ArrowLeft'))
+
 function onKeydown(event: KeyboardEvent) {
-  if (event.code === 'ArrowRight') {
+  if (event.code === expandKey.value) {
     event.stopPropagation()
     event.preventDefault()
 
-    // Right expands a collapsed node, then moves into it once it is open.
+    // The expand key opens a collapsed node, then moves into it once it is open.
     if (expanded()) {
       const nextNode = element.value?.querySelector<HTMLElement>('[role=treeitem]')
       nextNode?.setAttribute('data-focus-ring', 'true')
@@ -159,11 +163,11 @@ function onKeydown(event: KeyboardEvent) {
     } else if (hasChildren()) {
       props.controller.expand(props.node.value)
     }
-  } else if (event.code === 'ArrowLeft') {
+  } else if (event.code === collapseKey.value) {
     event.stopPropagation()
     event.preventDefault()
 
-    // Left collapses an open node, then moves out to the parent.
+    // The collapse key closes an open node, then moves out to the parent.
     if (expanded() && hasChildren()) {
       props.controller.collapse(props.node.value)
     } else if (props.isSubtree) {
