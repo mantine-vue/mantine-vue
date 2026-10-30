@@ -11,6 +11,7 @@ const defaultProps = {
   endTime: '23:59:59',
   intervalMinutes: 60,
   slotLabelFormat: 'HH:mm',
+  slotLabelInterval: 60,
   withCurrentTimeIndicator: true,
   withCurrentTimeBubble: true,
   slotHeight: 64,
@@ -34,6 +35,8 @@ const varsResolver = createVarsResolver<any>(
       '--week-view-radius': resolveScheduleRadius(radius),
       '--week-view-slot-height': cssSize(slotHeight),
       '--week-view-all-day-slots-height': cssSize(allDaySlotsHeight ?? allDaySlotHeight),
+      '--week-view-business-hours-bg': undefined,
+      '--week-view-non-business-hours-bg': undefined,
     },
   }),
 )
@@ -55,8 +58,12 @@ import type {
 } from '../../types'
 import {
   formatDate,
-  getBusinessHoursMod,
+  addMinutesToTime,
+  clampIntervalMinutes,
+  getBusinessHoursState,
   getDayTimeIntervals,
+  getSlotLabelDate,
+  getSlotLabelGroups,
   getWeekDays,
   getWeekNumber,
   isEventPlacementAllowed,
@@ -109,6 +116,7 @@ const rawProps = withDefaults(defineProps<WeekViewOwnProps>(), {
   eventDragInterval: undefined,
   eventResizeInterval: undefined,
   slotLabelFormat: undefined,
+  slotLabelInterval: undefined,
   withCurrentTimeIndicator: undefined,
   withCurrentTimeBubble: undefined,
   getCurrentTime: undefined,
@@ -244,6 +252,7 @@ const intervals = computed(() =>
     startTime: props.startTime!,
     endTime: props.endTime!,
     intervalMinutes: props.intervalMinutes!,
+    labelIntervalMinutes: props.slotLabelInterval,
   }),
 )
 
@@ -299,21 +308,32 @@ const dayColumns = computed(() =>
   }),
 )
 
-const slotLabels = computed(() =>
-  intervals.value.map((slot) =>
-    formatDate({
-      date: `${dayColumns.value[0]?.key} ${slot.startTime}`,
-      locale: props.locale || 'en',
-      format: props.slotLabelFormat!,
+const slotLabelGroups = computed(() =>
+  getSlotLabelGroups(intervals.value).map((group) => ({
+    ...group,
+    label: group.isLabelStart
+      ? formatDate({
+          date: getSlotLabelDate(props.date, group.startTime),
+          locale: props.locale || 'en',
+          format: props.slotLabelFormat!,
+        })
+      : null,
+    businessHours: getBusinessHoursState({
+      time: group.startTime,
+      endTime: group.endTime,
+      businessHours: props.businessHours || ['09:00:00', '17:00:00'],
+      highlightBusinessHours: props.highlightBusinessHours,
     }),
-  ),
+    size: String((group.slotsCount * clampIntervalMinutes(props.intervalMinutes!)) / 60),
+  })),
 )
 
-const businessHoursMods = computed(() =>
+const businessHoursStates = computed(() =>
   days.value.map((date) =>
     intervals.value.map((slot) =>
-      getBusinessHoursMod({
+      getBusinessHoursState({
         time: slot.startTime,
+        endTime: addMinutesToTime(slot.startTime, clampIntervalMinutes(props.intervalMinutes!)),
         businessHours: props.businessHours || ['09:00:00', '17:00:00'],
         highlightBusinessHours: props.highlightBusinessHours,
         dayOfWeek: dayjs(date).day() as DayOfWeek,
@@ -822,13 +842,19 @@ const isDraggableEvent = (event: ScheduleEventData) =>
 
         <Box v-bind="getStyles('weekViewInner')">
           <div v-bind="getStyles('weekViewSlotLabels')">
-            <div
-              v-for="(label, slotIndex) in slotLabels"
-              :key="slotIndex"
+            <Box
+              v-for="group in slotLabelGroups"
+              :key="group.startTime"
               v-bind="staticStyles('weekViewSlotLabel')"
+              :mod="{
+                'hour-start': group.isHourStart,
+                'sub-hour': !group.isHourStart,
+                ...group.businessHours.mod,
+              }"
+              :style="{ ...group.businessHours.vars, '--slot-label-size': group.size }"
             >
-              {{ label }}
-            </div>
+              {{ group.label }}
+            </Box>
           </div>
 
           <CurrentTimeIndicator
@@ -876,11 +902,16 @@ const isDraggableEvent = (event: ScheduleEventData) =>
                   slotDragSelect.isSlotSelected(slotIndex, column.key) || undefined
                 "
                 :data-business-hours="
-                  businessHoursMods[dayIndex][slotIndex]['business-hours'] || undefined
+                  businessHoursStates[dayIndex][slotIndex].mod['business-hours'] || undefined
                 "
                 :data-non-business-hours="
-                  businessHoursMods[dayIndex][slotIndex]['non-business-hours'] || undefined
+                  businessHoursStates[dayIndex][slotIndex].mod['non-business-hours'] || undefined
                 "
+                :data-partial-business-hours="
+                  businessHoursStates[dayIndex][slotIndex].mod['partial-business-hours'] ||
+                  undefined
+                "
+                :style="businessHoursStates[dayIndex][slotIndex].vars"
                 :disabled="isStatic"
                 :aria-label="`${getLabel('timeSlot', props.labels)} ${column.key} ${slot.startTime} - ${slot.endTime}`"
                 :tabindex="isStatic ? -1 : dayIndex === 0 && slotIndex === 0 ? 0 : -1"

@@ -9,12 +9,15 @@ const keys = [
   'timeRange',
   'startScrollTime',
   'intervalMinutes',
+  'slotLabelInterval',
   'allDayEvents',
   'overlappingEvents',
   'eventOverlapMode',
   'currentTimeIndicator',
   'timezone',
   'businessHours',
+  'businessHoursMinute',
+  'businessHoursColors',
   'getTimeSlotProps',
   'slotHeight',
   'withoutHeader',
@@ -59,6 +62,17 @@ export const DayViewDemos = createDemoRegistry(DayView, 'DayView', keys, {
     codeProps: 'start-scroll-time="12:00:00"',
   },
   intervalMinutes: { props: { intervalMinutes: 30 }, codeProps: ':interval-minutes="30"' },
+  slotLabelInterval: {
+    props: {
+      startTime: '08:00:00',
+      endTime: '18:00:00',
+      intervalMinutes: 15,
+      slotLabelInterval: 15,
+      slotHeight: 160,
+    },
+    codeProps:
+      'start-time="08:00:00"\n    end-time="18:00:00"\n    :interval-minutes="15"\n    :slot-label-interval="15"\n    :slot-height="160"',
+  },
   currentTimeIndicator: {
     props: { withCurrentTimeIndicator: true, getCurrentTime: getDemoCurrentTime },
     codeProps: 'with-current-time-indicator\n    :get-current-time="() => \'2026-07-15 14:30:00\'"',
@@ -68,6 +82,23 @@ export const DayViewDemos = createDemoRegistry(DayView, 'DayView', keys, {
     codeProps: 'with-current-time-indicator\n    :get-current-time="() => \'2026-07-15 14:30:00\'"',
   },
   businessHours: { props: { highlightBusinessHours: true }, codeProps: 'highlight-business-hours' },
+  businessHoursMinute: {
+    props: { highlightBusinessHours: true, businessHours: ['07:42', '19:01'] },
+    codeProps: `highlight-business-hours\n    :business-hours="['07:42', '19:01']"`,
+  },
+  businessHoursColors: {
+    props: {
+      highlightBusinessHours: true,
+      businessHours: ['07:42', '19:01'],
+      vars: () => ({
+        dayView: {
+          '--day-view-business-hours-bg': 'var(--mantine-color-yellow-light)',
+          '--day-view-non-business-hours-bg': 'var(--mantine-color-blue-light)',
+        },
+      }),
+    },
+    codeProps: `highlight-business-hours\n    :business-hours="['07:42', '19:01']"\n    :vars="() => ({ dayView: { '--day-view-business-hours-bg': 'var(--mantine-color-yellow-light)', '--day-view-non-business-hours-bg': 'var(--mantine-color-blue-light)' } })"`,
+  },
   getTimeSlotProps: {
     description: 'Listen for the `timeSlotClick` event to inspect or customize individual slots.',
   },

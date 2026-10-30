@@ -6,6 +6,7 @@ const keys = [
   'usage',
   'withWeekNumbers',
   'withOutsideDays',
+  'withoutWeekendDays',
   'highlightToday',
   'firstDayOfWeek',
   'renderHeader',
@@ -24,6 +25,10 @@ export const MobileMonthViewDemos = createDemoRegistry(
     ...sharedVariants,
     withWeekNumbers: { props: { withWeekNumbers: true }, codeProps: 'with-week-numbers' },
     withOutsideDays: { props: { withOutsideDays: true }, codeProps: 'with-outside-days' },
+    withoutWeekendDays: {
+      props: { withWeekendDays: false },
+      codeProps: ':with-weekend-days="false"',
+    },
     highlightToday: { props: { highlightToday: false }, codeProps: ':highlight-today="false"' },
     firstDayOfWeek: { props: { firstDayOfWeek: 0 }, codeProps: ':first-day-of-week="0"' },
     renderHeader: {

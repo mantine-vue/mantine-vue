@@ -183,7 +183,7 @@ export interface ScheduleOwnProps extends StylesApiProps<ScheduleFactory> {
   /** Props passed to `YearView`. */
   yearViewProps?: ForwardedProps<YearViewProps, YearViewEmits>
 
-  /** Props passed to `MobileMonthView`, used only when `layout` is `responsive`. */
+  /** Props passed to `MobileMonthView`, used only when `layout` is `responsive`. `weekendDays` defaults to the value set in `monthViewProps`. */
   mobileMonthViewProps?: ForwardedProps<MobileMonthViewProps, MobileMonthViewEmits>
 }
 

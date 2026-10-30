@@ -101,6 +101,13 @@ export interface MobileMonthViewOwnProps
    */
   weekendDays?: DayOfWeek[]
 
+  /**
+   * If set, weekend days are displayed. When `false`, weekend columns are hidden and the month grid shrinks.
+   *
+   * @default true
+   */
+  withWeekendDays?: boolean
+
   /** Returns extra props for the control of the week that starts on the given day. */
   getWeekNumberProps?: (weekStartDate: DateStringValue) => NativeButtonProps
 

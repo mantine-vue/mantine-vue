@@ -34,11 +34,23 @@ export { toTimeString } from './to-time-string/to-time-string'
 export { getDayPosition } from './get-day-position/get-day-position'
 export { calculateDropTime } from './calculate-drop-time/calculate-drop-time'
 export { calculateMonthDropDate } from './calculate-month-drop-date/calculate-month-drop-date'
-export { getBusinessHoursMod } from './get-business-hours-mod/get-business-hours-mod'
+export {
+  getBusinessHoursMod,
+  getBusinessHoursState,
+} from './get-business-hours-mod/get-business-hours-mod'
+export { addMinutesToTime } from './add-minutes-to-time/add-minutes-to-time'
+export { clampSlotLabelInterval } from './clamp-slot-label-interval/clamp-slot-label-interval'
+export { getSlotLabelDate } from './get-slot-label-date/get-slot-label-date'
+export { getSlotLabelGroups } from './get-slot-label-groups/get-slot-label-groups'
+export {
+  getHiddenWeekendColumns,
+  getVisibleWeekDays,
+} from './get-visible-week-days/get-visible-week-days'
 export { expandRecurringEvents } from './expand-recurring-events/expand-recurring-events'
 export { applyCascadeLayout } from './apply-cascade-layout/apply-cascade-layout'
 export { getOverlapClusters } from './get-overlap-clusters/get-overlap-clusters'
 export type { DayTimeInterval } from './get-day-time-intervals/get-day-time-intervals'
+export type { SlotLabelGroup } from './get-slot-label-groups/get-slot-label-groups'
 export type { ParsedTime } from './parse-time-string/parse-time-string'
 export type {
   CalculateDropTimeInput,

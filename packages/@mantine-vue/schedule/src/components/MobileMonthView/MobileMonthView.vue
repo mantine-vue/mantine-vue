@@ -11,6 +11,7 @@ const defaultProps = {
   firstDayOfWeek: 1,
   weekdayFormat: 'dd',
   weekendDays: [0, 6],
+  withWeekendDays: true,
   consistentWeeks: true,
   highlightToday: true,
   eventsHeaderFormat: 'dddd, MMMM D',
@@ -44,9 +45,18 @@ import {
 import { useUncontrolled } from '@mantine-vue/hooks'
 import { getLabel } from '../../labels'
 import type { DateStringValue, DayOfWeek, ScheduleEventData } from '../../types'
-import { formatDate, getMonthDays, getWeekNumber, getWeekdaysNames } from '../../utils'
+import {
+  formatDate,
+  getHiddenWeekendColumns,
+  getVisibleWeekDays,
+  getWeekNumber,
+  getWeekdaysNames,
+  isAllDayEvent,
+  isMultidayEvent,
+} from '../../utils'
 import { getExpandedEvents } from '../shared'
 import { getMobileMonthViewEvents } from './get-mobile-month-view-events'
+import { getMobileMonthViewWeeks } from './get-mobile-month-view-weeks'
 import type { MobileMonthViewEmits, MobileMonthViewSlots } from './MobileMonthView.types'
 import classes from './MobileMonthView.module.css'
 
@@ -75,6 +85,7 @@ const rawProps = withDefaults(defineProps<MobileMonthViewOwnProps>(), {
   firstDayOfWeek: undefined,
   weekdayFormat: undefined,
   weekendDays: undefined,
+  withWeekendDays: undefined,
   getWeekNumberProps: undefined,
   getDayProps: undefined,
   consistentWeeks: undefined,
@@ -135,13 +146,34 @@ const [selected, setSelected] = useUncontrolled<DateStringValue | null>({
 
 const month = computed(() => dayjs(props.date).startOf('month'))
 
+const hiddenColumns = computed(
+  () =>
+    new Set(
+      getHiddenWeekendColumns({
+        weekendDays: props.weekendDays!,
+        firstDayOfWeek: props.firstDayOfWeek!,
+        withWeekendDays: props.withWeekendDays,
+      }),
+    ),
+)
+
 const weeks = computed(() =>
-  getMonthDays({
-    month: month.value,
-    firstDayOfWeek: props.firstDayOfWeek,
+  getMobileMonthViewWeeks({
+    month: month.value.format('YYYY-MM-DD'),
+    firstDayOfWeek: props.firstDayOfWeek!,
     consistentWeeks: props.consistentWeeks,
+    withOutsideDays: props.withOutsideDays,
+    weekendDays: props.weekendDays!,
+    withWeekendDays: props.withWeekendDays,
   }),
 )
+
+const visibleDays = (week: DateStringValue[]) =>
+  getVisibleWeekDays({
+    week,
+    weekendDays: props.weekendDays!,
+    withWeekendDays: props.withWeekendDays,
+  })
 
 const expandedEvents = computed(() =>
   getExpandedEvents(
@@ -161,7 +193,7 @@ const weekdays = computed(() =>
     locale: props.locale || 'en',
     format: props.weekdayFormat!,
     firstDayOfWeek: props.firstDayOfWeek,
-  }),
+  }).filter((_, index) => !hiddenColumns.value.has(index)),
 )
 
 const selectedEvents = computed(() =>
@@ -190,11 +222,8 @@ const selectDay = (date: string | Date, nativeEvent: MouseEvent) => {
   emit('dayClick', value, nativeEvent)
 }
 
-const isAllDayEvent = (event: ScheduleEventData) =>
-  dayjs(event.start).format('HH:mm') === '00:00' && dayjs(event.end).format('HH:mm') === '00:00'
-
 const eventTimeLabel = (event: ScheduleEventData) =>
-  isAllDayEvent(event)
+  isMultidayEvent(event) || isAllDayEvent({ event, date: selected.value! })
     ? getLabel('allDay', props.labels)
     : `${dayjs(event.start).format('HH:mm')} – ${dayjs(event.end).format('HH:mm')}`
 
@@ -279,7 +308,18 @@ const renderListEvent = (event: ScheduleEventData) => () => {
 <template>
   <Box
     v-bind="{ ...attrs, ...getStyles('mobileMonthView') }"
-    :mod="[{ 'with-week-numbers': props.withWeekNumbers }, (attrs as any).mod]"
+    :mod="[
+      {
+        'with-week-numbers': props.withWeekNumbers,
+        'without-weekend-days': hiddenColumns.size > 0,
+      },
+      (attrs as any).mod,
+    ]"
+    :style="
+      hiddenColumns.size > 0
+        ? { '--mobile-month-view-columns': String(7 - hiddenColumns.size) }
+        : undefined
+    "
   >
     <div v-if="props.withHeader" v-bind="getStyles('mobileMonthViewHeader')">
       <component :is="renderHeaderContent" />
@@ -321,7 +361,7 @@ const renderListEvent = (event: ScheduleEventData) => () => {
         </UnstyledButton>
 
         <UnstyledButton
-          v-for="date in week"
+          v-for="date in visibleDays(week)"
           :key="toDayKey(date)!"
           v-bind="{
             ...dayProps(date),

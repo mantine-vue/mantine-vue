@@ -24,6 +24,14 @@ By default, days from the previous and next months are hidden. Set `withOutsideD
 
 <Demo data={MobileMonthViewDemos.withOutsideDays} />
 
+## Hide weekend days
+
+Set `:with-weekend-days="false"` to hide weekend days. The grid shrinks to the remaining
+columns and weeks without visible days are not rendered. The days that are considered
+weekend are controlled by the `weekendDays` prop (`[0, 6]` by default).
+
+<Demo data={MobileMonthViewDemos.withoutWeekendDays} />
+
 ## Highlight today
 
 Set `:highlight-today="false"` to disable highlighting the current day.

@@ -204,6 +204,7 @@ const mobileViewProps = computed(() => {
     ...sharedProps.value,
     ...sharedListeners,
     ...(slots.header ? { renderHeader: (payload: any) => slots.header!(payload) } : {}),
+    weekendDays: props.monthViewProps?.weekendDays,
     ...viewProps,
     onYearClick: () => setCurrentView('year'),
     // Both the schedule-level and the view-level listener run, matching the desktop view.
