@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
-import { formRootRule, isEmail, isNotEmpty, useForm } from '../index'
+import { formRootRule, getPath, isEmail, isNotEmpty, setPath, useForm } from '../index'
 
 describe('@mantine-vue/form', () => {
   it('sets field values and tracks dirty/touched state', () => {
@@ -173,4 +173,17 @@ describe('@mantine-vue/form', () => {
     form.resetTouched()
     expect(form.isTouched()).toBe(false)
   })
+})
+
+describe('@mantine-vue/form unsafe paths', () => {
+  it.each(['__proto__.polluted', 'constructor.prototype.polluted', 'a.__proto__.polluted'])(
+    'does not write or read %s',
+    (path) => {
+      const values = { a: {} }
+
+      expect(setPath(path, true, values)).toBe(values)
+      expect(getPath(path, values)).toBeUndefined()
+      expect(({} as any).polluted).toBeUndefined()
+    },
+  )
 })

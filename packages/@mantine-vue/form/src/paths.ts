@@ -1,11 +1,27 @@
+const UNSAFE_PATH_SEGMENTS = new Set(['__proto__', 'constructor', 'prototype'])
+
+function getSplittedPath(path: PropertyKey) {
+  const splittedPath = String(path).split('.')
+  return splittedPath.some((segment) => UNSAFE_PATH_SEGMENTS.has(segment)) ? [] : splittedPath
+}
+
 export function getPath(path: PropertyKey, values: Record<PropertyKey, any>) {
-  return String(path)
-    .split('.')
-    .reduce((acc, key) => (acc == null ? acc : acc[key]), values)
+  const keys = getSplittedPath(path)
+
+  if (keys.length === 0) {
+    return undefined
+  }
+
+  return keys.reduce((acc, key) => (acc == null ? acc : acc[key]), values)
 }
 
 export function setPath(path: PropertyKey, value: any, values: Record<PropertyKey, any>) {
-  const keys = String(path).split('.')
+  const keys = getSplittedPath(path)
+
+  if (keys.length === 0) {
+    return values
+  }
+
   const result = JSON.parse(JSON.stringify(values))
   let cursor: any = result
 
