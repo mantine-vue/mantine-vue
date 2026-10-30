@@ -61,7 +61,7 @@ export function getOptionByLabel<Value extends Primitive = string>(
 /** Detects browser autofill and extension writes, which occur without focusing the input. */
 export function isExternalInputChange(event: Event) {
   const target = event.currentTarget as HTMLInputElement | null
-  return !!target && target.ownerDocument.activeElement !== target
+  return !!target && (target.getRootNode() as Document | ShadowRoot).activeElement !== target
 }
 export function defaultOptionsFilter<Value extends Primitive>({
   options,
