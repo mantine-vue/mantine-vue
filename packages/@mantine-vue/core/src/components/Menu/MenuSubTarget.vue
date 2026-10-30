@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { cloneVNode, h, useAttrs, useSlots, type VNodeChild } from 'vue'
+import { useDirection } from '../../core'
 import { PopoverTarget } from '../Popover'
 import { useMenuContext } from './Menu.context'
 import { call, focusFirstSubItem } from './menu-utils'
@@ -19,6 +20,7 @@ defineSlots<MenuSlots>()
 const slots = useSlots()
 const attrs = useAttrs()
 const ctx = useMenuContext()
+const { dir } = useDirection()
 
 /** Clones the child with the submenu trigger handlers merged in. */
 function renderChild(): VNodeChild {
@@ -48,8 +50,8 @@ function renderChild(): VNodeChild {
           return
         }
 
-        // ArrowRight enters the submenu, mirroring ArrowLeft in `MenuSubDropdown`.
-        if (event.key === 'ArrowRight') {
+        // The open key enters the submenu, mirroring the close key in `MenuSubDropdown`.
+        if (event.key === (dir.value === 'rtl' ? 'ArrowLeft' : 'ArrowRight')) {
           event.preventDefault()
 
           if (!ctx.opened) {

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, onUnmounted, useAttrs } from 'vue'
 import { useUncontrolled } from '@mantine-vue/hooks'
+import { useDirection } from '../../core'
 import { Input } from '../Input'
 import { useMenuContext } from './Menu.context'
 import { call, clearActive, getActiveIndex, menuItems, setActive } from './menu-utils'
@@ -24,6 +25,7 @@ const emit = defineEmits<{
 
 const attrs = useAttrs()
 const ctx = useMenuContext()
+const { dir } = useDirection()
 
 const [value, setValue] = useUncontrolled<string>({
   value: () => props.modelValue,
@@ -157,10 +159,15 @@ function onKeydown(event: KeyboardEvent) {
     if (target) {
       event.preventDefault()
 
-      // A submenu item opens rather than activates, which is what ArrowRight does.
+      // A submenu item opens rather than activates, which is what the open key does.
       if (target.hasAttribute('data-sub-menu-item')) {
         target.focus()
-        target.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }))
+        target.dispatchEvent(
+          new KeyboardEvent('keydown', {
+            key: dir.value === 'rtl' ? 'ArrowLeft' : 'ArrowRight',
+            bubbles: true,
+          }),
+        )
       } else {
         target.click()
       }
