@@ -73,6 +73,7 @@ defineExpose({ rootElement })
 <template>
   <Box
     :rootRef="setRootRef"
+    :aria-orientation="props.orientation"
     v-bind="{ ...attrs, ...getStyles('root') }"
     role="separator"
     :mod="rootMod"
