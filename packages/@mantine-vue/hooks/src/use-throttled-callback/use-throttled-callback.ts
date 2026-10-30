@@ -18,10 +18,16 @@ export function useThrottledCallbackWithClearTimeout<T extends (...args: any[]) 
   }
 
   const callThrottledCallback = (...args: Parameters<T>) => {
-    callback(...args)
     latestInArgs = args
     latestOutArgs = args
     active = false
+
+    try {
+      callback(...args)
+    } catch (error) {
+      active = true
+      throw error
+    }
   }
 
   const timerCallback = () => {
