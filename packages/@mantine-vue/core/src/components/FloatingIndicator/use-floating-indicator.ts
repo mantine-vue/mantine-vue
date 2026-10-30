@@ -27,6 +27,7 @@ export function useFloatingIndicator({
   )
   let targetResizeObserver: ResizeObserver | undefined
   let parentResizeObserver: ResizeObserver | undefined
+  let parentMutationObserver: MutationObserver | undefined
   let transitionTimeout: ReturnType<typeof setTimeout> | undefined
   let previousTarget: HTMLElement | null | undefined = target.value
 
@@ -77,8 +78,10 @@ export function useFloatingIndicator({
   const cleanupObservers = () => {
     targetResizeObserver?.disconnect()
     parentResizeObserver?.disconnect()
+    parentMutationObserver?.disconnect()
     targetResizeObserver = undefined
     parentResizeObserver = undefined
+    parentMutationObserver = undefined
   }
 
   const observe = () => {
@@ -94,8 +97,16 @@ export function useFloatingIndicator({
     }
 
     if (parent.value) {
+      const parentElement = parent.value
       parentResizeObserver = new ResizeObserver(updatePositionWithoutAnimation)
-      parentResizeObserver.observe(parent.value)
+      parentResizeObserver.observe(parentElement)
+
+      parentMutationObserver = new MutationObserver(() => {
+        if (target.value && parentElement.contains(target.value)) {
+          updatePosition()
+        }
+      })
+      parentMutationObserver.observe(parentElement, { childList: true, subtree: true })
     }
   }
 
