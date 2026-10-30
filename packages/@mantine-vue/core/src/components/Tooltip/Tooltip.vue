@@ -134,6 +134,7 @@ const tooltip = useTooltip({
   // and an undefined `opened` is what makes the tooltip uncontrolled.
   opened: () => rawProps.opened,
   defaultOpened: props.defaultOpened,
+  disabled: () => props.disabled,
   openDelay: () => props.openDelay,
   closeDelay: () => props.closeDelay,
   // The arrow sits between the tooltip and the target, so it has to be offset around.
@@ -271,7 +272,7 @@ const mergeStyles = computed(() =>
     : undefined,
 )
 
-const mounted = computed(() => !props.disabled && tooltip.opened.value)
+const mounted = computed(() => tooltip.opened.value)
 
 function setFloating(node: any) {
   tooltip.floating.value = asElement(node)

@@ -18,6 +18,7 @@ export interface UseTooltipOptions {
   position: () => FloatingPosition
   opened: () => boolean | undefined
   defaultOpened: boolean
+  disabled?: () => boolean | undefined
   openDelay?: () => number | undefined
   closeDelay?: () => number | undefined
   offset: () => number | FloatingAxesOffsets
@@ -32,7 +33,7 @@ export interface UseTooltipOptions {
 export function useTooltip(options: UseTooltipOptions) {
   const group = inject(TooltipGroupKey, { withinGroup: false, openDelay: 0, closeDelay: 0 })
   const internal = ref(options.defaultOpened)
-  const opened = computed(() => options.opened() ?? internal.value)
+  const opened = computed(() => !options.disabled?.() && (options.opened() ?? internal.value))
   const reference = ref<any>(null)
   const floating = ref<HTMLElement | null>(null)
   const arrowRef = ref<HTMLElement | null>(null)
@@ -73,10 +74,22 @@ export function useTooltip(options: UseTooltipOptions) {
       else closeTimer = setTimeout(apply, delay)
     } else apply()
   }
-  const open = () =>
-    setOpened(true, group.withinGroup ? group.openDelay : (options.openDelay?.() ?? 0))
+  const open = () => {
+    if (!options.disabled?.()) {
+      setOpened(true, group.withinGroup ? group.openDelay : (options.openDelay?.() ?? 0))
+    }
+  }
   const close = () =>
     setOpened(false, group.withinGroup ? group.closeDelay : (options.closeDelay?.() ?? 0))
+  watch(
+    () => options.disabled?.(),
+    (disabled) => {
+      if (disabled) {
+        clear()
+        internal.value = false
+      }
+    },
+  )
   const previousPlacement = ref(state.placement.value)
   watch(state.placement, (value) => {
     if (value !== previousPlacement.value) {
