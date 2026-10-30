@@ -49,6 +49,26 @@ function handleSubmit(event: Event) {
 </template>
 ```
 
+## Read only
+
+Set `readOnly` prop to prevent the radio from being changed by the user. The radio
+still reflects `checked` prop updates, but clicking it or pressing <kbd>Space</kbd> does not
+change its state and does not emit `change`:
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue'
+import { Radio } from '@mantine-vue/core'
+
+const checked = ref(true)
+</script>
+
+<template>
+  <Radio :checked="checked" read-only value="vue" label="Read only radio" />
+  <button type="button" @click="checked = !checked">Toggle from outside</button>
+</template>
+```
+
 ## States
 
 <Demo data={RadioDemos.states} />

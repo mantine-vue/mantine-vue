@@ -182,6 +182,12 @@ function setInputRef(node: any) {
 
 defineExpose({ rootElement, inputElement })
 
+function onInputClick(event: MouseEvent) {
+  if (props.readOnly) {
+    event.preventDefault()
+  }
+}
+
 function onInputChange(event: Event) {
   if (props.readOnly) {
     ;(event.currentTarget as HTMLInputElement).checked = Boolean(checked.value)
@@ -240,6 +246,7 @@ const inputAttrs = computed(() => splitAttrs.value.rest)
         :aria-describedby="describedBy"
         :mod="{ error: Boolean(error), withErrorStyles: props.withErrorStyles }"
         :variant="props.variant"
+        @click="onInputClick"
         @change="onInputChange"
       />
 
