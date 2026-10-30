@@ -1,6 +1,46 @@
-import { onBeforeUnmount, onMounted, ref, toValue, watch, type MaybeRefOrGetter } from 'vue'
+import {
+  onBeforeUnmount,
+  onMounted,
+  ref,
+  toValue,
+  watch,
+  type MaybeRefOrGetter,
+  type Ref,
+} from 'vue'
 import { FOCUS_SELECTOR, focusable, tabbable } from './tabbable'
 import { scopeTab } from './scope-tab'
+
+interface FocusTrapEntry {
+  target: Ref<HTMLElement | null>
+  isActive: () => boolean
+}
+
+const mountedTraps = new Set<FocusTrapEntry>()
+
+function hasNestedActiveTrap(entry: FocusTrapEntry, node: HTMLElement) {
+  const activeElement = (node.getRootNode() as unknown as DocumentOrShadowRoot).activeElement
+
+  if (!activeElement) {
+    return false
+  }
+
+  for (const trap of mountedTraps) {
+    const nested = trap.target.value
+
+    if (
+      trap !== entry &&
+      trap.isActive() &&
+      nested &&
+      nested !== node &&
+      node.contains(nested) &&
+      nested.contains(activeElement)
+    ) {
+      return true
+    }
+  }
+
+  return false
+}
 
 function getElement(node: any): HTMLElement | null {
   return (node?.$el ?? node) || null
@@ -24,6 +64,7 @@ function focusNode(node: HTMLElement) {
 export function useFocusTrap(active: MaybeRefOrGetter<boolean> = true) {
   const refTarget = ref<HTMLElement | null>(null)
   const isActive = () => toValue(active)
+  const entry: FocusTrapEntry = { target: refTarget, isActive }
 
   const setRef = (node: any) => {
     const element = getElement(node)
@@ -52,9 +93,17 @@ export function useFocusTrap(active: MaybeRefOrGetter<boolean> = true) {
   }
 
   const handleKeyDown = (event: KeyboardEvent) => {
-    if (event.key === 'Tab' && refTarget.value && isActive()) {
-      scopeTab(refTarget.value, event)
+    if (
+      event.key !== 'Tab' ||
+      event.defaultPrevented ||
+      !refTarget.value ||
+      !isActive() ||
+      hasNestedActiveTrap(entry, refTarget.value)
+    ) {
+      return
     }
+
+    scopeTab(refTarget.value, event)
   }
 
   onMounted(() => {
@@ -62,6 +111,7 @@ export function useFocusTrap(active: MaybeRefOrGetter<boolean> = true) {
       return
     }
 
+    mountedTraps.add(entry)
     document.addEventListener('keydown', handleKeyDown)
 
     if (isActive() && refTarget.value) {
@@ -74,6 +124,8 @@ export function useFocusTrap(active: MaybeRefOrGetter<boolean> = true) {
   })
 
   onBeforeUnmount(() => {
+    mountedTraps.delete(entry)
+
     if (typeof document !== 'undefined') {
       document.removeEventListener('keydown', handleKeyDown)
     }
