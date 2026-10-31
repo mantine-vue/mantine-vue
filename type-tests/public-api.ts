@@ -30,6 +30,13 @@ import type {
   ThemeIconVariant,
 } from '@mantine-vue/core'
 import { ContextMenuProvider } from '@mantine-vue/contextmenu'
+import { FileManager, createMemoryAdapter, useFileManager } from '@mantine-vue/file-manager'
+import type {
+  FileEntry,
+  FileManagerAction,
+  FileManagerProps,
+  FileSystemAdapter,
+} from '@mantine-vue/file-manager'
 import { WhatsAppInbox, WhatsAppInboxModal } from '@mantine-vue/whatsapp-inbox'
 import type {
   WhatsAppConversationSummary,
@@ -292,3 +299,22 @@ void invalidWhatsAppMessage
 // @ts-expect-error The messaging window state is a closed union: the backend reports it verbatim.
 const invalidWindowState: WhatsAppMessagingWindow = { state: 'expired' }
 void invalidWindowState
+
+const fileManagerAdapter: FileSystemAdapter = createMemoryAdapter({
+  files: [{ name: 'a.txt', content: 'a' }],
+})
+const fileManagerController = useFileManager({ adapter: fileManagerAdapter })
+const firstVisibleEntry: FileEntry | undefined = fileManagerController.visibleEntries.value[0]
+const fileManagerAction: FileManagerAction = {
+  id: 'share',
+  label: ({ entries }) => `Share ${entries.length}`,
+  run: ({ controller }) => controller.refresh(),
+}
+const fileManagerProps: FileManagerProps = {
+  adapter: fileManagerAdapter,
+  defaultView: 'grid',
+  actions: [fileManagerAction],
+  sections: { sidebar: false },
+}
+
+export const fileManagerTypes = [FileManager, firstVisibleEntry, fileManagerProps]

@@ -1,7 +1,9 @@
 import type { Frontmatter } from '@/types'
+import { FILE_MANAGER_MDX_DATA } from './file-manager-data'
 import { WHATSAPP_INBOX_MDX_DATA } from './whatsapp-inbox-data'
 
 export const MDX_DATA: Record<string, Frontmatter> = {
+  ...FILE_MANAGER_MDX_DATA,
   ...WHATSAPP_INBOX_MDX_DATA,
 
   GettingStarted: {

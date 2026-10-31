@@ -1,0 +1,52 @@
+import { FileManagerDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.FileManagerMobile)
+
+## Responsive layout
+
+With the default `layout="auto"`, the file manager measures its own width instead of the viewport.
+This also works when it is embedded in a narrow panel on a wide screen. Below
+`compactBreakpoint` (620 px by default):
+
+- The sidebar and the details panel become drawers.
+- Toolbar actions move to an overflow menu.
+- A selection bar with the main actions appears at the bottom.
+- The folder picker, properties and previews fill the screen.
+
+<Demo data={FileManagerDemos.mobile} />
+
+Use `layout="compact"` or `layout="desktop"` to force either arrangement.
+
+## Touch interaction
+
+<DataTable
+  head={['Gesture', 'Result']}
+  data={[
+    ['Tap', 'Opens the entry'],
+    ['Long press', 'Selects the entry and enters selection mode, where taps toggle'],
+    ['Checkbox', 'Toggles selection'],
+    ['Three dots', 'Opens the menu of the entry'],
+  ]}
+/>
+
+Internal drag and drop is disabled in compact mode. Touch users can move entries with the
+**Move to** action, while uploads use the native file picker.
+
+## Keyboard and screen readers
+
+- The content view uses the `grid` pattern (`treegrid` for the tree view), exposes selection state
+  and keeps row metadata accurate while virtualized.
+- Roving focus keeps one entry in the tab order; arrow keys move between entries. See the
+  [keyboard reference](/file-manager/actions#keyboard-shortcuts).
+- Sortable columns expose `aria-sort`, and the folder tree uses the `tree` pattern.
+- Menus use Mantine `Menu` semantics and keyboard behavior. Entry menus also open with
+  `Shift+F10` and the Menu key.
+- Dialogs trap focus, then return focus to the content view when they close.
+- The status bar and notices use live-region semantics; errors use `role="alert"`.
+- All interactive icons have accessible names, which come from `labels` and can be translated.
+- Transitions are disabled when `prefers-reduced-motion` is enabled.
+
+When overriding colors or styles, verify focus-indicator and text contrast in both color schemes.
+Use `labels` to provide complete translations for accessible names as well as visible text.

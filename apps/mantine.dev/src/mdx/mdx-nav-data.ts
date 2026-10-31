@@ -212,6 +212,18 @@ const OTHER_EXTENSIONS_PAGES: MdxNavItem[] = [
   { label: 'Rich text editor', link: '/x/tiptap' },
 ]
 
+const FILE_MANAGER_PAGES: MdxNavItem[] = [
+  { label: 'Getting started', link: '/file-manager/getting-started' },
+  { label: 'FileManager', link: '/file-manager/file-manager' },
+  { label: 'Backend adapters', link: '/file-manager/adapters' },
+  { label: 'Customization', link: '/file-manager/customization' },
+  { label: 'Actions and menus', link: '/file-manager/actions' },
+  { label: 'Previews', link: '/file-manager/previews' },
+  { label: 'Uploads', link: '/file-manager/uploads' },
+  { label: 'Mobile and accessibility', link: '/file-manager/mobile' },
+  { label: 'Features and limitations', link: '/file-manager/features' },
+]
+
 const WHATSAPP_INBOX_PAGES: MdxNavItem[] = [
   { label: 'Getting started', link: '/whatsapp-inbox/getting-started' },
   { label: 'WhatsAppInbox', link: '/whatsapp-inbox/inbox' },
@@ -459,6 +471,10 @@ export const MDX_NAV_DATA: MdxNavCategory[] = [
   {
     category: 'WhatsApp inbox',
     groups: [{ title: 'WhatsApp inbox', pages: WHATSAPP_INBOX_PAGES }],
+  },
+  {
+    category: 'File manager',
+    groups: [{ title: 'File manager', pages: FILE_MANAGER_PAGES }],
   },
   {
     category: 'Extensions',

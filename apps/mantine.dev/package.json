@@ -19,6 +19,7 @@
     "@mantine-vue/core": "workspace:*",
     "@mantine-vue/dates": "workspace:*",
     "@mantine-vue/dropzone": "workspace:*",
+    "@mantine-vue/file-manager": "workspace:*",
     "@mantine-vue/form": "workspace:*",
     "@mantine-vue/hooks": "workspace:*",
     "@mantine-vue/lightbox": "workspace:*",

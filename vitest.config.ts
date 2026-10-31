@@ -21,6 +21,7 @@ export default defineConfig({
       '@mantine-vue/contextmenu': r('./packages/@mantine-vue/contextmenu/src'),
       '@mantine-vue/dates': r('./packages/@mantine-vue/dates/src'),
       '@mantine-vue/dropzone': r('./packages/@mantine-vue/dropzone/src'),
+      '@mantine-vue/file-manager': r('./packages/@mantine-vue/file-manager/src'),
       '@mantine-vue/form': r('./packages/@mantine-vue/form/src'),
       '@mantine-vue/carousel': r('./packages/@mantine-vue/carousel/src'),
       '@mantine-vue/charts': r('./packages/@mantine-vue/charts/src'),

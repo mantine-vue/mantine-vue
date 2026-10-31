@@ -1,0 +1,53 @@
+import { FileManagerDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.FileManagerGettingStarted)
+
+`@mantine-vue/file-manager` provides a backend-agnostic file manager for Vue 3. It includes folder
+navigation, five views, previews, uploads, bulk operations, keyboard navigation and a responsive
+touch interface. An adapter connects those features to your API or storage service.
+
+## Installation
+
+<InstallScript packages="@mantine-vue/file-manager @mantine-vue/dropzone" />
+
+Import the package styles after the core styles at the root of your application:
+
+```ts
+import '@mantine-vue/core/styles.css'
+import '@mantine-vue/file-manager/styles.css'
+```
+
+## Create your first file manager
+
+Start with `createMemoryAdapter`. It implements the complete adapter contract without a server,
+which makes it useful for prototypes, tests and component previews. Its data is reset when the
+page reloads.
+
+`FileManager` fills its container, so the container must have an explicit height.
+
+<Demo data={FileManagerDemos.usage} />
+
+## Connect your backend
+
+Use one of three adapter approaches:
+
+- Implement `FileSystemAdapter` for any API or storage service.
+- Use `createRestAdapter` when your HTTP API follows the package's REST convention.
+- Keep `createMemoryAdapter` for local examples and tests.
+
+Only `list` is required. Optional methods enable matching features, so a read-only adapter does
+not expose upload, rename or delete actions. See [backend adapters](/file-manager/adapters) for the
+contract, capability detection and REST endpoints.
+
+## Next steps
+
+- [FileManager component](/file-manager/file-manager): state, views, pagination and events
+- [Backend adapters](/file-manager/adapters): connect a REST API or any other backend
+- [Customization](/file-manager/customization): theme, sections, slots and custom views
+- [Actions and menus](/file-manager/actions): toolbar, context menus and keyboard shortcuts
+- [File previews](/file-manager/previews): built-in viewers and custom renderers
+- [File uploads](/file-manager/uploads): validation, conflicts, folders and chunking
+- [Mobile and accessibility](/file-manager/mobile): touch and keyboard interaction
+- [Features and limitations](/file-manager/features): package capabilities and backend requirements

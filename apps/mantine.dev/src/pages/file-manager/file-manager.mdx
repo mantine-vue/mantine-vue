@@ -1,0 +1,135 @@
+import { FileManagerDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.FileManager)
+
+## Usage
+
+Pass an [adapter](/file-manager/adapters) and give the component a container with an explicit
+height. The interface automatically hides actions that the adapter does not support.
+
+<Demo data={FileManagerDemos.usage} />
+
+## Complete example
+
+This example combines controlled state, upload restrictions, confirmations and an in-memory
+adapter with simulated latency and a storage quota.
+
+<Demo data={FileManagerDemos.advanced} />
+
+## Control component state
+
+Use `v-model` when application state must follow the file manager. Use the matching `default-*`
+prop when the component should own that state.
+
+<DataTable
+  head={['State', 'Controlled', 'Initial value']}
+  data={[
+    ['Open folder', 'v-model:folder-id', 'default-folder-id'],
+    ['View', 'v-model:view', 'default-view'],
+    ['Sort', 'v-model:sort', 'default-sort'],
+    ['Filters', 'v-model:filters', 'default-filters'],
+    ['Selection', 'v-model:selected-ids', 'default-selected-ids'],
+  ]}
+/>
+
+## Views
+
+Five views are built in: `details`, `list`, `grid`, `gallery` and `tree`. Switching views preserves
+the current location, selection, sort and filters. Use `views` to limit or reorder the available
+options; see [custom views](/file-manager/customization#custom-views) to add your own.
+
+<Demo data={FileManagerDemos.layouts} />
+
+## Pagination and virtualization
+
+Pagination controls how entries are fetched. Virtualization controls how many loaded rows exist in
+the DOM. With the default `virtualize="auto"`, folders above `virtualizeThreshold` render only the
+rows near the viewport.
+
+Set `pagination="infinite"` to request another adapter page as the user scrolls:
+
+<Demo data={FileManagerDemos.large} />
+
+`pagination="pages"` displays a pager and requests pages on demand:
+
+<Demo data={FileManagerDemos.pages} />
+
+<DataTable
+  head={['pagination', 'Behavior']}
+  data={[
+    ['none', 'Loads the whole folder, following nextCursor if the adapter pages it'],
+    ['infinite', 'Requests pageSize entries and appends more while scrolling'],
+    ['pages', 'Shows pageSize entries per page and loads pages on demand'],
+  ]}
+/>
+
+For partially loaded folders, accurate server-side sorting requires
+`capabilities.serverSort`. See [adapter capabilities](/file-manager/adapters#capability-detection).
+
+## Use the headless controller
+
+`useFileManager` returns the controller `FileManager` uses internally. Create it yourself and pass
+it through `controller` to add external controls or to build a completely custom interface.
+Configure behavioral options such as pagination, upload restrictions and labels in
+`useFileManager` when supplying an external controller.
+
+<Demo data={FileManagerDemos.headless} />
+
+Its main members are:
+
+<DataTable
+  head={['Group', 'Members']}
+  data={[
+    [
+      'Location',
+      'location, folder, ancestors, navigate, openFolder, open, goBack, goForward, goUp, refresh',
+    ],
+    ['Listing', 'visibleEntries, pageEntries, loading, error, hasMore, loadMore, setPage'],
+    ['Presentation', 'view, sort, filters, setSort, toggleSort, setFilters, clearFilters'],
+    ['Search', 'searchQuery, searching, setSearchQuery'],
+    ['Selection', 'selection, selectedEntries, select, selectAll, setSelection, clearSelection'],
+    [
+      'Operations',
+      'createFolder, rename, move, copy, duplicate, remove, deletePermanently, restore, emptyTrash, setStarred, download, upload',
+    ],
+    ['Clipboard', 'clipboard, cut, copyToClipboard, paste, clearClipboard'],
+    ['History', 'undo, redo, canUndo, canRedo'],
+    [
+      'Uploads',
+      'uploads.items, uploads.cancel, uploads.retry, uploads.remove, uploads.cancelAll, uploads.retryFailed',
+    ],
+  ]}
+/>
+
+## Events
+
+<DataTable
+  head={['Event', 'Payload', 'When']}
+  data={[
+    ['update:folderId', 'folder id', 'The open folder changed'],
+    ['update:view', 'view name', 'The layout changed'],
+    ['update:sort', 'FileSort', 'The sort changed'],
+    ['update:filters', 'FileFilters', 'The filters changed'],
+    ['update:selectedIds', 'string[]', 'The selection changed'],
+    ['locationChange', 'FileManagerLocation', 'A folder, favorites, recent or the trash opened'],
+    ['open', 'FileEntry', 'A file was opened'],
+    ['notice', 'FileManagerNotice', 'Feedback about an operation'],
+  ]}
+/>
+
+Feedback appears inside the manager by default. Set `:with-notices="false"` and handle `notice` to
+send feedback to `@mantine-vue/notifications` or another notification system.
+
+## Undo and redo
+
+Create, rename, move, copy, duplicate and move-to-trash operations can be undone. Overwrites and
+permanent deletion cannot be undone. Permanent deletion and emptying the trash clear the history
+because earlier steps may reference entries that no longer exist.
+
+## TypeScript
+
+The package exports its public interfaces, including `FileEntry`, `FileSystemAdapter`,
+`FileSystemCapabilities`, `FileBulkResult`, `FileFilters`, `FileSort`, `FileUploadItem` and
+`FileManagerController`.

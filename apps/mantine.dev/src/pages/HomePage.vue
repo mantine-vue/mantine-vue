@@ -151,7 +151,7 @@ function inviteTeammate() {
 <template>
   <PageHead
     :title="undefined"
-    description="Build accessible, production-ready Vue 3 applications with a cohesive library of customizable components, charts, forms, and composables."
+    description="Build accessible, production-ready Vue 3 applications with customizable components, charts, forms, file management, scheduling, and composables."
   />
 
   <main class="home">
@@ -656,12 +656,23 @@ function inviteTeammate() {
     <section class="showcaseSection operationsShowcaseSection">
       <div class="homeContainer">
         <div class="sectionHeading">
-          <Badge color="violet" variant="light" radius="xl">Production compositions</Badge>
-          <h2>Files, feedback, and activity—together.</h2>
+          <Badge color="violet" variant="light" radius="xl">File Manager extension</Badge>
+          <h2>A complete file workspace, ready for your backend.</h2>
           <p>
-            A practical operations surface combining file management, selectable rows,
-            notifications, progress, menus, and a live activity timeline.
+            Browse folders, switch views, preview files, upload content, and run bulk operations.
+            The adapter-driven API connects the same interface to any backend.
           </p>
+          <Group justify="center" mt="xl">
+            <Button
+              :component="RouterLink"
+              to="/file-manager/getting-started"
+              variant="default"
+              radius="md"
+            >
+              Explore File Manager
+              <template #rightSection><PhArrowRight :size="16" /></template>
+            </Button>
+          </Group>
         </div>
         <HomeOperationsShowcase />
       </div>

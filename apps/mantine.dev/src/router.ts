@@ -809,6 +809,24 @@ const routes: RouteRecordRaw[] = [
     name: 'x-json-viewer',
     component: mdxRoute(() => import('./pages/x/json-viewer.mdx')),
   },
+  { path: '/file-manager', redirect: '/file-manager/getting-started' },
+  ...(
+    [
+      'getting-started',
+      'file-manager',
+      'adapters',
+      'customization',
+      'actions',
+      'previews',
+      'uploads',
+      'mobile',
+      'features',
+    ] as const
+  ).map((page) => ({
+    path: `/file-manager/${page}`,
+    name: `file-manager-${page}`,
+    component: mdxRoute(() => import(`./pages/file-manager/${page}.mdx`)),
+  })),
   { path: '/whatsapp-inbox', redirect: '/whatsapp-inbox/getting-started' },
   {
     path: '/whatsapp-inbox/getting-started',

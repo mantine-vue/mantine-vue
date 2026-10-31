@@ -1,0 +1,216 @@
+import { FileManagerDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.FileManagerAdapters)
+
+An adapter maps file-manager operations to your backend. Only `list` is required; each optional
+method enables its corresponding interface feature.
+
+## Capability detection
+
+The following read-only adapter implements `list` and `download`, so the manager does not render
+upload, rename or delete controls.
+
+<Demo data={FileManagerDemos.customAdapter} />
+
+<DataTable
+  head={['Method', 'Enables']}
+  data={[
+    ['list', 'Browsing (required)'],
+    ['get', 'Lookups by id, such as the destination name in conflict prompts'],
+    ['createFolder', 'New folder'],
+    ['rename', 'Rename'],
+    ['move', 'Move, cut, drag and drop'],
+    ['copy', 'Copy, duplicate'],
+    ['delete', 'Permanent deletion, and undo of create and copy'],
+    ['trash + listTrash', 'Trash location and move to trash'],
+    ['restore', 'Restore and undo of move to trash'],
+    ['emptyTrash', 'Empty trash'],
+    ['upload', 'Uploads'],
+    ['chunkedUpload', 'Chunked uploads and retry from an existing session'],
+    ['download', 'Download of files'],
+    ['downloadMany', 'Archives: several entries at once and folders'],
+    ['search', 'Backend search. Without it, search filters the loaded folder'],
+    ['getPreview', 'Previews'],
+    ['getThumbnail', 'Thumbnails. entry.thumbnailUrl works without it'],
+    ['setStarred + listStarred', 'Favorites location and favorite action'],
+    ['listRecent', 'Recent files'],
+  ]}
+/>
+
+`folderUpload` and `serverSort` describe behavior rather than individual methods, so declare them
+explicitly:
+
+```ts
+const adapter: FileSystemAdapter = {
+  capabilities: {
+    folderUpload: true, // `upload` understands `relativePath` and creates folders
+    serverSort: true, // `list` honors `sort`, needed to sort partially loaded folders
+    rename: false, // `false` hides a feature, for example for read-only users
+  },
+  // ...
+}
+```
+
+For method-backed features, a capability override can disable support but cannot enable a missing
+method. For example, `rename: true` has no effect without `rename`.
+
+## Implementing an adapter
+
+```ts
+import { FileManagerError } from '@mantine-vue/file-manager'
+import type { FileEntry, FileSystemAdapter } from '@mantine-vue/file-manager'
+
+const adapter: FileSystemAdapter = {
+  async list({ folderId, cursor, limit, signal }) {
+    const response = await fetch(
+      `/api/folders/${encodeURIComponent(folderId ?? 'root')}?cursor=${cursor ?? ''}&limit=${limit ?? 100}`,
+      { signal },
+    )
+    const data = await response.json()
+
+    return {
+      folder: data.folder,
+      ancestors: data.ancestors,
+      items: data.items,
+      nextCursor: data.nextCursor,
+      total: data.total,
+    }
+  },
+
+  async rename({ id, name, signal }) {
+    const response = await fetch(`/api/items/${encodeURIComponent(id)}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name }),
+      signal,
+    })
+
+    if (response.status === 409) {
+      throw new FileManagerError('conflict', `${name} already exists`)
+    }
+
+    if (!response.ok) {
+      throw new FileManagerError('unknown', `Rename failed with status ${response.status}`)
+    }
+
+    return response.json()
+  },
+}
+```
+
+Adapter contract details:
+
+- **IDs are opaque.** A path-based backend can use the path; other backends can use any stable key.
+  When an operation changes the ID, return the updated entry so the manager can follow it.
+- **`folderId: null` means the root.** The root itself may have any ID.
+- **Forward `signal` to requests.** Navigation and disposal abort results that are no longer
+  needed.
+- **Bulk methods report per item.** `move`, `copy`, `delete`, `trash`, `restore` and `setStarred`
+  resolve with `{ succeeded, failed, skipped }` rather than rejecting, so one bad item does not hide
+  the ones that went through. The manager shows partial failures to the user.
+
+## Name conflicts
+
+`move`, `copy` and `upload` receive a `conflict` strategy. With the default
+`conflictStrategy="ask"`, the first attempt uses `fail`. Report a collision with the `conflict`
+code; the manager asks the user and retries with `overwrite`, `rename` or `skip`.
+
+## Permissions
+
+`entry.permissions` controls which operations the interface offers for an entry. An omitted field
+means that the backend did not declare a restriction.
+
+```ts
+const entry: FileEntry = {
+  id: '42',
+  name: 'Contract.pdf',
+  kind: 'file',
+  parentId: 'legal',
+  permissions: { rename: false, delete: false, move: false },
+}
+```
+
+Permissions, file types and sizes are checked in the browser for immediate feedback only. Enforce
+all authorization, validation, quotas and conflict rules on the backend.
+
+## In-memory adapter
+
+`createMemoryAdapter` implements the complete contract, including trash, chunked uploads and ZIP
+archives. Use it for demos, tests and prototypes; it does not persist data.
+
+<Demo data={FileManagerDemos.mockBackend} />
+
+<DataTable
+  head={['Option', 'Description']}
+  data={[
+    ['files', 'Initial tree of MemoryFileSeed objects'],
+    ['rootName', 'Name of the root folder'],
+    ['latency', 'Delay per request in ms, or a [min, max] range'],
+    ['quota', 'Storage limit in bytes'],
+    ['capabilities', 'Turns features off'],
+    ['onRequest', 'Called before each request. Throw from it to simulate failures'],
+  ]}
+/>
+
+## REST adapter
+
+`createRestAdapter` implements the adapter contract for an HTTP API with the convention below.
+Disable endpoints your API does not provide through `capabilities`.
+
+```ts
+import { createRestAdapter } from '@mantine-vue/file-manager'
+
+const adapter = createRestAdapter({
+  baseUrl: 'https://api.example.com/files',
+  headers: async () => ({ Authorization: `Bearer ${await getToken()}` }),
+  mapEntry: (raw) => ({ ...raw, modifiedAt: raw.updated_at }),
+  capabilities: { trash: false }, // endpoints your API does not implement
+})
+```
+
+<DataTable
+  head={['Request', 'Purpose']}
+  data={[
+    [
+      'GET /folders/:id/children',
+      'list. The root uses the id root. Query: cursor, limit, sort, direction, foldersOnly',
+    ],
+    ['GET /items/:id', 'get'],
+    ['POST /folders', 'createFolder with { parentId, name }'],
+    ['PATCH /items/:id', 'rename with { name }'],
+    ['POST /items/move', 'move with { ids, targetId, conflict }'],
+    ['POST /items/copy', 'copy with { ids, targetId, conflict }'],
+    ['POST /items/delete', 'delete with { ids }'],
+    ['POST /items/trash', 'trash with { ids }'],
+    ['POST /items/restore', 'restore with { ids }'],
+    ['GET /trash', 'listTrash'],
+    ['DELETE /trash', 'emptyTrash'],
+    ['POST /files', 'upload as multipart: file, parentId, conflict, relativePath'],
+    ['GET /items/:id/content', 'download and getPreview'],
+    ['POST /items/archive', 'downloadMany with { ids }'],
+    ['GET /items/:id/thumbnail', 'getThumbnail. Query: width, height. 404 means none'],
+    ['GET /search', 'search. Query: query, folderId, recursive, cursor, limit'],
+    ['POST /items/star', 'setStarred with { ids, starred }'],
+    ['GET /starred', 'listStarred'],
+    ['GET /recent', 'listRecent'],
+  ]}
+/>
+
+List endpoints return `{ items, nextCursor, total }`; `/folders/:id/children` also returns `folder`
+and `ancestors`. Error responses can return `{ code, message }`, where `code` is a `FileErrorCode`.
+Without a code, status 401/403 maps to `permission-denied`, 404 to `not-found`, 409 to `conflict`,
+413 to `too-large`, 415 to `type-not-allowed`, 422 to `invalid-name` and 507 to
+`quota-exceeded`.
+
+The REST adapter uses `XMLHttpRequest` for upload progress. It does not define a chunked-upload
+protocol because session APIs differ by backend; add `chunkedUpload` to the returned adapter when
+needed.
+
+## Cloud storage
+
+Cloud services such as Amazon S3, Google Drive and Azure Blob Storage can be exposed through the
+same adapter contract. Keep long-lived credentials on your server; use short-lived signed URLs
+inside `upload` or `chunkedUpload` when the browser should transfer content directly. The package
+does not include provider-specific adapters.
