@@ -49,7 +49,10 @@ watch(
   (viewport, _, onCleanup) => {
     scrollbarContext.onThumbPositionChange()
     viewport?.addEventListener('scroll', handleScroll)
-    onCleanup(() => viewport?.removeEventListener('scroll', handleScroll))
+    onCleanup(() => {
+      viewport?.removeEventListener('scroll', handleScroll)
+      removeScrollListener()
+    })
   },
   { immediate: true, flush: 'post' },
 )

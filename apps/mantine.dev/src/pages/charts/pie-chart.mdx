@@ -15,4 +15,8 @@ Enable `withLabels` and `withLabelsLine` to display segment labels and connector
 
 Labels and the legend are controlled independently. Set `withLegend` only when the legend should be displayed.
 
+You can move the legend above or below the chart with `legendProps`, for example
+`:legend-props="{ position: 'top' }"`. The remaining `legendProps` are passed to the ECharts
+[legend](https://echarts.apache.org/en/option.html#legend) option.
+
 <Demo data={ChartsDemos.pieChartLabelsLegend} />

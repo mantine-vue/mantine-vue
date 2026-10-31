@@ -78,6 +78,8 @@ export type ResourcesDayViewCssVariables = {
     | '--resources-day-view-slot-width'
     | '--resources-day-view-row-height'
     | '--resources-day-view-group-label-width'
+    | '--resources-day-view-business-hours-bg'
+    | '--resources-day-view-non-business-hours-bg'
 }
 
 /** Payload of the drop events of the resource views, extended with the target resource. */

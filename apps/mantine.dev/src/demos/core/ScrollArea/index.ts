@@ -7,6 +7,7 @@ import { scrollTo } from './ScrollArea.demo.scrollTo'
 import { startScrollPosition } from './ScrollArea.demo.startScrollPosition'
 import { scrollIntoView } from './ScrollArea.demo.scrollIntoView'
 import { maxHeight } from './ScrollArea.demo.maxHeight'
+import { offsetSize } from './ScrollArea.demo.offsetSize'
 
 export const ScrollAreaDemos = {
   usage,
@@ -18,4 +19,5 @@ export const ScrollAreaDemos = {
   startScrollPosition,
   scrollIntoView,
   maxHeight,
+  offsetSize,
 }

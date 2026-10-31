@@ -2412,6 +2412,12 @@ export const DayViewStylesApi: StylesApiData<
       '--day-view-radius': 'Controls `border-radius` of the day view',
       '--day-view-slot-height': 'Controls `height` of 1-hour time slots',
       '--day-view-all-day-slot-height': 'Controls `height` of the all-day slot',
+      '--slot-label-size':
+        'Height of a time label relative to a 1-hour slot, set by `slotLabelInterval`',
+      '--day-view-business-hours-bg':
+        'Controls `background-color` of time slots and labels inside business hours',
+      '--day-view-non-business-hours-bg':
+        'Controls `background-color` of time slots and labels outside business hours',
       '--event-raise-delay': 'Controls the hover delay before a cascade event is raised',
       '--event-z-index': 'Controls the base stacking order of a cascade event',
       '--event-z-index-raised': 'Controls the raised stacking order of a cascade event',
@@ -2438,6 +2444,12 @@ export const DayViewStylesApi: StylesApiData<
       modifier: 'data-non-business-hours',
       selector: 'dayViewSlot',
       condition: '`highlightBusinessHours` is true and slot is outside business hours',
+    },
+    {
+      modifier: 'data-partial-business-hours',
+      selector: 'dayViewSlot',
+      condition:
+        '`highlightBusinessHours` is true and a business hours boundary falls inside the slot',
     },
     {
       modifier: 'data-drop-target',
@@ -3546,6 +3558,8 @@ export const MobileMonthViewStylesApi: StylesApiData<
   },
   vars: {
     mobileMonthView: {
+      '--mobile-month-view-columns':
+        'Number of visible week columns, set when weekend days are hidden',
       '--mobile-month-view-radius': 'Controls border radius',
     },
   },
@@ -4686,6 +4700,10 @@ export const ResourcesDayViewStylesApi: StylesApiData<
       '--resources-day-view-slot-width': 'Controls `width` of each time slot column',
       '--resources-day-view-row-height': 'Controls `height` of each resource row',
       '--resources-day-view-group-label-width': 'Controls `width` of the group label column',
+      '--resources-day-view-business-hours-bg':
+        'Controls `background-color` of time slots and labels inside business hours',
+      '--resources-day-view-non-business-hours-bg':
+        'Controls `background-color` of time slots and labels outside business hours',
       '--_time-bubble-width': 'Controls the bubble width',
       '--bg-event-bg': 'Controls the event bg',
       '--bg-event-color': 'Controls the event color',
@@ -4708,6 +4726,12 @@ export const ResourcesDayViewStylesApi: StylesApiData<
       modifier: 'data-non-business-hours',
       selector: 'resourcesDayViewRowSlot',
       condition: '`highlightBusinessHours` is true and slot is outside business hours',
+    },
+    {
+      modifier: 'data-partial-business-hours',
+      selector: 'resourcesDayViewRowSlot',
+      condition:
+        '`highlightBusinessHours` is true and a business hours boundary falls inside the slot',
     },
     {
       modifier: 'data-drop-target',
@@ -5120,6 +5144,10 @@ export const ResourcesWeekViewStylesApi: StylesApiData<
       '--resources-week-view-slot-width': 'Controls `width` of each time slot column',
       '--resources-week-view-row-height': 'Controls `height` of each resource row',
       '--resources-week-view-group-label-width': 'Controls `width` of the group label column',
+      '--resources-week-view-business-hours-bg':
+        'Controls `background-color` of time slots and labels inside business hours',
+      '--resources-week-view-non-business-hours-bg':
+        'Controls `background-color` of time slots and labels outside business hours',
       '--_time-bubble-width': 'Controls the bubble width',
       '--bg-event-bg': 'Controls the event bg',
       '--bg-event-color': 'Controls the event color',
@@ -5142,6 +5170,12 @@ export const ResourcesWeekViewStylesApi: StylesApiData<
       modifier: 'data-non-business-hours',
       selector: 'resourcesWeekViewRowSlot',
       condition: '`highlightBusinessHours` is true and slot is outside business hours',
+    },
+    {
+      modifier: 'data-partial-business-hours',
+      selector: 'resourcesWeekViewRowSlot',
+      condition:
+        '`highlightBusinessHours` is true and a business hours boundary falls inside the slot',
     },
     {
       modifier: 'data-drop-target',
@@ -5580,6 +5614,8 @@ export const ScrollAreaStylesApi: StylesApiData<
   },
   vars: {
     root: {
+      '--scrollarea-offset-size':
+        'Size of the gap reserved by `offsetScrollbars`, defaults to the scrollbar size',
       '--scrollarea-over-scroll-behavior': 'Controls the over scroll behavior',
       '--scrollarea-scrollbar-size': 'Scrollbar size',
     },
@@ -7000,6 +7036,12 @@ export const WeekViewStylesApi: StylesApiData<
       '--week-view-radius': 'Controls `border-radius` of the week view',
       '--week-view-slot-height': 'Controls `height` of 1-hour time slots',
       '--week-view-all-day-slots-height': 'Controls `height` of all-day slots section',
+      '--slot-label-size':
+        'Height of a time label relative to a 1-hour slot, set by `slotLabelInterval`',
+      '--week-view-business-hours-bg':
+        'Controls `background-color` of time slots and labels inside business hours',
+      '--week-view-non-business-hours-bg':
+        'Controls `background-color` of time slots and labels outside business hours',
       '--event-raise-delay': 'Controls the hover delay before a cascade event is raised',
       '--event-z-index': 'Controls the base stacking order of a cascade event',
       '--event-z-index-raised': 'Controls the raised stacking order of a cascade event',
@@ -7037,6 +7079,12 @@ export const WeekViewStylesApi: StylesApiData<
       modifier: 'data-non-business-hours',
       selector: 'weekViewDaySlot',
       condition: '`highlightBusinessHours` is true and slot is outside business hours',
+    },
+    {
+      modifier: 'data-partial-business-hours',
+      selector: 'weekViewDaySlot',
+      condition:
+        '`highlightBusinessHours` is true and a business hours boundary falls inside the slot',
     },
     {
       modifier: 'data-static',

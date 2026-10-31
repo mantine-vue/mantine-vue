@@ -30,6 +30,8 @@ const varsResolver = createVarsResolver<any>(
       '--resources-day-view-slot-width': cssSize(slotWidth),
       '--resources-day-view-row-height': cssSize(rowHeight),
       '--resources-day-view-group-label-width': cssSize(groupLabelWidth),
+      '--resources-day-view-business-hours-bg': undefined,
+      '--resources-day-view-non-business-hours-bg': undefined,
     },
   }),
 )
@@ -60,7 +62,9 @@ import type {
 import {
   expandRecurringEvents,
   formatDate,
-  getBusinessHoursMod,
+  addMinutesToTime,
+  getBusinessHoursState,
+  getSlotLabelDate,
   getCurrentTimePosition,
   getDayTimeIntervals,
   getGroupToResourceIdMap,
@@ -234,10 +238,11 @@ const positioned = computed(() =>
   }),
 )
 
-const businessHoursMods = computed(() =>
+const businessHoursStates = computed(() =>
   intervals.value.map((interval) =>
-    getBusinessHoursMod({
+    getBusinessHoursState({
       time: interval.startTime,
+      endTime: addMinutesToTime(interval.startTime, clampIntervalMinutes(props.intervalMinutes!)),
       businessHours: props.businessHours,
       highlightBusinessHours: props.highlightBusinessHours,
       dayOfWeek: dayOfWeek.value,
@@ -789,16 +794,22 @@ const changeView = (view: ScheduleViewLevel) => emit('viewChange', view)
               v-for="(interval, slotIndex) in intervals"
               :key="interval.startTime"
               v-bind="staticStyles('resourcesDayViewTimeLabel')"
-              :data-business-hours="businessHoursMods[slotIndex]['business-hours'] || undefined"
-              :data-non-business-hours="
-                businessHoursMods[slotIndex]['non-business-hours'] || undefined
+              :data-business-hours="
+                businessHoursStates[slotIndex].mod['business-hours'] || undefined
               "
+              :data-non-business-hours="
+                businessHoursStates[slotIndex].mod['non-business-hours'] || undefined
+              "
+              :data-partial-business-hours="
+                businessHoursStates[slotIndex].mod['partial-business-hours'] || undefined
+              "
+              :style="businessHoursStates[slotIndex].vars"
             >
               <slot
                 name="timeLabel"
                 :label="
                   formatDate({
-                    date: `${date} ${interval.startTime}`,
+                    date: getSlotLabelDate(date, interval.startTime),
                     locale: props.locale || 'en',
                     format: props.slotLabelFormat!,
                   })
@@ -808,7 +819,7 @@ const changeView = (view: ScheduleViewLevel) => emit('viewChange', view)
               >
                 {{
                   formatDate({
-                    date: `${date} ${interval.startTime}`,
+                    date: getSlotLabelDate(date, interval.startTime),
                     locale: props.locale || 'en',
                     format: props.slotLabelFormat!,
                   })
@@ -982,10 +993,16 @@ const changeView = (view: ScheduleViewLevel) => emit('viewChange', view)
                 :key="interval.startTime"
                 :ref="setControl(resourceIndex, slotIndex)"
                 v-bind="staticStyles('resourcesDayViewRowSlot')"
-                :data-business-hours="businessHoursMods[slotIndex]['business-hours'] || undefined"
-                :data-non-business-hours="
-                  businessHoursMods[slotIndex]['non-business-hours'] || undefined
+                :data-business-hours="
+                  businessHoursStates[slotIndex].mod['business-hours'] || undefined
                 "
+                :data-non-business-hours="
+                  businessHoursStates[slotIndex].mod['non-business-hours'] || undefined
+                "
+                :data-partial-business-hours="
+                  businessHoursStates[slotIndex].mod['partial-business-hours'] || undefined
+                "
+                :style="businessHoursStates[slotIndex].vars"
                 :data-drop-target="
                   (dropTarget?.resourceId === resource.id && dropTarget.slotIndex === slotIndex) ||
                   undefined

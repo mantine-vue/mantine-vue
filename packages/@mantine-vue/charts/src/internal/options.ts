@@ -14,6 +14,18 @@ const bool = (value: unknown, fallback: boolean) => (typeof value === 'boolean' 
 const num = (value: unknown, fallback: number) => (typeof value === 'number' ? value : fallback)
 const obj = (value: unknown) => (value && typeof value === 'object' ? value : {})
 const list = <T>(value: unknown): T[] => (Array.isArray(value) ? (value as T[]) : [])
+
+/** `position` is a shorthand for the ECharts `top` and `bottom` legend options. */
+const legendOptions = (value: unknown) => {
+  const { position, ...rest } = obj(value) as Record<string, unknown>
+
+  if (position === 'top') {
+    return { top: 8, bottom: 'auto', ...rest }
+  }
+
+  return position === 'bottom' ? { top: 'auto', bottom: 8, ...rest } : rest
+}
+
 const gridLabelBounds = {
   outerBoundsMode: 'same' as const,
   outerBoundsContain: 'axisLabel' as const,
@@ -178,18 +190,22 @@ export function cartesianOption(
     } as SeriesOption)
   }
 
+  const withLegend = bool(props.withLegend, false)
+  const legendAtBottom = withLegend && (obj(props.legendProps) as any).position === 'bottom'
+  const legendAtTop = withLegend && !legendAtBottom
+
   return {
     animationDurationUpdate: num(props.tooltipAnimationDuration, 0),
     color: series.map((item) => resolveColor(item.color)),
     grid: {
       left: 48,
       right: bool(props.withRightYAxis, false) ? 48 : 16,
-      top: bool(props.withLegend, false) ? 44 : 16,
-      bottom: 38,
+      top: legendAtTop ? 44 : 16,
+      bottom: legendAtBottom ? 62 : 38,
       ...gridLabelBounds,
       ...obj(props.gridProps),
     },
-    legend: { show: bool(props.withLegend, false), ...obj(props.legendProps) },
+    legend: { show: bool(props.withLegend, false), ...legendOptions(props.legendProps) },
     tooltip: tooltip(props),
     xAxis: horizontal
       ? {
@@ -249,7 +265,7 @@ export function radialOption(props: Props, donut = false): EChartsOption {
         name: item.name,
         itemStyle: { color: item.itemStyle.color },
       })),
-      ...obj(props.legendProps),
+      ...legendOptions(props.legendProps),
     },
     tooltip: { trigger: 'item', show: bool(props.withTooltip, true), ...obj(props.tooltipProps) },
     series: [
@@ -309,7 +325,7 @@ export function scatterOption(props: Props, bubble = false): EChartsOption {
   const zKey = String(props.zAxisKey ?? 'z')
   return {
     grid: { ...gridLabelBounds, ...obj(props.gridProps) },
-    legend: { show: bool(props.withLegend, false), ...obj(props.legendProps) },
+    legend: { show: bool(props.withLegend, false), ...legendOptions(props.legendProps) },
     tooltip: { trigger: 'item', show: bool(props.withTooltip, true), ...obj(props.tooltipProps) },
     xAxis: { type: 'value', show: bool(props.withXAxis, true), ...obj(props.xAxisProps) },
     yAxis: props.withRightYAxis

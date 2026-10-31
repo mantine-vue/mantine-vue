@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, nextTick, useAttrs } from 'vue'
-import { omitAttrs } from '../../core'
+import { omitAttrs, useDirection } from '../../core'
 import MenuDropdown from './MenuDropdown.vue'
 import { useMenuContext } from './Menu.context'
 import { call } from './menu-utils'
@@ -17,6 +17,7 @@ defineSlots<MenuSlots>()
 
 const attrs = useAttrs()
 const ctx = useMenuContext()
+const { dir } = useDirection()
 
 /**
  * The consumer handler is chained explicitly below, so it must not also reach
@@ -36,7 +37,9 @@ function onKeydown(event: KeyboardEvent) {
 
   // Only when the focus is in *this* dropdown, not in a submenu of it – otherwise the
   // key would close every level at once.
-  if (event.key === 'ArrowLeft' && focused.closest('[data-menu-dropdown]') === currentDropdown) {
+  const closeKey = dir.value === 'rtl' ? 'ArrowRight' : 'ArrowLeft'
+
+  if (event.key === closeKey && focused.closest('[data-menu-dropdown]') === currentDropdown) {
     event.preventDefault()
 
     // The parent target points at this dropdown with `aria-controls`, which is the only

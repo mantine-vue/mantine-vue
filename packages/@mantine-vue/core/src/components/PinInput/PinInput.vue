@@ -240,9 +240,14 @@ function handleKeyDown(event: KeyboardEvent, index: number) {
     focusInputField('next', index)
   } else if (event.key === 'Delete') {
     event.preventDefault()
-    setFieldValue('', index)
+
+    if (!props.readOnly) {
+      setFieldValue('', index)
+    }
   } else if (event.key === 'Backspace') {
-    if (inputValue === '') {
+    if (props.readOnly) {
+      event.preventDefault()
+    } else if (inputValue === '') {
       event.preventDefault()
       focusInputField('prev', index)
     } else {
@@ -264,6 +269,11 @@ function handleKeyDown(event: KeyboardEvent, index: number) {
 
 function handlePaste(event: ClipboardEvent) {
   event.preventDefault()
+
+  if (props.readOnly) {
+    return
+  }
+
   const pasteData = event.clipboardData?.getData('text/plain').replace(/[\n\r\s]+/g, '') ?? ''
 
   if (validate(pasteData.trim())) {

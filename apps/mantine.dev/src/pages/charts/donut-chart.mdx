@@ -15,6 +15,10 @@ Enable `withLabels` and `withLabelsLine` to display segment labels and connector
 
 Set `withLegend` independently to display the legend. When outside labels and the legend are enabled together, the chart reserves space between them.
 
+You can move the legend above or below the chart with `legendProps`, for example
+`:legend-props="{ position: 'top' }"`. The remaining `legendProps` are passed to the ECharts
+[legend](https://echarts.apache.org/en/option.html#legend) option.
+
 <Demo data={ChartsDemos.donutChartLabelsLegend} />
 
 ## Center label

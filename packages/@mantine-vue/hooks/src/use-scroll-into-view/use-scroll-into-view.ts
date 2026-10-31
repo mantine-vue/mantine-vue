@@ -73,6 +73,7 @@ export function useScrollIntoView<
     if (frameID.value) {
       cancelAnimationFrame(frameID.value)
       frameID.value = 0
+      startTime.value = 0
       scrolling.value = false
     }
   }

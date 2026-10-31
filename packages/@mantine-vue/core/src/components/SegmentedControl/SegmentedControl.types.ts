@@ -81,7 +81,7 @@ export interface SegmentedControlOwnProps extends StylesApiProps<SegmentedContro
   orientation?: 'vertical' | 'horizontal'
 
   /**
-   * If set to `false`, prevents changing the value
+   * If set, value cannot be changed
    *
    * @default false
    */

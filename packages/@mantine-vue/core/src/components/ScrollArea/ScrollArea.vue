@@ -27,6 +27,7 @@ const varsResolver = createVarsResolver<any>(
       root: {
         '--scrollarea-scrollbar-size': rem(scrollbarSize),
         '--scrollarea-over-scroll-behavior': overrideOverscrollBehavior,
+        '--scrollarea-offset-size': undefined,
       },
     }
   },

@@ -53,6 +53,8 @@ export type DayViewCssVariables = {
     | '--day-view-radius'
     | '--day-view-slot-height'
     | '--day-view-all-day-slot-height'
+    | '--day-view-business-hours-bg'
+    | '--day-view-non-business-hours-bg'
     | '--event-raise-delay'
     | '--event-z-index'
     | '--event-z-index-raised'
@@ -62,6 +64,13 @@ export type DayViewSlots = EventSlots
 
 /** Props declared by `DayView` itself. See `DayViewProps` for the full public type. */
 export interface DayViewOwnProps extends TimeViewOwnProps, StylesApiProps<DayViewFactory> {
+  /**
+   * Interval between time labels in minutes. Must be a multiple of `intervalMinutes` that divides evenly into an hour (e.g. `15`, `30`) or is a whole number of hours. Values that do not satisfy these rules are rounded up to the nearest valid value, `60` is used for invalid values.
+   *
+   * @default 60
+   */
+  slotLabelInterval?: number
+
   /** Determines how overlapping events are laid out. @default 'columns' */
   eventOverlapMode?: ScheduleEventOverlapMode
 

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, h, onBeforeUnmount, ref, watch, useAttrs, useSlots, type VNodeChild } from 'vue'
 import { useId } from '@mantine-vue/hooks'
-import { resolveNode } from '../../core'
+import { resolveNode, useDirection } from '../../core'
 import { CheckIcon } from '../Checkbox'
 import { AccordionChevron } from '../Accordion'
 import { Combobox, isExternalInputChange, useCombobox } from '../Combobox'
@@ -495,6 +495,10 @@ const renderColumns = () => {
   )
 }
 
+const { dir } = useDirection()
+const expandKey = computed(() => (dir.value === 'rtl' ? 'ArrowLeft' : 'ArrowRight'))
+const collapseKey = computed(() => (dir.value === 'rtl' ? 'ArrowRight' : 'ArrowLeft'))
+
 const handleColumnsKeyDown = (event: KeyboardEvent) => {
   keyboardNav.value = true
   const columns = getCascaderColumns(props.data, activePath.value)
@@ -521,12 +525,12 @@ const handleColumnsKeyDown = (event: KeyboardEvent) => {
       activePath.value = [...activePath.value.slice(0, focusedLevel), currentColumn[previous].value]
     return true
   }
-  if (event.key === 'ArrowRight') {
+  if (event.key === expandKey.value) {
     if (focusedOption && cascaderOptionHasChildren(focusedOption))
       expandOption(focusedLevel, focusedOption)
     return true
   }
-  if (event.key === 'ArrowLeft') {
+  if (event.key === collapseKey.value) {
     if (activePath.value.length > 1) activePath.value = activePath.value.slice(0, -1)
     return true
   }
@@ -558,7 +562,7 @@ const handleKeydown = (event: KeyboardEvent) => {
 
   if (!combobox.dropdownOpened) {
     const opens =
-      ['ArrowDown', 'ArrowUp', 'ArrowRight', 'Enter'].includes(event.key) ||
+      ['ArrowDown', 'ArrowUp', expandKey.value, 'Enter'].includes(event.key) ||
       (!props.searchable && event.key === ' ')
     if (opens) {
       event.preventDefault()

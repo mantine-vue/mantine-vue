@@ -58,4 +58,31 @@ describe('@mantine-vue/hooks/use-throttled-callback', () => {
     vi.advanceTimersByTime(100)
     expect(callback).toHaveBeenCalledWith('test')
   })
+
+  it('queues a reentrant call instead of running it immediately', () => {
+    const calls: number[] = []
+    const result = renderHook((value: number) => {
+      calls.push(value)
+      if (value === 1) {
+        result(2)
+      }
+    }, 100)
+
+    result(1)
+    expect(calls).toEqual([1])
+
+    vi.advanceTimersByTime(100)
+    expect(calls).toEqual([1, 2])
+  })
+
+  it('stays usable after the callback throws', () => {
+    const callback = vi.fn().mockImplementationOnce(() => {
+      throw new Error('failure')
+    })
+    const result = renderHook(callback, 100)
+
+    expect(() => result(1)).toThrow('failure')
+    result(2)
+    expect(callback).toHaveBeenCalledTimes(2)
+  })
 })

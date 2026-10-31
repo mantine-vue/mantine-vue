@@ -89,6 +89,8 @@ export type ResourcesWeekViewCssVariables = {
     | '--resources-week-view-slot-width'
     | '--resources-week-view-row-height'
     | '--resources-week-view-group-label-width'
+    | '--resources-week-view-business-hours-bg'
+    | '--resources-week-view-non-business-hours-bg'
 }
 
 export interface ResourcesWeekViewSlots extends EventSlots {

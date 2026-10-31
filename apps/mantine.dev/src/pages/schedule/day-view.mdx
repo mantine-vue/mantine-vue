@@ -33,6 +33,15 @@ Common values are 15, 30, or 60 minutes.
 
 <Demo data={DayViewDemos.intervalMinutes} />
 
+## Slot label interval
+
+By default, the time column shows one label per hour. Set `slotLabelInterval` prop to display
+labels more often, for example every 15 or 30 minutes. The value must be a multiple of
+`intervalMinutes`, other values are rounded up to the next valid one. Increase `slotHeight` so
+that the labels have enough space:
+
+<Demo data={DayViewDemos.slotLabelInterval} />
+
 ## All-day events
 
 Events that span the entire day are displayed in a dedicated all-day section at the top.
@@ -82,6 +91,18 @@ from non-business hours. The `businessHours` prop accepts a tuple with start and
 in `HH:mm:ss` format.
 
 <Demo data={DayViewDemos.businessHours} />
+
+Business hours do not need to align with the slot grid. When a boundary falls inside a slot,
+the slot and the time label next to it are painted up to the exact minute:
+
+<Demo data={DayViewDemos.businessHoursMinute} />
+
+## Business hours colors
+
+Set `--day-view-business-hours-bg` and `--day-view-non-business-hours-bg` CSS variables
+with `vars` prop or in CSS to change the colors. Both variables apply to time slots and time labels:
+
+<Demo data={DayViewDemos.businessHoursColors} />
 
 ## Custom time slot props
 

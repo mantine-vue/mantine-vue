@@ -142,4 +142,96 @@ describe('@mantine-vue/hooks/use-debounced-callback', () => {
     expect(callback).toHaveBeenCalledTimes(1)
     expect(callback).toHaveBeenCalledWith(3)
   })
+
+  it('does not repeat an executed leading call on flush or unmount', () => {
+    const callback = vi.fn()
+    const { result, unmount } = renderHook(() =>
+      useDebouncedCallback(callback, { delay: 100, leading: true, flushOnUnmount: true }),
+    )
+
+    result('first')
+    result.flush()
+    result.flush()
+    unmount()
+    vi.advanceTimersByTime(100)
+
+    expect(callback).toHaveBeenCalledTimes(1)
+    expect(vi.getTimerCount()).toBe(0)
+  })
+
+  it.each([50, 100, 200])('does not repeat a leading call when maxWait is %s', (maxWait) => {
+    const callback = vi.fn()
+    const { result } = renderHook(() =>
+      useDebouncedCallback(callback, { delay: 100, leading: true, maxWait }),
+    )
+
+    result('first')
+    vi.advanceTimersByTime(maxWait)
+
+    expect(callback).toHaveBeenCalledTimes(1)
+    expect(result.isPending()).toBe(false)
+  })
+
+  it('fires the trailing call at maxWait during continuous calls', () => {
+    const callback = vi.fn()
+    const { result } = renderHook(() =>
+      useDebouncedCallback(callback, { delay: 100, leading: true, maxWait: 200 }),
+    )
+
+    result(1)
+    vi.advanceTimersByTime(50)
+    result(2)
+    vi.advanceTimersByTime(70)
+    result(3)
+    vi.advanceTimersByTime(70)
+    result(4)
+    expect(callback).toHaveBeenCalledTimes(1)
+
+    vi.advanceTimersByTime(10)
+    expect(callback).toHaveBeenCalledTimes(2)
+    expect(callback).toHaveBeenLastCalledWith(4)
+  })
+
+  it('preserves the cooldown and restarts maxWait after an empty maxWait timer', () => {
+    const callback = vi.fn()
+    const { result } = renderHook(() =>
+      useDebouncedCallback(callback, { delay: 100, leading: true, maxWait: 50 }),
+    )
+
+    result('first')
+    vi.advanceTimersByTime(60)
+    result('second')
+    expect(callback).toHaveBeenCalledTimes(1)
+    expect(result.isPending()).toBe(true)
+
+    vi.advanceTimersByTime(50)
+    expect(callback).toHaveBeenCalledTimes(2)
+    expect(callback).toHaveBeenLastCalledWith('second')
+
+    vi.advanceTimersByTime(100)
+    expect(callback).toHaveBeenCalledTimes(2)
+  })
+
+  it('flushes the latest pending leading call only once', () => {
+    const callback = vi.fn()
+    const { result, unmount } = renderHook(() =>
+      useDebouncedCallback(callback, {
+        delay: 100,
+        leading: true,
+        maxWait: 200,
+        flushOnUnmount: true,
+      }),
+    )
+
+    result('first')
+    result('latest')
+    result.flush()
+    result.flush()
+    unmount()
+    vi.advanceTimersByTime(200)
+
+    expect(callback).toHaveBeenCalledTimes(2)
+    expect(callback).toHaveBeenLastCalledWith('latest')
+    expect(vi.getTimerCount()).toBe(0)
+  })
 })

@@ -57,6 +57,7 @@ const rawProps = withDefaults(defineProps<ChipOwnProps & RootRefProps<Element>>(
   // `icon` is tri-state: `undefined` uses the default check icon, `null`/`false` hides it.
   icon: undefined,
   disabled: false,
+  readOnly: false,
   unstyled: false,
 })
 
@@ -135,7 +136,17 @@ function setRootRef(node: any) {
 
 defineExpose({ rootElement })
 
+function onClick(event: MouseEvent) {
+  if (props.readOnly) {
+    event.preventDefault()
+  }
+}
+
 function onChange(event: Event) {
+  if (props.readOnly) {
+    return
+  }
+
   const nextChecked = (event.currentTarget as HTMLInputElement).checked
 
   if (groupContext) {
@@ -169,7 +180,9 @@ const inputAttrs = computed(() => omitAttrs(attrs, ['class', 'style', 'value']))
       :type="inputType"
       :checked="checked"
       :disabled="props.disabled"
+      :readonly="props.readOnly"
       :value="chipValue"
+      @click="onClick"
       @change="onChange"
     />
 

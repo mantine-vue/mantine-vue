@@ -10,6 +10,7 @@ const defaultProps = {
   endTime: '23:59:59',
   intervalMinutes: 15,
   slotLabelFormat: 'HH:mm',
+  slotLabelInterval: 60,
   withCurrentTimeBubble: true,
   slotHeight: 64,
   headerFormat: 'MMMM D, YYYY',
@@ -24,6 +25,8 @@ const varsResolver = createVarsResolver<any>(
       '--day-view-radius': resolveScheduleRadius(radius),
       '--day-view-slot-height': cssSize(slotHeight),
       '--day-view-all-day-slot-height': cssSize(allDaySlotHeight),
+      '--day-view-business-hours-bg': undefined,
+      '--day-view-non-business-hours-bg': undefined,
     },
   }),
 )
@@ -39,9 +42,13 @@ import { useEventResize } from '../../hooks/use-event-resize'
 import { getLabel } from '../../labels'
 import type { DateTimeStringValue, DayOfWeek, ScheduleEventData } from '../../types'
 import {
+  addMinutesToTime,
+  clampIntervalMinutes,
   formatDate,
-  getBusinessHoursMod,
+  getBusinessHoursState,
   getDayTimeIntervals,
+  getSlotLabelDate,
+  getSlotLabelGroups,
   getVisibleEvents,
   isEventPlacementAllowed,
   toDateString,
@@ -94,6 +101,7 @@ const rawProps = withDefaults(defineProps<DayViewOwnProps>(), {
   eventDragInterval: undefined,
   eventResizeInterval: undefined,
   slotLabelFormat: undefined,
+  slotLabelInterval: undefined,
   withCurrentTimeIndicator: undefined,
   withCurrentTimeBubble: undefined,
   getCurrentTime: undefined,
@@ -196,10 +204,9 @@ const intervals = computed(() =>
     startTime: props.startTime!,
     endTime: props.endTime!,
     intervalMinutes: props.intervalMinutes!,
+    labelIntervalMinutes: props.slotLabelInterval,
   }),
 )
-
-const hourStartIntervals = computed(() => intervals.value.filter((slot) => slot.isHourStart))
 
 const allDayCounts = computed(() =>
   getVisibleEvents({
@@ -474,17 +481,37 @@ const handleSlotKeydown = (nativeEvent: KeyboardEvent, index: number) => {
     ?.focus()
 }
 
-const businessHoursMods = computed(() =>
+const getSlotBusinessHours = (time: string, endTime: string) =>
+  getBusinessHoursState({
+    time,
+    endTime,
+    businessHours: props.businessHours || ['09:00:00', '17:00:00'],
+    highlightBusinessHours: props.highlightBusinessHours,
+    dayOfWeek: dayjs(datePart.value).day() as DayOfWeek,
+  })
+
+const businessHoursStates = computed(() =>
   intervals.value.map((slot) =>
-    props.highlightBusinessHours
-      ? getBusinessHoursMod({
-          time: slot.startTime,
-          businessHours: props.businessHours || ['09:00:00', '17:00:00'],
-          highlightBusinessHours: true,
-          dayOfWeek: dayjs(`${datePart.value} ${slot.startTime}`).day() as DayOfWeek,
-        })
-      : { 'business-hours': false, 'non-business-hours': false },
+    getSlotBusinessHours(
+      slot.startTime,
+      addMinutesToTime(slot.startTime, clampIntervalMinutes(props.intervalMinutes!)),
+    ),
   ),
+)
+
+const slotLabelGroups = computed(() =>
+  getSlotLabelGroups(intervals.value).map((group) => ({
+    ...group,
+    label: group.isLabelStart
+      ? formatDate({
+          date: getSlotLabelDate(datePart.value, group.startTime),
+          locale: props.locale || 'en',
+          format: props.slotLabelFormat!,
+        })
+      : null,
+    businessHours: getSlotBusinessHours(group.startTime, group.endTime),
+    size: String((group.slotsCount * clampIntervalMinutes(props.intervalMinutes!)) / 60),
+  })),
 )
 
 const backgroundEventStyle = (event: ScheduleEventData & { position: any }) => {
@@ -582,17 +609,13 @@ const clickResizableEvent = (event: ScheduleEventData, nativeEvent: MouseEvent) 
             {{ getLabel('allDay', props.labels) }}
           </Box>
           <Box
-            v-for="slot in hourStartIntervals"
-            :key="slot.startTime"
+            v-for="group in slotLabelGroups"
+            :key="group.startTime"
             v-bind="staticStyles('dayViewSlotLabel')"
+            :mod="{ 'sub-hour': !group.isHourStart, ...group.businessHours.mod }"
+            :style="{ ...group.businessHours.vars, '--slot-label-size': group.size }"
           >
-            {{
-              formatDate({
-                date: `${datePart} ${slot.startTime}`,
-                locale: props.locale || 'en',
-                format: props.slotLabelFormat!,
-              })
-            }}
+            {{ group.label }}
           </Box>
         </div>
 
@@ -722,7 +745,10 @@ const clickResizableEvent = (event: ScheduleEventData, nativeEvent: MouseEvent) 
               :data-time-slot-index="index"
               :data-drag-slot-index="withSlotSelect ? index : undefined"
               :data-drag-slot-group="withSlotSelect ? datePart : undefined"
-              :style="{ '--slot-size': String(props.intervalMinutes! / 60) }"
+              :style="{
+                '--slot-size': String(props.intervalMinutes! / 60),
+                ...businessHoursStates[index].vars,
+              }"
               :mod="{
                 first: index === 0,
                 'hour-start': slot.isHourStart,
@@ -730,8 +756,7 @@ const clickResizableEvent = (event: ScheduleEventData, nativeEvent: MouseEvent) 
                 'drop-target': slotDropTarget.isTarget(datePart, index),
                 invalid: slotDropTarget.isTarget(datePart, index) && !dropValid,
                 'drag-selected': slotDragSelect.isSlotSelected(index, datePart),
-                'business-hours': businessHoursMods[index]['business-hours'],
-                'non-business-hours': businessHoursMods[index]['non-business-hours'],
+                ...businessHoursStates[index].mod,
               }"
               :tabindex="isStatic ? -1 : index === 0 ? 0 : -1"
               :aria-label="`${getLabel('timeSlot', props.labels)} ${slot.startTime} - ${slot.endTime}`"

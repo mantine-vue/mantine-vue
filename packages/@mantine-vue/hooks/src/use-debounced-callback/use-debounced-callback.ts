@@ -37,66 +37,67 @@ export function useDebouncedCallback<Args extends unknown[]>(
     }
   }
 
-  const invoke = () => {
-    if (!lastArgs) {
-      return
-    }
-
-    callback(...lastArgs)
-    lastArgs = undefined
-    leadingCalled = false
-    clear()
-  }
-
   const cancel = () => {
     lastArgs = undefined
     leadingCalled = false
     clear()
   }
 
+  const invoke = () => {
+    if (!lastArgs) {
+      return
+    }
+
+    const args = lastArgs
+    cancel()
+    callback(...args)
+  }
+
+  const flush = () => {
+    if (lastArgs) {
+      invoke()
+    } else {
+      cancel()
+    }
+  }
+
+  const startMaxWaitTimer = () => {
+    if (maxWait !== undefined && !maxTimeout) {
+      maxTimeout = setTimeout(() => {
+        maxTimeout = undefined
+        invoke()
+      }, maxWait)
+    }
+  }
+
   onBeforeUnmount(() => {
     if (flushOnUnmount) {
-      invoke()
+      flush()
     } else {
       cancel()
     }
   })
 
   const debounced = (...args: Args) => {
-    lastArgs = args
-
-    if (leading && !leadingCalled) {
-      callback(...args)
-      lastArgs = undefined
-      leadingCalled = true
-      timeout = setTimeout(() => {
-        leadingCalled = false
-        timeout = undefined
-      }, delay)
-      return
-    }
-
     if (timeout) {
       clearTimeout(timeout)
     }
 
-    timeout = setTimeout(() => {
-      if (!leading || maxWait !== undefined) {
-        invoke()
-      } else {
-        lastArgs = undefined
-        leadingCalled = false
-        clear()
-      }
-    }, delay)
-
-    if (maxWait !== undefined && !maxTimeout) {
-      maxTimeout = setTimeout(invoke, maxWait)
+    if (leading && !leadingCalled) {
+      leadingCalled = true
+      callback(...args)
+      timeout = setTimeout(cancel, delay)
+      startMaxWaitTimer()
+      return
     }
+
+    lastArgs = args
+    timeout = setTimeout(leading ? cancel : invoke, delay)
+    startMaxWaitTimer()
   }
 
   debounced.cancel = cancel
-  debounced.flush = invoke
+  debounced.flush = flush
   debounced.isPending = () => lastArgs !== undefined
 
   return debounced

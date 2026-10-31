@@ -23,6 +23,26 @@ const checked = ref(false)
 </template>
 ```
 
+## Read only
+
+Set `readOnly` prop to prevent the chip from being changed by the user. The chip
+still reflects `checked` prop updates, but clicking it or pressing <kbd>Space</kbd> does not
+change its state and does not emit `change`:
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue'
+import { Chip } from '@mantine-vue/core'
+
+const checked = ref(true)
+</script>
+
+<template>
+  <Chip :checked="checked" read-only>Read only chip</Chip>
+  <button type="button" @click="checked = !checked">Toggle from outside</button>
+</template>
+```
+
 ## Change checked icon
 
 <Demo data={ChipDemos.icon} />

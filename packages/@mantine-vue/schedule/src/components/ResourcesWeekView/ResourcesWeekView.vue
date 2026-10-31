@@ -35,6 +35,8 @@ const varsResolver = createVarsResolver<any>(
       '--resources-week-view-slot-width': cssSize(slotWidth),
       '--resources-week-view-row-height': cssSize(rowHeight),
       '--resources-week-view-group-label-width': cssSize(groupLabelWidth),
+      '--resources-week-view-business-hours-bg': undefined,
+      '--resources-week-view-non-business-hours-bg': undefined,
     },
   }),
 )
@@ -64,7 +66,9 @@ import type {
 } from '../../types'
 import {
   formatDate,
-  getBusinessHoursMod,
+  addMinutesToTime,
+  getBusinessHoursState,
+  getSlotLabelDate,
   getCurrentTimePosition,
   getDayTimeIntervals,
   getGroupToResourceIdMap,
@@ -290,11 +294,12 @@ const headerLabel = computed(
     }),
 )
 
-const businessHoursMods = computed(() =>
+const businessHoursStates = computed(() =>
   weekdays.value.map((day) =>
     intervals.value.map((interval) =>
-      getBusinessHoursMod({
+      getBusinessHoursState({
         time: interval.startTime,
+        endTime: addMinutesToTime(interval.startTime, clampIntervalMinutes(props.intervalMinutes!)),
         businessHours: props.businessHours,
         highlightBusinessHours: props.highlightBusinessHours,
         dayOfWeek: dayjs(day).day() as DayOfWeek,
@@ -905,18 +910,24 @@ const changeView = (view: ScheduleViewLevel) => emit('viewChange', view)
                     :key="`${day}-${interval.startTime}`"
                     v-bind="staticStyles('resourcesWeekViewTimeLabel')"
                     :data-business-hours="
-                      businessHoursMods[dayIndex][slotIndex]['business-hours'] || undefined
+                      businessHoursStates[dayIndex][slotIndex].mod['business-hours'] || undefined
                     "
                     :data-non-business-hours="
-                      businessHoursMods[dayIndex][slotIndex]['non-business-hours'] || undefined
+                      businessHoursStates[dayIndex][slotIndex].mod['non-business-hours'] ||
+                      undefined
                     "
+                    :data-partial-business-hours="
+                      businessHoursStates[dayIndex][slotIndex].mod['partial-business-hours'] ||
+                      undefined
+                    "
+                    :style="businessHoursStates[dayIndex][slotIndex].vars"
                   >
                     <slot
                       name="timeLabel"
                       :date="day"
                       :label="
                         formatDate({
-                          date: `${day} ${interval.startTime}`,
+                          date: getSlotLabelDate(day, interval.startTime),
                           locale: props.locale || 'en',
                           format: props.slotLabelFormat!,
                         })
@@ -926,7 +937,7 @@ const changeView = (view: ScheduleViewLevel) => emit('viewChange', view)
                     >
                       {{
                         formatDate({
-                          date: `${day} ${interval.startTime}`,
+                          date: getSlotLabelDate(day, interval.startTime),
                           locale: props.locale || 'en',
                           format: props.slotLabelFormat!,
                         })
@@ -1136,11 +1147,16 @@ const changeView = (view: ScheduleViewLevel) => emit('viewChange', view)
                   :ref="setControl(resourceIndex, dayIndex * slotsPerDay + slotIndex)"
                   v-bind="staticStyles('resourcesWeekViewRowSlot')"
                   :data-business-hours="
-                    businessHoursMods[dayIndex][slotIndex]['business-hours'] || undefined
+                    businessHoursStates[dayIndex][slotIndex].mod['business-hours'] || undefined
                   "
                   :data-non-business-hours="
-                    businessHoursMods[dayIndex][slotIndex]['non-business-hours'] || undefined
+                    businessHoursStates[dayIndex][slotIndex].mod['non-business-hours'] || undefined
                   "
+                  :data-partial-business-hours="
+                    businessHoursStates[dayIndex][slotIndex].mod['partial-business-hours'] ||
+                    undefined
+                  "
+                  :style="businessHoursStates[dayIndex][slotIndex].vars"
                   :data-drop-target="
                     (dropTarget?.resourceId === resource.id &&
                       dropTarget.flatIndex === dayIndex * slotsPerDay + slotIndex) ||

@@ -236,14 +236,13 @@ function onFieldInput(event: Event) {
 }
 
 function onFieldPaste(event: ClipboardEvent) {
-  if (!event.clipboardData) {
+  if (readOnly.value || !event.clipboardData) {
     return
   }
 
   // Handled manually so a multi-tag paste is split rather than dropped into the field.
   event.preventDefault()
   split(`${search()}${event.clipboardData.getData('text/plain')}`)
-  ;(attrs as any).onPaste?.(event)
 }
 
 function onFieldFocus(event: FocusEvent) {

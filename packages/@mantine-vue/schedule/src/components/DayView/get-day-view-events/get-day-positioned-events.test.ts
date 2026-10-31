@@ -794,4 +794,21 @@ describe('@mantine/schedule/get-day-positioned-events', () => {
       expect(result[0].position.height).toBeGreaterThan(0)
     })
   })
+
+  it('positions them as all-day on their first day', () => {
+    const [event] = getDayPositionedEvents({
+      date: '2026-03-02',
+      events: [
+        {
+          id: 1,
+          title: 'Trip',
+          start: '2026-03-02 00:00:00',
+          end: '2026-03-04 10:00:00',
+          color: 'blue',
+        },
+      ],
+    })
+
+    expect(event.position.allDay).toBe(true)
+  })
 })

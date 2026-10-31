@@ -95,7 +95,11 @@ export function useScroller<T extends HTMLElement = HTMLDivElement>({
     containerRef.scrollBy({ left: adjustedScrollBy, behavior: 'smooth' })
   }
 
+  let removeClickSuppressor: (() => void) | null = null
+
   const handleMouseDown = (event: MouseEvent) => {
+    removeClickSuppressor?.()
+
     if (!draggable || !containerRef) {
       return
     }
@@ -139,13 +143,21 @@ export function useScroller<T extends HTMLElement = HTMLDivElement>({
     containerRef.style.userSelect = ''
 
     if (wasDragged) {
+      removeClickSuppressor?.()
+
+      const container = containerRef
+      const removeSuppressor = () => {
+        container.removeEventListener('click', suppressClick, true)
+        removeClickSuppressor = null
+      }
       const suppressClick = (event: MouseEvent) => {
         event.stopPropagation()
         event.preventDefault()
-        containerRef?.removeEventListener('click', suppressClick, true)
+        removeSuppressor()
       }
 
-      containerRef.addEventListener('click', suppressClick, true)
+      container.addEventListener('click', suppressClick, true)
+      removeClickSuppressor = removeSuppressor
     }
   }
 

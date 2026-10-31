@@ -99,6 +99,13 @@ export interface ChipOwnProps extends StylesApiProps<ChipFactory> {
    */
   disabled?: boolean
 
+  /**
+   * If set, the checked state cannot be changed by the user.
+   *
+   * @default false
+   */
+  readOnly?: boolean
+
   /** Props passed down to the root element. */
   wrapperProps?: HTMLAttributes & DataAttributes
 

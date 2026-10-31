@@ -10,6 +10,7 @@ const keys = [
   'timeRange',
   'startScrollTime',
   'intervalMinutes',
+  'slotLabelInterval',
   'firstDayOfWeek',
   'weekdayFormat',
   'withoutWeekendDays',
@@ -27,6 +28,8 @@ const keys = [
   'slotHeight',
   'radius',
   'businessHours',
+  'businessHoursMinute',
+  'businessHoursColors',
   'businessHoursPerDay',
   'getTimeSlotProps',
   'overlappingEvents',
@@ -66,6 +69,17 @@ export const WeekViewDemos = createDemoRegistry(WeekView, 'WeekView', keys, {
     codeProps: 'start-scroll-time="12:00:00"',
   },
   intervalMinutes: { props: { intervalMinutes: 30 }, codeProps: ':interval-minutes="30"' },
+  slotLabelInterval: {
+    props: {
+      startTime: '08:00:00',
+      endTime: '18:00:00',
+      intervalMinutes: 30,
+      slotLabelInterval: 30,
+      slotHeight: 120,
+    },
+    codeProps:
+      'start-time="08:00:00"\n    end-time="18:00:00"\n    :interval-minutes="30"\n    :slot-label-interval="30"\n    :slot-height="120"',
+  },
   firstDayOfWeek: { props: { firstDayOfWeek: 0 }, codeProps: ':first-day-of-week="0"' },
   weekdayFormat: { props: { weekdayFormat: 'dddd' }, codeProps: 'weekday-format="dddd"' },
   withoutWeekendDays: {
@@ -103,6 +117,27 @@ export const WeekViewDemos = createDemoRegistry(WeekView, 'WeekView', keys, {
   slotLabelFormat: { props: { slotLabelFormat: 'h A' }, codeProps: 'slot-label-format="h A"' },
   slotHeight: { props: { slotHeight: 80 }, codeProps: ':slot-height="80"' },
   businessHours: { props: { highlightBusinessHours: true }, codeProps: 'highlight-business-hours' },
+  businessHoursMinute: {
+    props: {
+      highlightBusinessHours: true,
+      businessHours: ['07:42', '19:01'],
+      intervalMinutes: 30,
+    },
+    codeProps: `highlight-business-hours\n    :business-hours="['07:42', '19:01']"\n    :interval-minutes="30"`,
+  },
+  businessHoursColors: {
+    props: {
+      highlightBusinessHours: true,
+      businessHours: ['07:42', '19:01'],
+      vars: () => ({
+        weekView: {
+          '--week-view-business-hours-bg': 'var(--mantine-color-yellow-light)',
+          '--week-view-non-business-hours-bg': 'var(--mantine-color-blue-light)',
+        },
+      }),
+    },
+    codeProps: `highlight-business-hours\n    :business-hours="['07:42', '19:01']"\n    :vars="() => ({ weekView: { '--week-view-business-hours-bg': 'var(--mantine-color-yellow-light)', '--week-view-non-business-hours-bg': 'var(--mantine-color-blue-light)' } })"`,
+  },
   businessHoursPerDay: {
     props: {
       highlightBusinessHours: true,

@@ -95,4 +95,8 @@ describe('@mantine-vue/hooks/use-mask', () => {
     expect(generatePattern('full', { mask: '(999)' })).toContain('\\(')
     expect(generatePattern('full-inexact', { mask: '99' })).not.toContain('(')
   })
+
+  it('generates a pattern accepted by the browser v flag for the # token', () => {
+    expect(() => new RegExp(generatePattern('full', { mask: '###' }), 'v')).not.toThrow()
+  })
 })
