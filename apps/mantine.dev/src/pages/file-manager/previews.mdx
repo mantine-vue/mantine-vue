@@ -1,0 +1,68 @@
+import { FileManagerDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.FileManagerPreviews)
+
+When the adapter implements `getPreview`, opening a file displays it in the preview dialog. Without
+`getPreview`, the manager downloads the file when `download` is available and the entry permits
+it. To replace both behaviors, pass `onOpenFile` to `useFileManager` and return `false`.
+
+## Built-in preview types
+
+<DataTable
+  head={['Category', 'Rendered with']}
+  data={[
+    ['Images', 'Mantine Image'],
+    ['PDF', 'The PDF viewer of the browser'],
+    ['Text and code', 'Plain text, up to 2 MB'],
+    ['Audio and video', 'The native players'],
+    ['Other file types', 'An unavailable state with a download action, when supported'],
+  ]}
+/>
+
+## Return preview content
+
+`getPreview` returns a `FilePreviewSource` with `text`, `blob` or `url`. Prefer `text` for source
+files, `blob` for authenticated binary responses and `url` for content already hosted at an
+allowed URL.
+
+```ts
+const adapter: FileSystemAdapter = {
+  async getPreview({ id, signal }) {
+    const response = await fetch(`/api/files/${id}`, { signal })
+
+    return { blob: await response.blob() }
+  },
+  // ...
+}
+```
+
+Throw `FileManagerError` with the `not-found` code when an entry has no preview. The dialog then
+shows the unavailable state instead of a preview error.
+
+## Custom renderers
+
+`previewRenderers` are checked before the built-in renderers. The first matching component
+receives `entry`, `source` and the resolved `url`. Handle a temporarily empty `source` while the
+adapter request is in progress.
+
+<Demo data={FileManagerDemos.preview} />
+
+## Security
+
+Treat file content as untrusted. The built-in preview applies these safeguards:
+
+- Text is rendered through text nodes, never as HTML. An uploaded `.html` file is shown as source.
+- Only `http:`, `https:` and `blob:` URLs reach media elements. `javascript:` and `data:` URLs are
+  rejected.
+- A blob shown as a PDF is typed from the file category and not from its content, so a file posing
+  as a PDF cannot run as a web page.
+- Object URLs are revoked when the preview closes.
+
+For remote previews, use a dedicated origin where possible and return restrictive response
+headers, including `X-Content-Type-Options: nosniff`. The backend must still authorize every
+preview request; a URL shown in the browser is not an access-control boundary.
+
+See [backend adapters](/file-manager/adapters) for the complete `getPreview` contract and
+[customization](/file-manager/customization) for entry icons and render slots.

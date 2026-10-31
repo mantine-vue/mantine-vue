@@ -228,6 +228,8 @@ export { UseRovingIndexDemos } from './hooks/use-roving-index'
 export { UseDragDemos } from './hooks/use-drag'
 export { UseSplitterDemos } from './hooks/use-splitter'
 
+export { FileManagerDemos } from './file-manager'
+
 export {
   WhatsAppComposerDemos,
   WhatsAppConversationDemos,

@@ -1,0 +1,153 @@
+import { FileManagerDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.FileManagerCustomization)
+
+## Theme and Styles API
+
+The file manager inherits colors, fonts and the color scheme from `MantineProvider`. Component
+props control the visual settings specific to file management.
+
+<Demo data={FileManagerDemos.theming} />
+
+<DataTable
+  head={['Prop', 'Controls']}
+  data={[
+    ['color', 'Selection, focus and active items. Defaults to the primary color'],
+    ['folderColor', 'Folder icons'],
+    ['radius', 'Items and panels'],
+    ['itemSize', 'Rows and cards: sm, md or lg'],
+  ]}
+/>
+
+Use `classNames` and `styles` for targeted changes. All supported selectors are listed in the
+Styles API tab on the [FileManager component page](/file-manager/file-manager).
+
+```vue
+<FileManager
+  :adapter="adapter"
+  :class-names="{ item: 'my-item', sidebar: 'my-sidebar' }"
+  :styles="{ statusBar: { fontSize: 12 } }"
+/>
+```
+
+## Show or hide sections
+
+Every section is enabled by default. Disable individual controls or regions with `sections`;
+adapter capability detection still takes precedence for backend-dependent features.
+
+```vue
+<FileManager
+  :adapter="adapter"
+  :sections="{
+    sidebar: true,
+    quickAccess: false,
+    folderTree: true,
+    toolbar: true,
+    breadcrumbs: true,
+    search: true,
+    filters: false,
+    sort: true,
+    viewSwitch: true,
+    details: false,
+    statusBar: false,
+  }"
+/>
+```
+
+## Custom views
+
+A `FileManagerViewDefinition` describes a list or grid and renders one entry. Selection, keyboard
+navigation, drag and drop, virtualization and context menus remain managed by `FileManager`.
+
+<Demo data={FileManagerDemos.customView} />
+
+## Slots
+
+Slots replace entry content, loading and empty states, or extend the toolbar, sidebar and details
+panel.
+
+```vue
+<FileManager :adapter="adapter">
+  <template #item="{ entry, selected }">
+    <MyFileRow :file="entry" :selected="selected" />
+  </template>
+
+  <template #itemIcon="{ entry }">
+    <MyIcon :name="entry.name" />
+  </template>
+
+  <template #empty>
+    <MyIllustration />
+  </template>
+
+  <template #loading><MySkeleton /></template>
+  <template #error="{ retry }"><Button @click="retry">Reload</Button></template>
+  <template #toolbarEnd><MyUserMenu /></template>
+  <template #sidebarFooter><StorageMeter /></template>
+  <template #details="{ entry }"><Sharing :file="entry" /></template>
+</FileManager>
+```
+
+## Compose a custom layout
+
+Use the `layout` slot to rearrange the exported file-manager parts. Dialogs, previews, uploads and
+notices remain mounted by the root component.
+
+```vue
+<script setup lang="ts">
+import {
+  FileManager,
+  FileManagerContent,
+  FileManagerSidebar,
+  FileManagerToolbar,
+} from '@mantine-vue/file-manager'
+</script>
+
+<template>
+  <FileManager :adapter="adapter" style="height: 520px">
+    <template #layout>
+      <FileManagerToolbar />
+      <div style="display: flex; flex: 1; min-height: 0">
+        <FileManagerContent style="flex: 1" />
+        <FileManagerSidebar style="width: 240px" />
+      </div>
+    </template>
+  </FileManager>
+</template>
+```
+
+Composable parts include `FileManagerToolbar`, `FileManagerBreadcrumbs`, `FileManagerSidebar`,
+`FileManagerFolderTree`, `FileManagerContent`, `FileManagerDetailsPanel`,
+`FileManagerSelectionBar`, `FileManagerStatusBar`, `FileManagerFilters` and
+`FileManagerThumbnail`.
+
+## Icons
+
+Replace interface icons by icon name and entry icons by file category. Icon components receive a
+`size` prop.
+
+```vue
+<FileManager
+  :adapter="adapter"
+  :icons="{ trash: IconTrash, search: IconSearch }"
+  :file-icons="{ pdf: IconFilePdf, folder: IconFolder }"
+/>
+```
+
+## Text and formatting
+
+`labels` overrides any translated string; omitted labels keep their defaults. `formatters`
+overrides file-size and date formatting.
+
+```vue
+<FileManager
+  :adapter="adapter"
+  :labels="{ moveToTrash: 'Löschen', itemsCount: (count) => `${count} Dateien` }"
+  :formatters="{ date: (value) => dayjs(value).format('D. MMM YYYY') }"
+/>
+```
+
+See [actions and menus](/file-manager/actions) to customize behavior in the toolbar, context menus
+and selection bar.

@@ -684,6 +684,7 @@ __metadata:
     "@mantine-vue/core": "workspace:*"
     "@mantine-vue/dates": "workspace:*"
     "@mantine-vue/dropzone": "workspace:*"
+    "@mantine-vue/file-manager": "workspace:*"
     "@mantine-vue/form": "workspace:*"
     "@mantine-vue/hooks": "workspace:*"
     "@mantine-vue/lightbox": "workspace:*"
@@ -760,6 +761,24 @@ __metadata:
     vue: "npm:^3.5.0"
   peerDependencies:
     "@mantine-vue/core": 3.7.0
+    "@mantine-vue/hooks": 3.7.0
+    vue: ^3.5.0
+  languageName: unknown
+  linkType: soft
+
+"@mantine-vue/file-manager@workspace:*, @mantine-vue/file-manager@workspace:packages/@mantine-vue/file-manager":
+  version: 0.0.0-use.local
+  resolution: "@mantine-vue/file-manager@workspace:packages/@mantine-vue/file-manager"
+  dependencies:
+    "@mantine-vue/core": "workspace:*"
+    "@mantine-vue/dropzone": "workspace:*"
+    "@mantine-vue/hooks": "workspace:*"
+    "@vue/compiler-dom": "npm:^3.5.0"
+    "@vue/test-utils": "npm:^2.4.6"
+    vue: "npm:^3.5.0"
+  peerDependencies:
+    "@mantine-vue/core": 3.7.0
+    "@mantine-vue/dropzone": 3.7.0
     "@mantine-vue/hooks": 3.7.0
     vue: ^3.5.0
   languageName: unknown

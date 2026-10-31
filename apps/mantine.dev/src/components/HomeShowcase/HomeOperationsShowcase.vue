@@ -1,36 +1,28 @@
 <script setup lang="ts">
 import { computed, markRaw, ref } from 'vue'
 import {
-  ActionIcon,
   Badge,
   Button,
-  Checkbox,
   Group,
-  Menu,
   Paper,
-  Progress,
   SegmentedControl,
   Text,
   ThemeIcon,
   Timeline,
 } from '@mantine-vue/core'
+import { createMemoryAdapter, FileManager } from '@mantine-vue/file-manager'
 import {
   PhBell,
   PhCheck,
   PhCloudArrowUp,
-  PhCode,
-  PhDotsThree,
-  PhFileImage,
-  PhFilePdf,
-  PhFolder,
-  PhFolderOpen,
   PhGitPullRequest,
   PhRocketLaunch,
   PhUsers,
 } from '@phosphor-icons/vue'
+import { createDemoFiles } from '@/demos/file-manager/_data'
+import { useMediaQuery } from '@mantine-vue/hooks'
 
-const fileView = ref('List')
-const selectedFiles = ref<string[]>([])
+const fileAdapter = createMemoryAdapter({ files: createDemoFiles(), latency: [40, 120] })
 const notificationFilter = ref('All')
 const notificationsCenter = ref([
   {
@@ -62,45 +54,6 @@ const notificationsCenter = ref([
   },
 ])
 
-const files = [
-  {
-    id: 'brand',
-    name: 'Brand assets',
-    type: 'Folder',
-    size: '24 items',
-    modified: 'Just now',
-    icon: PhFolder,
-    color: 'blue',
-  },
-  {
-    id: 'research',
-    name: 'Research notes.pdf',
-    type: 'PDF',
-    size: '4.2 MB',
-    modified: '12 min ago',
-    icon: PhFilePdf,
-    color: 'red',
-  },
-  {
-    id: 'prototype',
-    name: 'Portal prototype.vue',
-    type: 'Vue',
-    size: '86 KB',
-    modified: '1 hour ago',
-    icon: PhCode,
-    color: 'teal',
-  },
-  {
-    id: 'preview',
-    name: 'Launch preview.png',
-    type: 'Image',
-    size: '2.8 MB',
-    modified: 'Yesterday',
-    icon: PhFileImage,
-    color: 'violet',
-  },
-]
-
 const visibleNotifications = computed(() =>
   notificationFilter.value === 'Unread'
     ? notificationsCenter.value.filter((notification) => notification.unread)
@@ -112,87 +65,22 @@ function markAllRead() {
     notification.unread = false
   })
 }
-
-function toggleFile(id: string, checked: boolean) {
-  selectedFiles.value = checked
-    ? [...new Set([...selectedFiles.value, id])]
-    : selectedFiles.value.filter((fileId) => fileId !== id)
-}
+const isMobile = useMediaQuery('(max-width: 67.5em)')
 </script>
 
 <template>
   <div class="operationsGrid">
-    <Paper class="fileManager" radius="lg">
-      <header class="operationsHeader">
-        <div>
-          <Group :gap="8"
-            ><ThemeIcon variant="light"><PhFolderOpen :size="17" /></ThemeIcon
-            ><Text fw="750">File manager</Text></Group
-          >
-          <Text c="dimmed" size="xs" mt="4">Northstar Studio / Product launch</Text>
-        </div>
-        <Group :gap="8">
-          <SegmentedControl
-            v-model="fileView"
-            :data="[
-              { value: 'List', label: 'List' },
-              { value: 'Grid', label: 'Grid' },
-            ]"
-            size="xs"
-          />
-          <Button size="sm"
-            ><template #leftSection><PhCloudArrowUp :size="15" /></template>Upload</Button
-          >
-        </Group>
-      </header>
-
-      <div class="storageBar">
-        <Group justify="space-between" mb="6"
-          ><Text size="xs" fw="650">18.6 GB of 50 GB used</Text
-          ><Text size="xs" c="dimmed">37%</Text></Group
-        >
-        <Progress :value="37" size="xs" radius="xl" />
-      </div>
-
-      <div class="fileTable" :data-view="fileView.toLowerCase()">
-        <div class="fileTableHead">
-          <span>Name</span><span>Type</span><span>Size</span><span>Modified</span><span />
-        </div>
-        <div
-          v-for="file in files"
-          :key="file.id"
-          class="fileRow"
-          :class="{ selected: selectedFiles.includes(file.id) }"
-        >
-          <div class="fileName">
-            <Checkbox
-              :model-value="selectedFiles.includes(file.id)"
-              :aria-label="`Select ${file.name}`"
-              @update:model-value="toggleFile(file.id, $event)"
-            />
-            <ThemeIcon :color="file.color" variant="light" radius="md"
-              ><component :is="file.icon" :size="17"
-            /></ThemeIcon>
-            <Text fw="650" size="sm">{{ file.name }}</Text>
-          </div>
-          <Text size="xs" c="dimmed">{{ file.type }}</Text>
-          <Text size="xs" c="dimmed">{{ file.size }}</Text>
-          <Text size="xs" c="dimmed">{{ file.modified }}</Text>
-          <Menu position="bottom-end">
-            <Menu.Target
-              ><ActionIcon variant="subtle" color="gray" aria-label="File actions"
-                ><PhDotsThree :size="18" /></ActionIcon
-            ></Menu.Target>
-            <Menu.Dropdown>
-              <Menu.Item>Preview</Menu.Item><Menu.Item>Download</Menu.Item
-              ><Menu.Item>Share</Menu.Item> <Menu.Divider /><Menu.Item color="red"
-                >Move to trash</Menu.Item
-              >
-            </Menu.Dropdown>
-          </Menu>
-        </div>
-      </div>
-    </Paper>
+    <FileManager
+      :adapter="fileAdapter"
+      class="fileManager"
+      :view="isMobile ? 'details' : 'grid'"
+      item-size="sm"
+      radius="lg"
+      :compact-breakpoint="640"
+      :restrictions="{ maxFileSize: 25 * 1024 * 1024, maxFiles: 20 }"
+      :confirm="{ delete: true, emptyTrash: true, trash: false }"
+      conflict-strategy="rename"
+    />
 
     <div class="operationsSide">
       <Paper class="notificationCenter" radius="lg">
@@ -286,7 +174,6 @@ function toggleFile(id: string, checked: boolean) {
   box-shadow: 0 18px 55px alpha(var(--mantine-color-black), 0.06);
 }
 
-.operationsHeader,
 .sideHeader {
   display: flex;
   align-items: center;
@@ -296,79 +183,9 @@ function toggleFile(id: string, checked: boolean) {
   border-bottom: 1px solid var(--home-border);
 }
 
-.storageBar {
-  padding: 16px 20px;
-  border-bottom: 1px solid var(--home-border);
-  background: var(--home-subtle);
-}
-
-.fileTableHead,
-.fileRow {
-  display: grid;
-  grid-template-columns: minmax(230px, 1fr) 70px 70px 95px 28px;
-  align-items: center;
-  gap: 12px;
-  min-width: 590px;
-  padding: 11px 16px;
-}
-
-.fileTable {
-  overflow-x: auto;
-}
-
-.fileTableHead {
-  color: var(--mantine-color-dimmed);
-  font-size: 9px;
-  font-weight: 700;
-  text-transform: uppercase;
-}
-
-.fileRow {
-  border-top: 1px solid var(--home-border);
-}
-
-.fileRow:hover,
-.fileRow.selected {
-  background: var(--home-subtle);
-}
-
-.fileTable[data-view='grid'] {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
-  padding: 14px;
-}
-
-.fileTable[data-view='grid'] .fileTableHead {
-  display: none;
-}
-
-.fileTable[data-view='grid'] .fileRow {
-  grid-template-columns: minmax(0, 1fr) 28px;
-  min-width: 0;
-  min-height: 82px;
-  border: 1px solid var(--home-border);
-  border-radius: var(--mantine-radius-md);
-}
-
-.fileTable[data-view='grid'] .fileRow > :nth-child(2),
-.fileTable[data-view='grid'] .fileRow > :nth-child(3),
-.fileTable[data-view='grid'] .fileRow > :nth-child(4) {
-  display: none;
-}
-
-.fileName {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  min-width: 0;
-}
-
-.fileName :deep(.mantine-Text-root) {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
+/* .fileManager {
+  height: 600px;
+} */
 
 .operationsSide {
   display: grid;
@@ -447,17 +264,12 @@ function toggleFile(id: string, checked: boolean) {
 }
 
 @media (max-width: 640px) {
-  .operationsHeader {
-    align-items: flex-start;
-    flex-direction: column;
-  }
-
   .operationsSide {
     grid-template-columns: 1fr;
   }
 
-  .fileTable[data-view='grid'] {
-    grid-template-columns: 1fr;
+  .fileManager {
+    height: 540px;
   }
 }
 </style>

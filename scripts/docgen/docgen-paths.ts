@@ -13,6 +13,7 @@ export const DOCGEN_SOURCE_PATHS = getPaths([
   'packages/@mantine-vue/code-highlight/src',
   'packages/@mantine-vue/contextmenu/src',
   'packages/@mantine-vue/dropzone/src',
+  'packages/@mantine-vue/file-manager/src',
   'packages/@mantine-vue/lightbox/src',
   'packages/@mantine-vue/qr-code/src',
   'packages/@mantine-vue/modals/src',
@@ -54,6 +55,8 @@ export const DOCGEN_EXCLUDE_COMPONENTS = [
   // Shared schedule building blocks and payload types that are not components.
   'ScheduleEventRenderProps',
   'ScheduleHeaderBaseProps',
+  // Payload of custom file manager views, not a component.
+  'FileManagerViewItemProps',
   // Shared WhatsApp inbox building blocks and slot payloads that are not components.
   'WhatsAppConversationItemSlotProps',
   'WhatsAppInboxConversationProps',

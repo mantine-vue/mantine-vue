@@ -1,0 +1,80 @@
+import { FileManagerDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.FileManagerUploads)
+
+Users can upload files from the toolbar or context menu, or drop them on the current view or a
+specific folder. The upload panel reports per-file progress and provides cancel, retry and remove
+actions.
+
+<Demo data={FileManagerDemos.advanced} />
+
+## Validate uploads
+
+```vue
+<FileManager
+  :adapter="adapter"
+  :restrictions="{
+    maxFileSize: 25 * 1024 * 1024,
+    accept: ['image/*', 'application/pdf', '.csv'],
+    maxFiles: 20,
+  }"
+  :upload-concurrency="3"
+/>
+```
+
+Rejected files remain in the queue with the validation message. `maxFiles` applies to one batch,
+and `uploadConcurrency` limits simultaneous transfers. Repeat every check on the server because
+client-side validation can be bypassed.
+
+## Resolve name conflicts
+
+`conflictStrategy` controls what happens when the adapter reports a `conflict` error.
+
+<DataTable
+  head={['Value', 'Behavior']}
+  data={[
+    ['ask', 'Asks per file, with an option to apply the answer to the remaining conflicts'],
+    ['rename', 'Keeps both, adding a number to the new file'],
+    ['overwrite', 'Replaces the existing file'],
+    ['skip', 'Leaves the existing file alone'],
+    ['fail', 'Reports the conflict as an error'],
+  ]}
+/>
+
+## Upload folders
+
+Folder selection and folder drops are enabled when the adapter declares
+`capabilities.folderUpload`. Each file reaches `upload` with a sanitized `relativePath`, such as
+`photos/2026/a.jpg`; the adapter is responsible for creating intermediate folders. Empty, current
+directory and parent-directory path segments are removed so the path remains relative to the
+selected destination.
+
+## Chunk and resume large uploads
+
+Implement `chunkedUpload` to split files larger than `chunkSize` (5 MB by default). If the adapter
+does not implement `upload`, the chunked protocol handles files of every size.
+
+```ts
+const adapter: FileSystemAdapter = {
+  chunkedUpload: {
+    // Return an existing session for `resumeId` if it is still valid. `uploadedBytes` tells the
+    // manager where to continue.
+    start: ({ file, parentId, resumeId }) => api.startUpload({ file, parentId, resumeId }),
+    uploadChunk: ({ session, chunk, offset, signal, onProgress }) =>
+      api.putChunk(session.id, chunk, offset, { signal, onProgress }),
+    complete: ({ session }) => api.finishUpload(session.id),
+    abort: ({ session }) => api.cancelUpload(session.id),
+  },
+  // ...
+}
+```
+
+A failed upload keeps its session, so retry resumes from the last completed byte reported by the
+backend. Canceling calls `abort` and clears local session progress. Queue state is held in memory,
+so built-in resume does not continue across a page reload.
+
+The adapter must enforce file restrictions, write permissions, storage quotas and conflict
+handling. See [backend adapters](/file-manager/adapters#implementing-an-adapter) for error and bulk
+result conventions.

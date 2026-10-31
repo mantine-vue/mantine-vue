@@ -1,0 +1,107 @@
+import { FileManagerDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.FileManagerActions)
+
+The toolbar, context menus, compact selection bar and keyboard shortcuts share one action model.
+Define an action once, then place it in any of those surfaces.
+
+<Demo data={FileManagerDemos.actions} />
+
+## Create a custom action
+
+```ts
+interface FileManagerAction {
+  id: string
+  label: string | ((context) => string)
+  icon?: FileManagerIconName | Component
+  color?: string
+  shortcutLabel?: string
+  visible?: (context) => boolean
+  enabled?: (context) => boolean
+  run: (context) => void | Promise<unknown>
+}
+```
+
+The action context contains the target `entries`, the headless `controller`, translated `labels`,
+helpers for built-in dialogs in `ui`, and a `scope` of `toolbar`, `item`, `background` or
+`selection`. Use `visible` to omit an action and `enabled` to render it disabled.
+
+## Configure action surfaces
+
+Each surface accepts action IDs, inline action objects and the string `divider`. Dividers left at
+an edge or beside another divider are removed automatically.
+
+<DataTable
+  head={['Prop', 'Menu', 'Default items']}
+  data={[
+    [
+      'toolbarActions',
+      'Toolbar',
+      'newFolder upload uploadFolder | cut copy paste | rename download delete restore emptyTrash | undo redo',
+    ],
+    [
+      'itemMenu',
+      'Menu of an entry',
+      'open preview | cut copy duplicate | rename moveTo copyTo | favorite download | restore delete deletePermanently | properties',
+    ],
+    [
+      'backgroundMenu',
+      'Menu of the empty area',
+      'newFolder uploadFiles uploadFolder | paste | selectAll refresh emptyTrash',
+    ],
+    ['selectionActions', 'Compact selection bar', 'download moveTo delete restore'],
+  ]}
+/>
+
+An item in `actions` with a built-in ID overrides that action everywhere. Use `resolveMenu` for a
+final context-dependent policy before a surface renders:
+
+```ts
+const resolveMenu = (items, context) =>
+  context.entries.some((entry) => entry.owner !== currentUser)
+    ? items.filter((item) => item.id !== 'delete')
+    : items
+```
+
+## Built-in action IDs
+
+`open`, `preview`, `back`, `forward`, `up`, `refresh`, `newFolder`, `upload`, `uploadFiles`,
+`uploadFolder`, `download`, `rename`, `duplicate`, `cut`, `copy`, `paste`, `moveTo`, `copyTo`,
+`favorite`, `delete`, `deletePermanently`, `restore`, `emptyTrash`, `properties`, `undo`, `redo`,
+`selectAll` and `clearSelection`.
+
+## Keyboard shortcuts
+
+`shortcuts` maps action IDs to [use-hotkeys](/hooks/use-hotkeys) expressions. It extends the
+defaults and replaces duplicate IDs. Set `:shortcuts="false"` to disable all action shortcuts.
+They run only while focus is inside the file manager and never while the user is typing in an
+input, textarea, select or editable element.
+
+<DataTable
+  head={['Keys', 'Action']}
+  data={[
+    [
+      'Arrow keys, Home, End, PageUp, PageDown',
+      'Move. Shift extends the selection, Ctrl moves without selecting',
+    ],
+    ['Space', 'Toggle selection'],
+    ['Enter', 'Open'],
+    ['Backspace, Alt+Up', 'Up one level'],
+    ['Alt+Left, Alt+Right', 'Back, forward'],
+    ['Escape', 'Clear selection'],
+    ['Ctrl+A', 'Select all'],
+    ['Ctrl+X, Ctrl+C, Ctrl+V', 'Cut, copy, paste'],
+    ['Ctrl+D', 'Duplicate'],
+    ['Ctrl+Z, Ctrl+Y', 'Undo, redo'],
+    ['F2', 'Rename'],
+    ['Delete', 'Move to trash or delete'],
+    ['F5', 'Refresh'],
+    ['Shift+F10, Menu key', 'Context menu'],
+    ['Letters', 'Jump to the entry that starts with them'],
+  ]}
+/>
+
+On macOS, `Cmd` replaces `Ctrl` for shortcuts. See
+[mobile and accessibility](/file-manager/mobile) for touch and screen-reader behavior.

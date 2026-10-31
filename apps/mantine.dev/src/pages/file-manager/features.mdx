@@ -1,0 +1,73 @@
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.FileManagerFeatures)
+
+This page separates features provided by the component from features that require backend support.
+Adapter methods are detected at runtime, and unavailable operations are removed from the interface.
+
+## Included interface features
+
+<DataTable
+  head={['Area', 'Included behavior']}
+  data={[
+    [
+      'Navigation',
+      'Folder tree, breadcrumbs, history, favorites, recent files and trash locations',
+    ],
+    ['Views', 'Details, list, grid, gallery and tree views, plus custom list or grid views'],
+    ['Selection', 'Single, range and multi-selection with bulk actions'],
+    ['Input', 'Mouse, touch and keyboard interaction, context menus and typeahead'],
+    [
+      'Large folders',
+      'Cursor pagination, infinite loading, page navigation and row virtualization',
+    ],
+    ['File operations', 'Copy, move, rename, duplicate, delete, trash, restore, undo and redo'],
+    ['Uploads', 'Queue, progress, validation, concurrency, conflict prompts and retry'],
+    ['Previews', 'Image, PDF, text, code, audio and video viewers, plus custom renderers'],
+    ['Customization', 'Mantine theme integration, Styles API, slots, icons, labels and formatters'],
+    ['Responsive UI', 'Container-aware desktop and compact layouts'],
+  ]}
+/>
+
+## Backend requirements
+
+<DataTable
+  head={['Feature', 'Adapter requirement']}
+  data={[
+    ['Browse folders', 'list (required by every adapter)'],
+    ['Create, rename, move and copy', 'The corresponding adapter method'],
+    ['Trash location', 'trash and listTrash'],
+    ['Restore and empty trash', 'restore and emptyTrash respectively'],
+    ['Upload', 'upload or chunkedUpload'],
+    ['Folder uploads', 'capabilities.folderUpload plus relativePath handling'],
+    ['Retryable chunked uploads', 'chunkedUpload with backend-managed sessions'],
+    ['Downloads', 'download for files; downloadMany for folders or archives'],
+    ['Recursive search', 'search'],
+    ['Previews', 'getPreview'],
+    ['Thumbnails', 'entry.thumbnailUrl or getThumbnail'],
+    ['Favorites', 'setStarred and listStarred'],
+    ['Recent files', 'listRecent'],
+    ['Sorting partially loaded folders', 'capabilities.serverSort and sort request handling'],
+    ['Per-entry authorization hints', 'entry.permissions; the backend must still enforce access'],
+  ]}
+/>
+
+See [backend adapters](/file-manager/adapters) for method signatures and capability detection.
+
+## Known limitations
+
+- Dragging a rectangle to select entries is not supported. Use Shift/Ctrl clicks or keyboard
+  selection.
+- Internal drag and drop requires a pointer and is disabled in compact mode. The **Move to** action
+  is available for touch and keyboard users.
+- Entries cannot be dragged between separate `FileManager` instances.
+- The tree view loads all children of each expanded folder instead of paginating them.
+- Backend search displays the first result page returned by the adapter.
+- Undo history is stored in memory and is cleared when the page reloads.
+- PDF rendering depends on the browser's built-in PDF viewer.
+- Audio and video previews require a format the browser can play; the package does not transcode
+  media.
+
+For deployment guidance, continue with [uploads](/file-manager/uploads),
+[previews](/file-manager/previews) and [mobile and accessibility](/file-manager/mobile).

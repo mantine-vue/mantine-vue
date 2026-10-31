@@ -21,6 +21,7 @@
       "@mantine-vue/code-highlight": ["./packages/@mantine-vue/code-highlight/src"],
       "@mantine-vue/dates": ["./packages/@mantine-vue/dates/src"],
       "@mantine-vue/form": ["./packages/@mantine-vue/form/src"],
+      "@mantine-vue/file-manager": ["./packages/@mantine-vue/file-manager/src"],
       "@mantine-vue/store": ["./packages/@mantine-vue/store/src"],
       "@mantine-vue/notifications": ["./packages/@mantine-vue/notifications/src"],
       "@mantine-vue/contextmenu": ["./packages/@mantine-vue/contextmenu/src"],
