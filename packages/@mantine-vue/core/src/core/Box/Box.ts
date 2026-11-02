@@ -1,6 +1,16 @@
-import { Fragment, defineComponent, h, ref, type Component, type PropType } from 'vue'
+import {
+  Fragment,
+  computed,
+  defineComponent,
+  getCurrentInstance,
+  h,
+  ref,
+  shallowRef,
+  type Component,
+  type PropType,
+} from 'vue'
 import { assignRef, type VueRefTarget } from '@mantine-vue/hooks'
-import { camelToKebabCase, filterProps, isNumberLike } from '@mantine-vue/utils'
+import { camelToKebabCase, isNumberLike } from '@mantine-vue/utils'
 import { InlineStyles } from '../InlineStyles'
 import { useSafeMantineTheme } from '../MantineProvider'
 import {
@@ -33,6 +43,40 @@ function styleProp<Key extends keyof MantineStyleProps>() {
 
 function isVueComponent(component: string | Component): component is Component {
   return typeof component !== 'string'
+}
+
+const STYLE_PROP_KEYS = Object.keys(STYLE_PROPS_DATA) as Array<keyof MantineStyleProps>
+const STYLE_PROP_INDEX = new Map(STYLE_PROP_KEYS.map((key, index) => [key, index]))
+const EMPTY_STYLE_PROP_KEYS: Array<keyof MantineStyleProps> = []
+const EMPTY_PARSED_STYLE_PROPS = {
+  inlineStyles: {} as Record<string, string | number>,
+  styles: {} as Record<string, string | number>,
+  media: {} as Record<string, Record<string, string | number>>,
+  hasResponsiveStyles: false,
+}
+
+function getSuppliedStylePropKeys(rawProps: Record<string, any> | null | undefined) {
+  if (!rawProps) {
+    return EMPTY_STYLE_PROP_KEYS
+  }
+
+  let keys: Array<keyof MantineStyleProps> | undefined
+  for (const key of Object.keys(rawProps)) {
+    if (STYLE_PROP_INDEX.has(key as keyof MantineStyleProps)) {
+      keys ??= []
+      keys.push(key as keyof MantineStyleProps)
+    }
+  }
+
+  keys?.sort((a, b) => STYLE_PROP_INDEX.get(a)! - STYLE_PROP_INDEX.get(b)!)
+  return keys ?? EMPTY_STYLE_PROP_KEYS
+}
+
+function sameStylePropKeys(
+  left: Array<keyof MantineStyleProps>,
+  right: Array<keyof MantineStyleProps>,
+) {
+  return left.length === right.length && left.every((key, index) => key === right[index])
 }
 
 /** Recursively flattens a (possibly nested) `BoxMod` into a single `data-*` attribute map. */
@@ -186,6 +230,46 @@ export const Box = defineComponent({
   },
   setup(props, { attrs, slots, expose }) {
     const theme = useSafeMantineTheme()
+    const instance = getCurrentInstance()
+    let rawPropsSource = instance?.vnode.props
+    const suppliedStylePropKeys = shallowRef(getSuppliedStylePropKeys(rawPropsSource))
+
+    const syncSuppliedStylePropKeys = () => {
+      const nextRawPropsSource = instance?.vnode.props
+      if (nextRawPropsSource === rawPropsSource) {
+        return
+      }
+
+      rawPropsSource = nextRawPropsSource
+      const nextKeys = getSuppliedStylePropKeys(nextRawPropsSource)
+      if (!sameStylePropKeys(suppliedStylePropKeys.value, nextKeys)) {
+        suppliedStylePropKeys.value = nextKeys
+      }
+    }
+
+    const parsedStyleProps = computed(() => {
+      let styleProps: Record<string, any> | undefined
+
+      for (const key of suppliedStylePropKeys.value) {
+        const value = props[key as keyof typeof props]
+        if (value !== undefined) {
+          styleProps ??= {}
+          styleProps[key] = value
+        }
+      }
+
+      return styleProps
+        ? parseStyleProps({ styleProps, theme: theme.value, data: STYLE_PROPS_DATA })
+        : EMPTY_PARSED_STYLE_PROPS
+    })
+    const inlineStyleProps = computed(() => {
+      const styles = parsedStyleProps.value.inlineStyles
+      return Object.keys(styles).length > 0 ? styles : undefined
+    })
+    const responsiveClassName = computed(() => {
+      const parsed = parsedStyleProps.value
+      return parsed.hasResponsiveStyles ? hashStyleProps(parsed.styles, parsed.media) : undefined
+    })
     const rootElement = ref<Element | null>(null)
 
     expose({ rootElement })
@@ -199,39 +283,50 @@ export const Box = defineComponent({
     }
 
     return () => {
-      const styleProps = Object.keys(STYLE_PROPS_DATA).reduce<Record<string, any>>((acc, key) => {
-        acc[key] = props[key as keyof typeof props]
-        return acc
-      }, {})
-      const parsed = parseStyleProps({ styleProps, theme: theme.value, data: STYLE_PROPS_DATA })
-      const responsiveClassName = parsed.hasResponsiveStyles
-        ? hashStyleProps(parsed.styles, parsed.media)
-        : undefined
-      const className = [
-        attrs.class,
-        responsiveClassName,
-        {
-          'mantine-light-hidden': props.lightHidden,
-          'mantine-dark-hidden': props.darkHidden,
-          [`mantine-hidden-from-${props.hiddenFrom}`]: props.hiddenFrom,
-          [`mantine-visible-from-${props.visibleFrom}`]: props.visibleFrom,
-        },
-      ]
+      syncSuppliedStylePropKeys()
+      const parsed = parsedStyleProps.value
+      const responsiveClass = responsiveClassName.value
+      const hasConditionalClasses =
+        !!responsiveClass ||
+        props.lightHidden ||
+        props.darkHidden ||
+        !!props.hiddenFrom ||
+        !!props.visibleFrom
+      const className = hasConditionalClasses
+        ? [
+            attrs.class,
+            responsiveClass,
+            props.lightHidden && 'mantine-light-hidden',
+            props.darkHidden && 'mantine-dark-hidden',
+            props.hiddenFrom && `mantine-hidden-from-${props.hiddenFrom}`,
+            props.visibleFrom && `mantine-visible-from-${props.visibleFrom}`,
+          ]
+        : attrs.class
+      const inlineStyles = inlineStyleProps.value
+      const style = inlineStyles
+        ? attrs.style
+          ? [inlineStyles, attrs.style]
+          : inlineStyles
+        : attrs.style
+      const nodeProps: Record<string, any> = {
+        ...attrs,
+        size: props.__size,
+        class: className,
+        'data-variant': (attrs as any)['data-variant'] ?? props.variant,
+        'data-size':
+          (attrs as any)['data-size'] ?? (isNumberLike(props.size) ? undefined : props.size),
+        style,
+        ref: setRootRef,
+      }
+
+      if (props.mod) {
+        Object.assign(nodeProps, modToAttributes(props.mod))
+      }
 
       const children = slots.default
       const node = h(
         props.component,
-        {
-          ...attrs,
-          ...modToAttributes(props.mod),
-          size: props.__size,
-          class: className,
-          'data-variant': (attrs as any)['data-variant'] ?? props.variant,
-          'data-size':
-            (attrs as any)['data-size'] ?? (isNumberLike(props.size) ? undefined : props.size),
-          style: [filterProps(parsed.inlineStyles), attrs.style],
-          ref: setRootRef,
-        },
+        nodeProps,
         isVueComponent(props.component) && children ? { default: children } : children?.(),
       )
 
@@ -241,7 +336,7 @@ export const Box = defineComponent({
 
       return h(Fragment, null, [
         h(InlineStyles, {
-          selector: `.${responsiveClassName}`,
+          selector: `.${responsiveClass}`,
           styles: parsed.styles,
           media: parsed.media,
         }),

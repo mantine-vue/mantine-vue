@@ -35,8 +35,60 @@ describe('@mantine-vue/core Grid', () => {
     expect(styles).toContain('--grid-gap: var(--mantine-spacing-sm)')
     expect(styles).toContain('@media (min-width: 62em)')
     expect(styles).toContain('--grid-gap: var(--mantine-spacing-lg)')
+    expect(col.attributes('style')).toContain(
+      '--col-flex-basis: calc(50% - 0.5 * var(--grid-column-gap))',
+    )
+    expect(col.attributes('style')).toContain(
+      '--col-offset: calc(25% + 0.25 * var(--grid-column-gap))',
+    )
+  })
+
+  it('does not render component-specific inline styles for scalar columns', () => {
+    const wrapper = withProvider({}, () =>
+      Array.from({ length: 100 }, (_, index) => h(GridCol, { key: index, span: 6 })),
+    )
+    const styles = wrapper.findAll('style[data-mantine-inline-styles="true"]')
+
+    expect(styles).toHaveLength(1)
+    expect(styles[0].text()).not.toContain('--col-flex-basis')
+    expect(wrapper.find('.mantine-Grid-col').attributes('style')).toContain(
+      '--col-flex-basis: calc(50% - 0.5 * var(--grid-column-gap))',
+    )
+  })
+
+  it('renders responsive column media styles only when a breakpoint value is present', () => {
+    const baseOnly = withProvider({}, () => h(GridCol, { span: { base: 6 } }))
+    expect(baseOnly.findAll('style[data-mantine-inline-styles="true"]')).toHaveLength(1)
+
+    const responsive = withProvider({}, () =>
+      h(GridCol, { span: { base: 12, sm: 6 }, order: { md: 2 } }),
+    )
+    const styles = responsive
+      .findAll('style[data-mantine-inline-styles="true"]')
+      .map((item) => item.text())
+      .join('\n')
+
+    expect(responsive.findAll('style[data-mantine-inline-styles="true"]')).toHaveLength(2)
+    expect(styles).toContain('@media (min-width: 48em)')
     expect(styles).toContain('--col-flex-basis: calc(50% - 0.5 * var(--grid-column-gap))')
-    expect(styles).toContain('--col-offset: calc(25% + 0.25 * var(--grid-column-gap))')
+    expect(styles).toContain('@media (min-width: 62em)')
+    expect(styles).toContain('--col-order: 2')
+  })
+
+  it('keeps Styles API and native style overrides above generated base variables', () => {
+    const fromStylesApi = withProvider({ styles: { col: { '--col-flex-basis': '40%' } } }, () =>
+      h(GridCol, { span: 6 }),
+    )
+    expect(fromStylesApi.find('.mantine-Grid-col').attributes('style')).toContain(
+      '--col-flex-basis: 40%',
+    )
+
+    const fromNativeStyle = withProvider({ styles: { col: { '--col-flex-basis': '40%' } } }, () =>
+      h(GridCol, { span: 6, style: { '--col-flex-basis': '30%' } }),
+    )
+    expect(fromNativeStyle.find('.mantine-Grid-col').attributes('style')).toContain(
+      '--col-flex-basis: 30%',
+    )
   })
 
   it('renders container wrapper only with container type and breakpoints', () => {

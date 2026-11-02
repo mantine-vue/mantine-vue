@@ -10,6 +10,9 @@ export default defineConfig({
     environment: 'jsdom',
     globals: true,
     include: ['packages/**/*.test.ts', 'packages/**/*.test.tsx', 'apps/*/src/**/*.test.ts'],
+    benchmark: {
+      include: ['scripts/benchmarks/**/*.bench.ts'],
+    },
     execArgv: ['--no-experimental-webstorage'],
   },
   resolve: {

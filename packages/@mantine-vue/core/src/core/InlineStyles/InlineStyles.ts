@@ -29,6 +29,9 @@ export const InlineStyles = defineComponent({
       type: Object as PropType<Record<string, Record<string, string | number | undefined>>>,
       default: undefined,
     },
+    // Kept for public compatibility. Vue cannot safely hoist and share these
+    // nodes without a provider-scoped SSR/hydration registry and stable cascade
+    // ordering, so this flag deliberately does not claim deduplication in the DOM.
     deduplicate: { type: Boolean, default: false },
   },
   setup(props) {
@@ -53,7 +56,6 @@ export const InlineStyles = defineComponent({
     return () =>
       h('style', {
         'data-mantine-inline-styles': true,
-        'data-deduplicate': props.deduplicate || undefined,
         innerHTML: css.value,
       })
   },
