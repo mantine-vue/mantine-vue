@@ -28,6 +28,11 @@ export interface MantineProviderProps {
   withStaticClasses?: boolean
   withGlobalClasses?: boolean
   stylesTransform?: MantineStylesTransform
+  /**
+   * Reserved for compatibility with Mantine React. Vue currently keeps one inline style
+   * element per responsive component because safe sharing requires a provider-scoped
+   * SSR/hydration registry with stable cascade ordering.
+   */
   deduplicateInlineStyles?: boolean
   env?: 'default' | 'test'
 }

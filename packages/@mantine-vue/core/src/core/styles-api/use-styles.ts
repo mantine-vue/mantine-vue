@@ -55,7 +55,7 @@ export function useStyles<Payload = any>(input: UseStylesInput<Payload>) {
     themeNames.value.map((name) => theme.value.components[name] ?? {}),
   )
 
-  const getResolvedClassNames = () => ({
+  const resolvedClassNames = computed(() => ({
     ...componentThemes.value.reduce<Record<string, any>>(
       (acc, componentTheme) => ({
         ...acc,
@@ -64,8 +64,8 @@ export function useStyles<Payload = any>(input: UseStylesInput<Payload>) {
       {},
     ),
     ...resolveRecord(input.classNames, theme.value, input.props),
-  })
-  const getResolvedStyles = () => ({
+  }))
+  const resolvedStyles = computed(() => ({
     ...componentThemes.value.reduce<Record<string, any>>(
       (acc, componentTheme) => ({
         ...acc,
@@ -74,15 +74,20 @@ export function useStyles<Payload = any>(input: UseStylesInput<Payload>) {
       {},
     ),
     ...resolveRecord(input.styles, theme.value, input.props),
-  })
-  const getResolvedVars = () =>
+  }))
+  const resolvedVars = computed(() =>
     mergeVars([
       input.varsResolver?.(theme.value, input.props ?? {}, input.stylesCtx ?? {}),
       ...componentThemes.value.map((componentTheme) =>
         resolveRecord(componentTheme.vars, theme.value, input.props),
       ),
       resolveRecord(input.vars, theme.value, input.props),
-    ])
+    ]),
+  )
+  const resolvedRootStyle = computed(() => normalizeStyle(input.attrs?.style ?? input.style))
+  const staticClassPrefixes = computed(() =>
+    withStaticClasses ? themeNames.value.map((name) => `${classNamesPrefix}-${name}-`) : [],
+  )
 
   return (
     selector: string,
@@ -98,19 +103,30 @@ export function useStyles<Payload = any>(input: UseStylesInput<Payload>) {
     } = {},
   ) => {
     const rootSelector = input.rootSelector ?? 'root'
-    const staticClasses = withStaticClasses
-      ? themeNames.value.map((name) => `${classNamesPrefix}-${name}-${selector}`)
-      : []
+    const staticClasses = staticClassPrefixes.value.map((prefix) => `${prefix}${selector}`)
     const optionsProps = options.props ?? input.props
-    const resolvedClassNames = {
-      ...getResolvedClassNames(),
-      ...resolveRecord(options.classNames, theme.value, optionsProps),
-    }
-    const resolvedStyles = {
-      ...getResolvedStyles(),
-      ...resolveRecord(options.styles, theme.value, optionsProps),
-    }
-    const resolvedVars = getResolvedVars()
+    const optionClassNames = options.classNames
+      ? (resolveRecord<Record<string, any>>(
+          options.classNames as any,
+          theme.value,
+          optionsProps,
+        ) as Record<string, any>)
+      : undefined
+    const optionStyles = options.styles
+      ? (resolveRecord<Record<string, any>>(
+          options.styles as any,
+          theme.value,
+          optionsProps,
+        ) as Record<string, any>)
+      : undefined
+    const selectorClassName =
+      optionClassNames && Object.hasOwn(optionClassNames, selector)
+        ? optionClassNames[selector]
+        : resolvedClassNames.value[selector]
+    const selectorStyle =
+      optionStyles && Object.hasOwn(optionStyles, selector)
+        ? optionStyles[selector]
+        : resolvedStyles.value[selector]
 
     return {
       ...input.attributes?.[selector],
@@ -120,7 +136,7 @@ export function useStyles<Payload = any>(input: UseStylesInput<Payload>) {
           ? null
           : input.classes?.[`${selector}--${options.variant}`],
         ...staticClasses,
-        resolvedClassNames[selector],
+        selectorClassName,
         selector === rootSelector ? (input.attrs?.class ?? input.className) : null,
         options.active && !input.unstyled ? theme.value.activeClassName : null,
         options.focusable && !input.unstyled
@@ -130,9 +146,9 @@ export function useStyles<Payload = any>(input: UseStylesInput<Payload>) {
         options.className,
       ].filter(Boolean),
       style: {
-        ...resolvedStyles[selector],
-        ...resolvedVars[selector],
-        ...(selector === rootSelector ? normalizeStyle(input.attrs?.style ?? input.style) : {}),
+        ...selectorStyle,
+        ...resolvedVars.value[selector],
+        ...(selector === rootSelector ? resolvedRootStyle.value : {}),
         ...normalizeStyle(options.style),
       },
     }

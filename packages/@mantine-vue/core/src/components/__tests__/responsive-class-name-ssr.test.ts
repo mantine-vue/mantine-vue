@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { createSSRApp, h } from 'vue'
 import { renderToString } from '@vue/server-renderer'
 import { mount } from '@vue/test-utils'
-import { Flex, Grid, GridCol, MantineProvider, SimpleGrid } from '../../index'
+import { Box, Flex, Grid, GridCol, MantineProvider, SimpleGrid } from '../../index'
 
 function App() {
   return h(MantineProvider, null, () => [
@@ -14,6 +14,7 @@ function App() {
       h(GridCol, { span: { base: 12, md: 6 } }, () => 'Column'),
     ),
     h(Flex, { direction: { base: 'column', sm: 'row' } }, () => 'Flex'),
+    h(Box, { p: { base: 'sm', md: 'lg' } }, () => 'Box'),
   ])
 }
 

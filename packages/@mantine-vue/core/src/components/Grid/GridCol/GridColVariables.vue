@@ -1,5 +1,6 @@
 <script lang="ts">
 import type { AlignItems, StyleProp } from '../../../core'
+import { filterProps } from '../../../core'
 
 export type ColSpan = number | 'auto' | 'content'
 
@@ -24,6 +25,20 @@ export interface GridColVariablesProps {
 /** A responsive value is an object keyed by breakpoint; anything else is a base value. */
 function isObject(value: unknown): value is Record<string, any> {
   return typeof value === 'object' && value !== null && !Array.isArray(value)
+}
+
+function getBaseValue<T>(value: StyleProp<T> | undefined): T | undefined {
+  return isObject(value) ? (value.base as T | undefined) : value
+}
+
+export function hasResponsiveColumnProps(...values: Array<StyleProp<any> | undefined>): boolean {
+  return values.some(
+    (value) =>
+      isObject(value) &&
+      Object.entries(value).some(
+        ([breakpoint, breakpointValue]) => breakpoint !== 'base' && breakpointValue !== undefined,
+      ),
+  )
 }
 
 /**
@@ -87,19 +102,33 @@ const getColumnOffset = (offset: number | undefined, columns: number) => {
   return `calc(${percentage}% + ${gapFactor} * var(--grid-column-gap))`
 }
 
+export function getGridColBaseStyles({
+  span,
+  order,
+  offset,
+  align,
+  columns,
+  grow,
+}: Omit<GridColVariablesProps, 'selector'> & { columns: number; grow?: boolean }) {
+  const baseSpan = getBaseValue(span) ?? 12
+
+  return filterProps({
+    '--col-order': getBaseValue(order)?.toString(),
+    '--col-flex-grow': getColumnFlexGrow(baseSpan, grow),
+    '--col-flex-basis': getColumnFlexBasis(baseSpan, columns),
+    '--col-width': baseSpan === 'content' ? 'auto' : undefined,
+    '--col-max-width': getColumnMaxWidth(baseSpan, columns, grow),
+    '--col-offset': getColumnOffset(getBaseValue(offset), columns),
+    '--col-align-self': getBaseValue(align),
+  })
+}
+
 export { isObject, getColumnFlexBasis, getColumnFlexGrow, getColumnMaxWidth, getColumnOffset }
 </script>
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import {
-  InlineStyles,
-  filterProps,
-  getBaseValue,
-  getSortedBreakpoints,
-  keys,
-  useMantineTheme,
-} from '../../../core'
+import { InlineStyles, getSortedBreakpoints, keys, useMantineTheme } from '../../../core'
 import { useGridContext } from '../Grid.context'
 
 defineOptions({
@@ -112,24 +141,6 @@ const theme = useMantineTheme()
 const ctx = useGridContext()
 
 const breakpoints = computed(() => ctx.breakpoints || theme.value.breakpoints)
-
-/** Values that apply below the smallest breakpoint. A col spans the full grid by default. */
-const baseStyles = computed(() => {
-  const baseSpan = (getBaseValue(props.span) ?? 12) as ColSpan
-  const baseOrder = getBaseValue(props.order as any) as number | undefined
-  const baseOffset = getBaseValue(props.offset as any) as number | undefined
-  const baseAlign = getBaseValue(props.align as any) as string | undefined
-
-  return filterProps({
-    '--col-order': baseOrder?.toString(),
-    '--col-flex-grow': getColumnFlexGrow(baseSpan, ctx.grow),
-    '--col-flex-basis': getColumnFlexBasis(baseSpan, ctx.columns),
-    '--col-width': baseSpan === 'content' ? 'auto' : undefined,
-    '--col-max-width': getColumnMaxWidth(baseSpan, ctx.columns, ctx.grow),
-    '--col-offset': getColumnOffset(baseOffset, ctx.columns),
-    '--col-align-self': baseAlign,
-  })
-})
 
 /** One block of variables per breakpoint, keyed by the query they belong in. */
 const values = computed(() => {
@@ -188,10 +199,5 @@ const container = computed(() => (ctx.type === 'container' ? values.value : unde
 </script>
 
 <template>
-  <InlineStyles
-    :selector="props.selector"
-    :styles="baseStyles"
-    :media="media"
-    :container="container"
-  />
+  <InlineStyles :selector="props.selector" :media="media" :container="container" />
 </template>
