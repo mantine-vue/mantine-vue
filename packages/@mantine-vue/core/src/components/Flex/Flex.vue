@@ -8,10 +8,8 @@ import {
   hashStyleProps,
   InlineStyles,
   parseStyleProps,
-  useMantineDeduplicateInlineStyles,
   useMantineTheme,
   useProps,
-  useRandomClassName,
   useStyles,
 } from '../../core'
 import type { FlexOwnProps } from './Flex.types'
@@ -29,8 +27,6 @@ const rawProps = withDefaults(defineProps<FlexOwnProps & RootRefProps<Element>>(
 const attrs = useAttrs()
 const props = useProps('Flex', null, rawProps)
 const theme = useMantineTheme()
-const deduplicateInlineStyles = useMantineDeduplicateInlineStyles()
-const randomClassName = useRandomClassName()
 const getStyles = useStyles({
   name: 'Flex',
   classes,
@@ -58,9 +54,7 @@ const parsedStyleProps = computed(() =>
   }),
 )
 const responsiveClassName = computed(() =>
-  deduplicateInlineStyles && parsedStyleProps.value.hasResponsiveStyles
-    ? hashStyleProps(parsedStyleProps.value.styles, parsedStyleProps.value.media)
-    : randomClassName,
+  hashStyleProps(parsedStyleProps.value.styles, parsedStyleProps.value.media),
 )
 
 const rootElement = ref<Element | null>(null)
@@ -79,7 +73,6 @@ defineExpose({ rootElement })
     :selector="`.${responsiveClassName}`"
     :styles="parsedStyleProps.styles"
     :media="parsedStyleProps.media"
-    :deduplicate="deduplicateInlineStyles"
   />
   <Box
     v-bind="{

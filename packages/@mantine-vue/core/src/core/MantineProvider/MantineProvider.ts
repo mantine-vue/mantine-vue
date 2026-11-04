@@ -3,6 +3,10 @@ import './global.css'
 import './default-css-variables.css'
 import { em, keys, px } from '@mantine-vue/utils'
 import { computed, defineComponent, h, onMounted, onUnmounted, watch, type PropType } from 'vue'
+import {
+  InlineStylesRegistry,
+  provideInlineStylesRegistry,
+} from '../InlineStyles/inline-styles-registry'
 import { convertCssVariables, getMergedVariables, type CSSVariablesResolver } from './css-variables'
 import {
   createProviderColorScheme,
@@ -28,11 +32,6 @@ export interface MantineProviderProps {
   withStaticClasses?: boolean
   withGlobalClasses?: boolean
   stylesTransform?: MantineStylesTransform
-  /**
-   * Reserved for compatibility with Mantine React. Vue currently keeps one inline style
-   * element per responsive component because safe sharing requires a provider-scoped
-   * SSR/hydration registry with stable cascade ordering.
-   */
   deduplicateInlineStyles?: boolean
   env?: 'default' | 'test'
 }
@@ -60,7 +59,7 @@ export const MantineProvider = defineComponent({
     withStaticClasses: { type: Boolean, default: true },
     withGlobalClasses: { type: Boolean, default: true },
     stylesTransform: { type: Object as PropType<MantineStylesTransform>, default: undefined },
-    deduplicateInlineStyles: { type: Boolean, default: false },
+    deduplicateInlineStyles: { type: Boolean, default: true },
     env: { type: String as PropType<'default' | 'test'>, default: 'default' },
   },
   setup(props, { slots }) {
@@ -86,8 +85,19 @@ export const MantineProvider = defineComponent({
       withStaticClasses: props.withStaticClasses,
       stylesTransform: props.stylesTransform,
       env: props.env,
-      deduplicateInlineStyles: props.deduplicateInlineStyles,
+      get deduplicateInlineStyles() {
+        return props.deduplicateInlineStyles
+      },
     })
+    // One registry per provider instance, so every SSR render starts from an empty one.
+    const inlineStylesRegistry = new InlineStylesRegistry()
+    inlineStylesRegistry.setEnabled(props.deduplicateInlineStyles)
+    provideInlineStylesRegistry(inlineStylesRegistry)
+    watch(
+      () => props.deduplicateInlineStyles,
+      (enabled) => inlineStylesRegistry.setEnabled(enabled),
+      { flush: 'sync' },
+    )
 
     const updateRootColorScheme = () =>
       props
