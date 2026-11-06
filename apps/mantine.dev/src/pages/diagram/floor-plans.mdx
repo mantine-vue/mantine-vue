@@ -1,0 +1,108 @@
+import { DiagramDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.DiagramFloorPlans)
+
+The floor plan extension adds architectural node types, drawing tools, scale-aware measurements and
+furniture to the core [Vue diagram editor](/diagram/diagram).
+
+## Configure the floor plan extension
+
+```ts
+import { floorPlanExtension, useDiagram } from '@mantine-vue/diagram'
+
+const controller = useDiagram({
+  extensions: [
+    floorPlanExtension({
+      collisions: 'highlight',
+      wallThickness: 15,
+    }),
+  ],
+})
+```
+
+<Demo data={DiagramDemos.floorPlanner} />
+
+The extension registers its node types, tools and templates by default. Set `tools: false` or
+`templates: false` when supplying your own UI. Set `attachOpenings: false` if doors and windows
+should not bind to walls.
+
+## Scale and units
+
+Diagram geometry uses world units. `settings.scale.pixelsPerMeter` maps those units to real-world
+lengths; the default is 100, so one world unit represents one centimeter. The display unit can be
+`mm`, `cm`, `m`, `in`, `ft` or `ft-in`.
+
+Rulers, room areas, dimensions and length fields use the document scale. Use `formatLength`,
+`parseLength`, `formatArea` and `convertLength` in application UI.
+
+```ts
+import { calibrateScale, parseLength } from '@mantine-vue/diagram'
+
+const width = parseLength(`11' 4"`, controller.editor.scale)
+
+controller.editor.updateSettings({
+  scale: calibrateScale(measuredWorldDistance, 4.5, 'm', controller.editor.scale),
+})
+```
+
+`parseLength` returns world units or `null` for invalid input. Calibration is useful after importing
+a scanned or exported plan whose pixel scale is unknown.
+
+## Architectural elements
+
+<DataTable
+  head={['Node type', 'Behavior']}
+  data={[
+    ['floor-wall', 'Straight wall segment with thickness, mitered corners and T-junctions'],
+    ['floor-door', 'Single, double, sliding or open door attached to a wall'],
+    ['floor-window', 'Window attached to a wall'],
+    ['floor-room', 'Editable polygon with an optional name and calculated area'],
+    ['floor-column', 'Square or round structural column'],
+    ['floor-stairs', 'Top-view stairs with generated steps'],
+    ['floor-dimension', 'Scale-aware measurement line'],
+    ['floor-furniture', 'Top-view symbol selected with data.kind'],
+  ]}
+/>
+
+Doors and windows snap to nearby walls, inherit the wall's angle and thickness, and follow later wall
+transforms. Drag an opening away from its host wall to detach it.
+
+## Drawing tools
+
+The `wall` tool draws connected wall segments; double-click or press Enter to finish. The `room`
+tool draws editable polygon boundaries. The `door` and `window` tools place openings on walls, and
+`dimension` creates a measurement between two points.
+
+For a custom floor plan workflow, compose the exported `createWallTool`, `createRoomTool`,
+`createOpeningTool`, `createDimensionTool` and `createCalibrationTool` factories in your own
+[extension](/diagram/extensions#custom-tools).
+
+## Collisions and boundaries
+
+`collisions: 'highlight'` marks overlapping furniture, columns, stairs and restaurant seating.
+`collisions: 'prevent'` rejects interactive transforms that introduce an overlap. Set it to `false`
+to disable collision checks.
+
+Use `findCollisions` for explicit validation and `findOutsideBoundary` to find nodes outside
+`settings.bounds`. Collision handling does not replace domain-specific rules such as minimum
+walkway width; the [restaurant extension](/diagram/restaurant#validate-the-layout) adds those checks.
+
+## Multiple floors
+
+`useFloorPlanFloors(controller)` treats layers with `kind: 'floor'` as building floors. It can add,
+remove and activate floors, and show inactive floors as hidden or as faded, locked references.
+Floors remain ordinary diagram layers in the saved document.
+
+## Import a background plan
+
+`importFloorPlanImage(controller, source, options)` adds an image behind the drawing. A `Blob` is
+embedded as a data URL so the document remains self-contained; a string source is stored as given.
+The image is locked by default.
+
+After import, use the calibration tool or `calibrateScale` with one known distance. Large embedded
+images increase document size, so consider an application-managed URL when offline portability is
+not required.
+
+See [saving and export](/diagram/serialization) for document persistence and image output.

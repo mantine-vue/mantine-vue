@@ -212,6 +212,20 @@ const OTHER_EXTENSIONS_PAGES: MdxNavItem[] = [
   { label: 'Rich text editor', link: '/x/tiptap' },
 ]
 
+const DIAGRAM_PAGES: MdxNavItem[] = [
+  { label: 'Getting started', link: '/diagram/getting-started' },
+  { label: 'Diagram component', link: '/diagram/diagram' },
+  { label: 'Nodes and shapes', link: '/diagram/nodes' },
+  { label: 'Connectors', link: '/diagram/connectors' },
+  { label: 'Editing and keyboard', link: '/diagram/editing' },
+  { label: 'Floor plans', link: '/diagram/floor-plans' },
+  { label: 'Restaurant floor plans', link: '/diagram/restaurant' },
+  { label: 'Saving and export', link: '/diagram/serialization' },
+  { label: 'Extensions and API', link: '/diagram/extensions' },
+  { label: 'Architecture and performance', link: '/diagram/performance' },
+  { label: 'Features and limitations', link: '/diagram/features' },
+]
+
 const FILE_MANAGER_PAGES: MdxNavItem[] = [
   { label: 'Getting started', link: '/file-manager/getting-started' },
   { label: 'FileManager', link: '/file-manager/file-manager' },
@@ -475,6 +489,10 @@ export const MDX_NAV_DATA: MdxNavCategory[] = [
   {
     category: 'File manager',
     groups: [{ title: 'File manager', pages: FILE_MANAGER_PAGES }],
+  },
+  {
+    category: 'Diagram',
+    groups: [{ title: 'Diagram', pages: DIAGRAM_PAGES }],
   },
   {
     category: 'Extensions',

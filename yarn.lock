@@ -671,6 +671,23 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@mantine-vue/diagram@workspace:*, @mantine-vue/diagram@workspace:packages/@mantine-vue/diagram":
+  version: 0.0.0-use.local
+  resolution: "@mantine-vue/diagram@workspace:packages/@mantine-vue/diagram"
+  dependencies:
+    "@mantine-vue/core": "workspace:*"
+    "@mantine-vue/hooks": "workspace:*"
+    "@vue/compiler-dom": "npm:^3.5.0"
+    "@vue/server-renderer": "npm:^3.5.0"
+    "@vue/test-utils": "npm:^2.4.6"
+    vue: "npm:^3.5.0"
+  peerDependencies:
+    "@mantine-vue/core": 3.8.0
+    "@mantine-vue/hooks": 3.8.0
+    vue: ^3.5.0
+  languageName: unknown
+  linkType: soft
+
 "@mantine-vue/docs@workspace:apps/mantine.dev":
   version: 0.0.0-use.local
   resolution: "@mantine-vue/docs@workspace:apps/mantine.dev"
@@ -683,6 +700,7 @@ __metadata:
     "@mantine-vue/contextmenu": "workspace:*"
     "@mantine-vue/core": "workspace:*"
     "@mantine-vue/dates": "workspace:*"
+    "@mantine-vue/diagram": "workspace:*"
     "@mantine-vue/dropzone": "workspace:*"
     "@mantine-vue/file-manager": "workspace:*"
     "@mantine-vue/form": "workspace:*"

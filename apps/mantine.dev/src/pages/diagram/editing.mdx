@@ -1,0 +1,108 @@
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.DiagramEditing)
+
+The built-in select tool covers pointer, touch and keyboard editing. Use this page as the default
+interaction reference for your application and onboarding UI.
+
+## Selection and transforms
+
+<DataTable
+  head={['Gesture', 'Result']}
+  data={[
+    ['Click; Shift + click', 'Select one element; add or remove an element'],
+    ['Drag empty canvas', 'Select enclosed elements with a marquee'],
+    ['Alt + drag empty canvas', 'Select elements with a lasso'],
+    ['Drag a node', 'Move the selection; Shift locks the axis and Alt disables snapping'],
+    ['Alt + drag a node', 'Duplicate and move the selection'],
+    ['Drag a resize handle', 'Resize; Shift preserves ratio and Ctrl resizes from the center'],
+    ['Drag the rotate handle', 'Rotate; Shift snaps to 15-degree steps'],
+    ['Double-click a group', 'Enter the group and select a child; Escape leaves the group'],
+  ]}
+/>
+
+Set `marqueeMode: 'intersect'` on the editor to select elements touched by the marquee instead of
+only fully enclosed elements. Locked nodes remain selectable but cannot be transformed.
+
+## Snapping and guides
+
+Movement and resizing can snap to:
+
+- The grid, configured with `snap-to-grid` and `grid-size`
+- Nearby node edges and centers when `smart-guides` is enabled
+- User guides dragged from rulers
+
+The snap threshold is measured in screen pixels, so it remains consistent at different zoom levels.
+Hold `Alt` during a move to bypass snapping temporarily.
+
+## Keyboard shortcuts
+
+`Mod` means `Ctrl` on Windows and Linux and `Command` on macOS. Override a command with
+`shortcuts`, for example `{ duplicate: 'mod+J', group: null }`, or disable all shortcuts with
+`:shortcuts="false"`.
+
+<DataTable
+  head={['Action', 'Default shortcut']}
+  data={[
+    ['Undo; redo', 'Mod + Z; Mod + Shift + Z or Mod + Y'],
+    ['Copy; cut; paste; duplicate', 'Mod + C; Mod + X; Mod + V; Mod + D'],
+    ['Delete', 'Delete or Backspace'],
+    ['Select all', 'Mod + A'],
+    ['Group; ungroup', 'Mod + G; Mod + Shift + G'],
+    ['Lock; unlock', 'Mod + L; Mod + Shift + L'],
+    ['Change z-order', 'Mod + [ or ]; add Shift for back or front'],
+    ['Align', 'Alt + A/H/D for left/center/right; Alt + W/V/S for top/middle/bottom'],
+    ['Distribute', 'Alt + Shift + H or V'],
+    ['Flip horizontal; vertical', 'Shift + H; Shift + V'],
+    ['Rotate clockwise; counterclockwise', 'Mod + Shift + R; Mod + Alt + R'],
+    ['Nudge', 'Arrow keys; add Shift for one grid step'],
+    ['Edit text', 'Enter or F2'],
+    ['Move focus', 'Tab or Shift + Tab'],
+    ['Zoom in; out; reset', 'Mod + Plus; Mod + Minus; Mod + 0'],
+    ['Fit diagram; fit selection', 'Shift + 1; Shift + 2'],
+  ]}
+/>
+
+Execute registered commands from custom UI with `controller.execute(id)`. `matchWidth`,
+`matchHeight` and `clearSelection` are available without default shortcuts.
+
+## Undo history
+
+Each drag, paste, alignment or other transaction creates one undo entry. Consecutive nudges merge,
+and undo restores the selection. The default history limit is 100 entries.
+
+Wrap related application changes in one transaction:
+
+```ts
+controller.editor.store.transact('Update workflow step', () => {
+  controller.editor.updateNode(nodeId, { label: 'Approved' })
+  controller.editor.updateEdge(edgeId, { label: 'complete' })
+})
+```
+
+For live state that should not be undoable, use a store transaction with `{ history: false }` or
+keep the state outside the saved document, as shown in the
+[restaurant status example](/diagram/restaurant#live-table-statuses).
+
+## Clipboard, layers and groups
+
+Copy and paste use the system clipboard while the canvas is focused, with an in-memory fallback when
+clipboard access is unavailable. Groups retain their children, and edges between copied nodes are
+included.
+
+Layers control rendering order, visibility and locking. New elements use the active layer.
+`DiagramLayers` provides layer and object controls; those mutation controls are disabled outside
+`edit` mode.
+
+## Accessibility
+
+The canvas is keyboard focusable and uses `aria-activedescendant` to identify the active element.
+Selection changes are announced in a polite live region. Tab navigation follows node reading order,
+and labeled toolbar controls use roving focus.
+
+The renderer also supports forced-colors mode and reduced-motion preferences. On touch devices, one
+finger pans, two fingers pinch to zoom, and a long press opens the context menu.
+
+See [Diagram interaction modes](/diagram/diagram#interaction-modes) for read-only configurations and
+[connectors](/diagram/connectors#editing-connectors) for edge-specific gestures.

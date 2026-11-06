@@ -1,0 +1,107 @@
+import { DiagramDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.DiagramRestaurant)
+
+The restaurant extension adds configurable tables, booths, bar seating and zones. Combine it with
+the [floor plan extension](/diagram/floor-plans) when the layout also needs walls, doors and
+dimensions.
+
+## Configure the restaurant extension
+
+```ts
+import { floorPlanExtension, restaurantExtension, useDiagram } from '@mantine-vue/diagram'
+
+const controller = useDiagram({
+  extensions: [
+    floorPlanExtension({ collisions: false }),
+    restaurantExtension({
+      statuses: { vip: { label: 'VIP', color: 'violet', available: true } },
+    }),
+  ],
+})
+```
+
+<Demo data={DiagramDemos.restaurant} />
+
+The extension is backend-agnostic. Connect reservations, table status and POS actions through your
+application state and diagram events.
+
+## Tables and seating
+
+Restaurant tables store their configuration in `node.data`:
+
+<DataTable
+  head={['Field', 'Values or purpose']}
+  data={[
+    ['shape', 'round, oval, square or rectangle'],
+    ['seats', 'Generated chair count and capacity'],
+    ['seatLayout', 'around, long-sides, one-side or ends'],
+    ['number', 'Display number; assigned automatically for new and copied tables'],
+    ['status', 'Persisted operational status'],
+    ['minSeats', 'Smallest party returned by findTablesFor'],
+    ['attributes', 'Application-specific table attributes'],
+  ]}
+/>
+
+Generated chairs are included in hit testing, spacing and collision geometry.
+
+<Demo data={DiagramDemos.tableEditor} />
+
+Use `mergeTables` to replace two or more tables with one combined table. The source table records
+are retained in `data.mergedFrom`, allowing `splitTable` to restore them. `renumberTables` assigns
+numbers in visual reading order.
+
+## Live table statuses
+
+The default statuses are `available`, `reserved`, `occupied`, `cleaning` and `disabled`. Each status
+definition controls its label, color and whether it counts as available.
+
+`useRestaurantFloor` can display statuses from a reservation or POS system without writing them to
+the saved layout:
+
+```ts
+import { ref } from 'vue'
+import { useRestaurantFloor } from '@mantine-vue/diagram'
+
+const statuses = ref<Record<string, string>>({})
+const floor = useRestaurantFloor(controller, {
+  statuses,
+  rules: { minSpacing: 60 },
+})
+
+socket.on('table-status', ({ id, status }) => {
+  statuses.value = { ...statuses.value, [id]: status }
+})
+
+const availableSeats = floor.summary.value.availableSeats
+const optionsForFour = floor.findTablesFor(4)
+```
+
+Call `floor.setStatus(id, status)` for an in-memory status or
+`floor.setStatus(id, status, { persist: true })` to store it in the document without adding an undo
+entry.
+
+## Validate the layout
+
+`validateRestaurantLayout` and `floor.issues` report:
+
+- Overlapping seating and insufficient spacing
+- Tables that block walkways or enter restricted zones
+- Seating outside `settings.bounds`
+- Duplicate table numbers
+
+`summarizeRestaurant` reports tables and seats by status and zone. `getSeatPositions` returns chair
+coordinates for seat assignments or guest overlays.
+
+## Zones and service screens
+
+Restaurant zones are polygon nodes. Built-in kinds include `dining`, `indoor`, `outdoor`, `bar`,
+`kitchen`, `entrance`, `walkway` and `restricted`.
+
+Use `mode="view"` for host stands and POS displays. Users can pan and zoom without editing the
+layout, while `node-click` still reports the selected table. `RestaurantStatusLegend` displays each
+status with its table and seat counts.
+
+For storage and backend synchronization, continue with [saving, loading and export](/diagram/serialization).

@@ -1,0 +1,87 @@
+.tableBody {
+  stroke-width: 1.5px;
+  vector-effect: non-scaling-stroke;
+}
+
+.chair {
+  fill: light-dark(var(--mantine-color-gray-1), var(--mantine-color-dark-4));
+  stroke: light-dark(var(--mantine-color-gray-5), var(--mantine-color-dark-2));
+  stroke-width: 1px;
+  vector-effect: non-scaling-stroke;
+}
+
+.chairBack {
+  fill: light-dark(var(--mantine-color-gray-4), var(--mantine-color-dark-2));
+}
+
+.tableNumber {
+  font-family: var(--mantine-font-family);
+  font-weight: 700;
+  fill: var(--diagram-text, var(--mantine-color-text));
+  pointer-events: none;
+}
+
+.tableSeats {
+  font-family: var(--mantine-font-family);
+  fill: var(--diagram-muted-text, var(--mantine-color-dimmed));
+  pointer-events: none;
+}
+
+.statusDot {
+  stroke: var(--diagram-page, var(--mantine-color-body));
+  stroke-width: 1.5px;
+  vector-effect: non-scaling-stroke;
+}
+
+.bench {
+  fill: light-dark(var(--mantine-color-gray-2), var(--mantine-color-dark-4));
+  stroke: light-dark(var(--mantine-color-gray-6), var(--mantine-color-dark-2));
+  stroke-width: 1px;
+  vector-effect: non-scaling-stroke;
+}
+
+.counter {
+  fill: light-dark(var(--mantine-color-orange-1), rgba(255, 146, 43, 0.15));
+  stroke: light-dark(var(--mantine-color-orange-7), var(--mantine-color-orange-4));
+  stroke-width: 1.5px;
+  vector-effect: non-scaling-stroke;
+}
+
+.zone {
+  stroke-width: 1.5px;
+  stroke-dasharray: 8 5;
+  vector-effect: non-scaling-stroke;
+}
+
+.zoneLabel {
+  font-family: var(--mantine-font-family);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  pointer-events: none;
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+  align-items: center;
+  padding: 6px 10px;
+  font-size: var(--mantine-font-size-xs);
+  background: var(--diagram-surface, var(--mantine-color-body));
+  border: 1px solid var(--diagram-border, var(--mantine-color-default-border));
+  border-radius: var(--diagram-radius, var(--mantine-radius-sm));
+}
+
+.legendItem {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  white-space: nowrap;
+}
+
+.legendSwatch {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}

@@ -1,0 +1,61 @@
+import { DiagramDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.DiagramPerformance)
+
+The package separates its framework-independent document engine from Vue reactivity and rendering.
+This lets applications manipulate or validate documents without mounting the canvas.
+
+## Architecture
+
+<DataTable
+  head={['Layer', 'Responsibility']}
+  data={[
+    ['Document and store', 'Serializable records, transactions and undo history'],
+    ['DiagramEditor', 'Selection, viewport, spatial queries, tools, commands, routing and plugins'],
+    ['Vue controller', 'Reactive refs and lifecycle integration from useDiagram'],
+    ['Renderer', 'SVG nodes, edges and interaction overlays; Canvas 2D minimap'],
+    ['Components', 'Mantine toolbars, controls, palettes and panels'],
+  ]}
+/>
+
+## SVG rendering
+
+The main canvas uses SVG. This provides DOM hit targets, accessible elements, Vue component nodes,
+CSS theme variables and resolution-independent export. HTML-based custom nodes render through
+`foreignObject`; the minimap uses Canvas 2D to keep its overview inexpensive.
+
+For very large documents, the renderer reduces work with:
+
+- **Viewport culling:** after the configured node threshold, off-screen nodes are not mounted.
+- **Spatial indexing:** viewport, hit-test and snapping queries inspect nearby nodes.
+- **Element-level reactivity:** changing one node updates that node and affected connectors.
+- **Route caching:** connector paths remain cached until relevant geometry changes.
+- **Transactions:** a drag produces one model update and one undo entry when it commits.
+
+<Demo data={DiagramDemos.large} />
+
+## Large-diagram guidance
+
+- Load a complete document with `useDiagram({ document })` or `controller.load(document)` instead of
+  committing thousands of individual `addNode` calls.
+- Keep document `data` and `meta` plain and serializable; store live application objects elsewhere.
+- Prefer SVG custom nodes over HTML `foreignObject` nodes when many nodes are visible.
+- Use `straight` or `bezier` connectors when obstacle avoidance is unnecessary; orthogonal routing
+  performs additional geometry searches.
+- Disable or narrow collision detection for large floor plans when continuous overlap feedback is
+  not required.
+- Tune `culling` for your node complexity. Set it to `false` only when all nodes must remain mounted.
+
+Performance depends on node renderer complexity, visible element count, browser and hardware. Test
+with representative production documents instead of relying on node count alone.
+
+## Headless work
+
+Serialization, validation, layout and most editor operations do not require the Vue canvas. Use the
+core APIs for server-side document processing or tests, and mount `Diagram` only for interactive
+rendering and browser export.
+
+See [extensions and editor API](/diagram/extensions#editor-api) for bulk operations and
+[features and limitations](/diagram/features) for production considerations.

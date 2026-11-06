@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, h, ref } from 'vue'
+import { computed, defineAsyncComponent, h, ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import { AreaChart } from '@mantine-vue/charts'
 import {
@@ -63,6 +63,10 @@ import Logo from '@/components/Logo/Logo.vue'
 import { primaryColor } from '@/theme'
 
 type ColorScheme = 'light' | 'dark'
+
+const HomeDiagramShowcase = defineAsyncComponent(
+  () => import('@/components/HomeShowcase/HomeDiagramShowcase.vue'),
+)
 
 const { setColorScheme } = useMantineColorScheme()
 const computedColorScheme = useComputedColorScheme('light')
@@ -653,6 +657,31 @@ function inviteTeammate() {
       </div>
     </section>
 
+    <section class="showcaseSection diagramShowcaseSection">
+      <div class="homeContainer">
+        <div class="sectionHeading">
+          <Badge color="orange" variant="light" radius="xl">Diagram extension</Badge>
+          <h2>Flowcharts, floor plans, and live seating maps.</h2>
+          <p>
+            One SVG canvas with tools, palettes, properties, layers, snapping, undo, and auto
+            layout. Extensions turn it into an architectural planner or a restaurant floor.
+          </p>
+          <Group justify="center" mt="xl">
+            <Button
+              :component="RouterLink"
+              to="/diagram/getting-started"
+              variant="default"
+              radius="md"
+            >
+              Explore Diagram
+              <template #rightSection><PhArrowRight :size="16" /></template>
+            </Button>
+          </Group>
+        </div>
+        <HomeDiagramShowcase />
+      </div>
+    </section>
+
     <section class="showcaseSection operationsShowcaseSection">
       <div class="homeContainer">
         <div class="sectionHeading">
@@ -1153,7 +1182,8 @@ function inviteTeammate() {
   background: var(--home-subtle);
 }
 
-.inboxShowcaseSection {
+.inboxShowcaseSection,
+.diagramShowcaseSection {
   background: var(--mantine-color-body);
 }
 

@@ -23,6 +23,7 @@ export default defineConfig({
       '@mantine-vue/code-highlight': r('./packages/@mantine-vue/code-highlight/src'),
       '@mantine-vue/contextmenu': r('./packages/@mantine-vue/contextmenu/src'),
       '@mantine-vue/dates': r('./packages/@mantine-vue/dates/src'),
+      '@mantine-vue/diagram': r('./packages/@mantine-vue/diagram/src'),
       '@mantine-vue/dropzone': r('./packages/@mantine-vue/dropzone/src'),
       '@mantine-vue/file-manager': r('./packages/@mantine-vue/file-manager/src'),
       '@mantine-vue/form': r('./packages/@mantine-vue/form/src'),

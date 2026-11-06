@@ -1,0 +1,80 @@
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.DiagramConnectors)
+
+Connectors are diagram edges with node, port or free-point endpoints. They update automatically when
+connected nodes move, resize or rotate.
+
+## Edge model
+
+```ts
+import type { DiagramEdge } from '@mantine-vue/diagram'
+
+const edge: DiagramEdge = {
+  id: 'approval-result',
+  type: 'orthogonal',
+  source: { nodeId: 'review', portId: 'right' },
+  target: { nodeId: 'publish' },
+  waypoints: [{ x: 300, y: 200 }],
+  label: 'approved',
+  labels: [{ text: '1..n', position: 0.9, offset: -12 }],
+  sourceArrow: 'none',
+  targetArrow: 'triangle',
+  style: { stroke: 'gray.7', strokeWidth: 2, strokeDasharray: '6 4', cornerRadius: 8 },
+}
+```
+
+Omit `portId` to attach an endpoint to the node outline. Use `{ point: { x, y } }` for a free
+endpoint.
+
+## Routing
+
+<DataTable
+  head={['Type', 'Behavior']}
+  data={[
+    ['straight', 'Straight segments through optional waypoints'],
+    ['orthogonal', 'Horizontal and vertical segments routed around nearby nodes'],
+    ['rounded', 'Orthogonal routing with rounded corners'],
+    ['bezier', 'Smooth curve based on port directions or waypoints'],
+  ]}
+/>
+
+Orthogonal and rounded routes avoid nearby node bounds. For specialized routing, register a
+`DiagramRouter` through `routers`, `editor.registerRouter()` or an
+[extension](/diagram/extensions#create-an-extension).
+
+## Arrowheads and labels
+
+Supported arrowheads are `arrow`, `triangle`, `open-triangle`, `diamond`, `open-diamond`, `circle`,
+`open-circle`, `bar` and `none`. `targetArrow` defaults to `arrow`. Arrowheads inherit the edge
+stroke and are included in SVG and image exports.
+
+Use `label` for one centered label. Use `labels` for multiple labels with explicit positions and
+offsets. Double-clicking an edge edits its primary label.
+
+## Editing connectors
+
+- Drag from a visible port to another node or port.
+- Activate the connector tool to start from anywhere on a node.
+- Drag a selected endpoint to reconnect it or leave it at a free point.
+- Drag a segment handle to add a waypoint; double-click a waypoint to remove it.
+
+## Connection rules
+
+```vue
+<Diagram
+  :connection-rules="{
+    allowSelfLoops: false,
+    allowDuplicates: false,
+    radius: 24,
+    validate: ({ sourceNodeId, targetNodeId }) => canConnect(sourceNodeId, targetNodeId),
+  }"
+/>
+```
+
+The editor also enforces each port's `kind` and `maxConnections`. Invalid targets are highlighted
+during the drag and do not create an edge. Use the `connect` event for successful user-created
+edges and `connect-end` when an edge is dropped without a valid target.
+
+For persistence and export behavior, see [saving, loading and export](/diagram/serialization).

@@ -30,6 +30,22 @@ import type {
   ThemeIconVariant,
 } from '@mantine-vue/core'
 import { ContextMenuProvider } from '@mantine-vue/contextmenu'
+import {
+  Diagram,
+  DiagramToolbar,
+  floorPlanExtension,
+  restaurantExtension,
+  useDiagram,
+  useRestaurantFloor,
+} from '@mantine-vue/diagram'
+import type {
+  DiagramDocument,
+  DiagramExtension,
+  DiagramNode,
+  DiagramNodeType,
+  DiagramProps,
+  RestaurantIssue,
+} from '@mantine-vue/diagram'
 import { FileManager, createMemoryAdapter, useFileManager } from '@mantine-vue/file-manager'
 import type {
   FileEntry,
@@ -318,3 +334,40 @@ const fileManagerProps: FileManagerProps = {
 }
 
 export const fileManagerTypes = [FileManager, firstVisibleEntry, fileManagerProps]
+
+const diagramDocument: DiagramDocument = {
+  version: 1,
+  nodes: [{ id: 'a', type: 'rect', x: 0, y: 0, width: 100, height: 50, style: { fill: 'blue.1' } }],
+  edges: [
+    { id: 'e', source: { nodeId: 'a' }, target: { point: { x: 10, y: 10 } }, type: 'orthogonal' },
+  ],
+}
+const diagramController = useDiagram({
+  document: diagramDocument,
+  extensions: [floorPlanExtension({ collisions: 'prevent' }), restaurantExtension()],
+})
+const firstNode: DiagramNode | undefined = diagramController.nodeRef('a').value
+const customNodeType: DiagramNodeType = {
+  type: 'badge',
+  resizable: 'proportional',
+  properties: [{ path: 'data.count', label: 'Count', type: 'number' }],
+}
+const customExtension: DiagramExtension = { name: 'badges', nodeTypes: [customNodeType] }
+const diagramProps: DiagramProps = {
+  modelValue: diagramDocument,
+  mode: 'select',
+  grid: { type: 'dots' },
+  extensions: [customExtension],
+  contextMenu: [
+    'copy',
+    '-',
+    { id: 'hello', label: 'Hello', onClick: (controller) => controller.execute('selectAll') },
+  ],
+}
+const restaurantIssues: RestaurantIssue[] = useRestaurantFloor(diagramController).issues.value
+
+// @ts-expect-error Interaction modes are a closed union.
+const invalidDiagramProps: DiagramProps = { mode: 'draw' }
+void invalidDiagramProps
+
+export const diagramTypes = [Diagram, DiagramToolbar, firstNode, diagramProps, restaurantIssues]

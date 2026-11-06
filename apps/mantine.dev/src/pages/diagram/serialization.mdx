@@ -1,0 +1,100 @@
+import { DiagramDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.DiagramSerialization)
+
+A diagram is a JSON-serializable document that can be stored in any database or API. IDs are stable
+across saves, and application fields such as `meta` are preserved.
+
+## Document format
+
+```ts
+interface DiagramDocument {
+  version: number
+  id?: string
+  name?: string
+  nodes: DiagramNode[]
+  edges: DiagramEdge[]
+  layers?: DiagramLayer[]
+  settings?: {
+    gridSize?: number
+    scale?: DiagramScale
+    bounds?: Rect
+    background?: string
+    guides?: DiagramGuide[]
+  }
+  meta?: Record<string, unknown>
+}
+```
+
+Node order is back to front. Store application-specific, serializable values in document or element
+`meta`; node-type-specific values belong in `node.data`.
+
+<Demo data={DiagramDemos.serialization} />
+
+## Validate untrusted documents
+
+Use `parseDiagram` at API, file-import and local-storage boundaries. It parses JSON, applies ordered
+migrations and validates geometry, IDs, references, group cycles and schema compatibility.
+
+```ts
+import { parseDiagram, serializeDiagram } from '@mantine-vue/diagram'
+
+const result = parseDiagram(json, {
+  migrations: [
+    {
+      version: 0,
+      migrate: (document) => ({
+        ...document,
+        nodes: document.shapes,
+        edges: document.links,
+      }),
+    },
+  ],
+})
+
+if (result.ok) {
+  controller.load(result.document)
+} else {
+  showErrors(result.issues)
+}
+
+await api.save(serializeDiagram(controller.toDocument()))
+```
+
+Each issue includes a JSON path, message and `error` or `warning` severity. Set `strict: true` when
+warnings should also make the result invalid. Do not pass unvalidated external input directly to
+`controller.load()`.
+
+## Apply partial updates
+
+`diffDiagrams(before, after)` creates a `DiagramPatch`. Apply it with
+`editor.applyPatch(patch)` as one undoable transaction. A patch can add, update, remove and reorder
+nodes or edges, and replace changed settings, layers or metadata.
+
+Patches are useful for server-driven updates, but they do not provide conflict resolution,
+presence or a collaboration transport. Apply them in server order and resolve concurrent edits in
+your application. See [features and limitations](/diagram/features#current-limitations).
+
+## Export and print
+
+`useDiagramExport(controller)` operates on a mounted diagram:
+
+<DataTable
+  head={['Method', 'Result']}
+  data={[
+    ['toJson(space)', 'Serialized document JSON'],
+    ['toSvg(options)', 'Standalone SVG without selection handles'],
+    ['toImage(options)', 'PNG, JPEG or WebP Blob'],
+    ['downloadJson, downloadSvg, downloadImage', 'Browser download of the corresponding output'],
+    ['print(options)', 'Single-page browser print from a hidden frame'],
+  ]}
+/>
+
+Image exports accept `bounds`, `padding` and `background`; raster export also accepts `pixelRatio`.
+Theme colors are resolved into the exported SVG.
+
+Remote images need appropriate CORS headers to be embedded in raster output. HTML nodes use SVG
+`foreignObject`; they appear in SVG exports, but browser rasterization support can vary. Prefer SVG
+custom nodes when consistent server or image output is a requirement.

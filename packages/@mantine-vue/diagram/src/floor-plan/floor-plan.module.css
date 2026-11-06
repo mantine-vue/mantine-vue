@@ -1,0 +1,108 @@
+.wall {
+  fill: var(
+    --floor-plan-wall,
+    light-dark(var(--mantine-color-dark-5), var(--mantine-color-gray-4))
+  );
+  stroke: var(
+    --floor-plan-wall,
+    light-dark(var(--mantine-color-dark-5), var(--mantine-color-gray-4))
+  );
+  stroke-width: 0.5px;
+  stroke-linejoin: miter;
+}
+
+.openingGap {
+  fill: var(--diagram-page, var(--mantine-color-body));
+  stroke: none;
+}
+
+.doorLeaf,
+.windowFrame {
+  fill: none;
+  stroke: var(
+    --floor-plan-opening,
+    light-dark(var(--mantine-color-dark-4), var(--mantine-color-gray-3))
+  );
+  stroke-width: 1.5px;
+  vector-effect: non-scaling-stroke;
+}
+
+.doorSwing {
+  fill: none;
+  stroke: var(
+    --floor-plan-opening,
+    light-dark(var(--mantine-color-dark-4), var(--mantine-color-gray-3))
+  );
+  stroke-width: 1px;
+  stroke-dasharray: 4 3;
+  vector-effect: non-scaling-stroke;
+}
+
+.windowGlass {
+  stroke: light-dark(var(--mantine-color-blue-5), var(--mantine-color-blue-3));
+  stroke-width: 1.5px;
+  vector-effect: non-scaling-stroke;
+}
+
+.room {
+  fill: light-dark(var(--mantine-color-blue-0), rgba(77, 171, 247, 0.08));
+  stroke: light-dark(var(--mantine-color-blue-4), var(--mantine-color-blue-7));
+  stroke-width: 1px;
+  stroke-dasharray: 6 4;
+  vector-effect: non-scaling-stroke;
+}
+
+.roomName {
+  font-weight: 600;
+  fill: var(--diagram-text, var(--mantine-color-text));
+}
+
+.roomArea {
+  fill: var(--diagram-muted-text, var(--mantine-color-dimmed));
+}
+
+.column {
+  fill: var(
+    --floor-plan-wall,
+    light-dark(var(--mantine-color-dark-5), var(--mantine-color-gray-4))
+  );
+}
+
+.stairs {
+  fill: var(--diagram-node-fill, var(--mantine-color-body));
+  stroke: light-dark(var(--mantine-color-gray-7), var(--mantine-color-dark-1));
+  stroke-width: 1px;
+  vector-effect: non-scaling-stroke;
+}
+
+.dimension {
+  stroke: light-dark(var(--mantine-color-gray-7), var(--mantine-color-dark-1));
+  stroke-width: 1px;
+  vector-effect: non-scaling-stroke;
+  fill: none;
+}
+
+.dimensionText {
+  fill: light-dark(var(--mantine-color-gray-8), var(--mantine-color-dark-0));
+  stroke: none;
+  font-family: var(--mantine-font-family);
+}
+
+.dimensionTextBackground {
+  fill: var(--diagram-page, var(--mantine-color-body));
+  stroke: none;
+}
+
+.furniture {
+  fill: light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-5));
+  stroke: light-dark(var(--mantine-color-gray-6), var(--mantine-color-dark-2));
+  stroke-width: 1px;
+  vector-effect: non-scaling-stroke;
+}
+
+.furnitureDetail {
+  fill: none;
+  stroke: light-dark(var(--mantine-color-gray-5), var(--mantine-color-dark-2));
+  stroke-width: 1px;
+  vector-effect: non-scaling-stroke;
+}
