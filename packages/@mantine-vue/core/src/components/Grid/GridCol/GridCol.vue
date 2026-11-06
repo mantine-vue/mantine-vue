@@ -51,7 +51,11 @@ const colStyles = computed(() => {
     style: attrs.style,
   })
 
-  return { ...resolved, style: [baseStyles.value, resolved.style] }
+  // Responsive columns get their base values from GridColVariables' stylesheet; inlining
+  // them here would override every breakpoint rule.
+  return hasResponsiveStyles.value
+    ? resolved
+    : { ...resolved, style: [baseStyles.value, resolved.style] }
 })
 
 const rootElement = ref<Element | null>(null)
