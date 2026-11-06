@@ -75,6 +75,35 @@ describe('@mantine-vue/core Grid', () => {
     expect(styles).toContain('--col-order: 2')
   })
 
+  it('does not inline base variables for responsive columns so breakpoints can override them', () => {
+    const wrapper = withProvider({}, () => [
+      h(GridCol, { span: { base: 12, md: 8 }, style: { display: 'flex' } }),
+      h(GridCol, { span: { base: 12, md: 4 } }),
+    ])
+    const cols = wrapper.findAll('.mantine-Grid-col')
+    const styles = wrapper
+      .findAll('style[data-mantine-inline-styles="true"]')
+      .map((item) => item.text())
+
+    cols.forEach((col) => {
+      expect(col.attributes('style') ?? '').not.toContain('--col-flex-basis')
+      expect(col.attributes('style') ?? '').not.toContain('--col-max-width')
+    })
+    expect(cols[0].attributes('style')).toContain('display: flex')
+
+    const firstColClass = cols[0]
+      .classes()
+      .find((className) => className.startsWith('mantine-vue-v-'))!
+    const firstColStyles = styles.find((css) => css.includes(`.${firstColClass}`))!
+
+    // Base rule comes first, then the breakpoint override in the same stylesheet.
+    const baseIndex = firstColStyles.indexOf('--col-flex-basis: 100%')
+    const mdIndex = firstColStyles.indexOf('@media (min-width: 62em)')
+    expect(baseIndex).toBeGreaterThanOrEqual(0)
+    expect(mdIndex).toBeGreaterThan(baseIndex)
+    expect(firstColStyles.slice(mdIndex)).toContain('--col-flex-basis: calc(66.666')
+  })
+
   it('keeps Styles API and native style overrides above generated base variables', () => {
     const fromStylesApi = withProvider({ styles: { col: { '--col-flex-basis': '40%' } } }, () =>
       h(GridCol, { span: 6 }),

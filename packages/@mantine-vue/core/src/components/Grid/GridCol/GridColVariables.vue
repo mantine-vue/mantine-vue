@@ -142,6 +142,17 @@ const ctx = useGridContext()
 
 const breakpoints = computed(() => ctx.breakpoints || theme.value.breakpoints)
 
+const baseStyles = computed(() =>
+  getGridColBaseStyles({
+    span: props.span,
+    order: props.order,
+    offset: props.offset,
+    align: props.align,
+    columns: ctx.columns,
+    grow: ctx.grow,
+  }),
+)
+
 /** One block of variables per breakpoint, keyed by the query they belong in. */
 const values = computed(() => {
   const queries = keys(breakpoints.value).reduce<Record<string, Record<string, any>>>(
@@ -199,5 +210,10 @@ const container = computed(() => (ctx.type === 'container' ? values.value : unde
 </script>
 
 <template>
-  <InlineStyles :selector="props.selector" :media="media" :container="container" />
+  <InlineStyles
+    :selector="props.selector"
+    :styles="baseStyles"
+    :media="media"
+    :container="container"
+  />
 </template>
