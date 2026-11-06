@@ -1,0 +1,124 @@
+import { DiagramDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.DiagramNodes)
+
+Nodes are plain, serializable objects. Their geometry uses diagram world coordinates, and custom
+application data belongs in `data` or `meta`.
+
+## Node model
+
+```ts
+import type { DiagramNode } from '@mantine-vue/diagram'
+
+const node: DiagramNode = {
+  id: 'approval',
+  type: 'rect',
+  x: 100,
+  y: 80,
+  width: 160,
+  height: 80,
+  rotation: 0,
+  label: 'Review request',
+  style: { fill: 'blue.0', stroke: 'blue.6', cornerRadius: 8 },
+  ports: [{ id: 'approved', x: 1, y: 0.5, kind: 'source' }],
+  data: { status: 'pending' },
+  meta: { recordId: 'request-42' },
+}
+```
+
+Use `parentId` for groups and `layerId` for layers. `locked` prevents edits, while `hidden` removes
+the node from the canvas. `richText`, when present, takes precedence over `label`.
+
+## Built-in shapes
+
+<DataTable
+  head={['Type', 'Purpose']}
+  data={[
+    ['rect', 'Rectangle; style.cornerRadius controls rounded corners'],
+    ['ellipse, circle', 'Ellipse and proportional circle'],
+    ['diamond, triangle, hexagon, octagon, parallelogram, trapezoid, star', 'Scalable polygons'],
+    ['stadium, cylinder, document, note', 'Common flowchart and annotation shapes'],
+    ['polygon, line', 'Editable vertices stored in data.points'],
+    ['path', 'SVG path stored in data.d and scaled from data.viewBox'],
+    ['text', 'Wrapped text without a background shape'],
+    ['image', 'Image URL with contain, cover or fill fitting'],
+    ['group', 'Container created by grouping selected nodes'],
+  ]}
+/>
+
+## Custom Vue nodes
+
+A `DiagramNodeType` combines rendering with geometry and interaction behavior. SVG renderers are the
+default. Set `html: true` to render regular HTML or Mantine components inside an SVG
+`foreignObject`.
+
+<Demo data={DiagramDemos.customNodes} />
+
+Custom renderers receive `node`, `selected` and `controller` props and draw in local coordinates
+from `0, 0` to the node's `width, height`. Inputs, buttons and links are excluded from diagram
+pointer handling automatically; add `data-diagram-no-pointer` to other interactive descendants.
+
+<DataTable
+  head={['Option', 'Purpose']}
+  data={[
+    ['component, html', 'Vue renderer and whether it uses HTML instead of SVG'],
+    ['defaults', 'Initial size, style, ports and data'],
+    ['outline', 'Geometry for hit testing, connector endpoints and collisions'],
+    ['ports', 'Default connection ports'],
+    ['resizable, resizeHandles, minWidth, minHeight', 'Resize behavior and constraints'],
+    ['rotatable, rotationStep, connectable, selectable, editableText', 'Interaction controls'],
+    ['resize', 'Updates type-specific data when dimensions change'],
+    ['points', 'Vertex editing for polygon-like nodes'],
+    ['remapReferences', 'Rewrites IDs inside data after copy and paste'],
+    ['properties', 'Fields shown by DiagramPropertiesPanel'],
+    ['renderLabel', 'Enables the shared label renderer'],
+  ]}
+/>
+
+Use `DiagramNodeLabel` to render the package's wrapped and aligned labels inside a custom shape.
+
+## Ports
+
+Port coordinates are relative to the node box: `0` is the top or left edge and `1` is the bottom or
+right edge. Ports rotate with the node. Set `kind` to `source` or `target`, and use `maxConnections`
+to limit how many edges may use the port.
+
+Nodes without explicit ports receive one on each side. Edges may also attach directly to a node
+outline. See [connectors and routing](/diagram/connectors) for connection rules.
+
+## Templates and palettes
+
+Templates define a reusable node or a small graph. `DiagramPalette` groups templates by category,
+searches their labels and keywords, and inserts them by drag, click or keyboard.
+
+```ts
+import type { DiagramTemplate } from '@mantine-vue/diagram'
+
+const templates: DiagramTemplate[] = [
+  {
+    id: 'process',
+    label: 'Process',
+    category: 'Flowchart',
+    node: { type: 'rect', width: 160, height: 64, label: 'Process' },
+  },
+  {
+    id: 'decision-branches',
+    label: 'Decision with branches',
+    category: 'Patterns',
+    nodes: [
+      { type: 'diamond', x: 0, y: 0, label: 'Valid?' },
+      { type: 'rect', x: -120, y: 170, label: 'Yes' },
+      { type: 'rect', x: 130, y: 170, label: 'No' },
+    ],
+    edges: [
+      { source: 0, target: 1, label: 'yes' },
+      { source: 0, target: 2, label: 'no' },
+    ],
+  },
+]
+```
+
+Register node types and templates directly on `Diagram`, in `useDiagram`, or as part of a reusable
+[diagram extension](/diagram/extensions).

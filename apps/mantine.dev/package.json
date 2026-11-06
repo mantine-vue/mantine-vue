@@ -18,6 +18,7 @@
     "@mantine-vue/contextmenu": "workspace:*",
     "@mantine-vue/core": "workspace:*",
     "@mantine-vue/dates": "workspace:*",
+    "@mantine-vue/diagram": "workspace:*",
     "@mantine-vue/dropzone": "workspace:*",
     "@mantine-vue/file-manager": "workspace:*",
     "@mantine-vue/form": "workspace:*",

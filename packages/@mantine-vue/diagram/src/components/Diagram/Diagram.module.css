@@ -1,0 +1,593 @@
+/* Tokens are defined on the root and on the provider, parts rendered outside of a Diagram use them too. */
+.root,
+.provider {
+  --diagram-accent: var(--mantine-primary-color-filled);
+  --diagram-accent-light: var(--mantine-primary-color-light);
+  --diagram-background: light-dark(var(--mantine-color-white), var(--mantine-color-dark-7));
+  --diagram-surface: light-dark(var(--mantine-color-white), var(--mantine-color-dark-6));
+  --diagram-border: light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-4));
+  --diagram-node-fill: light-dark(var(--mantine-color-white), var(--mantine-color-dark-6));
+  --diagram-node-stroke: light-dark(var(--mantine-color-gray-6), var(--mantine-color-dark-2));
+  --diagram-note-fill: light-dark(var(--mantine-color-yellow-1), #4a4223);
+  --diagram-edge-stroke: light-dark(var(--mantine-color-gray-7), var(--mantine-color-dark-1));
+  --diagram-text: var(--mantine-color-text);
+  --diagram-muted-text: light-dark(var(--mantine-color-gray-7), var(--mantine-color-dark-1));
+  --diagram-grid: light-dark(var(--mantine-color-gray-2), var(--mantine-color-dark-5));
+  --diagram-grid-major: light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-4));
+  --diagram-page: light-dark(var(--mantine-color-white), var(--mantine-color-dark-6));
+  --diagram-outside: light-dark(var(--mantine-color-gray-1), var(--mantine-color-dark-8));
+  --diagram-danger: var(--mantine-color-red-filled);
+  --diagram-node-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
+  --diagram-radius: var(--mantine-radius-sm);
+  --diagram-ruler-size: 22px;
+}
+
+.root {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  min-height: 240px;
+  overflow: hidden;
+  font-family: var(--mantine-font-family);
+  font-size: var(--mantine-font-size-sm);
+  color: var(--diagram-text);
+  background-color: var(--diagram-background);
+  border: 1px solid var(--diagram-border);
+  border-radius: var(--diagram-radius);
+  outline: none;
+
+  &:focus-visible {
+    outline: 2px solid var(--diagram-accent);
+    outline-offset: -2px;
+  }
+
+  &:where([data-fullscreen]) {
+    border-radius: 0;
+  }
+}
+
+.provider {
+  display: contents;
+}
+
+.canvas {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+
+  &:where([data-with-rulers]) {
+    --diagram-ruler-offset: var(--diagram-ruler-size);
+  }
+
+  &:where([data-panning]) {
+    cursor: grabbing !important;
+  }
+}
+
+.svg {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  font-family: var(--mantine-font-family);
+}
+
+.page {
+  fill: var(--diagram-page);
+  stroke: var(--diagram-border);
+  vector-effect: non-scaling-stroke;
+}
+
+.node {
+  cursor: move;
+  outline: none;
+
+  &:where([data-locked]) {
+    cursor: default;
+  }
+
+  &:where([data-colliding]) > * {
+    outline: none;
+  }
+
+  &:where([data-colliding]) {
+    filter: drop-shadow(0 0 2px var(--diagram-danger)) drop-shadow(0 0 2px var(--diagram-danger)) !important;
+  }
+}
+
+.root:where([data-mode='view']) .node,
+.root:where([data-mode='select']) .node {
+  cursor: pointer;
+}
+
+.htmlNode {
+  overflow: visible;
+}
+
+.edge {
+  cursor: pointer;
+
+  &:where([data-selected]) .edgePath {
+    stroke: var(--diagram-accent);
+  }
+}
+
+.edgePath {
+  transition: stroke 120ms ease;
+}
+
+.edgeLabel {
+  pointer-events: none;
+  font-family: var(--mantine-font-family);
+}
+
+.selectionLayer,
+.overlayLayer {
+  pointer-events: none;
+}
+
+.selectionFrame {
+  fill: none;
+  stroke: var(--diagram-accent);
+  stroke-width: 1.5px;
+  vector-effect: non-scaling-stroke;
+
+  &:where([data-locked]) {
+    stroke-dasharray: 4 3;
+  }
+}
+
+.edgeSelection {
+  fill: none;
+  stroke: var(--diagram-accent);
+  stroke-width: 6px;
+  stroke-opacity: 0.25;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.resizeHandle,
+.rotateHandle,
+.vertexHandle,
+.waypointHandle,
+.edgeEndHandle,
+.segmentHandle,
+.port {
+  pointer-events: all;
+  fill: var(--diagram-surface);
+  stroke: var(--diagram-accent);
+  stroke-width: 1.5px;
+  vector-effect: non-scaling-stroke;
+}
+
+.rotateHandle {
+  cursor: grab;
+}
+
+.rotateLine {
+  stroke: var(--diagram-accent);
+  stroke-width: 1px;
+  vector-effect: non-scaling-stroke;
+}
+
+.vertexHandle,
+.waypointHandle {
+  cursor: move;
+  fill: var(--diagram-accent);
+}
+
+.edgeEndHandle {
+  cursor: crosshair;
+}
+
+.segmentHandle {
+  cursor: copy;
+  fill-opacity: 0.8;
+}
+
+.port {
+  cursor: crosshair;
+  opacity: 0.85;
+
+  &:where([data-active]) {
+    fill: var(--diagram-accent);
+    opacity: 1;
+  }
+}
+
+.snapLine {
+  stroke: light-dark(var(--mantine-color-pink-6), var(--mantine-color-pink-4));
+  stroke-width: 1px;
+  vector-effect: non-scaling-stroke;
+}
+
+.guide {
+  pointer-events: stroke;
+  stroke: light-dark(var(--mantine-color-cyan-6), var(--mantine-color-cyan-4));
+  stroke-width: 1px;
+  stroke-dasharray: 6 4;
+  vector-effect: non-scaling-stroke;
+
+  &:where([data-axis='x']) {
+    cursor: ew-resize;
+  }
+
+  &:where([data-axis='y']) {
+    cursor: ns-resize;
+  }
+}
+
+.marquee {
+  fill: var(--diagram-accent-light);
+  fill-opacity: 0.5;
+  stroke: var(--diagram-accent);
+  stroke-width: 1px;
+  stroke-dasharray: 4 3;
+  vector-effect: non-scaling-stroke;
+}
+
+.draft {
+  fill: var(--diagram-accent-light);
+  fill-opacity: 0.4;
+  stroke: var(--diagram-accent);
+  stroke-width: 2px;
+  vector-effect: non-scaling-stroke;
+}
+
+polyline.draft {
+  fill: none;
+}
+
+.draftPoint {
+  fill: var(--diagram-accent);
+}
+
+.connectionPreview {
+  stroke: var(--diagram-accent);
+  stroke-width: 2px;
+  stroke-dasharray: 6 4;
+  vector-effect: non-scaling-stroke;
+
+  &:where([data-invalid]) {
+    stroke: var(--diagram-danger);
+  }
+}
+
+.measurement {
+  font-family: var(--mantine-font-family);
+
+  & rect {
+    fill: var(--diagram-accent);
+  }
+
+  & text {
+    fill: var(--mantine-color-white);
+  }
+}
+
+.measurementLine {
+  stroke: var(--diagram-accent);
+  stroke-width: 1px;
+  vector-effect: non-scaling-stroke;
+}
+
+.textEditor {
+  position: absolute;
+  z-index: 3;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 4px;
+  overflow: hidden;
+  font-family: var(--mantine-font-family);
+  line-height: 1.25;
+  color: var(--diagram-text);
+  text-align: center;
+  resize: none;
+  background: var(--diagram-surface);
+  border: 2px solid var(--diagram-accent);
+  border-radius: 4px;
+  outline: none;
+  transform-origin: center;
+}
+
+.panel {
+  position: absolute;
+  z-index: 4;
+  display: flex;
+  gap: 6px;
+  margin: 10px;
+  pointer-events: none;
+
+  & > * {
+    pointer-events: auto;
+  }
+
+  &:where([data-position^='top']) {
+    top: var(--diagram-ruler-offset, 0);
+  }
+
+  &:where([data-position^='bottom']) {
+    bottom: 0;
+  }
+
+  &:where([data-position$='left']) {
+    left: var(--diagram-ruler-offset, 0);
+  }
+
+  &:where([data-position$='right']) {
+    right: 0;
+  }
+
+  &:where([data-position='top'], [data-position='bottom']) {
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}
+
+.toolbar,
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  align-items: center;
+  max-width: calc(100vw - 32px);
+  padding: 4px;
+  background: var(--diagram-surface);
+  border: 1px solid var(--diagram-border);
+  border-radius: var(--diagram-radius);
+  box-shadow: var(--mantine-shadow-sm);
+
+  &:where([data-orientation='vertical']) {
+    flex-direction: column;
+  }
+}
+
+.toolbarDivider {
+  align-self: stretch;
+  width: 1px;
+  margin: 2px 4px;
+  background: var(--diagram-border);
+
+  .toolbar:where([data-orientation='vertical']) & {
+    width: auto;
+    height: 1px;
+    margin: 4px 2px;
+  }
+}
+
+.zoomLabel {
+  min-width: 48px;
+  font-size: var(--mantine-font-size-xs);
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+}
+
+.minimap {
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  background: var(--diagram-surface);
+  border: 1px solid var(--diagram-border);
+  border-radius: var(--diagram-radius);
+  box-shadow: var(--mantine-shadow-sm);
+  touch-action: none;
+
+  &:focus-visible {
+    outline: 2px solid var(--diagram-accent);
+  }
+}
+
+.minimapCanvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.ruler {
+  position: absolute;
+  z-index: 2;
+  overflow: hidden;
+  cursor: copy;
+  background: var(--diagram-surface);
+
+  &:where([data-orientation='horizontal']) {
+    top: 0;
+    right: 0;
+    left: var(--diagram-ruler-size);
+    height: var(--diagram-ruler-size);
+    border-bottom: 1px solid var(--diagram-border);
+  }
+
+  &:where([data-orientation='vertical']) {
+    top: var(--diagram-ruler-size);
+    bottom: 0;
+    left: 0;
+    width: var(--diagram-ruler-size);
+    border-right: 1px solid var(--diagram-border);
+  }
+
+  & line {
+    stroke: var(--diagram-muted-text);
+    stroke-width: 1px;
+    shape-rendering: crispEdges;
+  }
+
+  & text {
+    font-family: var(--mantine-font-family);
+    font-size: 10px;
+    fill: var(--diagram-muted-text);
+  }
+
+  & .rulerHighlight {
+    fill: var(--diagram-accent-light);
+  }
+}
+
+.rulerCorner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  width: var(--diagram-ruler-size);
+  height: var(--diagram-ruler-size);
+  background: var(--diagram-surface);
+  border-right: 1px solid var(--diagram-border);
+  border-bottom: 1px solid var(--diagram-border);
+}
+
+.sidePanel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--mantine-spacing-xs);
+  min-width: 0;
+  padding: var(--mantine-spacing-sm);
+  font-size: var(--mantine-font-size-sm);
+  color: var(--diagram-text);
+  background: var(--diagram-surface);
+  border: 1px solid var(--diagram-border);
+  border-radius: var(--diagram-radius);
+}
+
+.sidePanelTitle {
+  font-size: var(--mantine-font-size-xs);
+  font-weight: 600;
+  color: var(--diagram-muted-text);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.layerRow,
+.objectRow {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  min-height: 30px;
+  padding: 0 4px;
+  border-radius: var(--diagram-radius);
+
+  &:where([data-active]) {
+    background: var(--diagram-accent-light);
+  }
+}
+
+.objectRow {
+  width: 100%;
+  font-size: var(--mantine-font-size-xs);
+  text-align: start;
+  cursor: pointer;
+
+  &:hover {
+    background: light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-5));
+  }
+
+  &:where([data-active]) {
+    background: var(--diagram-accent-light);
+  }
+}
+
+.layerName {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.paletteGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
+  gap: 6px;
+}
+
+.paletteItem {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: center;
+  justify-content: center;
+  min-height: 72px;
+  padding: 6px 4px;
+  font-size: 11px;
+  line-height: 1.2;
+  color: var(--diagram-text);
+  text-align: center;
+  cursor: grab;
+  background: transparent;
+  border: 1px solid var(--diagram-border);
+  border-radius: var(--diagram-radius);
+
+  &:hover {
+    background: light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-5));
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--diagram-accent);
+    outline-offset: 1px;
+  }
+
+  & svg {
+    color: var(--diagram-muted-text);
+  }
+}
+
+.liveRegion {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (forced-colors: active) {
+  .selectionFrame,
+  .marquee,
+  .draft,
+  .connectionPreview,
+  .measurementLine,
+  .rotateLine {
+    stroke: Highlight;
+  }
+
+  .resizeHandle,
+  .rotateHandle,
+  .vertexHandle,
+  .waypointHandle,
+  .edgeEndHandle,
+  .segmentHandle,
+  .port {
+    fill: Canvas;
+    stroke: Highlight;
+  }
+
+  .edge:where([data-selected]) .edgePath {
+    stroke: Highlight;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .edgePath {
+    transition: none;
+  }
+}
+
+@media print {
+  .panel,
+  .ruler,
+  .rulerCorner,
+  .selectionLayer,
+  .overlayLayer {
+    display: none;
+  }
+}

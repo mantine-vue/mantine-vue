@@ -1,0 +1,60 @@
+import { DiagramDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.DiagramGettingStarted)
+
+`@mantine-vue/diagram` is an extensible Vue 3 diagram editor for flowcharts, organizational charts,
+network diagrams, floor plans and restaurant layouts. It provides a serializable data model,
+interactive SVG canvas, undo history, keyboard controls and export utilities.
+
+## Installation
+
+<InstallScript packages="@mantine-vue/diagram @mantine-vue/core @mantine-vue/hooks" />
+
+Import the styles once at your application root, after Mantine core styles:
+
+```ts
+import '@mantine-vue/core/styles.css'
+import '@mantine-vue/diagram/styles.css'
+```
+
+The package requires Vue 3.5 or later and matching versions of `@mantine-vue/core` and
+`@mantine-vue/hooks`.
+
+## Create a diagram
+
+`Diagram` fills its container, so its container needs an explicit height. Pass an initial document
+to `default-value`, then add controls or other panels in the default slot.
+
+<Demo data={DiagramDemos.basic} />
+
+In the example above, you can:
+
+- Drag, resize and rotate nodes
+- Drag from a node port to create a connector
+- Double-click a node or connector to edit its label
+- Drag the empty canvas to select nodes; hold `Alt` to use lasso selection
+- Scroll to pan; use `Ctrl` + scroll or pinch to zoom
+- Right-click for the context menu and use `Ctrl + Z` to undo
+
+## Choose an integration pattern
+
+Use `default-value` for editor-owned state, or bind `v-model` when the parent must receive each
+committed document. For toolbars or panels outside the canvas, create a controller with
+`useDiagram` and pass it to `Diagram` and `DiagramProvider`.
+
+The optional domain extensions use the same document and editor APIs:
+
+- [Floor plans](/diagram/floor-plans) add walls, openings, rooms, dimensions and furniture.
+- [Restaurant floor plans](/diagram/restaurant) add tables, seating, zones and operational statuses.
+
+## Next steps
+
+- [Configure the Diagram component](/diagram/diagram) for state, modes, events and panels
+- [Create nodes and custom shapes](/diagram/nodes)
+- [Configure connectors and routing](/diagram/connectors)
+- [Learn editing and keyboard behavior](/diagram/editing)
+- [Save, validate and export diagrams](/diagram/serialization)
+- [Build extensions and use the editor API](/diagram/extensions)
+- [Review features and limitations](/diagram/features)

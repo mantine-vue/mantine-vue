@@ -1,0 +1,129 @@
+import { DiagramDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.Diagram)
+
+The `Diagram` component renders the canvas and handles pointer, keyboard and clipboard interaction.
+It can create its own editor or render an existing controller from `useDiagram`.
+
+## Basic usage
+
+<Demo data={DiagramDemos.flowchart} />
+
+## Document state
+
+Use `default-value` for an uncontrolled diagram. Use `v-model` when application state must track the
+document. The model updates after a transaction commits, including undo and redo, rather than on
+every pointer movement.
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue'
+import { Diagram } from '@mantine-vue/diagram'
+import type { DiagramDocument } from '@mantine-vue/diagram'
+
+const document = ref<DiagramDocument>({ version: 1, nodes: [], edges: [] })
+const selection = ref<string[]>([])
+</script>
+
+<template>
+  <Diagram v-model="document" v-model:selection="selection" style="height: 480px" />
+</template>
+```
+
+The component also supports `v-model:viewport` and `v-model:mode`. Loading a replacement document
+clears the current undo history. See [saving, loading and export](/diagram/serialization) for the
+document schema and validation APIs.
+
+## Controller usage
+
+Create a controller when code outside the canvas must inspect or update the diagram. When a
+`controller` is provided, editor configuration belongs in `useDiagram`; corresponding configuration
+props on `Diagram` are ignored.
+
+```vue
+<script setup lang="ts">
+import { Diagram, DiagramControls, useDiagram } from '@mantine-vue/diagram'
+
+const controller = useDiagram({ snapToGrid: true, gridSize: 10 })
+
+function addStep() {
+  controller.editor.addNode({ type: 'rect', x: 80, y: 80, label: 'New step' })
+}
+</script>
+
+<template>
+  <button type="button" @click="addStep">Add step</button>
+  <Diagram :controller="controller" style="height: 480px">
+    <DiagramControls />
+  </Diagram>
+</template>
+```
+
+The controller exposes reactive state such as `nodeIds`, `selection`, `viewport` and `canUndo`.
+Imperative methods are available on `controller.editor`; the full API is summarized in
+[extensions and editor API](/diagram/extensions).
+
+## Interaction modes
+
+<DataTable
+  head={['Mode', 'Allowed interaction']}
+  data={[
+    ['edit', 'Create, move, resize, rotate, connect, edit and delete'],
+    ['select', 'Select, navigate and open context menus without changing the document'],
+    ['view', 'Pan, zoom and receive click events without selecting or editing'],
+  ]}
+/>
+
+Use `mode="view"` for read-only viewers and operational screens. Use `mode="select"` when users need
+selection and keyboard navigation but must not change the document.
+
+## Panels and canvas tools
+
+Components placed inside `Diagram` render over the canvas. Wrap external panels in
+`DiagramProvider` with the same controller.
+
+<DataTable
+  head={['Component', 'Purpose']}
+  data={[
+    ['DiagramToolbar', 'Tools, commands, menus and custom actions'],
+    ['DiagramControls', 'Zoom, fit, fullscreen, snapping and mode controls'],
+    ['DiagramMinimap', 'Canvas overview with click-and-drag navigation'],
+    ['DiagramPalette', 'Searchable node templates with drag-and-drop insertion'],
+    ['DiagramLayers', 'Layer visibility, locking, order and object management'],
+    ['DiagramPropertiesPanel', 'Document, geometry, style and node-specific fields'],
+    ['DiagramPanel', 'Custom content positioned over the canvas'],
+  ]}
+/>
+
+Set `position="static"` on a toolbar, controls or minimap to keep it in normal document flow. Use
+the `grid` and `rulers` props to show the background grid and measurement rulers. Guides dragged
+from a ruler participate in snapping.
+
+## Events
+
+<DataTable
+  head={['Event', 'Payload']}
+  data={[
+    ['update:modelValue, change', 'Document after a committed change'],
+    ['node-click, edge-click', 'Element and pointer event'],
+    ['node-double-click', 'Node'],
+    ['canvas-click, canvas-double-click', 'World position'],
+    ['connect', 'Connector created by the user'],
+    ['connect-end', 'Source and canvas position when a connector is dropped without a target'],
+    ['ready', 'Mounted diagram controller'],
+  ]}
+/>
+
+Click events are also emitted in `view` mode, which is useful for dashboards and service screens.
+
+## Theming
+
+Node and connector colors accept CSS colors and Mantine theme colors such as `blue.6`. Configure
+the canvas with `color`, `radius` and `background`, or target individual parts through the Styles
+API.
+
+<Demo data={DiagramDemos.theming} />
+
+Continue with [nodes and custom shapes](/diagram/nodes) or [editing behavior](/diagram/editing).

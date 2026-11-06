@@ -1,0 +1,117 @@
+import { DiagramDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.DiagramExtensions)
+
+Extensions package custom node types, tools, commands, routers, templates and engine plugins into a
+single reusable unit. The [floor plan](/diagram/floor-plans) and
+[restaurant](/diagram/restaurant) modules use the same public extension API.
+
+## Create an extension
+
+```ts
+import { createShapeTool } from '@mantine-vue/diagram'
+import type { DiagramExtension } from '@mantine-vue/diagram'
+
+const networkExtension: DiagramExtension = {
+  name: 'network',
+  nodeTypes: [serverNode, routerNode],
+  tools: [createShapeTool({ id: 'server', node: { type: 'server' } })],
+  commands: [pingCommand],
+  routers: { bus: busRouter },
+  templates: [{ id: 'server', label: 'Server', node: { type: 'server' } }],
+  plugins: [auditPlugin],
+  setup: (controller) => {
+    const stop = watchServerState(controller)
+    return () => stop()
+  },
+}
+```
+
+Register extensions in `useDiagram({ extensions: [...] })` or with the `extensions` prop when
+`Diagram` owns its controller.
+
+<Demo data={DiagramDemos.extensions} />
+
+## Custom tools
+
+A `DiagramTool` receives pointer events in world coordinates, the hit target under the pointer, and
+keyboard events. Set `edits: true` to make the tool unavailable in `select` and `view` modes.
+
+<DataTable
+  head={['Factory', 'Use']}
+  data={[
+    ['createShapeTool', 'Click or drag to create a node'],
+    ['createTextTool', 'Create a text node'],
+    ['createConnectorTool', 'Draw a connector between nodes or points'],
+    ['createPolylineTool', 'Create a multi-segment line'],
+    ['createPointsShapeTool', 'Create polygons and polylines'],
+    ['createWallTool, createRoomTool, createOpeningTool', 'Floor plan drawing tools'],
+    ['createDimensionTool, createCalibrationTool', 'Measure and calibrate floor plans'],
+  ]}
+/>
+
+## Custom commands
+
+Commands provide a stable action ID for toolbars, context menus and keyboard shortcuts.
+
+```ts
+import type { DiagramCommand } from '@mantine-vue/diagram'
+
+const pingCommand: DiagramCommand = {
+  id: 'ping',
+  label: 'Ping server',
+  shortcuts: ['mod+P'],
+  readOnly: true,
+  isEnabled: (editor) => editor.getSelectedNodes().some((node) => node.type === 'server'),
+  run: (editor) => ping(editor.getSelectedIds()),
+}
+```
+
+`readOnly: true` keeps the command available in `select` and `view` modes. Use `isEnabled` to guard
+invalid states and call `controller.execute('ping')` from custom UI.
+
+## Engine plugins and hooks
+
+Core plugins run against the framework-independent `DiagramEditor`. Subscribe to `editor.events`
+for document commits, selection, viewport and interaction changes. Use `editor.addTransformHook()`
+to update related nodes in the same transaction after a move, resize, rotation, paste or drop.
+
+Use `validateTransform` to reject an interactive transform, for example when a node would leave a
+required boundary. Keep rendering and Vue lifecycle work in an extension's `setup` callback rather
+than in a core plugin.
+
+## Editor API
+
+<DataTable
+  head={['Area', 'Representative methods']}
+  data={[
+    ['Elements', 'addNode, addNodes, addEdge, connect, updateNode, updateEdge, deleteElements'],
+    ['Geometry', 'setNodeBox, moveBy, rotateBy, flip, hitTest, getNodesInRect'],
+    ['Structure', 'group, ungroup, reorder, setLocked, setHidden, addLayer, moveToLayer'],
+    ['Arrangement', 'align, distribute, matchSize, applyLayout'],
+    ['Selection', 'select, setSelection, selectAll, clearSelection, getSelectedNodes'],
+    ['Viewport', 'setViewport, panBy, zoomTo, fitView, fitBounds, zoomToSelection, centerOn'],
+    ['Clipboard and history', 'copy, cut, paste, duplicate, undo, redo'],
+    ['Documents', 'toDocument, load, applyPatch, updateSettings'],
+    ['Registries', 'registerBehavior, registerRouter, registerTool, registerCommand, use'],
+  ]}
+/>
+
+For large updates, prefer `load` or a single transaction over repeated independent commits. See
+[performance guidance](/diagram/performance#large-diagram-guidance).
+
+## Reactive composables
+
+`useDiagramSelection`, `useDiagramHistory`, `useDiagramViewport`, `useDiagramKeyboard` and
+`useDiagramExport` accept a controller or read it from the nearest `Diagram` or `DiagramProvider`.
+
+```ts
+const { nodes, isEmpty } = useDiagramSelection(controller)
+const { canUndo, undo, undoLabel } = useDiagramHistory(controller)
+const { zoomPercent, fitView } = useDiagramViewport(controller)
+```
+
+Use these composables to build application-specific sidebars and controls without duplicating the
+editor's reactive state.

@@ -12,6 +12,7 @@ export const DOCGEN_SOURCE_PATHS = getPaths([
   'packages/@mantine-vue/carousel/src',
   'packages/@mantine-vue/code-highlight/src',
   'packages/@mantine-vue/contextmenu/src',
+  'packages/@mantine-vue/diagram/src',
   'packages/@mantine-vue/dropzone/src',
   'packages/@mantine-vue/file-manager/src',
   'packages/@mantine-vue/lightbox/src',
@@ -57,6 +58,8 @@ export const DOCGEN_EXCLUDE_COMPONENTS = [
   'ScheduleHeaderBaseProps',
   // Payload of custom file manager views, not a component.
   'FileManagerViewItemProps',
+  // Props passed to custom diagram node renderers, not a component.
+  'DiagramNodeRendererProps',
   // Shared WhatsApp inbox building blocks and slot payloads that are not components.
   'WhatsAppConversationItemSlotProps',
   'WhatsAppInboxConversationProps',

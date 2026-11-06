@@ -1,0 +1,89 @@
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.DiagramFeatures)
+
+Use this page to evaluate whether `@mantine-vue/diagram` fits your application. It summarizes the
+package's built-in capabilities, extension-specific features and intentional boundaries without
+making assumptions about third-party services.
+
+## Core diagram features
+
+<DataTable
+  head={['Area', 'Included']}
+  data={[
+    ['Rendering', 'SVG canvas, Mantine themes, custom SVG and HTML Vue nodes'],
+    ['Shapes', 'Flowchart shapes, text, images, paths, polygons, groups and templates'],
+    [
+      'Connectors',
+      'Straight, orthogonal, rounded and Bézier routing, ports, labels and arrowheads',
+    ],
+    ['Editing', 'Marquee and lasso selection, move, resize, rotate, flip and vertex editing'],
+    ['Arrangement', 'Alignment, distribution, z-order, layers and tree, layered or grid layouts'],
+    ['Productivity', 'Undo and redo, clipboard, context menus, palettes and properties panel'],
+    ['Navigation', 'Pan, zoom, minimap, rulers, grid, smart guides and user guides'],
+    ['State', 'Controlled or uncontrolled documents, reactive controller and interaction modes'],
+    ['Persistence', 'Versioned JSON, validation, migrations, diffs and patches'],
+    ['Output', 'JSON, SVG, PNG, JPEG and WebP export, plus single-page print'],
+    ['Accessibility', 'Keyboard navigation, accessible names, live announcements and touch input'],
+  ]}
+/>
+
+Read the [Diagram component guide](/diagram/diagram) for integration patterns,
+[nodes](/diagram/nodes) for custom renderers, and [connectors](/diagram/connectors) for routing.
+
+## Domain extensions
+
+The [floor plan extension](/diagram/floor-plans) includes straight walls, attached doors and windows,
+rooms, dimensions, metric and imperial units, furniture, boundaries, background plans and multiple
+floors.
+
+The [restaurant extension](/diagram/restaurant) includes generated table seating, booths, bars,
+zones, table numbering, merge and split operations, live statuses, capacity summaries and layout
+validation.
+
+Both extensions use the public extension API and can be combined with custom node types, tools,
+commands and plugins.
+
+## Current limitations
+
+<DataTable
+  head={['Not built in', 'Recommended approach']}
+  data={[
+    ['Connector line jumps', 'Use distinct routing or implement a custom router'],
+    ['Rich-text editing UI', 'Render formatted runs, but provide application UI to edit them'],
+    ['BPMN, UML and Visio formats', 'Define domain node types and import/export conversion'],
+    ['Swimlanes and auto-sized containers', 'Build a custom container node or extension'],
+    [
+      'Force-directed, radial and mind-map layouts',
+      'Compute positions with a layout library, then update nodes',
+    ],
+    [
+      'Real-time collaboration and presence',
+      'Provide transport and conflict resolution around document patches',
+    ],
+    ['Multi-page print tiling', 'Use exported SVG or images in an application print pipeline'],
+    [
+      'Curved walls, automatic room detection and 3D floor plans',
+      'Use custom floor-plan geometry or a specialized tool',
+    ],
+  ]}
+/>
+
+HTML nodes rendered with `foreignObject` can vary in raster export across browsers. Remote image
+export also depends on CORS. See [saving and export](/diagram/serialization#export-and-print) for
+details.
+
+## Production checklist
+
+- Validate documents from APIs, uploads or storage with `parseDiagram` before loading them.
+- Decide whether the parent owns state with `v-model` or the diagram owns it with `default-value`.
+- Use `select` or `view` mode for users who must not edit the document.
+- Persist user-facing operational data deliberately; keep transient statuses outside the document.
+- Test keyboard workflows, touch input and application-specific accessible labels.
+- Benchmark representative documents and custom nodes; tune routing, collision checks and culling.
+- Define server ordering or conflict resolution before applying patches from multiple writers.
+- Verify CORS and `foreignObject` behavior for every required export target.
+
+Start with the [installation guide](/diagram/getting-started), then use the
+[extension API](/diagram/extensions) for domain-specific behavior.
