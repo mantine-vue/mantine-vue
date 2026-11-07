@@ -61,6 +61,10 @@ const hasDataDisabled = computed(() => {
   return value != null && value !== false
 })
 
+const ariaDisabled = computed(
+  () => (attrs as any)['aria-disabled'] ?? (hasDataDisabled.value || undefined),
+)
+
 const isDisabled = computed(() => props.disabled || hasDataDisabled.value)
 const isActive = computed(() => ctx.activeIndex === menuCtx.index)
 
@@ -243,7 +247,7 @@ const targetStyles = computed(() =>
       role="menuitem"
       :tabindex="isActive || isUnresolvedTabStop ? 0 : -1"
       :disabled="props.disabled"
-      :aria-disabled="hasDataDisabled || undefined"
+      :aria-disabled="ariaDisabled"
       data-menubar-target=""
       :data-menubar-id="menuCtx.id"
       :data-disabled="hasDataDisabled || undefined"
