@@ -89,4 +89,39 @@ describe('@mantine-vue/hooks/use-timeout', () => {
     vi.advanceTimersByTime(defaultTimeout)
     expect(callback).toHaveBeenCalledWith('MOCK_CALLBACK_VALUE')
   })
+
+  it('can schedule the next timeout from its callback', () => {
+    const calls: number[] = []
+    const { result } = renderHook((value) => {
+      calls.push(value as number)
+      if (value === 1) result.start(2)
+    })
+
+    result.start(1)
+    vi.advanceTimersByTime(defaultTimeout)
+    vi.advanceTimersByTime(defaultTimeout)
+    expect(calls).toEqual([1, 2])
+  })
+
+  it('does not schedule duplicate pending timeouts', () => {
+    const callback = vi.fn()
+    const { result } = renderHook(callback)
+    result.start('first')
+    result.start('second')
+    vi.advanceTimersByTime(defaultTimeout)
+    expect(callback).toHaveBeenCalledOnce()
+    expect(callback).toHaveBeenCalledWith('first')
+  })
+
+  it('can start again after its callback throws', () => {
+    const callback = vi.fn().mockImplementationOnce(() => {
+      throw new Error('callback failed')
+    })
+    const { result } = renderHook(callback)
+    result.start()
+    expect(() => vi.advanceTimersByTime(defaultTimeout)).toThrow('callback failed')
+    result.start()
+    vi.advanceTimersByTime(defaultTimeout)
+    expect(callback).toHaveBeenCalledTimes(2)
+  })
 })
