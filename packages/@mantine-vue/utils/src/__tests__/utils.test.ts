@@ -5,6 +5,7 @@ import {
   filterProps,
   getBreakpointValue,
   getSortedBreakpoints,
+  isNumberLike,
   rem,
 } from '../index'
 
@@ -32,5 +33,11 @@ describe('@mantine-vue/utils', () => {
     expect(getSortedBreakpoints({ md: '62em', xs: '36em' }).map((item) => item.breakpoint)).toEqual(
       ['xs', 'md'],
     )
+  })
+
+  it('treats leading decimal values as CSS sizes', () => {
+    expect(isNumberLike('.5')).toBe(true)
+    expect(isNumberLike('-.5rem')).toBe(true)
+    expect(isNumberLike('1.')).toBe(false)
   })
 })
