@@ -4,18 +4,24 @@ export function handleGridKeydown({
   columns,
   total,
   getControl,
+  dir = 'ltr',
 }: {
   event: KeyboardEvent
   index: number
   columns: number
   total: number
   getControl: (index: number) => HTMLButtonElement | null
+  dir?: 'ltr' | 'rtl'
 }): void {
   const step =
     event.key === 'ArrowRight'
-      ? 1
-      : event.key === 'ArrowLeft'
+      ? dir === 'rtl'
         ? -1
+        : 1
+      : event.key === 'ArrowLeft'
+        ? dir === 'rtl'
+          ? 1
+          : -1
         : event.key === 'ArrowDown'
           ? columns
           : event.key === 'ArrowUp'

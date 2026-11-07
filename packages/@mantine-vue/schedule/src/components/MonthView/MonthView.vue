@@ -56,7 +56,14 @@ export {
 <script setup lang="ts">
 import dayjs from 'dayjs'
 import { computed, ref, shallowRef, useAttrs, useSlots } from 'vue'
-import { Box, ScrollArea, UnstyledButton, useProps, useStyles } from '@mantine-vue/core'
+import {
+  Box,
+  ScrollArea,
+  UnstyledButton,
+  useDirection,
+  useProps,
+  useStyles,
+} from '@mantine-vue/core'
 import type {
   DateStringValue,
   DateTimeStringValue,
@@ -92,6 +99,8 @@ import { getMonthViewEvents } from './get-month-view-events/get-month-view-event
 import { getRenderableMonthEventSegments } from './get-renderable-month-event-segments'
 import type { MonthViewEmits, MonthViewSlots } from './MonthView.types'
 import classes from './MonthView.module.css'
+
+const { dir } = useDirection()
 
 defineOptions({
   name: 'MonthView',
@@ -316,6 +325,7 @@ const handleDayKeydown = (nativeEvent: KeyboardEvent, gridIndex: number) => {
     index: gridIndex,
     columns: COLUMNS,
     total: weeks.value.length * COLUMNS,
+    dir: dir.value,
     getControl: (index) =>
       monthGrid.value?.querySelector<HTMLButtonElement>(
         `[data-grid-index="${index}"]:not([data-hidden])`,
