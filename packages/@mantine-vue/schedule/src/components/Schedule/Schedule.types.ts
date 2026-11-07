@@ -18,6 +18,7 @@ import type {
   ScheduleCanDropExternalEventData,
   ScheduleCanResizeEventToData,
   PreventEventOverlap,
+  DateLabelFormat,
   ScheduleMode,
   ScheduleViewLevel,
 } from '../../types'
@@ -185,6 +186,9 @@ export interface ScheduleOwnProps extends StylesApiProps<ScheduleFactory> {
 
   /** Props passed to `MobileMonthView`, used only when `layout` is `responsive`. `weekendDays` defaults to the value set in `monthViewProps`. */
   mobileMonthViewProps?: ForwardedProps<MobileMonthViewProps, MobileMonthViewEmits>
+
+  /** Format of event start and end time in the responsive mobile event list. @default 'HH:mm' */
+  eventTimeFormat?: DateLabelFormat
 }
 
 export interface ScheduleProps extends Omit<BoxProps, keyof ScheduleOwnProps>, ScheduleOwnProps {}

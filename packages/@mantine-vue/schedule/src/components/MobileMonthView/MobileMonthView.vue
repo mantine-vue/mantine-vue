@@ -15,6 +15,7 @@ const defaultProps = {
   consistentWeeks: true,
   highlightToday: true,
   eventsHeaderFormat: 'dddd, MMMM D',
+  eventTimeFormat: 'HH:mm',
 } satisfies Partial<MobileMonthViewOwnProps>
 
 const MAX_DAY_INDICATORS = 3
@@ -91,6 +92,7 @@ const rawProps = withDefaults(defineProps<MobileMonthViewOwnProps>(), {
   consistentWeeks: undefined,
   highlightToday: undefined,
   eventsHeaderFormat: undefined,
+  eventTimeFormat: undefined,
   renderHeader: undefined,
   classNames: undefined,
   styles: undefined,
@@ -225,7 +227,7 @@ const selectDay = (date: string | Date, nativeEvent: MouseEvent) => {
 const eventTimeLabel = (event: ScheduleEventData) =>
   isMultidayEvent(event) || isAllDayEvent({ event, date: selected.value! })
     ? getLabel('allDay', props.labels)
-    : `${dayjs(event.start).format('HH:mm')} – ${dayjs(event.end).format('HH:mm')}`
+    : `${formatDate({ date: event.start, locale: props.locale || 'en', format: props.eventTimeFormat! })} – ${formatDate({ date: event.end, locale: props.locale || 'en', format: props.eventTimeFormat! })}`
 
 /**
  * Default header as a functional component, so the template and the `renderHeader` payload
