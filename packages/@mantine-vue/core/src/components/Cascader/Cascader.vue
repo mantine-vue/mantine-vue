@@ -554,6 +554,7 @@ const handleColumnsKeyDown = (event: KeyboardEvent) => {
 const handleKeydown = (event: KeyboardEvent) => {
   call((attrs as any).onKeydown, event)
   if (event.defaultPrevented) return
+  if (event.isComposing || event.keyCode === 229) return
   if (event.key === 'Escape') {
     combobox.closeDropdown('keyboard')
     return
