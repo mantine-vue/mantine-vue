@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import dayjs from 'dayjs'
 import { computed } from 'vue'
-import { SimpleGrid } from '@mantine-vue/core'
+import { SimpleGrid, useDirection } from '@mantine-vue/core'
 import PickerControl from '../PickerControl/PickerControl.vue'
 import { focusAdjacentControl, getYearRange, keyToDirection, setGridRef } from '../../utils'
 import type { DateStringValue, YearsListEmits, YearsListProps } from '../../types'
@@ -14,6 +14,7 @@ const props = withDefaults(defineProps<YearsListProps>(), {
   fullWidth: false,
 })
 const emit = defineEmits<YearsListEmits>()
+const { dir } = useDirection()
 const controlRefs: (HTMLElement | null | undefined)[][] = []
 const years = computed(() => getYearRange(props.decade))
 const controlProps = (date: DateStringValue) => props.getYearControlProps?.(date) || {}
@@ -47,7 +48,7 @@ function onMouseEnter(date: DateStringValue, event: MouseEvent) {
 }
 function onKeydown(date: DateStringValue, index: number, event: KeyboardEvent) {
   controlProps(date).onKeydown?.(event)
-  const direction = keyToDirection(event.key)
+  const direction = keyToDirection(event.key, dir.value)
   if (direction) {
     event.preventDefault()
     focusAdjacentControl(controlRefs, Math.floor(index / 3), index % 3, direction)
