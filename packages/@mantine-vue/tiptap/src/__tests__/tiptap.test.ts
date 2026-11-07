@@ -134,6 +134,49 @@ describe('@mantine-vue/tiptap', () => {
     expect(control.attributes('data-disabled')).toBeDefined()
   })
 
+  it('exposes aria-pressed in both toggle states and omits it from action controls', () => {
+    const editor = {
+      isDestroyed: false,
+      on: vi.fn(),
+      off: vi.fn(),
+      isActive: vi.fn(() => false),
+      can: vi.fn(),
+    }
+    const wrapper = mount(MantineProvider, {
+      props: { env: 'test' },
+      slots: {
+        default: () =>
+          h(RichTextEditor, { editor: editor as any }, () => [
+            h(RichTextEditor.Bold),
+            h(RichTextEditor.Undo),
+          ]),
+      },
+    })
+
+    expect(wrapper.get('button[aria-label="Bold"]').attributes('aria-pressed')).toBe('false')
+    expect(wrapper.get('button[aria-label="Undo"]').attributes('aria-pressed')).toBeUndefined()
+  })
+
+  it('reports alignment controls active by textAlign attributes', () => {
+    const isActive = vi.fn(() => true)
+    const editor = {
+      isDestroyed: false,
+      on: vi.fn(),
+      off: vi.fn(),
+      isActive,
+      can: vi.fn(),
+    }
+    mount(MantineProvider, {
+      props: { env: 'test' },
+      slots: {
+        default: () =>
+          h(RichTextEditor, { editor: editor as any }, () => h(RichTextEditor.AlignLeft)),
+      },
+    })
+
+    expect(isActive).toHaveBeenCalledWith({ textAlign: 'left' })
+  })
+
   it('renders the image upload control as interactive when the editor is usable', () => {
     const editor = {
       isDestroyed: false,

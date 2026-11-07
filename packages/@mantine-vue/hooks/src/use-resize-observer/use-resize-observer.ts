@@ -1,4 +1,4 @@
-import { onBeforeUnmount, ref, watch, type Ref } from 'vue'
+import { onBeforeUnmount, ref, toValue, watch, type MaybeRefOrGetter, type Ref } from 'vue'
 
 export type ObserverRect = Omit<DOMRectReadOnly, 'toJSON'>
 
@@ -19,7 +19,7 @@ export interface UseResizeObserverReturnValue<T extends Element = HTMLElement> {
 }
 
 export function useResizeObserver<T extends Element = HTMLElement>(
-  options?: ResizeObserverOptions,
+  options?: MaybeRefOrGetter<ResizeObserverOptions | undefined>,
 ): UseResizeObserverReturnValue<T> {
   const elementRef = ref<T | null>(null) as Ref<T | null>
   const rect = ref<ObserverRect>(defaultState) as Ref<ObserverRect>
@@ -45,8 +45,8 @@ export function useResizeObserver<T extends Element = HTMLElement>(
   // `elementRef`/attaches to the observer immediately after `mount()`
   // (without an intervening `nextTick()`) would see nothing attached yet.
   watch(
-    elementRef,
-    (node) => {
+    [elementRef, () => toValue(options)?.box] as const,
+    ([node]) => {
       disconnect()
 
       if (!node || typeof ResizeObserver === 'undefined') {
@@ -76,7 +76,7 @@ export function useResizeObserver<T extends Element = HTMLElement>(
           })
         }
       })
-      observer.observe(node, options)
+      observer.observe(node, toValue(options))
     },
     { immediate: true, flush: 'sync' },
   )
@@ -93,7 +93,7 @@ export interface UseElementSizeReturnValue<T extends Element = HTMLElement> {
 }
 
 export function useElementSize<T extends Element = HTMLElement>(
-  options?: ResizeObserverOptions,
+  options?: MaybeRefOrGetter<ResizeObserverOptions | undefined>,
 ): UseElementSizeReturnValue<T> {
   const { ref: elementRef, rect } = useResizeObserver<T>(options)
   const width = ref(0)

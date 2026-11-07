@@ -222,6 +222,9 @@ export interface PopoverProps {
    */
   hideDetached?: boolean
 
+  /** If `true`, the dropdown chooses its side when opened and does not flip again until it is reopened. Shift positioning remains active. @default true */
+  preventPositionChangeWhenVisible?: boolean
+
   /** Base `id` used to connect the target with the dropdown. Generated when not set. */
   id?: string
 

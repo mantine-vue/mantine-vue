@@ -65,6 +65,38 @@ describe('@mantine-vue/hooks/use-focus-within', () => {
     wrapper.unmount()
   })
 
+  it('does not blur when focus moves to an SVG descendant', async () => {
+    const onFocus = vi.fn()
+    const onBlur = vi.fn()
+    const state: { focused?: Ref<boolean> } = {}
+
+    const wrapper = mount(
+      defineComponent({
+        setup() {
+          const focus = useFocusWithin({ onFocus, onBlur })
+          state.focused = focus.focused
+
+          return () =>
+            h('div', { ref: focus.ref }, [
+              h('input', { id: 'input' }),
+              h('svg', { id: 'inside-svg', tabindex: 0 }),
+            ])
+        },
+      }),
+      { attachTo: document.body },
+    )
+
+    wrapper.get('#input').element.focus()
+    wrapper.get('#inside-svg').element.focus()
+    await nextTick()
+
+    expect(state.focused?.value).toBe(true)
+    expect(onFocus).toHaveBeenCalledOnce()
+    expect(onBlur).not.toHaveBeenCalled()
+
+    wrapper.unmount()
+  })
+
   it('tracks an element rendered after mount', async () => {
     const visible = ref(false)
     const state: { focused?: Ref<boolean> } = {}

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, Fragment, h, ref, useAttrs, useSlots, type VNodeChild } from 'vue'
+import { useDirection } from '../../core'
 import { Combobox, isExternalInputChange, useCombobox } from '../Combobox'
 import { InputBase } from '../InputBase'
 import { Pill } from '../Pill'
@@ -66,6 +67,7 @@ defineSlots<TreeSelectSlots>()
 
 const slots = useSlots()
 const attrs = useAttrs()
+const { dir } = useDirection()
 
 const isMulti = () => props.mode !== 'single'
 
@@ -260,6 +262,33 @@ const renderRoot = (): VNodeChild => {
           error: (attrs as any).error,
         })
 
+  const handleKeydown = (event: KeyboardEvent, multi: boolean) => {
+    if (
+      event.key === 'Backspace' &&
+      multi &&
+      !search() &&
+      multiValues.length &&
+      !event.isComposing &&
+      !readOnly
+    ) {
+      remove(multiValues[multiValues.length - 1])
+    }
+
+    const currentNode = flat.value[combobox.selectedOptionIndex]
+    const expandKey = dir.value === 'rtl' ? 'ArrowLeft' : 'ArrowRight'
+    const collapseKey = dir.value === 'rtl' ? 'ArrowRight' : 'ArrowLeft'
+
+    if (event.key === expandKey && currentNode?.hasChildren && !currentNode.expanded) {
+      event.preventDefault()
+      toggleExpand(currentNode.node.value)
+    }
+
+    if (event.key === collapseKey && currentNode?.hasChildren && currentNode.expanded) {
+      event.preventDefault()
+      toggleExpand(currentNode.node.value)
+    }
+  }
+
   const forwarded: any = { ...attrs }
   ;['name', 'form', 'rightSection', 'clearButtonProps', 'placeholder'].forEach(
     (key) => delete forwarded[key],
@@ -279,11 +308,7 @@ const renderRoot = (): VNodeChild => {
       onFocus: () => props.openOnFocus && props.searchable && combobox.openDropdown(),
       onClick: () => (props.searchable ? combobox.openDropdown() : combobox.toggleDropdown()),
       onBlur: () => combobox.closeDropdown(),
-      onKeydown: (event: KeyboardEvent) => {
-        if (event.key === 'Backspace' && multi && !search() && multiValues.length && !readOnly) {
-          remove(multiValues[multiValues.length - 1])
-        }
-      },
+      onKeydown: (event: KeyboardEvent) => handleKeydown(event, multi),
     })
 
   const input = isMulti()
@@ -358,6 +383,7 @@ const renderRoot = (): VNodeChild => {
           },
           onFocus: () => props.openOnFocus && props.searchable && combobox.openDropdown(),
           onClick: () => (props.searchable ? combobox.openDropdown() : combobox.toggleDropdown()),
+          onKeydown: (event: KeyboardEvent) => handleKeydown(event, false),
           onBlur: () => {
             combobox.closeDropdown()
             setSearch(current() ? String(nodes.value[current()]?.label ?? '') : '')

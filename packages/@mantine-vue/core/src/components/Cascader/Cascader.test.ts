@@ -43,4 +43,16 @@ describe('@mantine-vue/core/Cascader', () => {
     await flushPromises()
     expect(onDropdownOpen).toHaveBeenCalledTimes(1)
   })
+
+  it('ignores keyboard navigation during IME composition', async () => {
+    const onDropdownOpen = vi.fn()
+    const wrapper = render(() =>
+      h(Cascader, { data, onDropdownOpen, comboboxProps: { withinPortal: false } }),
+    )
+
+    await wrapper
+      .find('input:not([type="hidden"])')
+      .trigger('keydown', { key: 'Enter', isComposing: true })
+    expect(onDropdownOpen).not.toHaveBeenCalled()
+  })
 })

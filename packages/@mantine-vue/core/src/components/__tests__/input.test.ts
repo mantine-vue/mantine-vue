@@ -47,6 +47,14 @@ describe('@mantine-vue/core Input', () => {
     expect(wrapper.text()).toContain('right')
   })
 
+  it('passes loaderProps to the loading indicator', () => {
+    const wrapper = withProvider(() =>
+      h(Input, { loading: true, loaderProps: { 'data-testid': 'input-loader', type: 'bars' } }),
+    )
+
+    expect(wrapper.find('[data-testid="input-loader"]').exists()).toBe(true)
+  })
+
   it('connects wrapper label, description, error and input aria attributes', () => {
     const wrapper = withProvider(() =>
       h(

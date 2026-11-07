@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import dayjs from 'dayjs'
 import { computed, ref } from 'vue'
+import { useDirection } from '@mantine-vue/core'
 import { useDatesContext } from '../DatesProvider'
 import Day from '../Day/Day.vue'
 import WeekdaysRow from '../WeekdaysRow/WeekdaysRow.vue'
@@ -41,6 +42,7 @@ const props = withDefaults(defineProps<MonthProps>(), {
 const emit = defineEmits<MonthEmits>()
 const slots = defineSlots<RenderDaySlots>()
 const context = useDatesContext()
+const { dir } = useDirection()
 const hovered = ref<DateStringValue | null>(null)
 const dayRefs: (HTMLElement | null | undefined)[][] = []
 
@@ -155,7 +157,7 @@ function onKeydown(
 ) {
   const controlProps = dayProps(date)
   ;(controlProps.onKeydown ?? controlProps.onKeyDown)?.(event)
-  const direction = keyToDirection(event.key)
+  const direction = keyToDirection(event.key, dir.value)
   if (direction) {
     event.preventDefault()
     focusAdjacentControl(dayRefs, rowIndex, cellIndex, direction)

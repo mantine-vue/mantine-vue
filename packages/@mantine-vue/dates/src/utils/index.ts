@@ -101,13 +101,14 @@ export function handleControlKeyDown({
   cellIndex,
   event,
   controlsRef,
+  dir = 'ltr',
 }: ControlKeydownPayload) {
   const rows = controlsRef.length,
     cols = controlsRef[0]?.length || 0
   let row = rowIndex,
     cell = cellIndex
-  if (event.key === 'ArrowRight') cell += 1
-  if (event.key === 'ArrowLeft') cell -= 1
+  if (event.key === 'ArrowRight') cell += dir === 'rtl' ? -1 : 1
+  if (event.key === 'ArrowLeft') cell += dir === 'rtl' ? 1 : -1
   if (event.key === 'ArrowDown') row += 1
   if (event.key === 'ArrowUp') row -= 1
   if (event.key === 'Home') cell = 0
@@ -159,15 +160,22 @@ export function focusAdjacentControl(
   }
 }
 
-export function keyToDirection(key: string): 'up' | 'down' | 'left' | 'right' | null {
+export function keyToDirection(
+  key: string,
+  dir: 'ltr' | 'rtl' = 'ltr',
+): 'up' | 'down' | 'left' | 'right' | null {
   return key === 'ArrowUp'
     ? 'up'
     : key === 'ArrowDown'
       ? 'down'
       : key === 'ArrowLeft'
-        ? 'left'
-        : key === 'ArrowRight'
+        ? dir === 'rtl'
           ? 'right'
+          : 'left'
+        : key === 'ArrowRight'
+          ? dir === 'rtl'
+            ? 'left'
+            : 'right'
           : null
 }
 export function setGridRef(
@@ -211,7 +219,10 @@ export function getYearRange(date: DateStringValue) {
   const year = dayjs(date).year(),
     start = year - (year % 10)
   return Array.from({ length: 10 }, (_, index) =>
-    dayjs(`${start + index}-01-01`).format('YYYY-MM-DD'),
+    dayjs(date)
+      .year(start + index)
+      .startOf('year')
+      .format('YYYY-MM-DD'),
   )
 }
 export function getDecadeLabel(date: DateStringValue) {

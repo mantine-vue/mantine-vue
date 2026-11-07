@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils'
-import { defineComponent, nextTick, ref, shallowRef } from 'vue'
+import { computed, defineComponent, nextTick, ref, shallowRef } from 'vue'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { useWindowEvent } from './use-window-event'
 
@@ -79,5 +79,19 @@ describe('@mantine-vue/hooks/use-window-event', () => {
     wrapper.unmount()
     window.dispatchEvent(new MouseEvent('click'))
     expect(handler).not.toHaveBeenCalled()
+  })
+
+  it('updates event listener options', async () => {
+    const phases: number[] = []
+    const capture = ref(false)
+    const options = computed(() => ({ capture: capture.value }))
+    renderHook(() => useWindowEvent('click', (event) => phases.push(event.eventPhase), options))
+
+    document.body.dispatchEvent(new MouseEvent('click', { bubbles: true }))
+    capture.value = true
+    await nextTick()
+    document.body.dispatchEvent(new MouseEvent('click', { bubbles: true }))
+
+    expect(phases).toEqual([Event.BUBBLING_PHASE, Event.CAPTURING_PHASE])
   })
 })

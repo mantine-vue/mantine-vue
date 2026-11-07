@@ -18,6 +18,7 @@ import type { InputLabel } from './InputLabel/InputLabel'
 import type { InputPlaceholder } from './InputPlaceholder/InputPlaceholder'
 import type { InputWrapper } from './InputWrapper/InputWrapper'
 import type { ClearSectionMode } from './InputClearSection/InputClearSection'
+import type { LoaderProps } from '../Loader'
 
 export type InputStylesNames = 'input' | 'wrapper' | 'section' | 'bottomSection'
 
@@ -192,6 +193,9 @@ export interface InputOwnProps extends StylesApiProps<InputFactory> {
    * @default 'right'
    */
   loadingPosition?: 'left' | 'right'
+
+  /** Props passed down to the `Loader` component displayed when `loading` is set. */
+  loaderProps?: LoaderProps
 
   /** Content rendered at the bottom of the input, inside the border. */
   __bottomSection?: MantineNode

@@ -57,6 +57,7 @@ const rawProps = withDefaults(defineProps<ScheduleOwnProps>(), {
   monthViewProps: undefined,
   yearViewProps: undefined,
   mobileMonthViewProps: undefined,
+  eventTimeFormat: undefined,
   classNames: undefined,
   styles: undefined,
   vars: undefined,
@@ -205,6 +206,7 @@ const mobileViewProps = computed(() => {
     ...sharedListeners,
     ...(slots.header ? { renderHeader: (payload: any) => slots.header!(payload) } : {}),
     weekendDays: props.monthViewProps?.weekendDays,
+    eventTimeFormat: props.eventTimeFormat,
     ...viewProps,
     onYearClick: () => setCurrentView('year'),
     // Both the schedule-level and the view-level listener run, matching the desktop view.

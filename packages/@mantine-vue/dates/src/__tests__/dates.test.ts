@@ -28,6 +28,14 @@ import {
   padTime,
   toDateString,
 } from '../index'
+import { keyToDirection } from '../utils'
+
+describe('@mantine-vue/dates keyboard navigation', () => {
+  it('mirrors horizontal arrow keys in RTL', () => {
+    expect(keyToDirection('ArrowLeft', 'rtl')).toBe('right')
+    expect(keyToDirection('ArrowRight', 'rtl')).toBe('left')
+  })
+})
 
 describe('@mantine-vue/dates v-model', () => {
   it('binds native and segmented time inputs in both directions', async () => {

@@ -32,10 +32,13 @@ const editorState = useEditorSelector(
   (editor) => {
     const safeEditor = isSafeEditor(editor) ? editor : null
     return {
-      active:
-        safeEditor && props.isActive?.name
+      active: safeEditor
+        ? props.isActive?.name
           ? safeEditor.isActive(props.isActive.name, props.isActive.attributes as any)
-          : false,
+          : props.isActive
+            ? safeEditor.isActive(props.isActive.attributes as any)
+            : false
+        : false,
       disabled: safeEditor ? (props.isDisabled?.(safeEditor) ?? false) : true,
     }
   },
@@ -53,7 +56,7 @@ function runOperation() {
 <template>
   <RichTextEditorControlBaseComponent
     v-bind="attrs"
-    :active="props.active ?? editorState.active"
+    :active="props.active ?? (props.isActive ? editorState.active : undefined)"
     :interactive="props.interactive"
     :disabled="props.disabled ?? editorState.disabled"
     :variant="props.variant"

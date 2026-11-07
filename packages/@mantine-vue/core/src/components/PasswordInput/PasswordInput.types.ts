@@ -8,6 +8,7 @@ import type {
   StylesApiProps,
 } from '../../core'
 import type { InputDescriptionProps, InputErrorProps, InputLabelProps } from '../Input'
+import type { LoaderProps } from '../Loader'
 
 export type PasswordInputStylesNames =
   | 'root'
@@ -207,6 +208,15 @@ export interface PasswordInputOwnProps extends StylesApiProps {
    * @default true
    */
   withErrorStyles?: boolean
+
+  /** If set, a loader is displayed in one of the input sections. */
+  loading?: boolean
+
+  /** Section the loader is displayed in when `loading` is set. @default 'right' */
+  loadingPosition?: 'left' | 'right'
+
+  /** Props passed down to the `Loader` component displayed when `loading` is set. */
+  loaderProps?: LoaderProps
 }
 
 export interface PasswordInputProps

@@ -108,7 +108,7 @@ export function useScrollIntoView<
       const elapsed = now - startTime.value
 
       // Easing timing progress
-      const t = reducedMotion.value || duration === 0 ? 1 : elapsed / duration
+      const t = reducedMotion.value || duration === 0 ? 1 : Math.min(elapsed / duration, 1)
 
       const distance = start + change * easing(t)
 

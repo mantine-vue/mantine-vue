@@ -157,6 +157,7 @@ const inputProps = computed<Record<string, any>>(() => ({
   inputSize: props.inputSize,
   loading: props.loading,
   loadingPosition: props.loadingPosition,
+  loaderProps: props.loaderProps,
   __bottomSection: props.__bottomSection,
   __bottomSectionProps: props.__bottomSectionProps,
   rootRef: props.rootRef,

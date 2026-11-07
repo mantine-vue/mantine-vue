@@ -2,26 +2,36 @@ import { renderToString } from '@vue/server-renderer'
 import { mount } from '@vue/test-utils'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { createSSRApp, h } from 'vue'
-import { ColorInput, MantineProvider, MultiSelect, TagsInput, TreeSelect } from '../../index'
+import {
+  ColorInput,
+  DirectionProvider,
+  MantineProvider,
+  MultiSelect,
+  TagsInput,
+  TreeSelect,
+} from '../../index'
 
 const mounted: Array<ReturnType<typeof mount>> = []
 function render(
   component: any,
   props: Record<string, any>,
   slots: Record<string, (...args: any[]) => any> = {},
+  dir: 'ltr' | 'rtl' = 'ltr',
 ) {
   const wrapper = mount(
     {
       render: () =>
         h(MantineProvider, { env: 'test' }, () =>
-          h(
-            component,
-            {
-              ...props,
-              comboboxProps: { withinPortal: false, ...props.comboboxProps },
-              popoverProps: { withinPortal: false, ...props.popoverProps },
-            },
-            slots,
+          h(DirectionProvider, { initialDirection: dir }, () =>
+            h(
+              component,
+              {
+                ...props,
+                comboboxProps: { withinPortal: false, ...props.comboboxProps },
+                popoverProps: { withinPortal: false, ...props.popoverProps },
+              },
+              slots,
+            ),
           ),
         ),
     },
@@ -177,6 +187,39 @@ describe('@mantine-vue/core ColorInput and TreeSelect', () => {
     expect(wrapper.find('.mantine-TreeSelect-option').text()).toContain('Parent')
     await wrapper.findAll('[data-combobox-option]')[1].trigger('click')
     expect((wrapper.find('input[type="hidden"]').element as HTMLInputElement).value).toBe('leaf')
+  })
+
+  it('does not remove TreeSelect values with Backspace during IME composition', async () => {
+    const wrapper = render(TreeSelect, {
+      mode: 'multiple',
+      data: [{ value: 'a', label: 'A' }],
+      defaultValue: ['a'],
+      searchable: true,
+    })
+
+    await wrapper
+      .find('input:not([type="hidden"])')
+      .trigger('keydown', { key: 'Backspace', isComposing: true })
+    expect(wrapper.findAll('.mantine-Pill-root')).toHaveLength(1)
+  })
+
+  it('mirrors TreeSelect expand and collapse keys in RTL', async () => {
+    const wrapper = render(
+      TreeSelect,
+      {
+        data: [{ value: 'parent', label: 'Parent', children: [{ value: 'leaf', label: 'Leaf' }] }],
+      },
+      {},
+      'rtl',
+    )
+    const input = wrapper.find('input:not([type="hidden"])')
+    await input.trigger('click')
+    await input.trigger('keydown', { key: 'ArrowDown' })
+    expect(wrapper.find('[data-combobox-selected]').text()).toBe('Parent')
+    await input.trigger('keydown', { key: 'ArrowLeft' })
+    expect(wrapper.findAll('[data-combobox-option]')).toHaveLength(2)
+    await input.trigger('keydown', { key: 'ArrowRight' })
+    expect(wrapper.findAll('[data-combobox-option]')).toHaveLength(1)
   })
 
   it('cascades checkbox selection and serializes leaf values', async () => {

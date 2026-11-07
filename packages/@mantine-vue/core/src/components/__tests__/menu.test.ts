@@ -38,6 +38,14 @@ afterEach(() => {
 })
 
 describe('@mantine-vue/core Menu', () => {
+  it('preserves an explicit aria-disabled value', () => {
+    const wrapper = render({ defaultOpened: true }, () => [
+      h(Menu.Item, { 'data-disabled': true, 'aria-disabled': false }, () => 'Item'),
+    ])
+
+    expect(wrapper.find('[data-menu-item]').attributes('aria-disabled')).toBe('false')
+  })
+
   it('opens and closes from target with callbacks', async () => {
     const onOpen = vi.fn()
     const onClose = vi.fn()

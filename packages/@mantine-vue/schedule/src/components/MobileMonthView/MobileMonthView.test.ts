@@ -39,4 +39,24 @@ describe('@mantine-vue/schedule/MobileMonthView', () => {
       'All day',
     )
   })
+
+  it('formats event times with eventTimeFormat', () => {
+    const wrapper = render(MobileMonthView, {
+      ...props,
+      eventTimeFormat: 'h:mm A',
+      events: [
+        {
+          id: 1,
+          title: 'Meeting',
+          start: '2026-03-02 15:00:00',
+          end: '2026-03-02 16:30:00',
+          color: 'blue',
+        },
+      ],
+    })
+
+    expect(wrapper.find('.mantine-MobileMonthView-mobileMonthViewEventTime').text()).toBe(
+      '3:00 PM – 4:30 PM',
+    )
+  })
 })

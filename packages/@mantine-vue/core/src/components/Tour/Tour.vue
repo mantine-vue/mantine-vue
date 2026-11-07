@@ -148,14 +148,23 @@ const resolvedRadius = computed(() => displayStep.value?.spotlightRadius ?? prop
 const resolvedWithOverlay = computed(() => displayStep.value?.withOverlay ?? props.withOverlay)
 const isCentered = computed(() => !targetElement.value)
 
+const stepPosition = computed(() => displayStep.value?.position ?? 'bottom')
+const overTarget = computed(() => stepPosition.value === 'center')
 const placement = computed(() =>
-  getFloatingPosition(dir.value, displayStep.value?.position ?? 'bottom'),
+  getFloatingPosition(dir.value, stepPosition.value === 'center' ? 'bottom' : stepPosition.value),
 )
+const floatingMiddleware = computed(() => [
+  offset(
+    overTarget.value ? ({ rects }) => -(rects.reference.height + rects.floating.height) / 2 : 12,
+  ),
+  ...(overTarget.value ? [] : [flip()]),
+  shift({ padding: 8, crossAxis: overTarget.value }),
+])
 const { floatingStyles, update } = useFloating(targetElement, floating, {
   open: showTooltip,
   placement,
   transform: false,
-  middleware: [offset(12), flip(), shift({ padding: 8 })],
+  middleware: floatingMiddleware,
   whileElementsMounted: autoUpdate,
 })
 

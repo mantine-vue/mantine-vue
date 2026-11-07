@@ -674,6 +674,10 @@ export function useMask(options: UseMaskOptions): UseMaskReturnValue {
   }
 
   const handleKeyDown = (e: KeyboardEvent) => {
+    if (typeof e.key !== 'string') {
+      return
+    }
+
     const input = e.target as HTMLInputElement
 
     const { slots, slotChar, transform } = getResolvedOptions(options, rawInternal)

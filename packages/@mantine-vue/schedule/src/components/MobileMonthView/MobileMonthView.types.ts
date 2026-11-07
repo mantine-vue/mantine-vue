@@ -138,6 +138,9 @@ export interface MobileMonthViewOwnProps
    */
   eventsHeaderFormat?: DateLabelFormat
 
+  /** Format of event start and end time in the events list. @default 'HH:mm' */
+  eventTimeFormat?: DateLabelFormat
+
   /**
    * Replaces the header above the calendar. Can also be set with the `header` slot,
    * which takes precedence over the prop.

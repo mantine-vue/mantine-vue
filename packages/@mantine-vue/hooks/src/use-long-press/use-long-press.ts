@@ -50,6 +50,7 @@ export function useLongPress(
     timeout = undefined
   }
   const start = (event: MouseEvent | TouchEvent) => {
+    if (pressed) return
     options.onStart?.(event)
     startPosition = getPosition(event)
     pressed = true

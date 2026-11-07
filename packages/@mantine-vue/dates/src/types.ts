@@ -26,6 +26,8 @@ export interface ControlKeydownPayload {
   cellIndex: number
   event: KeyboardEvent
   controlsRef: HTMLElement[][]
+  /** Text direction. Horizontal arrow keys are mirrored in RTL. @default 'ltr' */
+  dir?: 'ltr' | 'rtl'
 }
 /** User-supplied attributes for a generated control. */
 export type ControlProps = Record<string, any>

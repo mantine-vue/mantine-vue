@@ -50,4 +50,30 @@ describe('@mantine-vue/hooks useLongPress', () => {
     wrapper.unmount()
     vi.useRealTimers()
   })
+
+  it('does not restart the timer for overlapping presses', async () => {
+    vi.useFakeTimers()
+    const callback = vi.fn()
+    const onStart = vi.fn()
+    const wrapper = mount(
+      defineComponent({
+        setup() {
+          const handlers = useLongPress(callback, {
+            threshold: 100,
+            events: ['mouse'],
+            onStart,
+          })
+          return () => h('button', handlers)
+        },
+      }),
+    )
+    await wrapper.find('button').trigger('mousedown', { button: 0 })
+    vi.advanceTimersByTime(50)
+    await wrapper.find('button').trigger('mousedown', { button: 2 })
+    vi.advanceTimersByTime(50)
+    expect(callback).toHaveBeenCalledOnce()
+    expect(onStart).toHaveBeenCalledOnce()
+    wrapper.unmount()
+    vi.useRealTimers()
+  })
 })

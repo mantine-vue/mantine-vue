@@ -17,8 +17,12 @@ export function useTimeout(
   let timeout: ReturnType<typeof setTimeout> | undefined
 
   const start = (...callbackParams: unknown[]) => {
-    clear()
-    timeout = setTimeout(() => callback(...callbackParams), delay)
+    if (timeout === undefined) {
+      timeout = setTimeout(() => {
+        timeout = undefined
+        callback(...callbackParams)
+      }, delay)
+    }
   }
 
   const clear = () => {

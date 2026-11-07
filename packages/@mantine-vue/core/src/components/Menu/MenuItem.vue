@@ -50,6 +50,8 @@ const isDisabled = computed(() => {
   return props.disabled || (dataDisabled != null && dataDisabled !== false) || undefined
 })
 
+const ariaDisabled = computed(() => (attrs as any)['aria-disabled'] ?? isDisabled.value)
+
 /** Prevents the dropdown from losing focus before the click is handled. */
 function onMousedown(event: MouseEvent) {
   event.preventDefault()
@@ -78,7 +80,7 @@ const renderRightSection = (): VNodeChild => rightSection.value
     :role="(attrs as any).role ?? 'menuitem'"
     :tabindex="ctx.menuItemTabIndex"
     :disabled="props.disabled"
-    :aria-disabled="isDisabled"
+    :aria-disabled="ariaDisabled"
     data-menu-item=""
     :data-disabled="isDisabled"
     data-mantine-stop-propagation=""

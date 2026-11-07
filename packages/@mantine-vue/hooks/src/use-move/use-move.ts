@@ -49,6 +49,7 @@ export function useMove<T extends HTMLElement = HTMLElement>(
     document.removeEventListener('mouseup', stop)
     document.removeEventListener('touchmove', touchMove)
     document.removeEventListener('touchend', stop)
+    document.removeEventListener('touchcancel', stop)
   }
   const stop = () => {
     if (!active.value) return
@@ -66,6 +67,7 @@ export function useMove<T extends HTMLElement = HTMLElement>(
     document.addEventListener('mouseup', stop)
     document.addEventListener('touchmove', touchMove, { passive: false })
     document.addEventListener('touchend', stop)
+    document.addEventListener('touchcancel', stop)
     if ('changedTouches' in event) touchMove(event)
     else mouseMove(event)
   }
