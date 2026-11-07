@@ -413,6 +413,9 @@ const Demo = defineComponent(() => {
 
 Use the `RichTextEditor.Control` component to create custom controls. It supports all
 props supported by the native `button` element and has an `active` prop to indicate active state.
+
+Controls that define the `active` prop are treated as toggle buttons: they expose `aria-pressed`
+in both states. Omit `active` for controls that only perform an action, for example undo or redo.
 Note that you will need to set the `aria-label` attribute to make the control visible for screen readers.
 
 <Demo data={TipTapDemos.customControl} />

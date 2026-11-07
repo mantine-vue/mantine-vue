@@ -85,7 +85,7 @@ export interface ControlOperation {
 }
 
 export interface ControlActiveState {
-  name: string
+  name?: string
   attributes?: Record<string, any> | string
 }
 

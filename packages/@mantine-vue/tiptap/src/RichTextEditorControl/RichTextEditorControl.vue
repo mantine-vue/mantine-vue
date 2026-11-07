@@ -58,7 +58,7 @@ function onMousedown(event: MouseEvent) {
     :data-interactive="props.interactive || undefined"
     :data-disabled="props.disabled || undefined"
     :data-active="props.active || undefined"
-    :aria-pressed="props.active && props.interactive ? true : undefined"
+    :aria-pressed="props.interactive && props.active !== undefined ? props.active : undefined"
     :aria-hidden="!props.interactive || undefined"
     :unstyled="ctx.unstyled"
     :variant="props.variant || ctx.variant || 'default'"
