@@ -28,7 +28,7 @@ const hasDateChangeListener = computed(() => {
 
 const displayed = computed(() => (props.date ? dayjs(props.date) : dayjs()))
 const yearRange = computed(() => {
-  const currentYear = new Date().getFullYear()
+  const currentYear = dayjs().year()
   const rawMin =
     props.yearsSelectRange?.[0] ?? (props.minDate ? dayjs(props.minDate).year() : currentYear - 100)
   const rawMax =
