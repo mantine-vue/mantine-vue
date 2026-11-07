@@ -22,6 +22,7 @@ const defaults = {
   zIndex: getDefaultZIndex('popover'),
   floatingStrategy: 'absolute',
   hideDetached: true,
+  preventPositionChangeWhenVisible: true,
   transitionProps: { transition: 'fade', duration: 150 },
 } as const
 
@@ -79,6 +80,7 @@ const rawProps = withDefaults(defineProps<PopoverProps>(), {
   returnFocus: undefined,
   keepMounted: undefined,
   hideDetached: undefined,
+  preventPositionChangeWhenVisible: undefined,
   defaultOpened: false,
   disabled: false,
   withOverlay: false,
@@ -110,6 +112,9 @@ const opened = computed(() => (isControlled.value ? !!rawProps.opened : internal
 const reference = ref<any>(null)
 const floating = ref<HTMLElement | null>(null)
 const arrowElement = ref<HTMLElement | null>(null)
+const lockedPlacement = ref<FloatingPosition | null>(null)
+let measuredAfterShow = false
+let lockPlacementFrame = 0
 
 /** Only needed for `width: 'target'`, and kept in step with a `ResizeObserver`. */
 const targetWidth = ref<number | undefined>()
@@ -120,7 +125,15 @@ function updateTargetWidth() {
   targetWidth.value = typeof width === 'number' ? width : undefined
 }
 
-const placement = computed(() => getFloatingPosition(dir.value, props.position as FloatingPosition))
+const requestedPlacement = computed(() =>
+  getFloatingPosition(dir.value, props.position as FloatingPosition),
+)
+const lockPlacement = computed(() => props.preventPositionChangeWhenVisible !== false)
+const placement = computed(() =>
+  lockPlacement.value
+    ? (lockedPlacement.value ?? requestedPlacement.value)
+    : requestedPlacement.value,
+)
 
 const middleware = computed<Middleware[]>(() => {
   const result: Middleware[] = [
@@ -133,8 +146,15 @@ const middleware = computed<Middleware[]>(() => {
     hide(),
   ]
 
-  if (props.middlewares?.flip !== false) {
-    result.push(flip(typeof props.middlewares?.flip === 'object' ? props.middlewares.flip : {}))
+  if (props.middlewares?.flip !== false && lockedPlacement.value === null) {
+    const flipOptions = typeof props.middlewares?.flip === 'object' ? props.middlewares.flip : {}
+    result.push(
+      flip(
+        lockPlacement.value
+          ? { fallbackStrategy: 'initialPlacement', ...flipOptions }
+          : flipOptions,
+      ),
+    )
   }
 
   if (props.middlewares?.shift !== false) {
@@ -202,6 +222,63 @@ const floatingState = useFloating(reference, floating, {
   whileElementsMounted: autoUpdate,
 })
 
+function resetLockedPlacement() {
+  cancelAnimationFrame(lockPlacementFrame)
+  lockPlacementFrame = 0
+  measuredAfterShow = false
+  lockedPlacement.value = null
+}
+
+watch(
+  [opened, requestedPlacement],
+  ([isOpened], previous) => {
+    if (!isOpened || previous?.[0] !== isOpened || previous?.[1] !== requestedPlacement.value) {
+      resetLockedPlacement()
+    }
+  },
+  { flush: 'sync' },
+)
+
+watch(
+  [opened, lockPlacement, floating, floatingState.isPositioned, floatingState.placement],
+  async ([isOpened, isLockEnabled, floatingElement, isPositioned]) => {
+    if (!isOpened) {
+      measuredAfterShow = false
+      return
+    }
+
+    if (!isLockEnabled || lockedPlacement.value !== null) {
+      return
+    }
+
+    await nextTick()
+    if (
+      !floatingElement ||
+      floatingElement.offsetHeight === 0 ||
+      floatingElement.offsetWidth === 0
+    ) {
+      return
+    }
+
+    if (!measuredAfterShow) {
+      measuredAfterShow = true
+      floatingState.update()
+      cancelAnimationFrame(lockPlacementFrame)
+      lockPlacementFrame = requestAnimationFrame(() => {
+        if (opened.value && lockedPlacement.value === null) {
+          lockedPlacement.value = floatingState.placement.value as FloatingPosition
+        }
+      })
+      return
+    }
+
+    if (isPositioned) {
+      lockedPlacement.value = floatingState.placement.value as FloatingPosition
+    }
+  },
+  { flush: 'post' },
+)
+
 // The target may have been laid out only as the dropdown opened, so it is measured
 // again after the DOM has settled.
 watch(opened, async (value) => {
@@ -227,7 +304,10 @@ watch(reference, (node) => {
   }
 })
 
-onBeforeUnmount(() => resizeObserver?.disconnect())
+onBeforeUnmount(() => {
+  resizeObserver?.disconnect()
+  cancelAnimationFrame(lockPlacementFrame)
+})
 
 function setOpened(value: boolean) {
   if (props.disabled) {
