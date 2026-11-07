@@ -160,6 +160,7 @@ const step = ref(0)
     <Tour.Step target="#position-target" title="Top" position="top">Tooltip positioned at the top.</Tour.Step>
     <Tour.Step target="#position-target" title="Left" position="left">Tooltip positioned at the left.</Tour.Step>
     <Tour.Step target="#position-target" title="Right" position="right">Tooltip positioned at the right.</Tour.Step>
+    <Tour.Step target="#position-target" title="Center" position="center">Tooltip positioned over the target.</Tour.Step>
   </Tour>
 </template>`
 
@@ -382,7 +383,7 @@ export const position: MantineDemo = {
               onClose: () => (active.value = false),
             },
             () =>
-              (['bottom', 'top', 'left', 'right'] as const).map((side) =>
+              (['bottom', 'top', 'left', 'right', 'center'] as const).map((side) =>
                 h(
                   Tour.Step,
                   {
@@ -390,7 +391,10 @@ export const position: MantineDemo = {
                     title: side[0].toUpperCase() + side.slice(1),
                     position: side,
                   },
-                  () => `Tooltip positioned at the ${side}.`,
+                  () =>
+                    side === 'center'
+                      ? 'Tooltip positioned over the target.'
+                      : `Tooltip positioned at the ${side}.`,
                 ),
               ),
           ),

@@ -16,7 +16,8 @@ export interface TourLabels {
 export interface TourStepProps {
   target?: TourTarget
   title?: VNodeChild
-  position?: FloatingPosition
+  /** Tooltip position relative to the target. `center` places it over the target. */
+  position?: FloatingPosition | 'center'
   withOverlay?: boolean
   spotlightPadding?: number
   spotlightRadius?: number
