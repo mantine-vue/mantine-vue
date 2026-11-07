@@ -48,6 +48,19 @@ describe('@mantine-vue/hooks/use-hash', () => {
     expect(hash.value).toBe('#section')
   })
 
+  it.each([
+    ['hello world', '#hello%20world'],
+    ['café', '#caf%C3%A9'],
+    ['#hello%20world', '#hello%20world'],
+    ['', ''],
+    ['#', ''],
+  ])('setter returns the normalized URL hash for %j', (value, expected) => {
+    const [hash, setHash] = renderHook({ getInitialValueInEffect: false })
+    setHash(value)
+    expect(hash.value).toBe(expected)
+    expect(window.location.hash).toBe(expected)
+  })
+
   it('reacts to external hashchange events', () => {
     const [hash] = renderHook({ getInitialValueInEffect: false })
 

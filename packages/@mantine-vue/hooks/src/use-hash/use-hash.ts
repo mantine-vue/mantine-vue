@@ -24,8 +24,10 @@ export function useHash(options: UseHashInput = {}): UseHashReturnValue {
     const valueWithHash = value.startsWith('#') ? value : `#${value}`
     if (typeof window !== 'undefined') {
       window.location.hash = valueWithHash
+      hash.value = window.location.hash
+      return
     }
-    hash.value = valueWithHash
+    hash.value = ''
   }
 
   useWindowEvent('hashchange', () => {
