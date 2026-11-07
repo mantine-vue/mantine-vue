@@ -229,6 +229,9 @@ const innerInputAttrs = computed(() => omitAttrs(attrs, ['onInput']))
         :right-section-props="props.rightSectionProps"
         :left-section-props="props.leftSectionProps"
         :left-section-pointer-events="props.leftSectionPointerEvents"
+        :loading="props.loading"
+        :loading-position="props.loadingPosition"
+        :loader-props="props.loaderProps"
         :with-aria="false"
         :with-error-styles="props.withErrorStyles"
       >

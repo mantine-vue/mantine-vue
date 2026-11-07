@@ -135,6 +135,7 @@ const loadingIndicator = computed(() =>
           props.loadingPosition === 'left'
             ? 'calc(var(--input-left-section-size) / 2)'
             : 'calc(var(--input-right-section-size) / 2)',
+        ...props.loaderProps,
       })
     : null,
 )

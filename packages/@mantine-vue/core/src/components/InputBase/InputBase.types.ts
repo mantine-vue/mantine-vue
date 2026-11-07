@@ -11,6 +11,7 @@ import type {
   StylesApiProps,
 } from '../../core'
 import type { InputDescriptionProps, InputErrorProps, InputLabelProps, InputSlots } from '../Input'
+import type { LoaderProps } from '../Loader'
 
 export type InputBaseStylesNames =
   | 'input'
@@ -250,6 +251,9 @@ export interface InputBaseOwnProps extends StylesApiProps<InputBaseFactory> {
    * @default 'right'
    */
   loadingPosition?: 'left' | 'right'
+
+  /** Props passed down to the `Loader` component displayed when `loading` is set. */
+  loaderProps?: LoaderProps
 
   /** Content rendered at the bottom of the input, inside the border. */
   __bottomSection?: MantineNode
