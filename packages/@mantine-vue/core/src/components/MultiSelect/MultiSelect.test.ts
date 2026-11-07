@@ -22,6 +22,17 @@ afterEach(() => {
 })
 
 describe('@mantine-vue/core/MultiSelect', () => {
+  it('does not remove the last value with Backspace during IME composition', async () => {
+    const wrapper = render(() =>
+      h(MultiSelect, { data: ['a', 'b'], defaultValue: ['a', 'b'], searchable: true }),
+    )
+
+    await wrapper
+      .find('input:not([type="hidden"])')
+      .trigger('keydown', { key: 'Backspace', isComposing: true })
+    expect(wrapper.findAll('.mantine-Pill-root')).toHaveLength(2)
+  })
+
   it('does not remove the last MultiSelect value with Backspace', async () => {
     const wrapper = render(() =>
       h(MultiSelect, {

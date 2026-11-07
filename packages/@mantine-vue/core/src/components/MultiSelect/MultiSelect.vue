@@ -273,7 +273,13 @@ function onFieldKeydown(event: KeyboardEvent) {
   }
 
   // Backspace on an empty search removes the last pill.
-  if (event.key === 'Backspace' && !search() && values.value.length && !readOnly.value) {
+  if (
+    event.key === 'Backspace' &&
+    !search() &&
+    values.value.length &&
+    !event.isComposing &&
+    !readOnly.value
+  ) {
     remove(values.value[values.value.length - 1])
   }
 
