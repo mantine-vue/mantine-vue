@@ -389,7 +389,9 @@ const rightSectionWidth = computed(
 )
 
 /** `bigint` values are integers only, so the numeric keypad is the right hint. */
-const inputMode = computed(() => (isBigIntMode.value ? 'numeric' : 'decimal'))
+const inputMode = computed(() =>
+  props.inputMode == null ? (isBigIntMode.value ? 'numeric' : 'decimal') : props.inputMode,
+)
 
 /**
  * `Input` hands back the field itself, so no wrapper lookup is needed. The same node drives the

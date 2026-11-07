@@ -49,6 +49,11 @@ describe('@mantine-vue/core NumberFormatter', () => {
 })
 
 describe('@mantine-vue/core NumberInput', () => {
+  it('respects an explicit inputMode prop', () => {
+    const wrapper = withProvider(() => h(NumberInput, { inputMode: 'numeric' }))
+    expect(wrapper.find('input').attributes('inputmode')).toBe('numeric')
+  })
+
   it('parses input changes and formats display value', async () => {
     const onChange = vi.fn()
     const wrapper = withProvider(() =>
