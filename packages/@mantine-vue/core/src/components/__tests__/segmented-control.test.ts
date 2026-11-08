@@ -105,4 +105,33 @@ describe('@mantine-vue/core SegmentedControl', () => {
     expect(wrapper.text()).toContain('Two')
     expect(wrapper.findAll('input')[1].attributes('disabled')).toBeDefined()
   })
+
+  it('supports scoped label slots and keeps rendering Vue nodes from data', () => {
+    const slotted = withProvider(() =>
+      h(
+        SegmentedControl,
+        {
+          data: [
+            { value: 'one', label: 'One' },
+            { value: 'two', label: 'Two' },
+          ],
+        },
+        {
+          label: ({ item }: any) =>
+            h('span', { class: `slot-label-${item.value}` }, `Slot ${item.label}`),
+        },
+      ),
+    )
+
+    expect(slotted.find('.slot-label-one').text()).toBe('Slot One')
+    expect(slotted.find('.slot-label-two').text()).toBe('Slot Two')
+
+    const nodeLabel = withProvider(() =>
+      h(SegmentedControl, {
+        data: [{ value: 'node', label: h('strong', { class: 'node-label' }, 'Node label') }],
+      }),
+    )
+
+    expect(nodeLabel.find('.node-label').text()).toBe('Node label')
+  })
 })

@@ -12,6 +12,25 @@ import { Center, SegmentedControl } from '@mantine-vue/core'
 <template>
   <SegmentedControl
     :data="[
+      { value: 'preview', label: 'Preview' },
+      { value: 'code', label: 'Code' },
+      { value: 'export', label: 'Export' },
+    ]"
+  >
+    <template #label="{ item }">
+      <Center style="gap: 10px">
+        <PhEye v-if="item.value === 'preview'" :size="16" />
+        <PhCode v-if="item.value === 'code'" :size="16" />
+        <PhArrowSquareOut v-if="item.value === 'export'" :size="16" />
+        <span>{{ item.label }}</span>
+      </Center>
+    </template>
+  </SegmentedControl>
+
+  //or
+
+   <SegmentedControl
+    :data="[
       {
         value: 'preview',
         label: h(Center, { style: { gap: '10px' } }, () => [h(PhEye, { size: 16 }), h('span', null, 'Preview')]),
@@ -29,34 +48,32 @@ import { Center, SegmentedControl } from '@mantine-vue/core'
 </template>
 `
 
+const icons = {
+  preview: PhEye,
+  code: PhCode,
+  export: PhArrowSquareOut,
+}
+
 const Demo = defineComponent({
   name: 'SegmentedControlLabelsDemo',
   setup: () => () =>
-    h(SegmentedControl, {
-      data: [
-        {
-          value: 'preview',
-          label: h(Center, { style: { gap: '10px' } }, () => [
-            h(PhEye, { size: 16 }),
-            h('span', null, 'Preview'),
+    h(
+      SegmentedControl,
+      {
+        data: [
+          { value: 'preview', label: 'Preview' },
+          { value: 'code', label: 'Code' },
+          { value: 'export', label: 'Export' },
+        ],
+      },
+      {
+        label: ({ item }: any) =>
+          h(Center, { style: { gap: '10px' } }, () => [
+            h(icons[item.value as keyof typeof icons], { size: 16 }),
+            h('span', null, item.label),
           ]),
-        },
-        {
-          value: 'code',
-          label: h(Center, { style: { gap: '10px' } }, () => [
-            h(PhCode, { size: 16 }),
-            h('span', null, 'Code'),
-          ]),
-        },
-        {
-          value: 'export',
-          label: h(Center, { style: { gap: '10px' } }, () => [
-            h(PhArrowSquareOut, { size: 16 }),
-            h('span', null, 'Export'),
-          ]),
-        },
-      ],
-    }),
+      },
+    ),
 })
 
 export const labels: MantineDemo = {

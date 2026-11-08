@@ -1,3 +1,4 @@
+import type { VNodeChild } from 'vue'
 import type {
   BoxMod,
   BoxProps,
@@ -12,6 +13,11 @@ export interface SegmentedControlItem<Value = string> {
   value: Value
   label: MantineNode
   disabled?: boolean
+}
+
+export interface SegmentedControlSlots {
+  /** Renders the label of each item. Receives the normalized item. */
+  label?: (payload: { item: SegmentedControlItem<string | number> }) => VNodeChild
 }
 
 /** Props declared by `SegmentedControl` itself. See `SegmentedControlProps` for the full public type. */

@@ -24,12 +24,16 @@ export const varsResolver = createVarsResolver<any>(
 )
 </script>
 <script setup lang="ts">
-import { computed, h, onMounted, reactive, ref, useAttrs, watch } from 'vue'
+import { computed, h, onMounted, reactive, ref, useAttrs, useSlots, watch } from 'vue'
 import { useId, useMounted, useUncontrolled } from '@mantine-vue/hooks'
 import { isPrimitive } from '@mantine-vue/utils'
 import { Box, resolveNode, useMantineTheme, useStyles } from '../../core'
 import { FloatingIndicator } from '../FloatingIndicator'
-import type { SegmentedControlItem, SegmentedControlOwnProps } from './SegmentedControl.types'
+import type {
+  SegmentedControlItem,
+  SegmentedControlOwnProps,
+  SegmentedControlSlots,
+} from './SegmentedControl.types'
 import classes from './SegmentedControl.module.css'
 defineOptions({ name: 'SegmentedControl', inheritAttrs: false })
 const props = withDefaults(defineProps<SegmentedControlOwnProps>(), {
@@ -55,6 +59,8 @@ const props = withDefaults(defineProps<SegmentedControlOwnProps>(), {
   unstyled: false,
 })
 const emit = defineEmits<{ 'update:modelValue': [value: any]; change: [value: any] }>()
+defineSlots<SegmentedControlSlots>()
+const slots = useSlots()
 const attrs = useAttrs()
 const theme = useMantineTheme()
 const uuid = useId(props.name)
@@ -103,7 +109,7 @@ watch(normalizedData, (items) => {
   })
 })
 const ItemLabel = (item: SegmentedControlItem<any>) =>
-  h('span', getStyles('innerLabel'), resolveNode(item.label) as any)
+  h('span', getStyles('innerLabel'), (slots.label?.({ item }) ?? resolveNode(item.label)) as any)
 const handleClick = (event: MouseEvent) => {
   if (props.readOnly) event.preventDefault()
 }
