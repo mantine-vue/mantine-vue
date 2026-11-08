@@ -2,7 +2,11 @@ import { computed, defineComponent, h, type PropType } from 'vue'
 import type { Rect } from '../../core/geometry'
 import { estimateText, measureText, plainTextToRichText, wrapRichText } from '../../core/text'
 import type { DiagramNode, DiagramRichText } from '../../core/types'
-import { textMeasurementReady, useDiagramContext } from '../../vue/context'
+import {
+  textMeasurementReady,
+  useContrastColorResolver,
+  useDiagramContext,
+} from '../../vue/context'
 
 const DEFAULT_FONT_SIZE = 14
 const LINE_HEIGHT = 1.25
@@ -25,6 +29,7 @@ export const DiagramNodeLabel = defineComponent({
   },
   setup(props) {
     const { resolveColor } = useDiagramContext()
+    const resolveContrastColor = useContrastColorResolver()
 
     const layout = computed(() => {
       const { node } = props
@@ -91,7 +96,10 @@ export const DiagramNodeLabel = defineComponent({
           'font-weight': style.fontWeight,
           'font-style': style.fontStyle,
           'font-family': style.fontFamily,
-          fill: resolveColor(style.textColor) ?? 'var(--diagram-text)',
+          fill:
+            resolveColor(style.textColor) ??
+            resolveContrastColor(style.fill) ??
+            'var(--diagram-text)',
           'pointer-events': 'none',
         },
         lines.flatMap((line, index) => {

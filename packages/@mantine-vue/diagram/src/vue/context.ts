@@ -1,5 +1,10 @@
 import { computed, inject, ref, shallowRef, type ComputedRef, type ShallowRef } from 'vue'
-import { createSafeContext, getThemeColor, useSafeMantineTheme } from '@mantine-vue/core'
+import {
+  createSafeContext,
+  getThemeColor,
+  parseThemeColor,
+  useSafeMantineTheme,
+} from '@mantine-vue/core'
 import type { DiagramLabels } from '../labels'
 import type { DiagramController } from './use-diagram'
 
@@ -74,12 +79,54 @@ export function useColorResolver() {
   return (color: string | undefined) => (color ? cache.value(color) : undefined)
 }
 
+export function useContrastColorResolver() {
+  const theme = useSafeMantineTheme()
+
+  return (color: string | undefined) => {
+    if (!color || isDynamicCssColor(color)) {
+      return undefined
+    }
+
+    try {
+      const parsed = parseThemeColor({ color, theme: theme.value })
+
+      if (
+        isDynamicCssColor(parsed.value) ||
+        (!parsed.isThemeColor &&
+          color !== 'white' &&
+          color !== 'black' &&
+          !color.startsWith('#') &&
+          !color.startsWith('rgb') &&
+          !color.startsWith('hsl') &&
+          !color.startsWith('oklch('))
+      ) {
+        return undefined
+      }
+
+      return parsed.isLight ? 'var(--mantine-color-black)' : 'var(--mantine-color-white)'
+    } catch {
+      return undefined
+    }
+  }
+}
+
 function isPlainCssColor(color: string) {
   return (
     color.startsWith('#') ||
     color.startsWith('var(') ||
     color.startsWith('rgb') ||
     color.startsWith('hsl') ||
+    color.startsWith('light-dark(') ||
+    color.startsWith('color-mix(') ||
+    color === 'transparent' ||
+    color === 'none' ||
+    color === 'currentColor'
+  )
+}
+
+function isDynamicCssColor(color: string) {
+  return (
+    color.startsWith('var(') ||
     color.startsWith('light-dark(') ||
     color.startsWith('color-mix(') ||
     color === 'transparent' ||
