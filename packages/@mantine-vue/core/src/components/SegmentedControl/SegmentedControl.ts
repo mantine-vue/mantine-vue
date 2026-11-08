@@ -6,5 +6,6 @@ export type {
   SegmentedControlItem,
   SegmentedControlOwnProps,
   SegmentedControlProps,
+  SegmentedControlSlots,
   SegmentedControlStylesNames,
 } from './SegmentedControl.types'

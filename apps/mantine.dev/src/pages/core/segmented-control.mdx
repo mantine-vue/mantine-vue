@@ -105,9 +105,10 @@ on the item that you want to disable. To disable the entire component, use the `
 
 <Demo data={SegmentedControlDemos.disabled} />
 
-## Vue node as label
+## Custom labels
 
-You can use any Vue node (rendered with `h()`) as a label:
+Use the scoped `label` slot to render a custom label. The slot receives the normalized `item` object.
+You can also pass any Vue node rendered with `h()` as an item's `label`.
 
 <Demo data={SegmentedControlDemos.labels} />
 
