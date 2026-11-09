@@ -858,6 +858,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@mantine-vue/mcp-server@workspace:packages/@mantine-vue/mcp-server":
+  version: 0.0.0-use.local
+  resolution: "@mantine-vue/mcp-server@workspace:packages/@mantine-vue/mcp-server"
+  bin:
+    mantine-vue-mcp: ./bin/mcp-server.cjs
+  languageName: unknown
+  linkType: soft
+
 "@mantine-vue/modals@workspace:*, @mantine-vue/modals@workspace:packages/@mantine-vue/modals":
   version: 0.0.0-use.local
   resolution: "@mantine-vue/modals@workspace:packages/@mantine-vue/modals"

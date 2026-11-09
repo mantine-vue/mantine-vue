@@ -11,7 +11,7 @@ function loadShiki() {
   if (!highlighterPromise) {
     highlighterPromise = import('shiki').then(({ createHighlighter }) =>
       createHighlighter({
-        langs: ['vue', 'tsx', 'typescript', 'scss', 'html', 'bash', 'json'],
+        langs: ['vue', 'tsx', 'typescript', 'scss', 'html', 'bash', 'json', 'markdown'],
         themes: [],
       }),
     )

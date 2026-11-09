@@ -9,7 +9,12 @@ export default defineConfig({
   test: {
     environment: 'jsdom',
     globals: true,
-    include: ['packages/**/*.test.ts', 'packages/**/*.test.tsx', 'apps/*/src/**/*.test.ts'],
+    include: [
+      'packages/**/*.test.ts',
+      'packages/**/*.test.tsx',
+      'apps/*/src/**/*.test.ts',
+      'scripts/llm/**/*.test.ts',
+    ],
     benchmark: {
       include: ['scripts/benchmarks/**/*.bench.ts'],
     },

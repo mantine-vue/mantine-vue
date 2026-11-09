@@ -17,6 +17,15 @@ export const MDX_DATA: Record<string, Frontmatter> = {
     searchTags: 'getting started, installation, vite, nuxt, templates, setup',
     hideHeader: true,
   },
+  GuideAiTools: {
+    title: 'AI tools',
+    package: '@mantine-vue/core',
+    slug: '/guides/ai-tools',
+    description: 'Use Mantine Vue with AI coding assistants, agent skills, and the MCP server',
+    docs: 'guides/ai-tools.mdx',
+    searchTags: 'AI, LLM, MCP, Cursor, Claude Code, Windsurf, Copilot, agent skills',
+    hideHeader: true,
+  },
   StyleProps: {
     title: 'Style props',
     package: '@mantine-vue/core',

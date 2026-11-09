@@ -20,7 +20,7 @@
     "styles-api:validate": "tsx scripts/styles-api/validate.ts",
     "docs:docgen": "yarn docgen",
     "docs": "yarn workspace @mantine-vue/docs dev",
-    "docs:build": "yarn docs:docgen && yarn workspace @mantine-vue/docs build",
+    "docs:build": "yarn docs:docgen && yarn compile:ai && yarn workspace @mantine-vue/docs build",
     "docs:typecheck": "yarn workspace @mantine-vue/docs typecheck",
     "showcase": "yarn workspace @mantine-vue/showcase dev",
     "showcase:build": "yarn workspace @mantine-vue/showcase build",
@@ -69,7 +69,11 @@
     "ncu:root": "npx npm-check-updates --packageFile package.json",
     "ncu:packages": "npx npm-check-updates --packageFile \"packages/**/*/package.json\"",
     "ncu:apps": "npx npm-check-updates --packageFile \"apps/*/package.json\"",
-    "ncu": "run-s ncu:root ncu:packages ncu:apps"
+    "ncu": "run-s ncu:root ncu:packages ncu:apps",
+    "compile:ai": "tsx scripts/llm/compile-ai-docs.ts",
+    "compile:llm": "yarn compile:ai",
+    "compile:mcp": "yarn compile:ai",
+    "mcp:smoke:local": "yarn compile:ai && yarn build mcp-server && tsx scripts/llm/mcp-local-smoke.ts"
   },
   "dependencies": {
     "@vercel/analytics": "^2.0.1",
