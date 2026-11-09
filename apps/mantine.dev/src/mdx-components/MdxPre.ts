@@ -20,7 +20,7 @@ function extractText(node: unknown): string {
   return ''
 }
 
-function getLanguage(className: string | undefined): string {
+export function getMdxCodeLanguage(className: string | undefined): string {
   const matches = (className ?? '').match(/language-(?<lang>.*)/)
   const matchedLanguage =
     matches && matches.groups && matches.groups.lang ? matches.groups.lang : 'tsx'
@@ -31,6 +31,10 @@ function getLanguage(className: string | undefined): string {
 
   if (['css', 'scss'].includes(matchedLanguage)) {
     return 'scss'
+  }
+
+  if (['md', 'markdown'].includes(matchedLanguage)) {
+    return 'markdown'
   }
 
   if (['html', 'bash', 'json', 'vue'].includes(matchedLanguage)) {
@@ -73,7 +77,7 @@ export const MdxPre = defineComponent({
       const codeClassName = (codeVNode?.props?.className ?? codeVNode?.props?.class) as
         | string
         | undefined
-      const lang = getLanguage(codeClassName)
+      const lang = getMdxCodeLanguage(codeClassName)
       const code = extractText(codeVNode).replace(/\n$/, '')
 
       return h(MdxCodeHighlight, { code, language: lang })

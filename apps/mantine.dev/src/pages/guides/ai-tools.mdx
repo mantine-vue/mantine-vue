@@ -1,0 +1,105 @@
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.GuideAiTools)
+
+## AI-ready documentation
+
+Mantine Vue publishes documentation generated specifically for coding assistants:
+
+- [llms.txt](/llms.txt) is a compact index with links to every page.
+- [llms-full.txt](/llms-full.txt) contains all documentation in one file.
+- Per-page Markdown is available below `/llms`, for example `/llms/core/button.md`.
+
+These files are generated from the same `MDX_DATA`, MDX sources, and Vue docgen metadata used by this
+website. Generated component APIs include Vue props, slots, and emitted events. Tell your assistant that
+the project uses Mantine Vue v3, Vue 3 Composition API, and `<script setup>`.
+
+## MCP server
+
+`@mantine-vue/mcp-server` lets an agent search the documentation, read a page or section, inspect
+generated component APIs, list packages, and resolve component or composable symbols.
+
+```json
+{
+  "mcpServers": {
+    "mantine-vue": {
+      "command": "npx",
+      "args": ["-y", "@mantine-vue/mcp-server"]
+    }
+  }
+}
+```
+
+The server exposes `search_docs`, `get_item_doc`, `get_item_api`, `list_items`, and `get_api`.
+It reads static data published at `https://mantine-vue.dev/mcp`, so the server remains small and the
+documentation can be updated with every site deployment.
+
+Set `MANTINE_VUE_MCP_DATA_URL` to a preview URL, `file:` URL, or absolute local directory to use another
+generated dataset. `MANTINE_VUE_MCP_TIMEOUT_MS` controls the HTTP timeout and defaults to 10000.
+
+## Claude Code
+
+```bash
+claude mcp add mantine-vue -- npx -y @mantine-vue/mcp-server
+```
+
+Install a task-specific skill when needed:
+
+```bash
+npx skills add https://github.com/mantine-vue/mantine-vue --skill mantine-vue-form
+```
+
+## Cursor
+
+Add the MCP JSON above to `.cursor/mcp.json` in a project or to your global Cursor configuration. Add
+`https://mantine-vue.dev/llms.txt` as `@Docs` when you want documentation retrieval without MCP.
+
+## Windsurf
+
+Add the MCP JSON above in Windsurf Settings → Cascade → MCP servers. You can also add
+`https://mantine-vue.dev/llms.txt` as a documentation source and place a short rule in
+`.windsurf/rules/mantine-vue.md`:
+
+```md
+Use Mantine Vue v3 with Vue 3 Composition API and <script setup>.
+Import from @mantine-vue/\*; never substitute React Mantine APIs.
+Search the Mantine Vue MCP server before guessing a component prop or composable signature.
+```
+
+## VS Code and GitHub Copilot
+
+VS Code uses a `servers` key in `.vscode/mcp.json`:
+
+```json
+{
+  "servers": {
+    "mantine-vue": {
+      "command": "npx",
+      "args": ["-y", "@mantine-vue/mcp-server"]
+    }
+  }
+}
+```
+
+## Agent skills
+
+The repository includes focused skills for workflows where a short API lookup is not enough:
+
+- `mantine-vue-combobox` – custom accessible selects, autocomplete, and multiselects.
+- `mantine-vue-form` – validation, nested values, lists, schemas, and form context.
+- `mantine-vue-custom-components` – factory components, theming, polymorphism, and Styles API.
+
+```bash
+npx skills add https://github.com/mantine-vue/mantine-vue --skill mantine-vue-combobox
+npx skills add https://github.com/mantine-vue/mantine-vue --skill mantine-vue-form
+npx skills add https://github.com/mantine-vue/mantine-vue --skill mantine-vue-custom-components
+```
+
+Agents discover installed skills automatically. You can also name one explicitly in a prompt.
+
+## Maintaining generated resources
+
+Run `yarn compile:ai` after editing documentation metadata or MDX. `yarn docs:build` runs docgen and the
+AI compiler before building the site. The generated files live in the docs public directory and are not
+edited by hand.

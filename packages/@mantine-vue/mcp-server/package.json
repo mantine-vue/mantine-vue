@@ -1,0 +1,48 @@
+{
+  "name": "@mantine-vue/mcp-server",
+  "version": "3.9.0",
+  "description": "MCP server for Mantine Vue documentation and APIs",
+  "keywords": [
+    "ai",
+    "docs",
+    "mantine-vue",
+    "mcp",
+    "model-context-protocol",
+    "vue"
+  ],
+  "license": "MIT",
+  "author": "Hasan Alhawaj <hasan.alhawaj.bh@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mantine-vue/mantine-vue.git",
+    "directory": "packages/@mantine-vue/mcp-server"
+  },
+  "bin": {
+    "mantine-vue-mcp": "./bin/mcp-server.cjs"
+  },
+  "files": [
+    "bin",
+    "cjs",
+    "esm",
+    "lib"
+  ],
+  "sideEffects": false,
+  "main": "./cjs/index.cjs",
+  "module": "./esm/index.mjs",
+  "types": "./lib/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./lib/index.d.mts",
+        "default": "./esm/index.mjs"
+      },
+      "require": {
+        "types": "./lib/index.d.ts",
+        "default": "./cjs/index.cjs"
+      }
+    }
+  },
+  "engines": {
+    "node": ">=20.9.0"
+  }
+}

@@ -398,6 +398,7 @@ export const MDX_NAV_DATA: MdxNavCategory[] = [
         title: 'Overview',
         pages: [
           { label: 'Getting started', link: '/getting-started' },
+          { label: 'AI tools', link: '/guides/ai-tools' },
           { label: 'Browser support', link: '/browser-support' },
           { label: 'Contributing to Mantine', link: '/contribute' },
           { label: 'About Mantine', link: '/about' },
