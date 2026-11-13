@@ -14,6 +14,7 @@ export {
 export { Notifications } from './components/Notifications'
 
 export type {
+  NotificationAutoCloseProgressPosition,
   NotificationData,
   NotificationPosition,
   NotificationsState,

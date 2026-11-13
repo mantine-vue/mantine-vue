@@ -1,5 +1,9 @@
 import type { VNodeChild } from 'vue'
-import type { NotificationData, NotificationPosition } from '../../notifications.store'
+import type {
+  NotificationAutoCloseProgressPosition,
+  NotificationData,
+  NotificationPosition,
+} from '../../notifications.store'
 
 /** Internal props accepted by `NotificationContainer`. */
 export interface NotificationContainerProps {
@@ -17,6 +21,8 @@ export interface NotificationContainerProps {
   paused: boolean
   /** Default visibility of the auto-close progress line. */
   withAutoCloseProgress: boolean
+  /** Default position of the auto-close progress line. */
+  autoCloseProgressPosition?: NotificationAutoCloseProgressPosition
   /** Styles API props applied to the progress line. */
   progressProps: Record<string, any>
   /** Custom renderer used instead of the default Notification component. */

@@ -77,6 +77,7 @@ function getNotificationProps() {
     'priority',
     '__sequence',
     'withAutoCloseProgress',
+    'autoCloseProgressPosition',
   ])
   return Object.fromEntries(
     Object.entries(props.data)
@@ -435,6 +436,9 @@ function setNotificationRef(node: any) {
       aria-hidden="true"
       v-bind="props.progressProps"
       :data-paused="!progressRunning || undefined"
+      :data-position="
+        props.data.autoCloseProgressPosition ?? props.autoCloseProgressPosition ?? 'bottom'
+      "
       :style="[
         props.progressProps.style,
         { '--notifications-progress-duration': `${autoCloseDuration}ms` },
