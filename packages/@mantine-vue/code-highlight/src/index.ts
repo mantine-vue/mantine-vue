@@ -12,6 +12,7 @@ export {
 } from './CodeHighlightProvider/CodeHighlightProvider'
 export { normalizeCode } from './normalize-code'
 export * from './JsonViewer'
+export * from './Diff'
 export type { NormalizeCodeOptions } from './normalize-code'
 
 export { createHighlightJsAdapter } from './CodeHighlightProvider/adapters/highlight-js-adapter'
