@@ -61,5 +61,5 @@ export type {
 } from './InputClearSection/InputClearSection'
 export { useInputContext } from './Input.context'
 export type { InputContextValue } from './Input.context'
-export { useInputWrapperContext } from './InputWrapper.context'
+export { provideInputWrapperContext, useInputWrapperContext } from './InputWrapper.context'
 export type { InputWrapperContextValue } from './InputWrapper.context'
