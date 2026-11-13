@@ -1,0 +1,62 @@
+import { EmojiPickerPopoverDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.EmojiPickerPopover)
+
+## Usage
+
+`EmojiPickerPopover` combines `EmojiPicker` with Mantine `Popover`.
+The default slot is used as the popover target – the popover is toggled when it is clicked.
+
+<Demo data={EmojiPickerPopoverDemos.usage} />
+
+## Close on select
+
+By default, the popover closes when an emoji is selected. Set `:close-on-select="false"` to keep it open:
+
+<Demo data={EmojiPickerPopoverDemos.closeOnSelect} />
+
+## EmojiPicker props
+
+All `EmojiPicker` props are supported directly on `EmojiPickerPopover`.
+For example, you can change the number of columns and hide the preview and category navigation:
+
+<Demo data={EmojiPickerPopoverDemos.pickerProps} />
+
+## Controlled state
+
+Use `v-model:opened` to control the popover state. A controlled popover
+is not toggled when the target is clicked, add a click handler to the target element:
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue'
+import { ActionIcon } from '@mantine-vue/core'
+import { EmojiPickerPopover } from '@mantine-vue/emoji'
+import { emojiData } from './emoji-data'
+
+const opened = ref(false)
+</script>
+
+<template>
+  <EmojiPickerPopover v-model:opened="opened" :data="emojiData">
+    <ActionIcon variant="default" size="lg" @click="opened = !opened">☺</ActionIcon>
+  </EmojiPickerPopover>
+</template>
+```
+
+## Popover props
+
+Use the `popover-props` prop to pass props to the underlying `Popover` component:
+
+```vue
+<template>
+  <EmojiPickerPopover
+    :data="emojiData"
+    :popover-props="{ position: 'bottom-end', shadow: 'md', offset: 8 }"
+  >
+    <ActionIcon variant="default" size="lg">☺</ActionIcon>
+  </EmojiPickerPopover>
+</template>
+```

@@ -1,0 +1,133 @@
+import { EmojiPickerDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.EmojiPicker)
+
+## Usage
+
+`EmojiPicker` displays a searchable emoji grid with category navigation, skin tone selector,
+and emoji preview. Emoji data is passed with the `data` prop, see the
+[Getting started](/emoji/getting-started) page for setup instructions.
+
+<Demo data={EmojiPickerDemos.usage} />
+
+## Size
+
+Use the `size` prop to change the size of all inner elements:
+
+<Demo data={EmojiPickerDemos.size} />
+
+## Without search
+
+Set `:with-search="false"` to hide the search input:
+
+<Demo data={EmojiPickerDemos.noSearch} />
+
+## Without preview
+
+Set `:with-preview="false"` and `:with-skin-tone-selector="false"` to hide the footer area:
+
+<Demo data={EmojiPickerDemos.noPreview} />
+
+## Custom columns
+
+Use the `columns` prop to change the number of emojis per row. The picker width
+adjusts automatically based on the number of columns and emoji size.
+
+<Demo data={EmojiPickerDemos.columns} />
+
+## Emoji size
+
+Use the `emoji-size` prop to change the size of emoji buttons. Emoji font size is derived from
+this value.
+
+<Demo data={EmojiPickerDemos.emojiSize} />
+
+## Skin tone
+
+The skin tone selector is displayed in the preview area. Click it to open a popover
+with all skin tone options. Use `v-model:skin-tone` to control the value:
+
+<Demo data={EmojiPickerDemos.skinTone} />
+
+## Scroll area
+
+Use the `scroll-area-props` prop to pass props to the internal `ScrollArea`, for example
+to change its height. The default height is 300px.
+
+<Demo data={EmojiPickerDemos.scrollArea} />
+
+## Category labels and localization
+
+Override category labels with the `category-labels` prop (keyed by canonical category ID),
+and UI strings with the `labels` prop:
+
+<Demo data={EmojiPickerDemos.categoryLabels} />
+
+## Search icon
+
+Customize the search input with the `search-input-props` prop. For example, you can add a
+search icon to the left section:
+
+<Demo data={EmojiPickerDemos.searchIcon} />
+
+## Empty search content
+
+Customize the content shown when search yields no results with the `empty` slot
+(or the `empty-search-content` prop):
+
+<Demo data={EmojiPickerDemos.emptySearch} />
+
+## Toggle sections
+
+Use these boolean props to toggle individual sections:
+
+<Demo data={EmojiPickerDemos.toggleSections} />
+
+## Controlled search
+
+Use `v-model:search-value` to control the search input value:
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue'
+import { EmojiPicker } from '@mantine-vue/emoji'
+import { emojiData } from './emoji-data'
+
+const search = ref('')
+</script>
+
+<template>
+  <EmojiPicker v-model:search-value="search" :data="emojiData" />
+</template>
+```
+
+## Unsupported emoji detection
+
+Set `with-unsupported-detection` to hide emojis that are not supported by the current browser
+or operating system. To detect support, each emoji is drawn on a canvas.
+
+```vue
+<template>
+  <EmojiPicker :data="emojiData" with-unsupported-detection />
+</template>
+```
+
+## Accessibility
+
+The emoji grid uses the `grid` role, the active emoji is announced with `aria-activedescendant`.
+Use the `labels` prop to translate `aria-label` attributes.
+
+<KeyboardEventsTable
+  data={[
+    { key: 'ArrowRight', description: 'Moves the active emoji to the next emoji' },
+    { key: 'ArrowLeft', description: 'Moves the active emoji to the previous emoji' },
+    { key: 'ArrowDown', description: 'Moves the active emoji to the next row' },
+    { key: 'ArrowUp', description: 'Moves the active emoji to the previous row' },
+    { key: 'Enter', description: 'Selects the active emoji' },
+    { key: 'Escape', description: 'Moves focus from the grid to the search input' },
+  ]}
+/>
+
+<StylesApiSelectors component="EmojiPicker" />
