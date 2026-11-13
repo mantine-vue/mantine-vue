@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import dayjs from 'dayjs'
 import { computed, ref, useAttrs, watch } from 'vue'
-import { Box, Button, CloseButton, Group, InputBase, Popover } from '@mantine-vue/core'
+import { Box, CloseButton, InputBase, Popover } from '@mantine-vue/core'
 import { useUncontrolled } from '@mantine-vue/hooks'
 import Calendar from '../Calendar/Calendar.vue'
+import { PresetsList } from '../PresetsList'
+import classes from './DateInput.module.css'
 import { dateStringParser, isDateValid, isSameDate, toDateString } from '../../utils'
 import type { DateInputProps, DateStringValue, DateValue } from '../../types'
 
@@ -103,18 +105,29 @@ function onKeydown(event: KeyboardEvent) {
           /></template>
         </InputBase>
       </Popover.Target>
-      <Popover.Dropdown @mousedown.prevent>
-        <Group v-if="props.presets?.length" :gap="4" :mb="4"
-          ><Button
-            v-for="(preset, index) in props.presets"
-            :key="index"
-            size="xs"
-            variant="light"
-            @click="preset.value && select(preset.value)"
-            >{{ preset.label }}</Button
-          ></Group
-        >
+      <Popover.Dropdown
+        :class="classes.dropdown"
+        data-dates-dropdown
+        :data-with-presets="props.presets?.length ? true : undefined"
+        @mousedown.prevent
+      >
+        <div v-if="props.presets?.length" :class="classes.datePickerRoot">
+          <PresetsList
+            :presets="props.presets"
+            @preset-select="(preset: DateValue) => preset && select(preset)"
+          />
+          <Calendar
+            :default-date="value || undefined"
+            :min-date="props.minDate"
+            :max-date="props.maxDate"
+            :locale="props.locale"
+            :get-day-props="
+              (date) => ({ selected: isSameDate(date, value), onClick: () => select(date) })
+            "
+          />
+        </div>
         <Calendar
+          v-else
           :default-date="value || undefined"
           :min-date="props.minDate"
           :max-date="props.maxDate"

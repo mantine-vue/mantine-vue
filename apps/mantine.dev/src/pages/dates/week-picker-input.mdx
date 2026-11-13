@@ -1,0 +1,82 @@
+import { WeekPickerInputDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.WeekPickerInput)
+
+## WeekPicker props
+
+`WeekPickerInput` supports most of the [WeekPicker](/dates/week-picker/) props.
+Read through the [WeekPicker](/dates/week-picker/) documentation to learn about all component features that are not listed on this page.
+
+## Usage
+
+The value is a date string in `YYYY-MM-DD` format pointing to the first day of the selected week.
+The input displays the first and the last day of the week:
+
+<Demo data={WeekPickerInputDemos.usage} />
+
+## Multiple weeks
+
+<Demo data={WeekPickerInputDemos.multiple} />
+
+## Weeks range
+
+<Demo data={WeekPickerInputDemos.range} />
+
+## First day of week
+
+<Demo data={WeekPickerInputDemos.firstDayOfWeek} />
+
+## Presets
+
+<Demo data={WeekPickerInputDemos.presets} />
+
+To use `presets` with `type="range"`, define the value as a tuple of two dates:
+
+<Demo data={WeekPickerInputDemos.presetsRange} />
+
+## Keyboard interactions
+
+The dropdown supports the same keyboard interactions as [WeekPicker](/dates/week-picker/#keyboard-interactions).
+When the dropdown is closed after a keyboard interaction (for example, a week is selected with `Enter`),
+focus is returned to the input.
+
+## Open picker in modal
+
+<Demo data={WeekPickerInputDemos.modal} />
+
+## Value format
+
+Use the `value-format` prop to change the [dayjs format](https://day.js.org/docs/en/display/format) of the first
+and the last day of the week displayed in the input, `'MMM D, YYYY'` by default:
+
+<Demo data={WeekPickerInputDemos.valueFormat} />
+
+## Value formatter
+
+Use the `value-formatter` prop to fully customize the input label. `getWeekFormatter` exported from
+`@mantine-vue/dates` returns the default formatter for the given first day of the week, use it to extend the default label,
+for example to display the week number:
+
+<Demo data={WeekPickerInputDemos.weekNumberFormatter} />
+
+## Clearable
+
+<Demo data={WeekPickerInputDemos.clearable} />
+
+## Disabled state
+
+<Demo data={WeekPickerInputDemos.disabled} />
+
+## Min and max dates
+
+<Demo data={WeekPickerInputDemos.minMax} />
+
+## Max level
+
+<Demo data={WeekPickerInputDemos.maxLevel} />
+
+## Native level select
+
+<Demo data={WeekPickerInputDemos.nativeLevelSelect} />

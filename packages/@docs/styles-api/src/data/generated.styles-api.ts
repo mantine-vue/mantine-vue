@@ -945,8 +945,10 @@ export const CalendarStylesApi: StylesApiData<
   | 'timePickerFieldsRoot'
   | 'timePickerPresetsGroup'
   | 'timeWrapper'
+  | 'weekControl'
 > = {
   selectors: {
+    weekControl: 'Week control button inside week number cell, rendered only in WeekPicker',
     calendarHeader: 'Calendar header root element',
     calendarHeaderControl: 'Previous/next calendar header controls',
     calendarHeaderControlIcon: 'Icon of previous/next calendar header controls',
@@ -1798,8 +1800,12 @@ export const DateInputStylesApi: StylesApiData<
   | 'presetsRoot'
   | 'presetsList'
   | 'presetButton'
+  | 'datePickerRoot'
+  | 'dropdown'
 > = {
   selectors: {
+    datePickerRoot: 'Wrapper of presets and calendar in the dropdown, rendered with `presets`',
+    dropdown: 'Popover dropdown, has `data-with-presets` attribute when `presets` are set',
     wrapper: 'Root element of the Input',
     input: 'Input element',
     section: 'Left and right sections',
@@ -1955,8 +1961,10 @@ export const DatePickerStylesApi: StylesApiData<
   | 'timePickerFieldsRoot'
   | 'timePickerPresetsGroup'
   | 'timeWrapper'
+  | 'weekControl'
 > = {
   selectors: {
+    weekControl: 'Week control button inside week number cell, rendered only in WeekPicker',
     calendarHeader: 'Calendar header root element',
     calendarHeaderControl: 'Previous/next calendar header controls',
     calendarHeaderControlIcon: 'Icon of previous/next calendar header controls',
@@ -3418,8 +3426,10 @@ export const MiniCalendarStylesApi: StylesApiData<
   | 'timeWrapper'
   | 'weekday'
   | 'weekNumber'
+  | 'weekControl'
 > = {
   selectors: {
+    weekControl: 'Week control button inside week number cell, rendered only in WeekPicker',
     root: 'Root element',
     control: 'Button in the dropdown which is used to select hours/minutes/seconds/am-pm',
     days: 'Days container',
@@ -3652,8 +3662,10 @@ export const MonthPickerStylesApi: StylesApiData<
   | 'timeWrapper'
   | 'weekday'
   | 'weekNumber'
+  | 'weekControl'
 > = {
   selectors: {
+    weekControl: 'Week control button inside week number cell, rendered only in WeekPicker',
     calendarHeader: 'Calendar header root element',
     calendarHeaderControl: 'Previous/next calendar header controls',
     calendarHeaderControlIcon: 'Icon of previous/next calendar header controls',
@@ -6528,8 +6540,10 @@ export const TimeGridStylesApi: StylesApiData<
   | 'timeWrapper'
   | 'weekday'
   | 'weekNumber'
+  | 'weekControl'
 > = {
   selectors: {
+    weekControl: 'Week control button inside week number cell, rendered only in WeekPicker',
     root: 'Root element',
     control: 'Time grid control',
     simpleGrid: 'SimpleGrid component root',
@@ -6738,8 +6752,10 @@ export const TimePickerStylesApi: StylesApiData<
   | 'timeWrapper'
   | 'weekday'
   | 'weekNumber'
+  | 'weekControl'
 > = {
   selectors: {
+    weekControl: 'Week control button inside week number cell, rendered only in WeekPicker',
     wrapper: 'Root element of the Input',
     input: 'Input element',
     section: 'Left and right sections',
@@ -7140,8 +7156,10 @@ export const YearPickerStylesApi: StylesApiData<
   | 'timeWrapper'
   | 'weekday'
   | 'weekNumber'
+  | 'weekControl'
 > = {
   selectors: {
+    weekControl: 'Week control button inside week number cell, rendered only in WeekPicker',
     calendarHeader: 'Calendar header root element',
     calendarHeaderControl: 'Previous/next calendar header controls',
     calendarHeaderControlIcon: 'Icon of previous/next calendar header controls',
@@ -7487,4 +7505,453 @@ export const TourStylesApi: StylesApiData<
     },
     { modifier: 'data-centered', selector: 'tooltip', condition: 'Step has no target' },
   ],
+}
+
+export const PhoneInputStylesApi: StylesApiData<
+  | 'wrapper'
+  | 'input'
+  | 'section'
+  | 'root'
+  | 'label'
+  | 'required'
+  | 'description'
+  | 'error'
+  | 'countryButton'
+  | 'countryButtonFlag'
+  | 'countryButtonCode'
+  | 'dropdown'
+  | 'search'
+  | 'countryOption'
+  | 'optionDialCode'
+  | 'optionName'
+  | 'divider'
+> = {
+  selectors: {
+    wrapper: 'Root element of the Input',
+    input: 'Input element',
+    section: 'Left and right sections',
+    root: 'Root element',
+    label: 'Label element',
+    required: 'Required asterisk element, rendered inside label',
+    description: 'Description element',
+    error: 'Error element',
+    countryButton: 'Country selector button in leftSection',
+    countryButtonFlag: 'Flag wrapper inside country button',
+    countryButtonCode: 'Country ISO2 code text inside country button',
+    dropdown: 'Combobox dropdown',
+    search: 'Search input in dropdown',
+    countryOption: 'Country option content wrapper in dropdown',
+    optionDialCode: 'Dial code text in option',
+    optionName: 'Country name text in option',
+    divider: 'Divider between preferred and other countries',
+  },
+  vars: {},
+}
+
+export const MentionsStylesApi: StylesApiData<
+  | 'wrapper'
+  | 'input'
+  | 'section'
+  | 'root'
+  | 'label'
+  | 'required'
+  | 'description'
+  | 'error'
+  | 'field'
+  | 'highlighter'
+  | 'highlight'
+  | 'dropdown'
+  | 'options'
+  | 'option'
+  | 'nothingFound'
+  | 'inlineSuggestion'
+  | 'inlineSuggestionPrefix'
+  | 'inlineSuggestionText'
+> = {
+  selectors: {
+    wrapper: 'Root element of the Input',
+    input: 'Input wrapper element (InputBase)',
+    section: 'Left and right sections',
+    root: 'Root element',
+    label: 'Label element',
+    required: 'Required asterisk element, rendered inside label',
+    description: 'Description element',
+    error: 'Error element',
+    field: 'Native textarea/input element, transparent text over the highlighter',
+    highlighter: 'Overlay rendered behind the transparent field that displays the styled text',
+    highlight: 'Individual mention rendered in the highlighter overlay',
+    dropdown: 'Suggestions dropdown root element',
+    options: 'Suggestions list wrapper',
+    option: 'Suggestion option',
+    nothingFound: 'Empty state message, also used for the loading and error messages',
+    inlineSuggestion: 'Inline ghost-text suggestion root element',
+    inlineSuggestionPrefix: 'Already typed part of the inline suggestion',
+    inlineSuggestionText: 'Completion part of the inline suggestion',
+  },
+  vars: {
+    input: {
+      '--mentions-min-rows': 'Minimum number of rows of the control, set by `minRows` prop',
+      '--mentions-max-rows':
+        'Maximum number of rows before the control scrolls, set by `maxRows` prop',
+    },
+    highlight: {
+      '--mentions-highlight-color': 'Text `color` of mentions in the highlighter',
+      '--mentions-highlight-bg': '`background-color` of mentions in the highlighter',
+    },
+  },
+  modifiers: [
+    {
+      modifier: 'data-mention-selection',
+      selector: 'highlight',
+      condition: 'Caret or selection overlaps the mention',
+      value: 'inside | boundary | partial | full',
+    },
+    {
+      modifier: 'data-trigger',
+      selector: 'highlight',
+      condition: 'Always',
+      value: 'Mention trigger',
+    },
+    {
+      modifier: 'data-interactive',
+      selector: 'highlighter',
+      condition:
+        '`renderMention` prop or `mention` slot is set and the field is interactive (not `disabled`, `readOnly` or `mode="static"`), mentions receive pointer events',
+    },
+    {
+      modifier: 'data-combobox-selected',
+      selector: 'option',
+      condition: 'Option is selected with keyboard',
+    },
+  ],
+}
+
+export const DiffStylesApi: StylesApiData<
+  | 'root'
+  | 'table'
+  | 'row'
+  | 'lineNumber'
+  | 'content'
+  | 'addedLine'
+  | 'removedLine'
+  | 'unchangedLine'
+  | 'addedHighlight'
+  | 'removedHighlight'
+  | 'expandControl'
+  | 'splitDivider'
+  | 'changeMarker'
+> = {
+  selectors: {
+    root: 'Root element',
+    table: 'Table element',
+    row: 'Table row',
+    lineNumber: 'Line number cell',
+    content: 'Content cell',
+    addedLine: 'Added line',
+    removedLine: 'Removed line',
+    unchangedLine: 'Unchanged line',
+    addedHighlight: 'Inline highlight for added text',
+    removedHighlight: 'Inline highlight for removed text',
+    expandControl: 'Expand control for collapsed context sections',
+    splitDivider: 'Divider between left and right panels in split mode',
+    changeMarker: 'Visually hidden `+`/`-` marker at the start of added and removed lines',
+  },
+  vars: {
+    root: {
+      '--diff-add-color': 'Controls background color of added lines',
+      '--diff-remove-color': 'Controls background color of removed lines',
+      '--diff-add-highlight-color': 'Controls background color of inline added highlights',
+      '--diff-remove-highlight-color': 'Controls background color of inline removed highlights',
+    },
+  },
+  modifiers: [{ modifier: 'data-split', selector: 'root', condition: '`mode="split"` is set' }],
+}
+
+export const MaskedDateInputStylesApi: StylesApiData<
+  'fieldsRoot' | 'fieldsGroup' | 'field' | 'dateSeparator' | 'timeSeparator' | 'dropdown'
+> = {
+  selectors: {
+    fieldsRoot: 'A wrapper element for all field groups',
+    fieldsGroup: 'A wrapper element for date/time fields',
+    field: 'Day/month/year/hours/minutes/seconds input field',
+    dateSeparator: 'Separator between date fields',
+    timeSeparator: 'Separator between time fields',
+    dropdown: 'Popover dropdown containing calendar',
+  },
+  vars: {},
+}
+
+export const QuarterPickerStylesApi: StylesApiData<
+  | 'quarterPickerRoot'
+  | 'presetsList'
+  | 'presetButton'
+  | 'quartersList'
+  | 'quartersListRow'
+  | 'quartersListCell'
+  | 'quartersListControl'
+> = {
+  selectors: {
+    quarterPickerRoot: 'Quarter picker root element, contains calendar and presets',
+    presetsList: 'Presets wrapper element',
+    presetButton: 'Preset button',
+    quartersList: 'Quarters list table element',
+    quartersListRow: 'Quarters list row element',
+    quartersListCell: 'Quarters list cell element',
+    quartersListControl: 'Button used to pick quarters',
+  },
+  vars: {},
+}
+
+export const QuarterPickerInputStylesApi: StylesApiData<
+  | 'wrapper'
+  | 'input'
+  | 'section'
+  | 'root'
+  | 'label'
+  | 'required'
+  | 'description'
+  | 'error'
+  | 'placeholder'
+  | 'calendarHeader'
+  | 'calendarHeaderControl'
+  | 'calendarHeaderControlIcon'
+  | 'calendarHeaderLevel'
+  | 'calendarHeaderSelect'
+  | 'yearsList'
+  | 'yearsListRow'
+  | 'yearsListCell'
+  | 'yearsListControl'
+  | 'quarterPickerRoot'
+  | 'presetsList'
+  | 'presetButton'
+  | 'quartersList'
+  | 'quartersListRow'
+  | 'quartersListCell'
+  | 'quartersListControl'
+> = {
+  selectors: {
+    wrapper: 'Root element of the Input',
+    input: 'Input element',
+    section: 'Left and right sections',
+    root: 'Root element',
+    label: 'Label element',
+    required: 'Required asterisk element, rendered inside label',
+    description: 'Description element',
+    error: 'Error element',
+    placeholder: 'Placeholder element',
+    calendarHeader: 'Calendar header root element',
+    calendarHeaderControl: 'Previous/next calendar header controls',
+    calendarHeaderControlIcon: 'Icon of previous/next calendar header controls',
+    calendarHeaderLevel: 'Level control (changes levels when clicked, month -> year -> decade)',
+    calendarHeaderSelect: 'Native level select, rendered with `withNativeLevelSelect`',
+    yearsList: 'Years list table element',
+    yearsListRow: 'Years list row element',
+    yearsListCell: 'Years list cell element',
+    yearsListControl: 'Button used to pick months and years',
+    quarterPickerRoot: 'Quarter picker root element, contains calendar and presets',
+    presetsList: 'Presets wrapper element',
+    presetButton: 'Preset button',
+    quartersList: 'Quarters list table element',
+    quartersListRow: 'Quarters list row element',
+    quartersListCell: 'Quarters list cell element',
+    quartersListControl: 'Button used to pick quarters',
+  },
+  vars: {},
+}
+
+export const WeekPickerStylesApi: StylesApiData<
+  'weekPickerRoot' | 'presetsList' | 'presetButton' | 'weekControl'
+> = {
+  selectors: {
+    weekPickerRoot: 'Week picker root element, contains calendar and presets',
+    presetsList: 'Presets wrapper element',
+    presetButton: 'Preset button',
+    weekControl: 'Week control button inside week number cell',
+  },
+  vars: {},
+  modifiers: [
+    { modifier: 'data-selected', selector: 'weekControl', condition: 'Week is selected' },
+    {
+      modifier: 'data-disabled',
+      selector: 'weekControl',
+      condition: 'Every day of the week is disabled',
+    },
+  ],
+}
+
+export const WeekPickerInputStylesApi: StylesApiData<
+  | 'wrapper'
+  | 'input'
+  | 'section'
+  | 'root'
+  | 'label'
+  | 'required'
+  | 'description'
+  | 'error'
+  | 'placeholder'
+  | 'calendarHeader'
+  | 'calendarHeaderControl'
+  | 'calendarHeaderControlIcon'
+  | 'calendarHeaderLevel'
+  | 'calendarHeaderSelect'
+  | 'yearsList'
+  | 'yearsListRow'
+  | 'yearsListCell'
+  | 'yearsListControl'
+  | 'monthsList'
+  | 'monthsListRow'
+  | 'monthsListCell'
+  | 'monthsListControl'
+  | 'monthThead'
+  | 'monthRow'
+  | 'monthTbody'
+  | 'monthCell'
+  | 'month'
+  | 'weekdaysRow'
+  | 'weekday'
+  | 'day'
+  | 'weekNumber'
+  | 'weekControl'
+  | 'weekPickerRoot'
+  | 'presetsList'
+  | 'presetButton'
+> = {
+  selectors: {
+    wrapper: 'Root element of the Input',
+    input: 'Input element',
+    section: 'Left and right sections',
+    root: 'Root element',
+    label: 'Label element',
+    required: 'Required asterisk element, rendered inside label',
+    description: 'Description element',
+    error: 'Error element',
+    placeholder: 'Placeholder element',
+    calendarHeader: 'Calendar header root element',
+    calendarHeaderControl: 'Previous/next calendar header controls',
+    calendarHeaderControlIcon: 'Icon of previous/next calendar header controls',
+    calendarHeaderLevel: 'Level control (changes levels when clicked, month -> year -> decade)',
+    calendarHeaderSelect: 'Native level select, rendered with `withNativeLevelSelect`',
+    yearsList: 'Years list table element',
+    yearsListRow: 'Years list row element',
+    yearsListCell: 'Years list cell element',
+    yearsListControl: 'Button used to pick months and years',
+    monthsList: 'Months list table element',
+    monthsListRow: 'Months list row element',
+    monthsListCell: 'Months list cell element',
+    monthsListControl: 'Button used to pick months and years',
+    monthThead: 'thead element of month table',
+    monthRow: 'tr element of month table',
+    monthTbody: 'tbody element of month table',
+    monthCell: 'td element of month table',
+    month: 'Month table element',
+    weekdaysRow: 'Weekdays tr element',
+    weekday: 'Weekday th element',
+    day: 'Month day control',
+    weekNumber: 'Week number td element',
+    weekControl: 'Week control button inside week number cell, rendered only in WeekPicker',
+    weekPickerRoot: 'Week picker root element, contains calendar and presets',
+    presetsList: 'Presets wrapper element',
+    presetButton: 'Preset button',
+  },
+  vars: {},
+  modifiers: [
+    {
+      modifier: 'data-week-hovered',
+      selector: 'day',
+      condition: 'Day belongs to the hovered week',
+    },
+    { modifier: 'data-selected', selector: 'weekControl', condition: 'Week is selected' },
+    {
+      modifier: 'data-disabled',
+      selector: 'weekControl',
+      condition: 'Every day of the week is disabled',
+    },
+  ],
+}
+
+export const EmojiPickerStylesApi: StylesApiData<
+  | 'root'
+  | 'search'
+  | 'searchInput'
+  | 'categoryNav'
+  | 'categoryNavButton'
+  | 'content'
+  | 'empty'
+  | 'categoryLabel'
+  | 'grid'
+  | 'emoji'
+  | 'preview'
+  | 'previewEmoji'
+  | 'previewName'
+  | 'skinToneSelector'
+  | 'skinToneDropdown'
+  | 'skinToneButton'
+> = {
+  selectors: {
+    root: 'Root element',
+    search: 'Search input wrapper',
+    searchInput: 'Search input element',
+    categoryNav: 'Category navigation bar',
+    categoryNavButton: 'Category navigation button',
+    content: 'Scrollable emoji grid area',
+    empty: 'Content displayed when search yields no results',
+    categoryLabel: 'Category label row',
+    grid: 'Emoji row element',
+    emoji: 'Emoji button',
+    preview: 'Preview area at the bottom of the picker',
+    previewEmoji: 'Emoji displayed in the preview area',
+    previewName: 'Emoji name displayed in the preview area',
+    skinToneSelector: 'Skin tone options wrapper inside the skin tone popover',
+    skinToneDropdown: 'Skin tone popover dropdown',
+    skinToneButton: 'Skin tone button',
+  },
+  vars: {
+    root: {
+      '--ep-columns': 'Number of emoji columns',
+      '--ep-emoji-size': 'Emoji button size',
+      '--ep-emoji-fz': 'Emoji font size',
+      '--ep-preview-py': 'Vertical padding of the preview area',
+      '--ep-skin-tone-size': 'Skin tone button size',
+      '--ep-skin-tone-fz': 'Skin tone button font size',
+    },
+  },
+  modifiers: [
+    {
+      modifier: 'data-focused',
+      selector: 'emoji',
+      condition: 'Emoji is active with keyboard navigation',
+    },
+    { modifier: 'data-active', selector: 'skinToneButton', condition: 'Skin tone is selected' },
+  ],
+}
+
+export const EmojiPickerInputStylesApi: StylesApiData<
+  | 'dropdown'
+  | 'inputEmoji'
+  | 'inputEmojiName'
+  | 'inputValue'
+  | 'wrapper'
+  | 'input'
+  | 'section'
+  | 'root'
+  | 'label'
+  | 'required'
+  | 'description'
+  | 'error'
+> = {
+  selectors: {
+    dropdown: 'Popover dropdown containing the emoji picker',
+    inputEmoji: 'Selected emoji displayed in the input',
+    inputEmojiName: 'Selected emoji name displayed in the input',
+    inputValue: 'Wrapper of the selected emoji and its name',
+    wrapper: 'Root element of the Input',
+    input: 'Input element',
+    section: 'Left and right sections',
+    root: 'Root element',
+    label: 'Label element',
+    required: 'Required asterisk element, rendered inside label',
+    description: 'Description element',
+    error: 'Error element',
+  },
+  vars: {},
 }

@@ -20,12 +20,27 @@ export type DatePickerValue<Type extends DatePickerType = 'default'> = Type exte
     : DateValue
 /** Union accepted by picker primitives. */
 export type DatePickerValueType = DateValue | DateStringValue[] | DatesRangeValue
+/** Arrow navigation direction inside a two-dimensional control grid. */
+export type GridDirection = 'up' | 'down' | 'left' | 'right'
+/** Grid edge crossed by arrow navigation. */
+export type GridEdge = 'previous' | 'next'
+/** Payload passed to `onEdgeCross` when arrow navigation runs off the grid. */
+export interface ControlEdgeCrossPayload {
+  /** Grid edge that was crossed */
+  edge: GridEdge
+  /** Arrow direction that caused the crossing */
+  direction: GridDirection
+  /** Cell index of the control that had focus */
+  cellIndex: number
+}
 /** Keyboard navigation payload for a two-dimensional control grid. */
 export interface ControlKeydownPayload {
   rowIndex: number
   cellIndex: number
   event: KeyboardEvent
-  controlsRef: HTMLElement[][]
+  controlsRef: (HTMLElement | null | undefined)[][]
+  /** Called when arrow navigation runs off the first or the last grid row */
+  onEdgeCross?: (payload: ControlEdgeCrossPayload) => void
   /** Text direction. Horizontal arrow keys are mirrored in RTL. @default 'ltr' */
   dir?: 'ltr' | 'rtl'
 }
@@ -224,6 +239,30 @@ export interface MonthProps extends DatesStyleProps {
   /** Determines whether the month should take the full width of its container @default false */
   fullWidth?: boolean
 }
+/** Props passed to week controls rendered by `Month` and `WeekPicker`. */
+export interface MonthWeekControlProps extends ControlProps {
+  /** Determines whether the week is selected */
+  selected?: boolean
+  /** Disables the week control */
+  disabled?: boolean
+}
+/** Internal props used by pickers built on top of `Month`. */
+export interface MonthInternalProps {
+  /** Renders week numbers as buttons and removes days from the tab order, used in WeekPicker @default false */
+  __withWeekControls?: boolean
+  /** Passes props down to week controls, receives the first date of the week */
+  __getWeekControlProps?: (weekStart: DateStringValue) => Partial<MonthWeekControlProps>
+  /** Called when any keydown event is registered on day, replaces built-in arrows navigation */
+  __onDayKeyDown?: (
+    event: KeyboardEvent,
+    payload: { date: DateStringValue; rowIndex: number; cellIndex: number },
+  ) => void
+  /** Called when any keydown event is registered on week control, replaces built-in arrows navigation */
+  __onWeekControlKeyDown?: (
+    event: KeyboardEvent,
+    payload: { rowIndex: number; date: DateStringValue },
+  ) => void
+}
 /** Events emitted by `Month`. */
 export interface MonthEmits {
   /** Emitted when a day is selected. */
@@ -256,6 +295,8 @@ export interface MonthsListEmits {
   'month-select': [date: DateStringValue]
   /** Emitted when the pointer enters a month. */
   'month-mouse-enter': [date: DateStringValue]
+  /** Emitted when arrow navigation runs off the first or the last row of the grid. */
+  'edge-cross': [payload: ControlEdgeCrossPayload]
 }
 /** Props accepted by the year selection grid. */
 export interface YearsListProps extends DatesStyleProps {
@@ -280,6 +321,8 @@ export interface YearsListEmits {
   'year-select': [date: DateStringValue]
   /** Emitted when the pointer enters a year. */
   'year-mouse-enter': [date: DateStringValue]
+  /** Emitted when arrow navigation runs off the first or the last row of the grid. */
+  'edge-cross': [payload: ControlEdgeCrossPayload]
 }
 /** Shared settings for calendar-level components. */
 export interface CalendarProps extends MonthProps, MonthsListProps, YearsListProps {
@@ -362,6 +405,8 @@ export interface PickerInputBaseProps extends DatesStyleProps {
   size?: string | number
   /** Input visual variant. */
   variant?: 'default' | 'filled' | 'unstyled'
+  /** Set when the dropdown content includes presets, reduces dropdown start padding @default false */
+  withPresets?: boolean
 }
 /** Events emitted by `PickerInputBase`. */
 export interface PickerInputBaseEmits {
@@ -459,6 +504,10 @@ export interface SpinInputProps extends DatesStyleProps {
   placeholder?: string
   /** Prevents focus from advancing after a complete value is typed @default false */
   disableAutoAdvance?: boolean
+  /** Function used to format the displayed value, values are padded to two digits by default */
+  padValue?: (value: number) => string
+  /** If set, focus advances to the next input once this number of digits is typed */
+  maxDigits?: number
   /** Disables the input @default false */
   disabled?: boolean
   /** Makes the input read-only @default false */

@@ -1,0 +1,4 @@
+.quarterPickerRoot {
+  display: flex;
+  font-size: var(--mantine-font-size-sm);
+}

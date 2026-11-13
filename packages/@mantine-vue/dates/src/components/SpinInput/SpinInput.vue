@@ -44,6 +44,7 @@ watch(
   },
   { flush: 'post' },
 )
+const formatValue = (next: number) => (props.padValue || padTime)(next)
 const finiteMax = () => Number.isFinite(props.max)
 const maxDigit = () => (finiteMax() ? Number(props.max.toFixed(0)[0]) : Infinity)
 const arrowsMax = () => props.max + 1 - props.step
@@ -53,7 +54,7 @@ function change(event: Event) {
   const raw = input.value
   const digits = raw.replace(/\D/g, '')
   if (!digits) {
-    input.value = value.value === null ? '' : padTime(value.value)
+    input.value = value.value === null ? '' : formatValue(value.value)
     return
   }
   let parsed = 0
@@ -69,8 +70,9 @@ function change(event: Event) {
         ? Math.min(Math.max(parsed, props.min), props.max)
         : Math.max(parsed, props.min)
   setValue(clamped)
-  input.value = padTime(clamped)
-  if (!props.disableAutoAdvance && (clamped > maxDigit() || raw.startsWith('00')))
+  input.value = formatValue(clamped)
+  if (props.maxDigits && digits.length >= props.maxDigits) emit('next-input')
+  else if (!props.disableAutoAdvance && (clamped > maxDigit() || raw.startsWith('00')))
     emit('next-input')
 }
 function keydown(event: KeyboardEvent) {
@@ -160,7 +162,7 @@ function select(event: FocusEvent | MouseEvent) {
     :placeholder="props.placeholder"
     :disabled="props.disabled"
     :readonly="props.readOnly"
-    :value="value === null ? '' : padTime(value)"
+    :value="value === null ? '' : formatValue(value)"
     @input="change"
     @keydown="keydown"
     @focus="select"

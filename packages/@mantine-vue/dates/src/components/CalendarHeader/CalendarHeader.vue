@@ -121,6 +121,7 @@ function onYearChange(event: Event) {
       v-else
       :component="props.hasNextLevel ? 'button' : 'div'"
       :class="classes.calendarHeaderLevel"
+      data-level-control
       :disabled="!props.hasNextLevel"
       :data-static="!props.hasNextLevel || undefined"
       :aria-label="props.levelControlAriaLabel"

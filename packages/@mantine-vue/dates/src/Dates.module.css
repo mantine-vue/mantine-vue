@@ -155,9 +155,28 @@
 }
 
 .weekNumber {
+  padding: 0;
   color: var(--mantine-color-dimmed);
   font-size: var(--mantine-font-size-xs);
   text-align: center;
+}
+
+.weekControl {
+  width: 100%;
+  height: var(--wn-size, 2.25rem);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: inherit;
+  font-weight: inherit;
+  color: inherit;
+  border-radius: var(--mantine-radius-default);
+  cursor: pointer;
+}
+
+.weekControl:where(:disabled, [data-disabled]) {
+  cursor: not-allowed;
+  opacity: 0.5;
 }
 
 .day {
@@ -338,6 +357,10 @@
 
 .dropdown {
   padding: var(--mantine-spacing-xs);
+}
+
+.dropdown[data-with-presets] {
+  padding-inline-start: 0.25rem;
 }
 
 .placeholder {

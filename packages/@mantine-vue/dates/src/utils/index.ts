@@ -1,7 +1,12 @@
 import dayjs from 'dayjs'
+import advancedFormat from 'dayjs/plugin/advancedFormat'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
+import isoWeek from 'dayjs/plugin/isoWeek'
+import quarterOfYear from 'dayjs/plugin/quarterOfYear'
 import type {
   ControlKeydownPayload,
+  GridDirection,
+  GridEdge,
   DateFormatter,
   DatePickerType,
   DatePickerValueType,
@@ -10,6 +15,9 @@ import type {
 } from '../types'
 
 dayjs.extend(customParseFormat)
+dayjs.extend(advancedFormat)
+dayjs.extend(quarterOfYear)
+dayjs.extend(isoWeek)
 
 export function toDateString(value: Date | string | null | undefined): DateStringValue | null {
   if (value == null || value === '') return null
@@ -90,10 +98,16 @@ export function getStartOfWeek(date: Date | string, firstDayOfWeek = 1) {
 export function getEndOfWeek(date: Date | string, firstDayOfWeek = 1) {
   return dayjs(getStartOfWeek(date, firstDayOfWeek)).add(6, 'day').format('YYYY-MM-DD')
 }
-export function getWeekNumber(date: Date | string) {
-  const value = dayjs(date),
-    start = dayjs(`${value.year()}-01-01`)
-  return Math.ceil((value.diff(start, 'day') + start.day() + 1) / 7)
+/**
+ * Returns ISO week number. Accepts a date or a week row (array of dates),
+ * for week rows the Monday of the row is used, same as in `Month` week numbers.
+ */
+export function getWeekNumber(date: Date | string | (Date | string)[]) {
+  if (Array.isArray(date)) {
+    const monday = date.find((item) => dayjs(item).day() === 1) ?? date[0]
+    return dayjs(monday).isoWeek()
+  }
+  return dayjs(date).isoWeek()
 }
 
 export function handleControlKeyDown({
@@ -101,46 +115,49 @@ export function handleControlKeyDown({
   cellIndex,
   event,
   controlsRef,
+  onEdgeCross,
   dir = 'ltr',
 }: ControlKeydownPayload) {
-  const rows = controlsRef.length,
-    cols = controlsRef[0]?.length || 0
-  let row = rowIndex,
-    cell = cellIndex
-  if (event.key === 'ArrowRight') cell += dir === 'rtl' ? -1 : 1
-  if (event.key === 'ArrowLeft') cell += dir === 'rtl' ? 1 : -1
-  if (event.key === 'ArrowDown') row += 1
-  if (event.key === 'ArrowUp') row -= 1
-  if (event.key === 'Home') cell = 0
-  if (event.key === 'End') cell = cols - 1
-  if (cell < 0) {
-    cell = cols - 1
-    row -= 1
-  } else if (cell >= cols) {
-    cell = 0
-    row += 1
-  }
-  const next = controlsRef[(row + rows) % rows]?.[(cell + cols) % cols]
-  if (next) {
+  const direction = keyToDirection(event.key, dir)
+  if (direction) {
     event.preventDefault()
-    next.focus()
+    const edge = focusAdjacentControl(controlsRef, rowIndex, cellIndex, direction)
+    if (edge) onEdgeCross?.({ edge, direction, cellIndex })
+    return
+  }
+  const rows = controlsRef.length,
+    cols = controlsRef[rowIndex]?.length || 0
+  if (event.key === 'Home' || event.key === 'End') {
+    const next = controlsRef[rowIndex]?.[event.key === 'Home' ? 0 : cols - 1]
+    if (next && rows) {
+      event.preventDefault()
+      next.focus()
+    }
   }
 }
 
-export function focusAdjacentControl(
-  refs: (HTMLElement | null | undefined)[][],
-  rowIndex: number,
-  cellIndex: number,
-  direction: 'up' | 'down' | 'left' | 'right',
-) {
-  const focusable = (element: HTMLElement | null | undefined) =>
+function isGridControlFocusable(element: HTMLElement | null | undefined) {
+  return (
     !!element &&
     !(element as any).disabled &&
     !element.hasAttribute('data-hidden') &&
     !element.hasAttribute('data-outside')
+  )
+}
+
+/**
+ * Moves focus to the next focusable control of a two-dimensional grid in the given direction.
+ * Returns the crossed grid edge when there is no focusable control left in that direction.
+ */
+export function focusAdjacentControl(
+  refs: (HTMLElement | null | undefined)[][],
+  rowIndex: number,
+  cellIndex: number,
+  direction: GridDirection,
+): GridEdge | null {
   let row = rowIndex,
     cell = cellIndex
-  for (let index = 0; index < 60; index += 1) {
+  for (let index = 0; index < 100; index += 1) {
     if (direction === 'up') row -= 1
     if (direction === 'down') row += 1
     if (direction === 'left' && --cell < 0) {
@@ -151,19 +168,51 @@ export function focusAdjacentControl(
       row += 1
       cell = 0
     }
+    if (row < 0) return 'previous'
     const element = refs[row]?.[cell]
-    if (element === undefined) return
-    if (focusable(element)) {
-      element?.focus()
-      return
+    if (!element) return direction === 'up' || direction === 'left' ? 'previous' : 'next'
+    if (isGridControlFocusable(element)) {
+      element.focus()
+      return null
     }
   }
+  return null
 }
 
-export function keyToDirection(
-  key: string,
-  dir: 'ltr' | 'rtl' = 'ltr',
-): 'up' | 'down' | 'left' | 'right' | null {
+/**
+ * Focuses the control at the given position (`'last'` resolves to the last row or cell),
+ * falls back to the next focusable control in the given direction.
+ */
+export function focusGridControl(
+  refs: (HTMLElement | null | undefined)[][],
+  direction: GridDirection,
+  rowIndex: number | 'last',
+  cellIndex: number | 'last',
+) {
+  const rows = refs.filter(Boolean)
+  if (rows.length === 0) return
+  let row = rowIndex === 'last' ? rows.length - 1 : Math.min(rowIndex, rows.length - 1)
+  if (
+    rowIndex === 'last' &&
+    typeof cellIndex === 'number' &&
+    row > 0 &&
+    cellIndex >= (refs[row]?.length || 0)
+  )
+    row -= 1
+  const cells = refs[row] || []
+  const cell = cellIndex === 'last' ? cells.length - 1 : Math.min(cellIndex, cells.length - 1)
+  const element = cells[cell]
+  if (!element) return
+  if (isGridControlFocusable(element)) element.focus()
+  else focusAdjacentControl(refs, row, cell, direction)
+}
+
+/** Returns the first day of the quarter that contains the given date in `YYYY-MM-DD` format. */
+export function getQuarterStart(date: DateStringValue | Date): DateStringValue {
+  return dayjs(date).startOf('quarter').format('YYYY-MM-DD')
+}
+
+export function keyToDirection(key: string, dir: 'ltr' | 'rtl' = 'ltr'): GridDirection | null {
   return key === 'ArrowUp'
     ? 'up'
     : key === 'ArrowDown'

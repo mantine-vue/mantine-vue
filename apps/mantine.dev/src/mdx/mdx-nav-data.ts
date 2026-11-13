@@ -42,6 +42,7 @@ const INPUTS_PAGES: MdxNavItem[] = [
   { label: 'MaskInput', link: '/core/mask-input' },
   { label: 'NativeSelect', link: '/core/native-select' },
   { label: 'NumberInput', link: '/core/number-input' },
+  { label: 'PhoneInput', link: '/core/phone-input' },
   { label: 'PasswordInput', link: '/core/password-input' },
   { label: 'PinInput', link: '/core/pin-input' },
   { label: 'Radio', link: '/core/radio' },
@@ -60,6 +61,7 @@ const COMBOBOX_PAGES: MdxNavItem[] = [
   { label: 'Combobox', link: '/core/combobox' },
   { label: 'ComboboxPopover', link: '/core/combobox-popover' },
   { label: 'MultiSelect', link: '/core/multi-select' },
+  { label: 'Mentions', link: '/core/mentions' },
   { label: 'Pill', link: '/core/pill' },
   { label: 'PillsInput', link: '/core/pills-input' },
   { label: 'Select', link: '/core/select' },
@@ -167,11 +169,16 @@ const DATES_PAGES: MdxNavItem[] = [
   { label: 'Getting started', link: '/dates/getting-started' },
   { label: 'DatePicker', link: '/dates/date-picker' },
   { label: 'DatePickerInput', link: '/dates/date-picker-input' },
+  { label: 'WeekPicker', link: '/dates/week-picker' },
+  { label: 'WeekPickerInput', link: '/dates/week-picker-input' },
   { label: 'DateTimePicker', link: '/dates/date-time-picker' },
   { label: 'InlineDateTimePicker', link: '/dates/inline-date-time-picker' },
   { label: 'DateInput', link: '/dates/date-input' },
+  { label: 'MaskedDateInput', link: '/dates/masked-date-input' },
   { label: 'MonthPicker', link: '/dates/month-picker' },
   { label: 'MonthPickerInput', link: '/dates/month-picker-input' },
+  { label: 'QuarterPicker', link: '/dates/quarter-picker' },
+  { label: 'QuarterPickerInput', link: '/dates/quarter-picker-input' },
   { label: 'YearPicker', link: '/dates/year-picker' },
   { label: 'YearPickerInput', link: '/dates/year-picker-input' },
   { label: 'TimeInput', link: '/dates/time-input' },
@@ -196,9 +203,17 @@ const FORM_PAGES: MdxNavItem[] = [
   { label: 'createFormContext', link: '/form/create-form-context' },
 ]
 
+const EMOJI_PAGES: MdxNavItem[] = [
+  { label: 'Getting started', link: '/emoji/getting-started' },
+  { label: 'EmojiPicker', link: '/emoji/emoji-picker' },
+  { label: 'EmojiPickerPopover', link: '/emoji/emoji-picker-popover' },
+  { label: 'EmojiPickerInput', link: '/emoji/emoji-picker-input' },
+]
+
 const OTHER_EXTENSIONS_PAGES: MdxNavItem[] = [
   { label: 'CodeHighlight', link: '/x/code-highlight' },
   { label: 'JsonViewer', link: '/x/json-viewer' },
+  { label: 'Diff', link: '/x/diff' },
   { label: 'ContextMenu', link: '/x/contextmenu' },
   { label: 'Notifications system', link: '/x/notifications' },
   { label: 'Spotlight', link: '/x/spotlight' },
@@ -256,6 +271,7 @@ const WHATSAPP_INBOX_PAGES: MdxNavItem[] = [
 ]
 
 const HOOKS_UI_AND_DOM_PAGES: MdxNavItem[] = [
+  { label: 'use-active-element', link: '/hooks/use-active-element' },
   { label: 'use-click-outside', link: '/hooks/use-click-outside' },
   { label: 'use-collapse', link: '/hooks/use-collapse' },
   { label: 'use-color-scheme', link: '/hooks/use-color-scheme' },
@@ -321,6 +337,7 @@ const HOOKS_STATE_MANAGEMENT_PAGES: MdxNavItem[] = [
 ]
 
 const HOOKS_UTILITIES_PAGES: MdxNavItem[] = [
+  { label: 'use-browser-language', link: '/hooks/use-browser-language' },
   { label: 'use-clipboard', link: '/hooks/use-clipboard' },
   { label: 'use-document-title', link: '/hooks/use-document-title' },
   { label: 'use-document-visibility', link: '/hooks/use-document-visibility' },
@@ -494,6 +511,10 @@ export const MDX_NAV_DATA: MdxNavCategory[] = [
   {
     category: 'Diagram',
     groups: [{ title: 'Diagram', pages: DIAGRAM_PAGES }],
+  },
+  {
+    category: 'Emoji',
+    groups: [{ title: 'Emoji', pages: EMOJI_PAGES }],
   },
   {
     category: 'Extensions',

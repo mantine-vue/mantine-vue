@@ -1,0 +1,50 @@
+.weekPickerRoot {
+  display: flex;
+  font-size: var(--mantine-font-size-sm);
+}
+
+.weekPicker tbody tr > td:first-child {
+  border-start-start-radius: var(--mantine-radius-default);
+  border-end-start-radius: var(--mantine-radius-default);
+}
+
+.weekPicker tbody tr > td:last-child {
+  border-start-end-radius: var(--mantine-radius-default);
+  border-end-end-radius: var(--mantine-radius-default);
+}
+
+.weekPicker tbody tr:has([data-week-hovered]) > td {
+  background-color: var(--mantine-color-gray-light-hover);
+}
+
+.weekPicker tbody tr:has([data-in-range]) > td {
+  background-color: var(--mantine-primary-color-light);
+}
+
+.weekPicker tbody tr:has([data-selected]) > td {
+  background-color: var(--mantine-primary-color-filled);
+  color: var(--mantine-primary-color-contrast);
+}
+
+.weekPicker tbody tr:has([data-selected]):hover > td {
+  background-color: var(--mantine-primary-color-filled-hover);
+}
+
+.weekPicker tbody tr > td:has(> [data-hidden]) {
+  background-color: transparent;
+}
+
+.weekPicker tbody tr:has([data-in-range]) + tr:has([data-in-range]) > td {
+  border-start-start-radius: 0;
+  border-start-end-radius: 0;
+}
+
+.weekPicker tbody tr:has([data-in-range]):has(+ tr [data-in-range]) > td {
+  border-end-start-radius: 0;
+  border-end-end-radius: 0;
+}
+
+.weekPicker tbody tr > td > button:not([data-week-control]) {
+  background-color: transparent;
+  border-radius: var(--mantine-radius-default);
+}

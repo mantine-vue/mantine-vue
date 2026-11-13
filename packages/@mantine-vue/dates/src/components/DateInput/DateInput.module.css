@@ -1,0 +1,10 @@
+.datePickerRoot {
+  display: flex;
+  font-size: var(--mantine-font-size-sm);
+}
+
+.dropdown {
+  &:where([data-with-presets]) {
+    padding-inline-start: 0.25rem;
+  }
+}

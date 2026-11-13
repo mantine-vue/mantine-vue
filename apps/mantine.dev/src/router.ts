@@ -195,6 +195,11 @@ const routes: RouteRecordRaw[] = [
     component: mdxRoute(() => import('./pages/core/multi-select.mdx')),
   },
   {
+    path: '/core/mentions',
+    name: 'core-mentions',
+    component: mdxRoute(() => import('./pages/core/mentions.mdx')),
+  },
+  {
     path: '/core/pill',
     name: 'core-pill',
     component: mdxRoute(() => import('./pages/core/pill.mdx')),
@@ -398,6 +403,11 @@ const routes: RouteRecordRaw[] = [
     path: '/core/number-input',
     name: 'core-number-input',
     component: mdxRoute(() => import('./pages/core/number-input.mdx')),
+  },
+  {
+    path: '/core/phone-input',
+    name: 'core-phone-input',
+    component: mdxRoute(() => import('./pages/core/phone-input.mdx')),
   },
   {
     path: '/core/password-input',
@@ -814,6 +824,31 @@ const routes: RouteRecordRaw[] = [
     name: 'x-json-viewer',
     component: mdxRoute(() => import('./pages/x/json-viewer.mdx')),
   },
+  {
+    path: '/x/diff',
+    name: 'x-diff',
+    component: mdxRoute(() => import('./pages/x/diff.mdx')),
+  },
+  {
+    path: '/emoji/getting-started',
+    name: 'emoji-getting-started',
+    component: mdxRoute(() => import('./pages/emoji/getting-started.mdx')),
+  },
+  {
+    path: '/emoji/emoji-picker',
+    name: 'emoji-emoji-picker',
+    component: mdxRoute(() => import('./pages/emoji/emoji-picker.mdx')),
+  },
+  {
+    path: '/emoji/emoji-picker-popover',
+    name: 'emoji-emoji-picker-popover',
+    component: mdxRoute(() => import('./pages/emoji/emoji-picker-popover.mdx')),
+  },
+  {
+    path: '/emoji/emoji-picker-input',
+    name: 'emoji-emoji-picker-input',
+    component: mdxRoute(() => import('./pages/emoji/emoji-picker-input.mdx')),
+  },
   { path: '/diagram', redirect: '/diagram/getting-started' },
   ...(
     [
@@ -1166,6 +1201,11 @@ const routes: RouteRecordRaw[] = [
     component: mdxRoute(() => import('./pages/dates/date-input.mdx')),
   },
   {
+    path: '/dates/masked-date-input',
+    name: 'dates-masked-date-input',
+    component: mdxRoute(() => import('./pages/dates/masked-date-input.mdx')),
+  },
+  {
     path: '/dates/date-picker',
     name: 'dates-date-picker',
     component: mdxRoute(() => import('./pages/dates/date-picker.mdx')),
@@ -1174,6 +1214,16 @@ const routes: RouteRecordRaw[] = [
     path: '/dates/date-picker-input',
     name: 'dates-date-picker-input',
     component: mdxRoute(() => import('./pages/dates/date-picker-input.mdx')),
+  },
+  {
+    path: '/dates/week-picker',
+    name: 'dates-week-picker',
+    component: mdxRoute(() => import('./pages/dates/week-picker.mdx')),
+  },
+  {
+    path: '/dates/week-picker-input',
+    name: 'dates-week-picker-input',
+    component: mdxRoute(() => import('./pages/dates/week-picker-input.mdx')),
   },
   {
     path: '/dates/date-time-picker',
@@ -1199,6 +1249,16 @@ const routes: RouteRecordRaw[] = [
     path: '/dates/month-picker-input',
     name: 'dates-month-picker-input',
     component: mdxRoute(() => import('./pages/dates/month-picker-input.mdx')),
+  },
+  {
+    path: '/dates/quarter-picker',
+    name: 'dates-quarter-picker',
+    component: mdxRoute(() => import('./pages/dates/quarter-picker.mdx')),
+  },
+  {
+    path: '/dates/quarter-picker-input',
+    name: 'dates-quarter-picker-input',
+    component: mdxRoute(() => import('./pages/dates/quarter-picker-input.mdx')),
   },
   {
     path: '/dates/year-picker',
@@ -1235,6 +1295,16 @@ const routes: RouteRecordRaw[] = [
     path: '/hooks/use-debounced-callback',
     name: 'hooks-use-debounced-callback',
     component: mdxRoute(() => import('./pages/hooks/use-debounced-callback.mdx')),
+  },
+  {
+    path: '/hooks/use-browser-language',
+    name: 'hooks-use-browser-language',
+    component: mdxRoute(() => import('./pages/hooks/use-browser-language.mdx')),
+  },
+  {
+    path: '/hooks/use-active-element',
+    name: 'hooks-use-active-element',
+    component: mdxRoute(() => import('./pages/hooks/use-active-element.mdx')),
   },
   {
     path: '/hooks/use-click-outside',

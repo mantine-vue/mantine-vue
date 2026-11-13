@@ -243,3 +243,16 @@ export {
   WhatsAppModalDrawerDemos,
   WhatsAppTemplatesDemos,
 } from './whatsapp-inbox'
+export { UseActiveElementDemos } from './hooks/use-active-element'
+export { UseBrowserLanguageDemos } from './hooks/use-browser-language'
+export { WeekPickerDemos } from './dates/WeekPicker'
+export { WeekPickerInputDemos } from './dates/WeekPickerInput'
+export { MaskedDateInputDemos } from './dates/MaskedDateInput'
+export { QuarterPickerDemos } from './dates/QuarterPicker'
+export { QuarterPickerInputDemos } from './dates/QuarterPickerInput'
+export { PhoneInputDemos } from './core/PhoneInput'
+export { MentionsDemos } from './core/Mentions'
+export { DiffDemos } from './x/Diff'
+export { EmojiPickerDemos } from './emoji/EmojiPicker'
+export { EmojiPickerPopoverDemos } from './emoji/EmojiPickerPopover'
+export { EmojiPickerInputDemos } from './emoji/EmojiPickerInput'

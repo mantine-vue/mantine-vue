@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch, useAttrs } from 'vue'
+import { nextTick, ref, watch, useAttrs } from 'vue'
 import { Box, CloseButton, InputBase, Modal, Popover } from '@mantine-vue/core'
 import type { PickerInputBaseEmits, PickerInputBaseProps, PickerInputBaseSlots } from '../../types'
 import classes from '../../Dates.module.css'
@@ -12,6 +12,7 @@ const props = withDefaults(defineProps<PickerInputBaseProps>(), {
   disabled: false,
   required: false,
   size: 'sm',
+  withPresets: false,
 })
 const emit = defineEmits<PickerInputBaseEmits>()
 defineSlots<PickerInputBaseSlots>()
@@ -23,6 +24,51 @@ watch(
     if (value !== undefined) opened.value = value
   },
 )
+const inputElement = ref<HTMLElement | null>(null)
+let dropdownElement: HTMLElement | null = null
+let keyboardInteraction = false
+
+function setInputRef(node: any) {
+  inputElement.value = node?.$el ?? node ?? null
+  const userRef = (attrs as any).rootRef
+  if (typeof userRef === 'function') userRef(inputElement.value)
+  else if (userRef && typeof userRef === 'object') userRef.value = inputElement.value
+}
+
+function onDropdownKeydown(event: KeyboardEvent) {
+  dropdownElement = event.currentTarget as HTMLElement
+  keyboardInteraction = true
+}
+
+function onDropdownPointerdown() {
+  keyboardInteraction = false
+}
+
+watch(opened, (value) => {
+  if (value) {
+    keyboardInteraction = false
+    return
+  }
+
+  if (!keyboardInteraction || typeof document === 'undefined') {
+    return
+  }
+
+  keyboardInteraction = false
+  nextTick(() => {
+    const activeElement = document.activeElement
+    const focusLost =
+      !activeElement ||
+      activeElement === document.body ||
+      !activeElement.isConnected ||
+      !!dropdownElement?.contains(activeElement)
+
+    if (focusLost) {
+      inputElement.value?.focus({ preventScroll: true })
+    }
+  })
+})
+
 function close() {
   opened.value = false
   emit('dropdown-close')
@@ -96,6 +142,7 @@ function clear(event: MouseEvent) {
         :size="props.size"
         :variant="props.variant"
         :right-section-pointer-events="props.clearable && props.formattedValue ? 'all' : undefined"
+        :root-ref="setInputRef"
         @click="clickTarget"
       >
         <span v-if="props.formattedValue">{{ props.formattedValue }}</span
@@ -105,7 +152,12 @@ function clear(event: MouseEvent) {
         /></template>
       </InputBase>
     </Popover.Target>
-    <Popover.Dropdown :class="classes.dropdown"
+    <Popover.Dropdown
+      :class="classes.dropdown"
+      data-dates-dropdown
+      :data-with-presets="props.withPresets || undefined"
+      @keydown="onDropdownKeydown"
+      @pointerdown="onDropdownPointerdown"
       ><slot :close="close" :open="open" :opened="opened"
     /></Popover.Dropdown>
   </Popover>
