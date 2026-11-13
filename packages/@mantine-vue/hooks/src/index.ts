@@ -3,6 +3,13 @@
 // Mantine `@mantine/hooks` package) — no implementations should live here.
 export * from './utils'
 
+export { useActiveElement } from './use-active-element/use-active-element'
+export type { UseActiveElementOptions } from './use-active-element/use-active-element'
+export {
+  useBrowserLanguage,
+  usePreferredLanguages,
+} from './use-browser-language/use-browser-language'
+
 export { useDebouncedCallback } from './use-debounced-callback/use-debounced-callback'
 export type {
   UseDebouncedCallbackOptions,
