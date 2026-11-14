@@ -1,0 +1,62 @@
+import { DiffDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.Diff)
+
+## Installation
+
+`Diff` is a part of the `@mantine-vue/code-highlight` package, see the
+[CodeHighlight](/x/code-highlight/) page for installation instructions.
+
+## Usage
+
+`Diff` component highlights differences between two strings. By default, it uses
+word-level diff granularity and unified display mode:
+
+<Demo data={DiffDemos.usage} />
+
+## Split mode
+
+Set `mode="split"` to display the diff in a side-by-side layout:
+
+<Demo data={DiffDemos.split} />
+
+## Diff method
+
+Use the `diff-method` prop to change how changed lines are highlighted: by characters,
+by words (default) or by whole lines:
+
+<Demo data={DiffDemos.diffMethod} />
+
+## Context lines
+
+Set `context-lines` prop to control how many unchanged lines are displayed around changes.
+Other unchanged lines are collapsed and can be expanded with the expand button:
+
+<Demo data={DiffDemos.contextLines} />
+
+Use `expand-label` prop to change the expand button label:
+
+```vue
+<template>
+  <Diff
+    :previous-value="previousValue"
+    :current-value="currentValue"
+    :context-lines="2"
+    :expand-label="(hiddenCount: number) => `${hiddenCount} more`"
+  />
+</template>
+```
+
+## Custom colors
+
+Use `add-color` and `remove-color` props to change the highlight colors:
+
+<Demo data={DiffDemos.colors} />
+
+## Line numbers
+
+Line numbers are displayed by default, set `:with-line-numbers="false"` to hide them.
+
+<StylesApiSelectors component="Diff" />

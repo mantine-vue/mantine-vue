@@ -3,8 +3,14 @@ import dayjs from 'dayjs'
 import { computed } from 'vue'
 import { SimpleGrid, useDirection } from '@mantine-vue/core'
 import PickerControl from '../PickerControl/PickerControl.vue'
-import { focusAdjacentControl, getYearRange, keyToDirection, setGridRef } from '../../utils'
-import type { DateStringValue, YearsListEmits, YearsListProps } from '../../types'
+import {
+  focusAdjacentControl,
+  focusGridControl,
+  getYearRange,
+  keyToDirection,
+  setGridRef,
+} from '../../utils'
+import type { DateStringValue, GridDirection, YearsListEmits, YearsListProps } from '../../types'
 import classes from '../../Dates.module.css'
 
 defineOptions({ name: 'YearsList' })
@@ -51,9 +57,21 @@ function onKeydown(date: DateStringValue, index: number, event: KeyboardEvent) {
   const direction = keyToDirection(event.key, dir.value)
   if (direction) {
     event.preventDefault()
-    focusAdjacentControl(controlRefs, Math.floor(index / 3), index % 3, direction)
+    const edge = focusAdjacentControl(controlRefs, Math.floor(index / 3), index % 3, direction)
+    if (edge) emit('edge-cross', { edge, direction, cellIndex: index % 3 })
   }
 }
+
+function focusTabControl() {
+  const index = years.value.indexOf(tabDate.value!)
+  if (index !== -1) controlRefs[Math.floor(index / 3)]?.[index % 3]?.focus({ preventScroll: true })
+}
+
+defineExpose({
+  focusControl: (direction: GridDirection, rowIndex: number | 'last', cellIndex: number | 'last') =>
+    focusGridControl(controlRefs, direction, rowIndex, cellIndex),
+  focusTabControl,
+})
 </script>
 
 <template>

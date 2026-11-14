@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import dayjs from 'dayjs'
 import { computed, ref } from 'vue'
-import { useDirection } from '@mantine-vue/core'
+import { UnstyledButton, useDirection } from '@mantine-vue/core'
 import { useDatesContext } from '../DatesProvider'
 import Day from '../Day/Day.vue'
 import WeekdaysRow from '../WeekdaysRow/WeekdaysRow.vue'
+import { getWeekInTabOrder } from './get-week-in-tab-order'
 import {
   focusAdjacentControl,
   getMonthDays,
@@ -20,6 +21,7 @@ import type {
   DatesRangeValue,
   DateValue,
   MonthEmits,
+  MonthInternalProps,
   MonthProps,
   RenderDaySlots,
 } from '../../types'
@@ -27,7 +29,7 @@ import classes from '../../Dates.module.css'
 
 defineOptions({ name: 'Month' })
 
-const props = withDefaults(defineProps<MonthProps>(), {
+const props = withDefaults(defineProps<MonthProps & MonthInternalProps>(), {
   month: () => dayjs().format('YYYY-MM-DD'),
   value: null,
   type: 'default',
@@ -38,6 +40,7 @@ const props = withDefaults(defineProps<MonthProps>(), {
   withWeekNumbers: false,
   static: false,
   fullWidth: false,
+  __withWeekControls: false,
 })
 const emit = defineEmits<MonthEmits>()
 const slots = defineSlots<RenderDaySlots>()
@@ -45,6 +48,7 @@ const context = useDatesContext()
 const { dir } = useDirection()
 const hovered = ref<DateStringValue | null>(null)
 const dayRefs: (HTMLElement | null | undefined)[][] = []
+const weekControlRefs: (HTMLElement | null | undefined)[] = []
 
 const firstDay = computed(() => props.firstDayOfWeek ?? context.firstDayOfWeek)
 const rows = computed(() => getMonthDays(props.month, firstDay.value, context.consistentWeeks))
@@ -81,6 +85,72 @@ function baseDisabled(date: DateStringValue) {
   )
 }
 
+function isDayDisabled(date: DateStringValue) {
+  return baseDisabled(date)
+}
+
+const weekInTabOrder = computed(() =>
+  props.__withWeekControls
+    ? getWeekInTabOrder({
+        dates: rows.value,
+        isDayDisabled,
+        getWeekControlProps: props.__getWeekControlProps,
+      })
+    : -1,
+)
+
+function weekControlProps(weekStart: DateStringValue) {
+  return props.__getWeekControlProps?.(weekStart) || {}
+}
+
+function weekControlAttributes(weekStart: DateStringValue) {
+  const { selected, onClick, onKeydown, onKeyDown, onMouseenter, onMouseEnter, ...rest } =
+    weekControlProps(weekStart)
+  void selected
+  void onClick
+  void onKeydown
+  void onKeyDown
+  void onMouseenter
+  void onMouseEnter
+  return rest
+}
+
+function weekDisabled(week: DateStringValue[]) {
+  return week.every(isDayDisabled) || !!weekControlProps(week[0]).disabled
+}
+
+function onWeekControlClick(weekStart: DateStringValue, event: MouseEvent) {
+  weekControlProps(weekStart).onClick?.(event)
+}
+
+function onWeekControlMouseEnter(weekStart: DateStringValue, event: MouseEvent) {
+  const controlProps = weekControlProps(weekStart)
+  ;(controlProps.onMouseenter ?? controlProps.onMouseEnter)?.(event)
+}
+
+function onWeekControlKeydown(weekStart: DateStringValue, rowIndex: number, event: KeyboardEvent) {
+  const controlProps = weekControlProps(weekStart)
+  ;(controlProps.onKeydown ?? controlProps.onKeyDown)?.(event)
+  if (props.__onWeekControlKeyDown) {
+    props.__onWeekControlKeyDown(event, { rowIndex, date: weekStart })
+    return
+  }
+  const direction = keyToDirection(event.key, dir.value)
+  if (direction === 'up' || direction === 'down') {
+    event.preventDefault()
+    const next = weekControlRefs[rowIndex + (direction === 'up' ? -1 : 1)]
+    next?.focus()
+  }
+}
+
+function setWeekControlRef(rowIndex: number, node: any) {
+  weekControlRefs[rowIndex] = node?.$el ?? node ?? undefined
+}
+
+function isSelectedDay(date: DateStringValue) {
+  return !!(dayProps(date).selected ?? selected(date))
+}
+
 function dayProps(date: DateStringValue) {
   return props.getDayProps?.(date) || {}
 }
@@ -92,6 +162,10 @@ function dayAttributes(date: DateStringValue) {
   delete attributes.onMouseEnter
   delete attributes.onKeydown
   delete attributes.onKeyDown
+  delete attributes.selected
+  delete attributes.inRange
+  delete attributes.firstInRange
+  delete attributes.lastInRange
   return attributes
 }
 
@@ -112,7 +186,9 @@ const dateInTabOrder = computed(() => {
     )
   })
   return (
-    enabled.find(selected) ?? enabled.find((date) => dayjs().isSame(date, 'date')) ?? enabled[0]
+    enabled.find(isSelectedDay) ??
+    enabled.find((date) => dayjs().isSame(date, 'date')) ??
+    enabled[0]
   )
 })
 
@@ -157,12 +233,36 @@ function onKeydown(
 ) {
   const controlProps = dayProps(date)
   ;(controlProps.onKeydown ?? controlProps.onKeyDown)?.(event)
+  if (props.__onDayKeyDown) {
+    props.__onDayKeyDown(event, { date, rowIndex, cellIndex })
+    return
+  }
   const direction = keyToDirection(event.key, dir.value)
   if (direction) {
     event.preventDefault()
     focusAdjacentControl(dayRefs, rowIndex, cellIndex, direction)
   }
 }
+
+function getDayElement(date: DateStringValue) {
+  const rowIndex = rows.value.findIndex((week) => week.includes(date))
+  return rowIndex === -1 ? null : dayRefs[rowIndex]?.[rows.value[rowIndex].indexOf(date)] || null
+}
+
+function getWeekControlElement(weekStart: DateStringValue) {
+  const rowIndex = rows.value.findIndex((week) => week[0] === weekStart)
+  return rowIndex === -1 ? null : weekControlRefs[rowIndex] || null
+}
+
+function focusTabControl() {
+  if (props.__withWeekControls) {
+    weekControlRefs[weekInTabOrder.value]?.focus({ preventScroll: true })
+    return
+  }
+  if (dateInTabOrder.value) getDayElement(dateInTabOrder.value)?.focus({ preventScroll: true })
+}
+
+defineExpose({ getDayElement, getWeekControlElement, focusTabControl })
 </script>
 
 <template>
@@ -179,7 +279,22 @@ function onKeydown(
     <tbody>
       <tr v-for="(week, rowIndex) in rows" :key="week[0]" :class="classes.monthRow">
         <td v-if="props.withWeekNumbers" :class="classes.weekNumber">
-          {{ getWeekNumber(week[0]) }}
+          <UnstyledButton
+            v-if="props.__withWeekControls"
+            v-bind="weekControlAttributes(week[0])"
+            :ref="(node: any) => setWeekControlRef(rowIndex, node)"
+            :class="[classes.weekControl, weekControlAttributes(week[0]).class]"
+            data-week-control
+            :disabled="weekDisabled(week)"
+            :data-disabled="weekDisabled(week) || undefined"
+            :data-selected="weekControlProps(week[0]).selected || undefined"
+            :tabindex="rowIndex === weekInTabOrder ? 0 : -1"
+            @click="onWeekControlClick(week[0], $event)"
+            @mouseenter="onWeekControlMouseEnter(week[0], $event)"
+            @keydown="onWeekControlKeydown(week[0], rowIndex, $event)"
+            >{{ getWeekNumber(week) }}</UnstyledButton
+          >
+          <template v-else>{{ getWeekNumber(week) }}</template>
         </td>
         <td
           v-for="(date, cellIndex) in week"
@@ -196,16 +311,22 @@ function onKeydown(
             :weekend="(props.weekendDays ?? context.weekendDays).includes(dayjs(date).day())"
             :outside="outside(date)"
             :hidden="props.hideOutsideDates && outside(date)"
-            :selected="selected(date)"
-            :in-range="inRange(date)"
-            :first-in-range="rangeStart(date)"
-            :last-in-range="rangeEnd(date)"
+            :selected="isSelectedDay(date)"
+            :in-range="dayProps(date).inRange ?? inRange(date)"
+            :first-in-range="dayProps(date).firstInRange ?? rangeStart(date)"
+            :last-in-range="dayProps(date).lastInRange ?? rangeEnd(date)"
             :highlight-today="props.highlightToday"
             :full-width="props.fullWidth"
             :render-day="renderDay"
             :aria-label="dayAriaLabel(date)"
-            :tabindex="props.static ? undefined : date === dateInTabOrder ? 0 : -1"
-            :data-autofocus="selected(date) || undefined"
+            :tabindex="
+              props.static
+                ? undefined
+                : !props.__withWeekControls && date === dateInTabOrder
+                  ? 0
+                  : -1
+            "
+            :data-autofocus="isSelectedDay(date) || undefined"
             @click="onClick(date, $event)"
             @mouseenter="onMouseEnter(date, $event)"
             @keydown="onKeydown(date, rowIndex, cellIndex, $event)"

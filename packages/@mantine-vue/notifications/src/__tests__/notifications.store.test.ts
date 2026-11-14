@@ -247,4 +247,50 @@ describe('@mantine-vue/notifications store', () => {
 
     wrapper.unmount()
   })
+
+  it('supports autoCloseProgressPosition on Notifications and individual notifications', async () => {
+    vi.useFakeTimers()
+    const store = createNotificationsStore()
+    const mountWith = (position?: 'top' | 'bottom') =>
+      mount(MantineProvider, {
+        props: { env: 'test' },
+        slots: {
+          default: () =>
+            h(Notifications, {
+              store,
+              withinPortal: false,
+              autoClose: 1000,
+              transitionDuration: 10,
+              withAutoCloseProgress: true,
+              autoCloseProgressPosition: position,
+            }),
+        },
+        attachTo: document.body,
+      })
+    const getProgress = () =>
+      document.body.querySelector('[style*="--notifications-progress-duration"]')
+
+    let wrapper = mountWith()
+    showNotification({ id: 'progress', message: 'With progress' }, store)
+    await nextTick()
+    expect(getProgress()?.getAttribute('data-position')).toBe('bottom')
+    wrapper.unmount()
+    cleanNotifications(store)
+
+    wrapper = mountWith('top')
+    showNotification({ id: 'progress-top', message: 'With progress' }, store)
+    await nextTick()
+    expect(getProgress()?.getAttribute('data-position')).toBe('top')
+
+    updateNotification(
+      { id: 'progress-top', message: 'With progress', autoCloseProgressPosition: 'bottom' },
+      store,
+    )
+    await nextTick()
+    expect(getProgress()?.getAttribute('data-position')).toBe('bottom')
+    expect(document.body.querySelector('[autocloseprogressposition]')).toBeNull()
+
+    wrapper.unmount()
+    vi.useRealTimers()
+  })
 })

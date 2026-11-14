@@ -58,6 +58,7 @@ const pickerProps = computed(() => {
     formattedValue,
     dropdownOpened,
     dropdownType,
+    withPresets,
     label,
     placeholder,
     clearable,
@@ -77,6 +78,7 @@ const pickerProps = computed(() => {
   void formattedValue
   void dropdownOpened
   void dropdownType
+  void withPresets
   void label
   void placeholder
   void clearable
@@ -114,6 +116,7 @@ function closeDropdown() {
     :size="props.size"
     :variant="props.variant"
     :dropdown-type="props.dropdownType"
+    :with-presets="!!props.presets?.length"
     :dropdown-opened="opened"
     @dropdown-open="openDropdown"
     @dropdown-close="closeDropdown"

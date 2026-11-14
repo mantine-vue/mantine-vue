@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { computed, ref, useAttrs } from 'vue'
-import { UnstyledButton } from '@mantine-vue/core'
 import { useUncontrolled } from '@mantine-vue/hooks'
 import Calendar from '../Calendar/Calendar.vue'
+import { PresetsList } from '../PresetsList'
 import { getNextPickerValue, isSameDate } from '../../utils'
 import type {
   CalendarLevel,
@@ -73,16 +73,7 @@ function selectPreset(next: DatePickerValueType) {
 
 <template>
   <div v-if="props.presets?.length" :class="classes.datePickerRoot">
-    <div :class="classes.presetsList">
-      <UnstyledButton
-        v-for="(preset, index) in props.presets"
-        :key="index"
-        :class="classes.presetButton"
-        @click="selectPreset(preset.value)"
-        @mousedown.prevent
-        >{{ preset.label }}</UnstyledButton
-      >
-    </div>
+    <PresetsList :presets="props.presets" @preset-select="selectPreset" />
     <Calendar
       v-bind="{ ...attrs, ...calendarProps }"
       :type="props.type"

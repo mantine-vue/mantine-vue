@@ -31,6 +31,9 @@
     "./styles.css": "./styles.css",
     "./styles.layer.css": "./styles.layer.css"
   },
+  "dependencies": {
+    "diff": "^9.0.0"
+  },
   "devDependencies": {
     "@mantine-vue/core": "workspace:*",
     "@mantine-vue/hooks": "workspace:*",

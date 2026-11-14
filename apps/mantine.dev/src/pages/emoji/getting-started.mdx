@@ -1,0 +1,101 @@
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.GettingStartedEmoji)
+
+## Installation
+
+<InstallScript packages="@mantine-vue/emoji" />
+
+After installation import package styles at the root of your application:
+
+```ts
+import '@mantine-vue/core/styles.css'
+// ‼️ import emoji styles after core package styles
+import '@mantine-vue/emoji/styles.css'
+```
+
+## Emoji data
+
+`@mantine-vue/emoji` does not include emoji data, you need to pass it with the `data` prop.
+The package exports adapters for the two most popular emoji data sources:
+
+### Using @emoji-mart/data
+
+Install the data package:
+
+<InstallScript packages="@emoji-mart/data" />
+
+Then use the adapter to convert the data:
+
+```vue
+<script setup lang="ts">
+import data from '@emoji-mart/data'
+import { emojiMartAdapter, EmojiPicker } from '@mantine-vue/emoji'
+
+const emojiData = emojiMartAdapter(data)
+</script>
+
+<template>
+  <EmojiPicker :data="emojiData" />
+</template>
+```
+
+### Using emojibase-data
+
+Install the data package:
+
+<InstallScript packages="emojibase-data" />
+
+Then use the adapter to convert the data:
+
+```vue
+<script setup lang="ts">
+import data from 'emojibase-data/en/data.json'
+import messages from 'emojibase-data/en/messages.json'
+import { emojibaseAdapter, EmojiPicker } from '@mantine-vue/emoji'
+
+const emojiData = emojibaseAdapter(data, messages)
+</script>
+
+<template>
+  <EmojiPicker :data="emojiData" />
+</template>
+```
+
+### Custom data
+
+You can also provide data directly using the `EmojiPickerData` interface:
+
+```vue
+<script setup lang="ts">
+import { EmojiPicker, type EmojiPickerData } from '@mantine-vue/emoji'
+
+const data: EmojiPickerData = {
+  categories: [{ id: 'people', label: 'Smileys & People', emojis: ['grinning', 'wave'] }],
+  emojis: {
+    grinning: { id: 'grinning', name: 'Grinning Face', keywords: ['happy', 'smile'], emoji: '😀' },
+    wave: {
+      id: 'wave',
+      name: 'Waving Hand',
+      keywords: ['hello', 'bye'],
+      emoji: '👋',
+      skins: ['👋🏻', '👋🏼', '👋🏽', '👋🏾', '👋🏿'],
+    },
+  },
+}
+</script>
+
+<template>
+  <EmojiPicker :data="data" />
+</template>
+```
+
+Category ids `frequent`, `people`, `nature`, `foods`, `activity`, `places`, `objects`, `symbols`
+and `flags` are displayed with icons in the category navigation, they are exported as `CANONICAL_CATEGORY_IDS`.
+
+## Components
+
+- [EmojiPicker](/emoji/emoji-picker) – searchable emoji grid with category navigation, skin tone selector and preview
+- [EmojiPickerPopover](/emoji/emoji-picker-popover) – emoji picker inside a popover, use it to build custom triggers
+- [EmojiPickerInput](/emoji/emoji-picker-input) – input with an emoji picker dropdown

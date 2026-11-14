@@ -139,11 +139,23 @@ function createDemoResolver() {
       )) {
         collectionMembers.set(match[1], match[2])
       }
+      // Single-file component demos: `import usageCode from './Demo.vue?raw'`
+      for (const match of source.matchAll(
+        /import\s+([A-Za-z0-9_]+)Code\s+from\s+['"](.+?)\?raw['"]/g,
+      )) {
+        collectionMembers.set(match[1], `${match[2]}?raw`)
+      }
       members.set(collection, collectionMembers)
     }
 
     const demoPath = collectionMembers.get(name)
     if (!demoPath) return null
+    if (demoPath.endsWith('?raw')) {
+      const rawFile = join(dirname(collectionIndex), demoPath.replace(/\?raw$/, ''))
+      return existsSync(rawFile)
+        ? readFileSync(rawFile, 'utf8').replaceAll('@mantine/', '@mantine-vue/').trim() || null
+        : null
+    }
     const demoTarget = join(dirname(collectionIndex), demoPath.replace(/^\.\//, ''))
     const demoFile = [`${demoTarget}.ts`, `${demoTarget}.tsx`, join(demoTarget, 'index.ts')].find(
       existsSync,

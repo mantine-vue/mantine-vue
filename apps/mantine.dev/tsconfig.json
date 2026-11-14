@@ -24,6 +24,7 @@
       "@mantine-vue/hooks": ["../../packages/@mantine-vue/hooks/src"],
       "@mantine-vue/lightbox": ["../../packages/@mantine-vue/lightbox/src"],
       "@mantine-vue/qr-code": ["../../packages/@mantine-vue/qr-code/src"],
+      "@mantine-vue/emoji": ["../../packages/@mantine-vue/emoji/src"],
       "@mantine-vue/code-highlight": ["../../packages/@mantine-vue/code-highlight/src"],
       "@mantine-vue/contextmenu": ["../../packages/@mantine-vue/contextmenu/src"],
       "@mantine-vue/colors-generator": ["../../packages/@mantine-vue/colors-generator/src"],

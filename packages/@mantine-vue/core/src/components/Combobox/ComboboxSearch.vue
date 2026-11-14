@@ -47,7 +47,14 @@ const targetProps = useComboboxTargetProps({
  * `useComboboxTargetProps`.
  */
 const inputAttrs = computed(() =>
-  omitAttrs(attrs, ['onUpdate:modelValue', 'onChange', 'onKeydown', 'onClick']),
+  omitAttrs(attrs, [
+    'onUpdate:modelValue',
+    'onChange',
+    'onKeydown',
+    'onClick',
+    'classNames',
+    'styles',
+  ]),
 )
 
 /** `Input` renders a wrapper, so the element the store steers is the inner input. */
@@ -57,6 +64,28 @@ function setSearchRef(node: any) {
 }
 
 const searchStyles = computed(() => ctx.getStyles('search'))
+
+type StylesApiValue = Record<string, any> | ((...args: any[]) => Record<string, any>) | undefined
+
+function mergeInputStyles(value: StylesApiValue, input: any, merge: (a: any, b: any) => any) {
+  if (typeof value === 'function') {
+    return (...args: any[]) => {
+      const resolved = value(...args) || {}
+      return { ...resolved, input: merge(input, resolved.input) }
+    }
+  }
+  return { ...value, input: merge(input, value?.input) }
+}
+
+const inputClassNames = computed(() =>
+  mergeInputStyles((attrs as any).classNames, searchStyles.value.class, (a, b) => [a, b]),
+)
+const inputStyles = computed(() =>
+  mergeInputStyles((attrs as any).styles, searchStyles.value.style, (a, b) => ({
+    ...a,
+    ...b,
+  })),
+)
 </script>
 
 <template>
@@ -66,8 +95,8 @@ const searchStyles = computed(() => ctx.getStyles('search'))
     :model-value="props.modelValue"
     :default-value="props.defaultValue"
     :size="props.size || ctx.size"
-    :class="[searchStyles.class, attrs.class]"
-    :style="[searchStyles.style, attrs.style]"
+    :class-names="inputClassNames"
+    :styles="inputStyles"
     __static-selector="Combobox"
     @update:model-value="emit('update:modelValue', $event)"
     @change="emit('change', $event)"

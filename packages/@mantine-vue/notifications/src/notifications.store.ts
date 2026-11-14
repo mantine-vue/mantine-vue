@@ -9,6 +9,8 @@ export type NotificationPosition =
   | 'bottom-right'
   | 'bottom-center'
 
+export type NotificationAutoCloseProgressPosition = 'top' | 'bottom'
+
 export interface NotificationData extends Record<`data-${string}`, any> {
   /** Notification id, can be used to close or update notification. */
   id?: string
@@ -24,6 +26,8 @@ export interface NotificationData extends Record<`data-${string}`, any> {
   allowClose?: boolean
   /** Displays an auto-close progress line, overriding the Notifications default. */
   withAutoCloseProgress?: boolean
+  /** Position of the auto close progress line, overrides `autoCloseProgressPosition` from `Notifications` */
+  autoCloseProgressPosition?: NotificationAutoCloseProgressPosition
   /** Called when notification closes. */
   onClose?: (props: NotificationData) => void
   /** Called when notification opens. */

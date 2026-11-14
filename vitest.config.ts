@@ -37,6 +37,7 @@ export default defineConfig({
       '@mantine-vue/colors-generator': r('./packages/@mantine-vue/colors-generator/src'),
       '@mantine-vue/lightbox': r('./packages/@mantine-vue/lightbox/src'),
       '@mantine-vue/qr-code': r('./packages/@mantine-vue/qr-code/src'),
+      '@mantine-vue/emoji': r('./packages/@mantine-vue/emoji/src'),
       '@mantine-vue/mantine-header': r('./packages/@mantine-vue/mantine-header/src'),
       '@mantine-vue/modals': r('./packages/@mantine-vue/modals/src'),
       '@mantine-vue/notifications': r('./packages/@mantine-vue/notifications/src'),

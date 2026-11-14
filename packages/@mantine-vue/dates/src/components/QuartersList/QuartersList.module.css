@@ -1,0 +1,25 @@
+.quartersList {
+  border-collapse: collapse;
+  border-width: 0;
+  cursor: var(--mantine-cursor-type);
+}
+
+.quartersList[data-full-width] {
+  width: 100%;
+}
+
+.quartersListRow {
+  border: 0;
+}
+
+.quartersListCell {
+  padding: 0;
+}
+
+.quartersListCell[data-with-spacing] {
+  padding: 0.5px;
+}
+
+.quartersListCell .quartersListControl:not([data-full-width]) {
+  width: calc((2.25rem * 7) / 4 + 0.0703125rem);
+}

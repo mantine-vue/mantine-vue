@@ -1,6 +1,7 @@
 import type { VNodeChild } from 'vue'
 import type { ClassNames, Styles, Vars } from '@mantine-vue/core'
 import type {
+  NotificationAutoCloseProgressPosition,
   NotificationData,
   NotificationPosition,
   NotificationsStore,
@@ -46,6 +47,8 @@ export interface NotificationsProps {
   layout?: 'default' | 'stacked'
   /** Displays a progress line that fills until each notification auto-closes. @default false */
   withAutoCloseProgress?: boolean
+  /** Position of the auto close progress line, can be overwritten for individual notifications in `notifications.show` and `notifications.update` functions @default 'bottom' */
+  autoCloseProgressPosition?: NotificationAutoCloseProgressPosition
   /** CSS classes applied to component elements. */
   classNames?: ClassNames<NotificationsProps>
   /** Inline styles applied to component elements. */

@@ -105,3 +105,47 @@ import { notifications } from '@mantine-vue/notifications'
   </Group>
 </template>`,
 }
+
+const showWithPosition = (position: 'top' | 'bottom') =>
+  notifications.show({
+    title: `Progress line at the ${position}`,
+    message: 'This notification will close in 5 seconds',
+    withAutoCloseProgress: true,
+    autoCloseProgressPosition: position,
+    autoClose: 5000,
+  })
+
+export const autoCloseProgressPosition: MantineDemo = {
+  type: 'code',
+  component: defineComponent({
+    setup: () => () =>
+      h(Group, { justify: 'center' }, () => [
+        h(Button, { onClick: () => showWithPosition('top') }, () => 'Progress at the top'),
+        h(
+          Button,
+          { variant: 'default', onClick: () => showWithPosition('bottom') },
+          () => 'Progress at the bottom',
+        ),
+      ]),
+  }),
+  code: `<script setup lang="ts">
+import { Button, Group } from '@mantine-vue/core'
+import { notifications } from '@mantine-vue/notifications'
+
+const show = (position: 'top' | 'bottom') =>
+  notifications.show({
+    title: \`Progress line at the \${position}\`,
+    message: 'This notification will close in 5 seconds',
+    withAutoCloseProgress: true,
+    autoCloseProgressPosition: position,
+    autoClose: 5000,
+  })
+</script>
+
+<template>
+  <Group justify="center">
+    <Button @click="show('top')">Progress at the top</Button>
+    <Button variant="default" @click="show('bottom')">Progress at the bottom</Button>
+  </Group>
+</template>`,
+}

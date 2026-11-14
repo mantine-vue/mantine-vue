@@ -1,0 +1,91 @@
+import { EmojiPickerInputDemos } from '@/demos'
+import { Layout } from '@/layout'
+import { MDX_DATA } from '@/mdx'
+
+export default Layout(MDX_DATA.EmojiPickerInput)
+
+## Usage
+
+<InputFeatures component="EmojiPickerInput" element="button" />
+
+<Demo data={EmojiPickerInputDemos.usage} />
+
+## Controlled
+
+The value is an emoji ID (a key in `data.emojis`). Use `v-model` to control it.
+When the value is not selected in the picker, the input displays the emoji without skin tone:
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue'
+import { EmojiPickerInput } from '@mantine-vue/emoji'
+import { emojiData } from './emoji-data'
+
+const value = ref<string | null>(null)
+</script>
+
+<template>
+  <EmojiPickerInput v-model="value" :data="emojiData" placeholder="Select emoji" />
+</template>
+```
+
+## Clearable
+
+Set `clearable` to display a clear button when an emoji is selected. The clear button
+has `aria-label="Clear emoji"` by default, use `clear-button-props` to change it or pass
+other props to the button:
+
+<Demo data={EmojiPickerInputDemos.clearable} />
+
+## Close on select
+
+By default, the dropdown closes when an emoji is selected.
+Set `:close-on-select="false"` to keep it open:
+
+<Demo data={EmojiPickerInputDemos.closeOnSelect} />
+
+## Disabled
+
+<Demo data={EmojiPickerInputDemos.disabled} />
+
+## Read only
+
+<Demo data={EmojiPickerInputDemos.readOnly} />
+
+## EmojiPicker props
+
+Use the `picker-props` prop to pass props to the underlying `EmojiPicker`,
+for example to change the number of columns or hide sections:
+
+<Demo data={EmojiPickerInputDemos.pickerProps} />
+
+## Controlled dropdown
+
+Use `v-model:opened` to control the dropdown state:
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue'
+import { EmojiPickerInput } from '@mantine-vue/emoji'
+import { emojiData } from './emoji-data'
+
+const opened = ref(false)
+</script>
+
+<template>
+  <EmojiPickerInput v-model:opened="opened" :data="emojiData" placeholder="Select emoji" />
+</template>
+```
+
+## emojiSelect event
+
+`v-model` stores the emoji ID. Use the `emoji-select` event to get the full emoji object
+with name, keywords and skin variants:
+
+```vue
+<template>
+  <EmojiPickerInput :data="emojiData" @emoji-select="(emoji) => console.log(emoji.emoji)" />
+</template>
+```
+
+<StylesApiSelectors component="EmojiPickerInput" />

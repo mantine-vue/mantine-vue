@@ -17,6 +17,7 @@ export const DOCGEN_SOURCE_PATHS = getPaths([
   'packages/@mantine-vue/file-manager/src',
   'packages/@mantine-vue/lightbox/src',
   'packages/@mantine-vue/qr-code/src',
+  'packages/@mantine-vue/emoji/src',
   'packages/@mantine-vue/modals/src',
   'packages/@mantine-vue/notifications/src',
   'packages/@mantine-vue/nprogress/src',

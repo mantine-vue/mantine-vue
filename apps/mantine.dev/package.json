@@ -10,6 +10,7 @@
     "typecheck": "vue-tsc --noEmit"
   },
   "dependencies": {
+    "@emoji-mart/data": "^1.2.1",
     "@floating-ui/dom": "^1.0.0",
     "@mantine-vue/carousel": "workspace:*",
     "@mantine-vue/charts": "workspace:*",
@@ -20,6 +21,7 @@
     "@mantine-vue/dates": "workspace:*",
     "@mantine-vue/diagram": "workspace:*",
     "@mantine-vue/dropzone": "workspace:*",
+    "@mantine-vue/emoji": "workspace:*",
     "@mantine-vue/file-manager": "workspace:*",
     "@mantine-vue/form": "workspace:*",
     "@mantine-vue/hooks": "workspace:*",
